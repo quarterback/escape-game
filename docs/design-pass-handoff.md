@@ -5,7 +5,7 @@
 **For:** the agent continuing work on `claude/vigilant-noether-rmcm7h`
 **Status:** In progress. The owner has more direction to add before this is final.
 
-The mockups live on a private Design canvas: https://claude.ai/code/artifact/7ebf4005-5041-4c41-a8d8-c3a59d146c74. It has three screens: the desktop play screen (the current direction), a start screen and a phone play screen. The start and phone screens predate the blueprint board described below.
+The mockups live on a private Design canvas: https://claude.ai/code/artifact/7ebf4005-5041-4c41-a8d8-c3a59d146c74. The top row holds the three phone screens (Here, The route, The phone). These are the primary design, because most players will be on a phone. Below them are the desktop play screen and a start screen. The start screen predates the blueprint board.
 
 Read `docs/coalition-origin-and-concept-report.pdf` first. Everything here comes from it.
 
@@ -90,9 +90,93 @@ No left border accents on cards. Panels are separated by surface tone, not rules
 
 ### Fonts
 
-The mockup keeps the AGENTS.md mapping, with one change for the owner to confirm: the clock uses **Overbit Shadow Bold** and the hours left use **Overbit Shadow**. They come from the full Overbit family the owner supplied. If the owner confirms, update the font mapping in `AGENTS.md`, embed the two faces in `tools/build.py` and keep their license headers.
+**Approved by the owner.** The clock uses **Overbit Shadow Bold** and the hours left use **Overbit Shadow**, from the full Overbit family the owner supplied. Everything else follows the existing AGENTS.md mapping. To do:
 
-## 3. Labels added in the mockup, pending owner approval
+- Add both faces to the font mapping in `AGENTS.md`.
+- Copy their `.woff2` files and license headers into `fonts/`.
+- Embed both faces in `tools/build.py`.
+
+## 3. Phone first
+
+The phone screens are the primary layout. On a wide window the same parts spread into the desktop arrangement.
+
+- **Scene header.** It stays on screen on every tab. The scene sits about 210px tall on Here and The route, and 150px on The phone. Over it:
+  - **Top left:** the clock, with "72 h left. Out by Tue 14:00."
+  - **Top right:** a coral chip, "Sosā, looking here," with his next move.
+  - **Along the bottom:** a thin exposure bar, "1/10."
+- **Bottom tab bar:** Here, Phone, Route, Hand. A lavender badge on Phone counts waiting messages. Only the content above the tab bar scrolls.
+- **Here:** the level heading and objective, then the approaches. The selected approach expands with Commit and Cancel. Wait one hour sits at the end.
+- **The route:** the blueprint board as a vertical list of stops on a rail. The current stop is a raised panel with the inquiry chip. Each stop lists who acts there, what is needed to leave (in hand, promised or not started) and which cards start or stop counting there. A dashed rail segment marks the border. The two people abroad sit in a box at the end.
+- **The phone:** the message thread with reply options, then calls.
+- **Hand:** not drawn yet. Use the card faces from the desktop mockup in a two column grid.
+
+## 4. Make it a PWA
+
+The game stays a single offline `index.html` that also opens from disk. On top of that it should install to a phone's home screen and run offline after the first visit. It is a GitHub repo served through Cloudflare, so HTTPS is in place.
+
+### Files the build writes next to `index.html`
+
+- `manifest.webmanifest`:
+  - `name` and `short_name`: "Coalition"
+  - `start_url` and `scope`: `"./"`
+  - `display`: `"standalone"`
+  - `orientation`: `"portrait"`
+  - `background_color` and `theme_color`: `"#150F2E"`
+  - Icons at 192px and 512px, plus a 512px `maskable` icon.
+- `sw.js`: a service worker.
+  - It precaches `./`, `index.html`, the manifest and the icons.
+  - Its cache name carries a build stamp from `tools/build.py`, so each build replaces the old cache. Delete old caches on `activate`.
+  - Serve from the cache first, and answer navigations with the cached `index.html`.
+- `icons/`: generated from the austral favicon on the `#150F2E` ground: `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (keep the glyph inside the safe zone) and `apple-touch-icon.png` at 180px.
+
+### Changes to `src/shell.html`
+
+- `<link rel="manifest" href="manifest.webmanifest">`
+- `<meta name="theme-color" content="#150F2E">`
+- `<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">`
+- `<meta name="apple-mobile-web-app-capable" content="yes">`
+- `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">`
+- Viewport: `width=device-width,initial-scale=1,viewport-fit=cover`
+
+### Changes to `src/ui.js`
+
+- Register the service worker only when it can run: `if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js')`. That keeps the game working from `file://`.
+- When a new version is waiting, show a small line, "New version ready," with a Reload button. Never reload in the middle of a run on its own.
+- **Save the run.** Phones close apps in the background, so a player must be able to come back to the same run. Save the state after every commit and offer Continue on the start screen. The die needs to resume where it left off: store the seed and the number of rolls so far, or store the generator's internal state.
+- Add an Install button to the menu when the browser fires `beforeinstallprompt` (Android and desktop Chrome). On iPhone, Help gets one line: tap Share, then Add to Home Screen.
+
+### Layout rules for standalone mode
+
+- Pad the top and the tab bar with `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)`.
+- Size the frame with `100dvh`. Only the panel between the header and the tab bar scrolls.
+- Nothing depends on hover. Touch targets stay at 44px or more.
+- Sound already starts from the Start button, which iOS requires.
+
+### Cloudflare
+
+The service worker file must never be cached for long, or players stay on an old build.
+
+- **If this is Cloudflare Pages building from GitHub:** add a `_headers` file at the site root:
+
+  ```
+  /sw.js
+    Cache-Control: no-cache
+  /manifest.webmanifest
+    Cache-Control: no-cache
+  ```
+
+- **If this is GitHub Pages behind the Cloudflare proxy:** GitHub Pages ignores `_headers`. Add a Cloudflare Cache Rule that bypasses the cache for `/sw.js` and `/manifest.webmanifest`.
+
+Also point `og:url` and the image tags in `src/shell.html` at the live domain once it is settled.
+
+### Check
+
+- Lighthouse reports the game as installable.
+- After one visit, the game loads in airplane mode.
+- A run survives closing the app and reopening it from the home screen.
+- `tools/tutorial-check.js` still passes.
+
+## 5. Labels added in the mockup, approved by the owner
 
 - The route
 - Who acts here
@@ -106,8 +190,13 @@ The mockup keeps the AGENTS.md mapping, with one change for the owner to confirm
 - Next move
 - At 10 they arrive
 
-## 4. Not done yet
+- Sosā, looking here
+- Out by Tue 14:00
+- Abroad, by phone
+- Salek about your visa
 
-- The phone layout for the blueprint board: a list you scroll stop by stop, with "Needed to leave" first.
+## 6. Not done yet
+
+- The Hand tab on the phone.
 - Which country issued the second passport. That is the owner's call.
 - The owner has more direction coming before this is handed over.
