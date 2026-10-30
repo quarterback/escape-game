@@ -49,6 +49,24 @@ Check that shortening has preserved who acts, what they need and what follows.
 - Keep build tools, implementation notes and editorial status out of player screens.
 - Edit `src/`, then rebuild. Do not edit the generated `index.html` directly.
 
+## Preserve the font mapping
+
+The owner selected these faces after reporting that the game was hard to read:
+
+- Little Grandad Fat: the Coalition title only.
+- Overbit Regular: section, level and tutorial headings.
+- GC North Sans Regular: dialogue, instructions, buttons, cards and status text.
+- GC North Sans SemiBold: emphasis. Use Arial/sans-serif as the fallback for
+  macrons missing from GC North Sans; preserve the spelling of names.
+
+Keep reading text at least 16px and secondary text at least 14px. Use sufficient
+line spacing and contrast. Route labels belong in responsive HTML, not scaled
+canvas text. Do not restore narrow or decorative fonts for reading text.
+
+Read [the typography AAR](docs/aar-coalition-typography.md) before changing this
+mapping. Keep font-license headers in the generated CSS. Fonts and the austral
+favicon must stay embedded so the game works offline.
+
 ## Check changes
 
 For copy changes, run `python3 tools/build.py` and

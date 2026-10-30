@@ -1,4 +1,4 @@
-:root{--font-display:'Little Grandad Fat',Impact,sans-serif;--font-title:'Kurdis-Regular',system-ui,sans-serif;--font-hud:'Kurdis-Condensed','Arial Narrow',sans-serif;--font-body:'Kurdis-Regular',system-ui,sans-serif;--font-label:'Embro','Kurdis-Condensed',sans-serif;--bg:#0d0d16;--panel:#15151f;--panel2:#1c1c29;--ink:#e8e6f0;--mute:#9a9aaa;--line:#2a2a3a;--gold:#ffd24a;--red:#ff6a6a;--green:#5cd65c;--blue:#7ab0ff;--purple:#b48ad8}
+:root{--font-display:'Little Grandad Fat',Impact,sans-serif;--font-title:'GCNorthSans-Regular',Arial,sans-serif;--font-hud:'GCNorthSans-Regular',Arial,sans-serif;--font-body:'GCNorthSans-Regular',Arial,sans-serif;--font-label:'Overbit-Regular',Arial,sans-serif;--font-strong:'GCNorthSans-SemiBold',Arial,sans-serif;--bg:#0d0d16;--panel:#15151f;--panel2:#1c1c29;--ink:#f0eff5;--mute:#bebdce;--line:#2a2a3a;--gold:#ffd24a;--red:#ff6a6a;--green:#5cd65c;--blue:#7ab0ff;--purple:#b48ad8}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-body)}
 body.busy .act,body.busy #wait,body.busy .opt{opacity:.55;pointer-events:none}
@@ -63,3 +63,58 @@ button.primary{background:#3a5a2a;border-color:#5cd65c}button.primary:hover:not(
 #title-start{font:400 26px/1 var(--font-title);letter-spacing:.12em;text-transform:uppercase;background:#2fa84a;color:#06120a;border:3px solid #7cf07c;border-radius:8px;padding:16px 64px;box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6);animation:startpulse 1.4s ease-in-out infinite}#title-start:hover{background:#3fc45c}
 @keyframes startpulse{0%,100%{box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6)}50%{box-shadow:0 0 0 10px rgba(124,240,124,.05),0 10px 30px rgba(0,0,0,.6)}}
 .title-foot{margin:26px 0 0;font-size:12px;color:var(--mute)}
+
+/* Readability: display faces stay in titles; all reading uses GC North Sans.
+   Arial/sans-serif supplies macrons missing from the licensed GC kit. */
+html,body{font-size:17px;line-height:1.6}
+b,strong{font-family:var(--font-strong);font-weight:400}
+header{padding:16px 20px;gap:14px 24px}
+header h1{font-size:30px}header h1 small{font-size:14px;line-height:1.5}
+.stat{gap:9px}.stat b{font:400 13px/1.4 var(--font-label);letter-spacing:.02em}
+.stat .v{font:400 18px/1.4 var(--font-hud);letter-spacing:0;font-variant-numeric:tabular-nums}
+main,.lower{max-width:1600px;gap:18px;padding-inline:20px}
+main{grid-template-columns:minmax(0,1.8fr) minmax(340px,1fr)}
+#world{min-width:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel)}
+#scene{border:0;border-radius:0}
+#route-map{padding:14px 12px 12px;border-bottom:1px solid var(--line);background:#20202e}
+#route-map ol{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:0}
+#route-map li{border-top:3px solid #56566b;padding-top:8px;color:var(--mute);font:400 14px/1.4 var(--font-body);overflow-wrap:anywhere}
+#route-map li.current{border-color:var(--gold);color:var(--ink)}#route-map li.passed{border-color:#8add8a}
+#route-map li.watched{box-shadow:inset 0 2px #ff9696}
+#route-map .route-label{display:block}
+#route-map .route-marker{display:block;margin-top:4px;font:400 12px/1.4 var(--font-body);color:var(--gold)}
+#route-map .route-marker.enemy{color:#ffacac}
+#side{max-height:480px;min-width:0}
+#objective{padding:14px 16px}#objective b{font-size:20px;line-height:1.4}#objective p{font-size:16px;line-height:1.6;margin-top:6px}
+#dialogue{font-size:16px;line-height:1.65;padding:14px 16px}#dialogue .line{margin-bottom:12px;padding-left:8px}
+.lower{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr)}
+section.panel{padding:16px;min-width:0}
+section.panel h2,section.panel h3{font:400 15px/1.5 var(--font-label);letter-spacing:.03em;color:#dbd9e8}
+section.panel h2{margin-bottom:14px}section.panel h3{margin:20px 0 10px}
+.act{padding:12px 14px;margin-bottom:10px}
+.act .nm,.card .cn,.msg .from{font:400 17px/1.5 var(--font-title)}
+.act .meta{display:block;margin:5px 0 0;font:400 14px/1.4 var(--font-hud);letter-spacing:0}
+.act .why,.hint,.preview,.msg p,.opt,#arrangements,#people,#enemy,#helpbox{font-size:16px;line-height:1.6}
+.act.no{opacity:1;color:#cfcedc}.act.no .nm{color:#cfcedc}.act .why{color:#bebdce}
+button{font:400 16px/1.45 var(--font-body);padding:10px 14px;min-height:44px}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.opt{padding:12px}.opt small,.small,.card .from,.card p,#people li .terms,#arrangements li .pend,#enemy li{font-size:14px;line-height:1.6}
+#arrangements li,#people li{padding:10px 0}#people li.trust{color:#a2e49b}#people li.turned{color:#ffacac}
+#arrangements li .st,.card p,#helpbox,#objective p{color:#dedce8}
+.card{padding:12px 14px;margin-bottom:10px}.card .tag{font:400 13px/1.5 var(--font-hud);letter-spacing:0}
+#coach{font-size:16px;line-height:1.6;max-height:340px;padding:14px 16px}
+#coach .step{font:400 13px/1.4 var(--font-body);letter-spacing:0}#coach h3{font-size:19px;line-height:1.4}
+#coach-leave{font-size:14px;min-height:44px}#coach .row{flex-shrink:0}#coach p{margin-bottom:10px}
+.startbox{max-width:860px;max-height:calc(100dvh - 40px);overflow-y:auto;padding:28px}
+.startbox p{line-height:1.65}.who b{font-size:20px;line-height:1.4}.who span,.who p{font-size:15px;line-height:1.6}
+#start-free{font-size:17px;line-height:1.4}
+.title-line{font-size:20px;line-height:1.6}.title-kicker{font-size:15px;line-height:1.4}.title-foot{font-size:14px}
+#over{width:min(720px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow-y:auto;padding:22px}
+#over p{font-size:17px;line-height:1.6}
+@media(max-width:1100px){main,.lower{grid-template-columns:1fr}#side{max-height:none}#dialogue{max-height:300px}#coach{max-height:none}#start-chars{grid-template-columns:1fr}}
+@media(max-width:600px){main,.lower{padding-inline:12px;gap:14px}header{padding:14px 12px}#route-map ol{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px}.startbox{padding:20px}#start{padding:12px}#scene{aspect-ratio:960/336}.title-word{font-size:clamp(54px,16vw,100px)}#over{bottom:12px}}
+@media(prefers-reduced-motion:reduce){.tut-hi,#title-start{animation:none}}
+
+/* Owner font mapping: Overbit headings; Little Grandad only for the game title. */
+#objective b,#coach h3,#inspect h3,#start-free{font-family:var(--font-label)}
+#over h2{font-family:var(--font-label);line-height:1.25}

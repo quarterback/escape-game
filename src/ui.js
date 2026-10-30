@@ -40,6 +40,17 @@ const UI = (() => {
     for (const q of st.highlight) { const el = document.querySelector(q); if (el) el.classList.add('tut-hi'); }
   }
   function renderStatus() {
+    const route = $('route-stops'); route.innerHTML = '';
+    Data.LEVELS.forEach((level, i) => {
+      const stop = document.createElement('li');
+      stop.className = [i === s.pos ? 'current' : '', i < s.pos ? 'passed' : '', i === s.belief ? 'watched' : ''].filter(Boolean).join(' ');
+      if (i === s.pos) stop.setAttribute('aria-current', 'step');
+      const label = document.createElement('span'); label.className = 'route-label'; label.textContent = level.short; stop.appendChild(label);
+      for (const [show, text, cls] of [[i === s.pos, 'You are here', ''], [i === s.belief, 'Inquiry looking here', ' enemy']]) {
+        if (show) { const marker = document.createElement('span'); marker.className = 'route-marker' + cls; marker.textContent = text; stop.appendChild(marker); }
+      }
+      route.appendChild(stop);
+    });
     $('clock').textContent = Sim.clockText(s.hour); $('left').textContent = `${Sim.HOURS_TOTAL - s.hour} h left`;
     $('where').textContent = Data.LEVELS[s.pos].short; $('belief').textContent = s.belief < 0 ? 'unknown' : Data.LEVELS[s.belief].short + (s.belief === s.pos ? ' (right)' : ' (wrong)');
     const h = $('heat'); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); if (i < s.exposure) d.className = 'on' + (s.exposure >= 7 ? ' hot' : ''); h.appendChild(d); } $('heatnum').textContent = `${s.exposure}/${Sim.EXPOSURE_LIMIT}`;

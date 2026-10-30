@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Coalition</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,/*__FAVICON__*/">
 <meta name="description" content="You lost the presidency on Saturday. Cross the border into Esmeralda and leave its airspace before the inquiry finds you. A single-file, offline escape game set in the Nelôxia universe.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Coalition">
@@ -34,7 +35,7 @@
   <div class="stat"><button id="startscreen">Start screen</button><button id="demo">Guided run</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
 </header>
 <main>
-  <div id="scene" aria-label="Pixel-art scene of the current level"></div>
+  <div id="world"><nav id="route-map" aria-label="Escape route"><ol id="route-stops"></ol></nav><div id="scene" aria-label="Pixel-art scene of the current level"></div></div>
   <aside id="side">
     <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
     <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>

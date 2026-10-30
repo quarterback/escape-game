@@ -122,33 +122,15 @@ const Render = (() => {
 
   // ---- HUD ------------------------------------------------------
   function hud(s, t) {
-    p.textFont('Kurdis-Condensed'); p.noStroke();
-    const n = Data.LEVELS.length, x0 = 40, x1 = p.width - 40, step = (x1 - x0) / (n - 1), y = 14;
-    for (let i = 0; i < n; i++) {
-      const x = x0 + i * step;
-      if (i < n - 1) { p.stroke(i < s.pos ? '#5cd65c' : '#6a6a7a'); p.strokeWeight(2); p.line(x + 8, y, x + step - 8, y); if (i === 3) { p.noStroke(); p.fill('#c83a3a'); p.rect(x + step / 2 - 1, y - 5, 2, 10); } }
-      p.noStroke(); p.fill(i === s.pos ? '#ffd24a' : i < s.pos ? '#5cd65c' : '#9a9aaa'); p.ellipse(x, y, i === s.pos ? 10 : 7);
-      if (i === s.belief) { p.fill(`rgba(220,60,60,${0.7 + 0.3 * Math.sin(t / 250)})`); p.ellipse(x, y - 11, 7, 5); p.fill('#111'); p.ellipse(x, y - 11, 2.5, 2.5); }
-      p.fill('#cfd0dd'); p.textSize(11); p.textAlign(p.CENTER, p.TOP); p.text(Data.LEVELS[i].short, x, y + 7);
-    }
-    p.textSize(10); p.textAlign(p.LEFT, p.CENTER); p.fill('#aab'); p.text('you', x0 + s.pos * step + 9, y + 1); p.fill('#ff8a8a'); if (s.belief >= 0) p.text('they think', x0 + s.belief * step + 9, y - 11);
-    // exposure bar, top right under the route
-    const bx = p.width - 150, by = 34; p.fill('#aab'); p.textAlign(p.LEFT, p.CENTER); p.text('exposure', bx, by);
-    for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { p.fill(i < s.exposure ? (s.exposure >= 7 ? '#ff5a5a' : '#e06a3a') : '#2a2a3a'); p.rect(bx + 62 + i * 8, by - 4, 6, 8); }
-    // arrangement badges bottom-left
-    let ax = 8; p.textSize(10);
-    for (const k in Data.ARRANGEMENTS) {
-      const a = s.arr[k], def = Data.ARRANGEMENTS[k], done = a.stage === def.stages.length - 1, pend = s.jobs.some(j => j.arr === k);
-      const label = `${done ? '✓' : pend ? '…' : '○'} ${def.name}: ${def.stages[a.stage]}`; const w = p.textWidth(label) + 10;
-      p.fill(done ? 'rgba(60,150,80,0.85)' : pend ? 'rgba(90,80,40,0.85)' : 'rgba(40,40,52,0.85)'); p.rect(ax, p.height - 20, w, 14, 3);
-      p.fill(done ? '#eafbe8' : '#ccd'); p.textAlign(p.LEFT, p.CENTER); p.text(label, ax + 5, p.height - 13); ax += w + 6;
-    }
+    // Route and arrangement text lives in HTML so it does not shrink with the scene.
+    p.textFont('GCNorthSans-Regular'); p.noStroke();
     // phone
-    if (s.inbox.length) { const k = 0.5 + 0.5 * Math.sin(t / 200); p.fill(`rgba(255,210,74,${0.6 + 0.4 * k})`); p.rect(p.width - 44, p.height - 24, 20, 14, 3); p.fill('#111'); p.textAlign(p.CENTER, p.CENTER); p.textSize(10); p.text(s.inbox.length, p.width - 34, p.height - 17); }
-    if (hover && !busy()) { const w = p.textWidth(hover.label) + 10; let tx = Math.min(p.width - w - 4, Math.max(4, hover.x + hover.w / 2 - w / 2)); p.textSize(11); p.fill('rgba(12,12,20,0.92)'); p.rect(tx, hover.y - 20, w + 6, 16, 3); p.fill('#fff'); p.textAlign(p.LEFT, p.CENTER); p.text(hover.label, tx + 5, hover.y - 12); }
-    p.textSize(11); p.textAlign(p.CENTER, p.BOTTOM);
+    if (s.inbox.length) { const k = 0.5 + 0.5 * Math.sin(t / 200); p.fill(`rgba(255,210,74,${0.6 + 0.4 * k})`); p.rect(p.width - 44, p.height - 24, 20, 14, 3); p.fill('#111'); p.textAlign(p.CENTER, p.CENTER); p.textSize(14); p.text(s.inbox.length, p.width - 34, p.height - 17); }
+    if (hover && !busy()) { p.textSize(16); const w = Math.min(p.width - 24, p.textWidth(hover.label) + 20); const tx = Math.min(p.width - w - 12, Math.max(12, hover.x + hover.w / 2 - w / 2)); p.fill('rgba(12,12,20,0.96)'); p.rect(tx, hover.y - 40, w, 30, 3); p.fill('#fff'); p.textAlign(p.LEFT, p.CENTER); p.text(hover.label, tx + 10, hover.y - 25); }
+
+    p.textSize(16); p.textAlign(p.CENTER, p.BOTTOM);
     for (const f of view.floats) { const k = f.t / f.life; p.fill(f.color); p.text(f.text, f.x, f.y - k * 30); }
-    if (view.die) { const d = view.die, cx = p.width / 2, cy = p.height / 2 - 20, k = Math.min(1, d.t * 3); const face = k < 1 ? 1 + Math.floor(Math.random() * 6) : d.die; p.fill(k < 1 ? '#eee' : d.won ? '#5cd65c' : '#ff6a6a'); p.rect(cx - 22, cy - 22, 44, 44, 6); p.fill('#111'); p.textSize(26); p.textAlign(p.CENTER, p.CENTER); p.text(face, cx, cy); p.textSize(11); p.fill('#eee'); p.text(`needs ${d.need}`, cx, cy + 36); }
+    if (view.die) { const d = view.die, cx = p.width / 2, cy = p.height / 2 - 20, k = Math.min(1, d.t * 3); const face = k < 1 ? 1 + Math.floor(Math.random() * 6) : d.die; p.fill(k < 1 ? '#eee' : d.won ? '#5cd65c' : '#ff6a6a'); p.rect(cx - 22, cy - 22, 44, 44, 6); p.fill('#111'); p.textSize(26); p.textAlign(p.CENTER, p.CENTER); p.text(face, cx, cy); p.textSize(16); p.fill('#eee'); p.text(`needs ${d.need}`, cx, cy + 36); }
     if (view.enemyPulse > 0) { p.fill(`rgba(220,40,40,${0.18 * view.enemyPulse})`); p.rect(0, 0, p.width, p.height); }
     if (view.fade > 0) { p.fill(`rgba(8,8,14,${0.9 * view.fade})`); p.rect(0, 0, p.width, p.height); }
     if (view.over) { p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height); p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a'); p.text(view.over.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins', p.width / 2, p.height / 2 - 14); p.textSize(12); p.fill('#eee'); p.text('', p.width / 2, p.height / 2 + 14); }
@@ -157,7 +139,7 @@ const Render = (() => {
   let last = 0;
   const sketch = (pp) => {
     p = pp;
-    pp.setup = () => { if (document.fonts && document.fonts.load) document.fonts.load("12px 'Kurdis-Condensed'"); const c = pp.createCanvas(W * SCALE, H * SCALE); c.parent('scene'); pp.pixelDensity(1); pp.noSmooth(); pp.frameRate(60); pg = pp.createGraphics(W, H); pg.pixelDensity(1); pg.noSmooth(); pg.noStroke(); last = pp.millis(); };
+    pp.setup = () => { if (document.fonts && document.fonts.load) document.fonts.load("16px 'GCNorthSans-Regular'"); const c = pp.createCanvas(W * SCALE, H * SCALE); c.parent('scene'); pp.pixelDensity(1); pp.noSmooth(); pp.frameRate(60); pg = pp.createGraphics(W, H); pg.pixelDensity(1); pg.noSmooth(); pg.noStroke(); last = pp.millis(); };
     pp.draw = () => {
       const now = pp.millis(), dt = Math.min(50, now - last); last = now; const s = view.s; if (!s) return;
       stepQueue(dt); for (const f of view.floats) f.t += dt; view.floats = view.floats.filter(f => f.t < f.life);

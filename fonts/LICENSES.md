@@ -43,3 +43,15 @@ License: 	The WebFont(s) listed in this document must follow the YouWorkForThem
 ## Little Grandad Fat, Embro Regular, Embro Bold
 
 Webfont kits purchased by the owner (`*-webfont-full`). Embedded in WOFF as supplied.
+
+## Active typography
+
+The owner selected Little Grandad Fat for the Coalition title, Overbit Regular
+for headings and GC North Sans Regular/SemiBold for reading and controls.
+GC North Sans lacks some macrons; Arial/sans-serif supplies missing characters.
+
+The GC North Sans and Overbit WOFF2 files come from the owner's supplied webfont
+kits. Their original headers are stored in the matching `*.license.css` files
+and emitted unaltered beside the embedded font-face rules.
+
+The earlier faces remain stored here, but the build only embeds active faces.
