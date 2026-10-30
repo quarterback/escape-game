@@ -5,7 +5,11 @@
 **For:** the agent continuing work on `claude/vigilant-noether-rmcm7h`
 **Status:** In progress. The owner has more direction to add before this is final.
 
-The mockups live on a private Design canvas: https://claude.ai/code/artifact/7ebf4005-5041-4c41-a8d8-c3a59d146c74. The top row holds the three phone screens (Here, The route, The phone). These are the primary design, because most players will be on a phone. Below them are the desktop play screen and a start screen. The start screen predates the blueprint board.
+The mockups live on a private Design canvas: https://claude.ai/code/artifact/7ebf4005-5041-4c41-a8d8-c3a59d146c74. It has three rows:
+
+- **Escape, on a phone:** Start, Here, The route and The phone. These are the primary design, because most players will be on a phone.
+- **Government, on a phone:** Reports, The route and Debrief, for the proposed third character.
+- **Desktop:** the play screen and the start screen.
 
 Read `docs/coalition-origin-and-concept-report.pdf` first. Everything here comes from it.
 
@@ -100,7 +104,22 @@ No left border accents on cards. Panels are separated by surface tone, not rules
 
 The phone screens are the primary layout. On a wide window the same parts spread into the desktop arrangement.
 
-- **Scene header.** It stays on screen on every tab. The scene sits about 210px tall on Here and The route, and 150px on The phone. Over it:
+### A bigger scene
+
+The owner felt the scene had too little room. Every scene in `src/render.js` is drawn relative to `GROUND`, so the buffer can grow taller with no new art: the extra height becomes sky above and ground below. This was tested on the residence scene.
+
+- Change `const W = 320, H = 112, SCALE = 3, GROUND = 92;` so that `H` can be set per layout and `GROUND = H - 20` (or `H - 44` to leave a deeper foreground for overlays).
+- **Phone:** `H = 260`. The scene fills the top 360px of the Here tab, and the panel slides up over its bottom edge as a sheet with a grab handle. Route and Phone show a shorter crop of the same buffer.
+- **Desktop:** `H = 150`. The scene runs the full width of the window under the header, up to 680px tall. The level heading and objective sit on its lower edge. Here, the hand and the phone sit below it.
+- Reference renders: `docs/design-assets/residence-tall-260.png`.
+
+### Start screen art
+
+The start screen background is a pixel-art family photo on a runway at sunset: six people (the candidate, the sibling, a partner, an older relative and two children), luggage, the jet and the pilot at the stairs. It uses the game's own sprites plus a smaller child sprite. The drawing code is in `docs/design-assets/runway-still.js` and the render is `docs/design-assets/runway-still.png`. The phone start screen shows the family in the top half with the choices below. The desktop start screen puts the title in the sky and the choices on the runway. The same picture closes the debrief when the escape succeeds.
+
+### Phone layout
+
+- **Scene header.** It stays on screen on every tab. Over it:
   - **Top left:** the clock, with "72 h left. Out by Tue 14:00."
   - **Top right:** a coral chip, "Sosā, looking here," with his next move.
   - **Along the bottom:** a thin exposure bar, "1/10."
@@ -195,7 +214,31 @@ Also point `og:url` and the image tags in `src/shell.html` at the live domain on
 - Abroad, by phone
 - Salek about your visa
 
-## 6. Not done yet
+## 6. The government character, screen design
+
+Screens for the proposal in `docs/government-character-plan.md` are in the canvas row "Government, on a phone." They follow that plan's rule that this player never sees the candidate's real position, hand or arrangements. The start screen gains a third choice: "[Character name], senior aide, the winning party. Stop the escape." The name stays open.
+
+Color tells the sides apart. In this mode the player's color is coral (clock, active tab, order outline). The candidate's last reported position is gold.
+
+- **Reports** (replaces Here):
+  - **The scene header:** the clock, with "Stop her before Tue 14:00." A gold chip shows the candidate's name and how old the last report is. A strip shows when the minister wants a location.
+  - **Each report:** the source and its age, what it says, and two side-by-side boxes, **Proves** and **Does not prove**. Example: "A red sedan took the south road toward Santa Laura." Proves: a car is heading south. Does not prove: she was inside.
+  - **Orders:** each shows the die face, the roll, the hours, who acts and what happens on failure. The commit button reads "Send the order."
+- **The route:** the same rail as the escape side, holding only what the player knows.
+  - Each stop lists "Your people" there and the reports pinned to it, with their age.
+  - The suspected stop has a gold outline marker reading "She may be here."
+  - Requests that are sent but not delivered use the orange promised state. Example: "Travel ban sent. Not confirmed at the post. A sent message does not close the border."
+  - Susana states the jurisdiction gap: "Your ministry does not command this tower."
+  - "Where your cards count" works the same way as on the escape side.
+- **Debrief:** opens with the outcome ("She got out," with the time the jet left).
+  - A table compares, at each step, where she was against where you looked: Right, Wrong, Decoy, two hours late, Missed or Too late.
+  - Then "Reports that misled you," "Who delivered" and "The minister." The minister's reaction is written from the run's choices and is a placeholder in the mockup.
+  - The buttons are "Play again" and "Play her side."
+- **Tabs:** Reports, Calls, Route, Cards.
+
+The example reports, orders and debrief rows are illustrations of the plan, not selected content.
+
+## 7. Not done yet
 
 - The Hand tab on the phone.
 - Which country issued the second passport. That is the owner's call.
