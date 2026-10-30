@@ -13,15 +13,20 @@ const Sim = (() => {
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
-  function newRun(seed, who) {
+  // opts.dice: a queue of die results used before the rng (the demo). opts.enemy: a queue of
+  // enemy action ids used before the weighted draw (the demo). opts.tutorial: a flag the UI reads.
+  function newRun(seed, who, opts) {
+    opts = opts || {};
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const rng = mulberry32(seed >>> 0);
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
       arr: {}, people: {}, hand: ['decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
-      nextMsg: 1, lastEnemy: 0, visited: [0],
+      nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
     };
+    s._dice = opts.dice ? opts.dice.slice() : null;
+    s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
     for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
     s._rng = rng;
@@ -32,7 +37,7 @@ const Sim = (() => {
   }
   const ev = (type, data) => Object.assign({ type }, data);
   const say = (events, who, text) => { if (text) events.push(ev('say', { who, text })); };
-  const roll = (s) => 1 + Math.floor(s._rng() * 6);
+  const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * 6);
   function clockText(h) {
     const t = START_HOUR + h, day = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'][Math.floor(t / 24)];
     return `${day} ${String(t % 24).padStart(2, '0')}:00`;
@@ -267,6 +272,7 @@ const Sim = (() => {
     const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
     const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
     for (const a of cands) { r -= a.w; if (r <= 0) { pick = a; break; } }
+    if (s._enemy && s._enemy.length) { const want = s._enemy.shift(); pick = cands.find(a => a.id === want) || pick; }
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {

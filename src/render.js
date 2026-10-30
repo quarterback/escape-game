@@ -168,6 +168,8 @@ const Render = (() => {
     };
     pp.mousePressed = () => { const h = hitTest(pp.mouseX, pp.mouseY); if (h && hooks.onPick) hooks.onPick(h.id); };
   };
+  // A still of one level with no HUD, as a data URL, for the title screen. Null until p5 has set up.
+  function still(s) { if (!pg) return null; const g = pg; g.noStroke(); SCENES[Data.LEVELS[s.pos].scene](g, s, 4000, Sim.isNight(s)); player(g, s, 4000); return g.canvas.toDataURL('image/png'); }
   function start(hk) { Object.assign(hooks, hk); new p5(sketch); }
-  return { start, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, still, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
 })();

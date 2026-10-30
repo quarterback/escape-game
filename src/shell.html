@@ -11,17 +11,18 @@
 </head>
 <body>
 <header>
-  <h1>Coalition<small>Get out of Valdória. Keep the people who are getting you out working together.</small></h1>
+  <h1>Coalition<small>Get out of Valdória. Keep the people helping you working together.</small></h1>
   <div class="stat"><b>Clock</b><span class="v" id="clock"></span><span class="small" id="left"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
   <div class="stat"><b>They think</b><span id="belief"></span></div>
   <div class="stat"><b>Exposure</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
-  <div class="stat"><button id="startscreen">Who you are</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
+  <div class="stat"><button id="startscreen">Start screen</button><button id="demo">Guided run</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
 </header>
 <main>
   <div id="scene" aria-label="Pixel-art scene of the current level"></div>
   <aside id="side">
     <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
+    <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Do what the coach says. Everything else is off.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
     <div id="dialogue" aria-live="polite"></div>
   </aside>
 </main>
@@ -47,19 +48,22 @@
     <h3>What the inquiry has done</h3>
     <ul id="enemy"></ul>
     <div id="helpbox" hidden>
-      <p>Each level is the situation in front of you plus everything your allies and enemies are doing elsewhere. The approaches under Here move you on; the phone carries the arrangements that must be ready when you arrive. A promise is not a confirmed arrangement until the person delivers, and each of them rolls a die to deliver.</p>
-      <p>Cards are specific help someone gave you. They are not spent by themselves; they lower the die an approach needs, and some approaches cannot be tried without one. The party card means nothing in Esmeralda. Paying works on people who take money and fails on people who do not.</p>
-      <p>Exposure is how sure the inquiry is about where you are. It climbs while they are looking in the right place and when someone talks. At 10 they arrive. The run ends at 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
+      <p><b>Here</b> is the problem in front of you. Pick an approach to move on. <b>The phone</b> is what your allies are doing elsewhere. Call them to start an arrangement. Each ally rolls a die to deliver, and a promise is not an arrangement until they do.</p>
+      <p><b>Cards</b> are help someone gave you. They lower the die an approach needs. Some approaches need a card. The party card means nothing in Esmeralda. Money works on some people and not on others.</p>
+      <p><b>Exposure</b> is how sure the inquiry is about where you are. At 10 they arrive. You have 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
     </div>
   </section>
 </div>
 <div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Change who you are</button></div></div>
-<div id="start">
+<div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to the border, and everyone who can help you is somewhere else.</p><button id="title-start">Start</button><p class="title-foot">A game in the Nelôxia universe. Runs offline. Sound on.</p></div></div>
+<div id="start" hidden>
   <div class="startbox">
     <h2>Coalition</h2>
-    <p id="start-blurb">You lost the presidency of Valdória by four points on Saturday. By noon a court had restricted your departure and asked for your passports. A jet can be found, a country can be asked to receive you, a second document can be issued, a driver can be hired. Each of those is a different person, and none of them can do the others' work. Reach the border at the Huhūi passes, cross into Esmeralda, and leave its airspace in an aircraft bound for Atlanta before the inquiry finds you.</p>
+    <p id="start-blurb">You lost the presidency of Valdória on Saturday. By noon a court had barred you from leaving. You need a jet, a country that will receive you, a second document and a driver. Each one is a different person. Cross the border into Esmeralda and leave its airspace for Atlanta before the inquiry finds you.</p>
+    <div id="start-demo"><button id="start-tutorial" class="primary">Play the guided first run</button><span class="small" id="start-demo-note"></span></div>
+    <h3 id="start-free">Or start a real run</h3>
     <div id="start-chars"></div>
-    <p class="small">Runs offline. p5.js 1.9.4 is embedded; sound is synthesized with Web Audio. The sequence of levels, the people and the destination are prototype choices (docs/game-direction.md).</p>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded. Sound is synthesized with Web Audio. Levels, people and the destination are prototype choices (docs/game-direction.md).</p>
   </div>
 </div>
 <script>
@@ -70,6 +74,9 @@
 </script>
 <script>
 /*__SIM__*/
+</script>
+<script>
+/*__TUTORIAL__*/
 </script>
 <script>
 /*__AUDIO__*/

@@ -55,7 +55,7 @@ main{display:grid;grid-template-columns:minmax(0,960px) minmax(280px,1fr);gap:12
 #scene canvas{width:100%!important;height:auto!important;image-rendering:pixelated;display:block}
 #side{display:flex;flex-direction:column;gap:8px;max-height:336px}
 #objective{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 12px}#objective b{display:block;color:var(--gold);font:400 16px/1.2 var(--font-title)}#objective p{margin:4px 0 0;color:#c8c8d8;font-size:13px}
-#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;flex:1;overflow-y:auto;font-size:13px;min-height:120px}
+#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;flex:1;overflow-y:auto;font-size:13px;min-height:60px}
 #dialogue .line{margin:0 0 7px;padding-left:4px;border-left:2px solid transparent}#dialogue .line b{font-weight:700;margin-right:5px}
 #dialogue .line.sys{color:var(--mute)}#dialogue .line.enemy{border-left-color:var(--red)}#dialogue .line.roll{border-left-color:var(--gold)}
 .lower{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,1fr) minmax(280px,1fr);gap:12px;padding:0 16px 24px;max-width:1500px;margin:0 auto}
@@ -86,21 +86,42 @@ button.primary{background:#3a5a2a;border-color:#5cd65c}button.primary:hover:not(
 .small{font-size:12px;color:var(--mute)}
 @media (max-width:1100px){main,.lower{grid-template-columns:1fr}#side{max-height:none}#dialogue{max-height:220px}#start-chars{grid-template-columns:1fr}}
 
+/* the coach (guided first run) */
+#coach{background:#1d1a0f;border:1px solid var(--gold);border-radius:6px;padding:10px 12px;font-size:13px;display:flex;flex-direction:column;min-height:0;max-height:240px}#coach-body{overflow-y:auto;min-height:0}#coach[hidden]{display:none}
+#coach .step{font:400 11px/1 var(--font-label);letter-spacing:.08em;color:var(--gold)}#coach h3{margin:4px 0 6px;font:400 17px/1.2 var(--font-title);color:var(--ink)}
+#coach p{margin:0 0 7px}#coach p:last-child{margin-bottom:0}#coach .row{margin:0 0 8px;align-items:center;flex-wrap:wrap}#coach-do{color:#ffb060}#coach-leave{margin-left:auto;font-size:12px;padding:5px 9px}
+.tut-hi{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;animation:tutpulse 1.6s ease-in-out infinite}@keyframes tutpulse{0%,100%{outline-color:var(--gold)}50%{outline-color:rgba(255,210,74,.25)}}
+.act.off,.opt.off{opacity:.3;pointer-events:none}
+#start-demo{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0 6px;padding:12px;background:#1d1a0f;border:1px solid var(--gold);border-radius:6px}#start-demo .small{flex:1;min-width:220px}
+#start-free{margin:14px 0 0;font:400 15px/1.2 var(--font-title);color:var(--mute)}
+
+/* the title screen: a still from a later level, the title, one green button */
+#title{position:fixed;inset:0;z-index:30;background:#0a0a12 center/cover no-repeat;image-rendering:pixelated;display:flex;align-items:center;justify-content:center;text-align:center}#title[hidden]{display:none}
+.title-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,18,.15) 0%,rgba(10,10,18,.35) 45%,rgba(10,10,18,.9) 100%)}
+.title-box{position:relative;padding:24px;max-width:820px}
+.title-kicker{font:400 13px/1 var(--font-label);letter-spacing:.14em;color:#ffb060;text-transform:uppercase;margin-bottom:14px}
+.title-word{margin:0;font:400 clamp(72px,14vw,168px)/.9 var(--font-display);color:var(--gold);letter-spacing:.02em;text-shadow:0 4px 0 #6a4a10,0 10px 40px rgba(0,0,0,.8)}
+.title-line{margin:18px auto 28px;max-width:520px;font-size:17px;color:#e8e6f0;text-shadow:0 2px 8px #000}
+#title-start{font:400 26px/1 var(--font-title);letter-spacing:.12em;text-transform:uppercase;background:#2fa84a;color:#06120a;border:3px solid #7cf07c;border-radius:8px;padding:16px 64px;box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6);animation:startpulse 1.4s ease-in-out infinite}#title-start:hover{background:#3fc45c}
+@keyframes startpulse{0%,100%{box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6)}50%{box-shadow:0 0 0 10px rgba(124,240,124,.05),0 10px 30px rgba(0,0,0,.6)}}
+.title-foot{margin:26px 0 0;font-size:12px;color:var(--mute)}
+
 </style>
 </head>
 <body>
 <header>
-  <h1>Coalition<small>Get out of Valdória. Keep the people who are getting you out working together.</small></h1>
+  <h1>Coalition<small>Get out of Valdória. Keep the people helping you working together.</small></h1>
   <div class="stat"><b>Clock</b><span class="v" id="clock"></span><span class="small" id="left"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
   <div class="stat"><b>They think</b><span id="belief"></span></div>
   <div class="stat"><b>Exposure</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
-  <div class="stat"><button id="startscreen">Who you are</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
+  <div class="stat"><button id="startscreen">Start screen</button><button id="demo">Guided run</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
 </header>
 <main>
   <div id="scene" aria-label="Pixel-art scene of the current level"></div>
   <aside id="side">
     <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
+    <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Do what the coach says. Everything else is off.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
     <div id="dialogue" aria-live="polite"></div>
   </aside>
 </main>
@@ -126,19 +147,22 @@ button.primary{background:#3a5a2a;border-color:#5cd65c}button.primary:hover:not(
     <h3>What the inquiry has done</h3>
     <ul id="enemy"></ul>
     <div id="helpbox" hidden>
-      <p>Each level is the situation in front of you plus everything your allies and enemies are doing elsewhere. The approaches under Here move you on; the phone carries the arrangements that must be ready when you arrive. A promise is not a confirmed arrangement until the person delivers, and each of them rolls a die to deliver.</p>
-      <p>Cards are specific help someone gave you. They are not spent by themselves; they lower the die an approach needs, and some approaches cannot be tried without one. The party card means nothing in Esmeralda. Paying works on people who take money and fails on people who do not.</p>
-      <p>Exposure is how sure the inquiry is about where you are. It climbs while they are looking in the right place and when someone talks. At 10 they arrive. The run ends at 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
+      <p><b>Here</b> is the problem in front of you. Pick an approach to move on. <b>The phone</b> is what your allies are doing elsewhere. Call them to start an arrangement. Each ally rolls a die to deliver, and a promise is not an arrangement until they do.</p>
+      <p><b>Cards</b> are help someone gave you. They lower the die an approach needs. Some approaches need a card. The party card means nothing in Esmeralda. Money works on some people and not on others.</p>
+      <p><b>Exposure</b> is how sure the inquiry is about where you are. At 10 they arrive. You have 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
     </div>
   </section>
 </div>
 <div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Change who you are</button></div></div>
-<div id="start">
+<div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to the border, and everyone who can help you is somewhere else.</p><button id="title-start">Start</button><p class="title-foot">A game in the Nelôxia universe. Runs offline. Sound on.</p></div></div>
+<div id="start" hidden>
   <div class="startbox">
     <h2>Coalition</h2>
-    <p id="start-blurb">You lost the presidency of Valdória by four points on Saturday. By noon a court had restricted your departure and asked for your passports. A jet can be found, a country can be asked to receive you, a second document can be issued, a driver can be hired. Each of those is a different person, and none of them can do the others' work. Reach the border at the Huhūi passes, cross into Esmeralda, and leave its airspace in an aircraft bound for Atlanta before the inquiry finds you.</p>
+    <p id="start-blurb">You lost the presidency of Valdória on Saturday. By noon a court had barred you from leaving. You need a jet, a country that will receive you, a second document and a driver. Each one is a different person. Cross the border into Esmeralda and leave its airspace for Atlanta before the inquiry finds you.</p>
+    <div id="start-demo"><button id="start-tutorial" class="primary">Play the guided first run</button><span class="small" id="start-demo-note"></span></div>
+    <h3 id="start-free">Or start a real run</h3>
     <div id="start-chars"></div>
-    <p class="small">Runs offline. p5.js 1.9.4 is embedded; sound is synthesized with Web Audio. The sequence of levels, the people and the destination are prototype choices (docs/game-direction.md).</p>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded. Sound is synthesized with Web Audio. Levels, people and the destination are prototype choices (docs/game-direction.md).</p>
   </div>
 </div>
 <script>
@@ -357,15 +381,20 @@ const Sim = (() => {
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
-  function newRun(seed, who) {
+  // opts.dice: a queue of die results used before the rng (the demo). opts.enemy: a queue of
+  // enemy action ids used before the weighted draw (the demo). opts.tutorial: a flag the UI reads.
+  function newRun(seed, who, opts) {
+    opts = opts || {};
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const rng = mulberry32(seed >>> 0);
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
       arr: {}, people: {}, hand: ['decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
-      nextMsg: 1, lastEnemy: 0, visited: [0],
+      nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
     };
+    s._dice = opts.dice ? opts.dice.slice() : null;
+    s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
     for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
     s._rng = rng;
@@ -376,7 +405,7 @@ const Sim = (() => {
   }
   const ev = (type, data) => Object.assign({ type }, data);
   const say = (events, who, text) => { if (text) events.push(ev('say', { who, text })); };
-  const roll = (s) => 1 + Math.floor(s._rng() * 6);
+  const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * 6);
   function clockText(h) {
     const t = START_HOUR + h, day = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'][Math.floor(t / 24)];
     return `${day} ${String(t % 24).padStart(2, '0')}:00`;
@@ -611,6 +640,7 @@ const Sim = (() => {
     const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
     const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
     for (const a of cands) { r -= a.w; if (r <= 0) { pick = a; break; } }
+    if (s._enemy && s._enemy.length) { const want = s._enemy.shift(); pick = cands.find(a => a.id === want) || pick; }
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
@@ -628,6 +658,109 @@ const Sim = (() => {
   return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, newRun, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
+
+</script>
+<script>
+/* ============================================================
+   The demo: a guided first run on a fixed seed with a scripted die
+   and scripted inquiry actions, so every step lands. The sim does not
+   know the demo exists beyond the two queues and a flag. The UI asks
+   Tutorial.allow() what the player may do and shows the coach box.
+   The demo walks through the border; the airfield is handed over live.
+   ============================================================ */
+'use strict';
+const Tutorial = (() => {
+  const SEED = 11, WHO = 'woman';
+  // Die results in the order the sim will ask for them along the scripted path.
+  const DICE = [5, 4, 5, 3, 6, 5];
+  // Inquiry actions at hours 4, 8 and 12. After the demo releases, the inquiry rolls as usual.
+  const ENEMY = ['circulate', 'press_story', 'check_belief'];
+
+  const NONE = { approaches: [], calls: [], options: [], wait: false, next: false };
+  const info = (title, html, highlight) => ({ title, html, highlight: highlight || [], allow: Object.assign({}, NONE, { next: true }), done: () => false });
+  const act = (title, html, highlight, allow, done) => ({ title, html, highlight: highlight || [], allow: Object.assign({}, NONE, allow), done });
+
+  const STEPS = [
+    info('A guided first run',
+      `<p>This run is scripted, so every step works. A real run is not.</p>
+       <p>You are Teresā Albukerkē. You lost the presidency on Saturday. A court has barred you from leaving.</p>
+       <p>Cross the border into Esmeralda and leave its airspace in a jet bound for Atlanta. You have 72 hours.</p>`),
+    info('The map',
+      `<p>The strip at the top of the picture is the route. The <span style="color:#ffd24a">gold dot</span> is you. The <span style="color:#ff8a8a">red eye</span> is where the inquiry thinks you are. When both sit on one place, exposure climbs.</p>
+       <p><b>Exposure</b> is top right. At 10, Inspector Sosā's people arrive.</p>`, ['#scene', '#heat']),
+    info('Two problems at once',
+      `<p><b>Here</b> is the problem in front of you. Solve it to move on.</p>
+       <p><b>The phone</b> is what your allies are doing elsewhere: a jet, a document, landing rights. They keep working while you travel. Each one is a promise until the person delivers.</p>`, ['#here-panel', '#phone-panel']),
+    act('Answer your brother',
+      `<p>Duartē has a jet. The operator wants a destination before he gives you a crew. Each answer shows its cost and what it unlocks.</p>
+       <p>Choose <b>Name Atlanta now</b>.</p>`,
+      ['#inbox'], { options: ['name_atlanta'] }, (s) => s.flags.destination),
+    act('Start an arrangement',
+      `<p>Each line under Arrangements must be ready before you need it. <b>Call Duartē about aircraft</b>. The call takes an hour. He rolls a die against his reliability, and you hear back at the hour shown.</p>`,
+      ['#calls'], { calls: ['aircraft'] }, (s) => s.jobs.some(j => j.arr === 'aircraft')),
+    info('A promise is not an arrangement',
+      `<p>The aircraft line says Duartē is working and when he is due. Nothing has changed yet. If his roll fails, you call again.</p>
+       <p>Reliability differs by person. Your driver of 11 years delivers on a 2 or more. A banker you have never met needs a 4.</p>`, ['#arrangements']),
+    act('Leave the house',
+      `<p>Now the local problem. Each approach shows the hours it takes and the die it needs. <b>Decoy convoy</b> needs the card Nando gave you. Select it, read what helps it, then press <b>Commit</b>.</p>`,
+      ['#approaches'], { approaches: ['decoy'] }, (s) => s.pos === 1),
+    info('The die',
+      `<p>The number you needed was the approach's difficulty minus the help you held. Cards are not spent. They lower the die.</p>
+       <p>You are in Santa Laura. The inquiry still watches an empty house. A message is waiting.</p>`, ['#scene']),
+    act('A second document',
+      `<p>Every Valdórian has a Nelôxian civil-name record on file. Issued fresh, it is a travel document the court order does not name. Mārtā needs your signature. Choose <b>Go in person, one hour</b>.</p>`,
+      ['#inbox'], { options: ['sign_person'] }, (s) => s.arr.document.stage >= 1),
+    info('The inquiry acts',
+      `<p>While you signed, Sosā sent the departure order to every post and the border. He acts every four hours, in the open. The list is at the bottom right. This action makes the border die one harder unless you hold a card that delays the report.</p>`, ['#enemy']),
+    act('Engage the sponsor',
+      `<p>Atlanta will not land a stranger's jet. Bīr Amādū Salek, a banker in Lāyūna, can ask the ministry. <b>Call Salek about permission</b>. Read the inspection first: he has terms, and the call accepts them. Your promises are listed under People.</p>`,
+      ['#calls'], { calls: ['permission'] }, (s) => s.jobs.some(j => j.arr === 'permission') || s.arr.permission.stage >= 1),
+    act('Pay someone who takes money',
+      `<p>Money is never short. The question is whether the person takes it. Nando's cousin does. <b>Pay for a second driver and a plain car</b>.</p>`,
+      ['#approaches'], { approaches: ['second_driver'] }, (s) => s.pos === 2),
+    info('Work finished while you drove',
+      `<p>The aircraft now has a crew. Duartē's roll came in while you were on the road. That is the phone: people you set in motion keep working.</p>
+       <p>The inquiry told the papers you had left the country. The red eye went back to Portô Venla.</p>`, ['#arrangements']),
+    act("Nonā Rosa's problem",
+      `<p>You are at the colônia for the night. Nonā Rosa has a room and a problem: her cooperative's truck was impounded. Helping costs three hours and earns something you cannot buy. Choose <b>Spend the evening on Nonā Rosa's problem</b>.</p>`,
+      ['#approaches'], { approaches: ['help_host'] }, (s) => s.pos === 3),
+    info('Relationships give cards',
+      `<p>Nonā Rosa trusts you. Her grape truck is in your hand. A card is specific help from a specific person. It stays with you until it is used or the person turns. Allies who trust you hold up better when Sosā presses them.</p>`, ['#hand', '#people']),
+    act('Who meets you across the line',
+      `<p>You are in Salta, a day from the border. Nobody waits on the other side yet. <b>Call Duartē about reception</b>. He knows the interior minister's aide in Baca. Reception turns a border post into a handshake.</p>`,
+      ['#calls'], { calls: ['reception'] }, (s) => s.jobs.some(j => j.arr === 'reception') || s.arr.reception.stage >= 1),
+    act('Onto the freight',
+      `<p>Two men can put you on the midnight freight. Holt takes money. The yardmaster takes money and calls the ministry; his die needs a 7. <b>Pay Holt for a crate</b>. The truck card lowers his die.</p>`,
+      ['#approaches'], { approaches: ['crate'] }, (s) => s.pos === 4),
+    info('The border',
+      `<p>This is the one crossing. Everything you carried counts: the civil record Mārtā finished, the order Sosā circulated, Gianlūka's card, and whether anyone waits across the line. Nobody does yet. You could wait for Duartē's call, or go now.</p>`, ['#approaches', '#hand']),
+    act('Present the civil record',
+      `<p>Choose <b>Present the Nelôxian civil record</b>. Read the inspection. The die needs more than it did at the house because the order is on the desk, and less than it would without Gianlūka's card.</p>`,
+      ['#approaches'], { approaches: ['civil_doc'] }, (s) => s.pos === 5),
+    info('Susana airfield. The rest is yours.',
+      `<p>You are across. The jet still needs fuel and a spot on the apron. Atlanta still has to say yes. The inquiry has asked Esmeralda to hold you. The party card means nothing here.</p>
+       <p>From here the die is real and the inquiry picks its own moves. Fuel the jet. Keep calling Salek until Atlanta answers. Depart when Aircraft reads "waiting on the apron" and Permission reads "Atlanta will receive you". Or go without the answer and roll against a nervous pilot.</p>
+       <p>Press <b>Finish</b> to play on without the coach.</p>`, ['#arrangements', '#hand']),
+  ];
+
+  let i = -1;
+  function start() { i = 0; }
+  function stop() { i = -1; }
+  const active = () => i >= 0 && i < STEPS.length;
+  const step = () => active() ? STEPS[i] : null;
+  const index = () => i;
+  const isLast = () => i === STEPS.length - 1;
+  function allow() { return active() ? step().allow : { approaches: 'all', calls: 'all', options: 'all', wait: true, next: false }; }
+  function allowsApproach(id) { const a = allow(); return a.approaches === 'all' || a.approaches.includes(id); }
+  function allowsCall(arr) { const a = allow(); return a.calls === 'all' || a.calls.includes(arr); }
+  function allowsOption(id) { const a = allow(); return a.options === 'all' || a.options.includes(id); }
+  function allowsWait() { return allow().wait; }
+  // called after each resolved action: advance past any done act-step
+  function sync(s) { let moved = false; while (active() && !step().allow.next && step().done(s)) { i += 1; moved = true; } return moved; }
+  function next() { if (active() && step().allow.next) { if (isLast()) stop(); else i += 1; } }
+  return { SEED, WHO, DICE, ENEMY, STEPS, start, stop, active, step, index, isLast, allow, allowsApproach, allowsCall, allowsOption, allowsWait, sync, next };
+})();
+if (typeof module !== 'undefined') module.exports = Tutorial;
 
 </script>
 <script>
@@ -668,7 +801,60 @@ const Sfx = (() => {
     const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900;
     src.connect(f); f.connect(g); g.connect(master); src.start(t0);
   }
+
+  /* The theme. The owner's 80s synthwave engine: two detuned saws for the lead, a filtered saw bass
+     that chugs in 16ths, a kick, a gated snare and an offbeat hat, 115 BPM in D minor. It runs on the
+     game's context through its own gain so it can fade under the sound effects. */
+  const THEME = (() => {
+    const BPM = 115, step = 60 / BPM / 4;
+    const N = { D2: 73.42, E2: 82.41, F2: 87.31, G2: 98.0, A2: 110.0, C2: 65.41, C3: 130.81, D3: 146.83, F3: 174.61, G3: 196.0, A3: 220.0, C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.0, A4: 440.0, C5: 523.25 };
+    const lead = ['D4','','D4','','A4','','F4','','G4','','','F4','E4','','','', 'D4','','D4','','A4','','F4','','G4','','A4','','F4','','','', 'C4','','C4','','G4','','E4','','F4','','','E4','D4','','','', 'A3','','A3','','E4','','C4','','D4','','E4','','D4','','',''];
+    const bass = ['D2','D2','','D2','D2','D2','','D2','D2','D2','','D2','D2','D2','','D2', 'F2','F2','','F2','F2','F2','','F2','F2','F2','','F2','F2','F2','','F2', 'C2','C2','','C2','C2','C2','','C2','C2','C2','','C2','C2','C2','','C2', 'A2','A2','','A2','A2','A2','','A2','A2','A2','','A2','G2','G2','F2','E2'];
+    let out = null, timer = null, i = 0;
+    function brass(freq, t, dur) {
+      const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+      o1.type = o2.type = 'sawtooth'; o1.frequency.setValueAtTime(freq, t); o2.frequency.setValueAtTime(freq * 1.006, t);
+      f.type = 'lowpass'; f.frequency.setValueAtTime(800, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.04); f.frequency.exponentialRampToValueAtTime(700, t + dur);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.02); g.gain.exponentialRampToValueAtTime(0.08, t + 0.1); g.gain.setValueAtTime(0.08, t + dur - 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o1.connect(f); o2.connect(f); f.connect(g); g.connect(out); o1.start(t); o2.start(t); o1.stop(t + dur + 0.1); o2.stop(t + dur + 0.1);
+    }
+    function bassNote(freq, t) {
+      const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(freq, t);
+      f.type = 'lowpass'; f.frequency.setValueAtTime(350, t); f.frequency.exponentialRampToValueAtTime(120, t + 0.08);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.28, t + 0.01); g.gain.exponentialRampToValueAtTime(0.15, t + 0.07); g.gain.setValueAtTime(0.15, t + 0.09); g.gain.linearRampToValueAtTime(0.0001, t + 0.11);
+      o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t + 0.12);
+    }
+    function drum(kind, t) {
+      if (kind === 'kick') { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12); g.gain.setValueAtTime(0.6, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.15); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.16); return; }
+      const n = Math.floor(ctx.sampleRate * 0.25), buf = ctx.createBuffer(1, n, ctx.sampleRate), d = buf.getChannelData(0); for (let k = 0; k < n; k++) d[k] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource(); src.buffer = buf; const f = ctx.createBiquadFilter(), g = ctx.createGain();
+      if (kind === 'snare') { f.type = 'bandpass'; f.frequency.setValueAtTime(1100, t); g.gain.setValueAtTime(0.35, t); g.gain.linearRampToValueAtTime(0.25, t + 0.1); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18); }
+      else { f.type = 'highpass'; f.frequency.setValueAtTime(7000, t); g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.04); }
+      src.connect(f); f.connect(g); g.connect(out); src.start(t);
+    }
+    function tick() {
+      if (muted) { i++; return; }
+      const t = ctx.currentTime + 0.03, k = i % lead.length, b = i % 16;
+      if (lead[k]) brass(N[lead[k]], t, step * 3);
+      if (bass[k]) bassNote(N[bass[k]], t);
+      if (b % 4 === 0) drum('kick', t); if (b === 4 || b === 12) drum('snare', t); if (b % 2 === 1) drum('hihat', t);
+      i++;
+    }
+    function play() {
+      if (timer || !ensure()) return; if (ctx.state === 'suspended') ctx.resume();
+      out = ctx.createGain(); out.gain.setValueAtTime(0.0001, ctx.currentTime); out.gain.exponentialRampToValueAtTime(0.9, ctx.currentTime + 1.5); out.connect(master);
+      i = 0; timer = setInterval(tick, step * 1000);
+    }
+    function stop(fade = 1.2) {
+      if (!timer) return; clearInterval(timer); timer = null;
+      const o = out; o.gain.cancelScheduledValues(ctx.currentTime); o.gain.setValueAtTime(Math.max(0.0001, o.gain.value), ctx.currentTime); o.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + fade);
+      setTimeout(() => o.disconnect(), fade * 1000 + 200);
+    }
+    return { play, stop, playing: () => !!timer };
+  })();
   return {
+    theme(on) { on ? THEME.play() : THEME.stop(); }, themePlaying() { return THEME.playing(); },
     unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); },
     setMuted(m) { muted = m; }, isMuted() { return muted; },
     click()   { tone(880, 0.05, 'square', 0.5); },
@@ -863,8 +1049,10 @@ const Render = (() => {
     };
     pp.mousePressed = () => { const h = hitTest(pp.mouseX, pp.mouseY); if (h && hooks.onPick) hooks.onPick(h.id); };
   };
+  // A still of one level with no HUD, as a data URL, for the title screen. Null until p5 has set up.
+  function still(s) { if (!pg) return null; const g = pg; g.noStroke(); SCENES[Data.LEVELS[s.pos].scene](g, s, 4000, Sim.isNight(s)); player(g, s, 4000); return g.canvas.toDataURL('image/png'); }
   function start(hk) { Object.assign(hooks, hk); new p5(sketch); }
-  return { start, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, still, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
 })();
 
 </script>
@@ -884,15 +1072,32 @@ const UI = (() => {
     el.innerHTML = `${name ? `<b style="color:${COLORS[whoId] || '#ccc'}">${name}</b> ` : ''}<span>${text}</span>`;
     const box = $('dialogue'); box.appendChild(el); box.scrollTop = box.scrollHeight;
   }
-  function newRun(w) {
-    who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who); sel = null; enemyLog = [];
+  const SEEN = 'coalition.seen';
+  const seen = () => { try { return !!localStorage.getItem(SEEN); } catch (e) { return true; } };
+  const markSeen = () => { try { localStorage.setItem(SEEN, '1'); } catch (e) { /* storage blocked: the start screen simply leads with the demo every time */ } };
+  function newRun(w, demo) {
+    markSeen();
+    if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start(); }
+    else { who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who); Tutorial.stop(); }
+    sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true;
     const c = Data.CHARACTERS[who];
     log('sys', `${Sim.clockText(0)}. You are ${c.name}, ${c.title}. ${c.sibling.name}, ${c.sibling.rel}, is abroad and has started on the aircraft.`, 'sys');
     animate(s._boot); renderAll();
   }
-  function renderAll() { renderStatus(); renderHere(); renderPhone(); renderHand(); renderPeople(); renderEnemy(); renderOver(); document.body.classList.toggle('busy', Render.busy()); }
+  function renderAll() { renderStatus(); renderHere(); renderPhone(); renderHand(); renderPeople(); renderEnemy(); renderOver(); renderCoach(); document.body.classList.toggle('busy', Render.busy()); }
+  // The coach: the demo's one visible surface. Restriction is applied here and in the panels, never in Sim.
+  function renderCoach() {
+    const box = $('coach'); document.querySelectorAll('.tut-hi').forEach(el => el.classList.remove('tut-hi'));
+    if (!Tutorial.active()) { box.hidden = true; return; }
+    const st = Tutorial.step(); box.hidden = false;
+    $('coach-step').textContent = `Guided run · step ${Tutorial.index() + 1} of ${Tutorial.STEPS.length}`;
+    $('coach-title').textContent = st.title; $('coach-body').innerHTML = st.html;
+    $('coach-next').hidden = !st.allow.next; $('coach-next').textContent = Tutorial.isLast() ? 'Finish' : 'Next';
+    $('coach-do').hidden = !!st.allow.next;
+    for (const q of st.highlight) { const el = document.querySelector(q); if (el) el.classList.add('tut-hi'); }
+  }
   function renderStatus() {
     $('clock').textContent = Sim.clockText(s.hour); $('left').textContent = `${Sim.HOURS_TOTAL - s.hour} h left`;
     $('where').textContent = Data.LEVELS[s.pos].short; $('belief').textContent = s.belief < 0 ? 'unknown' : Data.LEVELS[s.belief].short + (s.belief === s.pos ? ' (right)' : ' (wrong)');
@@ -900,7 +1105,9 @@ const UI = (() => {
     $('lvlname').textContent = Data.LEVELS[s.pos].name; $('lvlobj').textContent = Data.LEVELS[s.pos].objective;
   }
   function actBtn(a, kind) {
+    const allowed = kind === 'call' ? Tutorial.allowsCall(a.id.replace(/^call:/, '')) : Tutorial.allowsApproach(a.id);
     const b = document.createElement('button'); b.className = 'act ' + kind + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.pay ? ' pay' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
+    if (!allowed) { b.classList.add('off'); b.disabled = true; }
     b.innerHTML = `<span class="nm">${a.name}</span><span class="meta">${a.hours ? a.hours + ' h' : 'no time'}${a.odds ? ' · ' + a.odds : ''}</span>${a.ok ? '' : `<span class="why">${a.why}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
@@ -908,18 +1115,18 @@ const UI = (() => {
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
     for (const a of A.approaches) box.appendChild(actBtn(a, 'approach'));
+    $('wait').disabled = !!s.over || !Tutorial.allowsWait();
     const ins = $('inspect'); const a = A.approaches.find(x => x.id === sel) || A.calls.find(x => x.id === sel);
     if (!a) { ins.className = 'empty'; ins.innerHTML = ''; return; }
     ins.className = ''; ins.innerHTML = `<h3>${a.name}</h3><ul class="preview">${a.preview.map(x => `<li>${x}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--red)">${a.why}</p>`}<div class="row"><button id="commit" class="primary" ${a.ok && !s.over ? '' : 'disabled'}>Commit</button><button id="cancel">Cancel</button></div>`;
     $('commit').onclick = () => doCommit(a.id); $('cancel').onclick = () => { sel = null; renderAll(); };
-    $('wait').disabled = !!s.over;
   }
   function renderPhone() {
     const A = Sim.actions(s); const inbox = $('inbox'); inbox.innerHTML = '';
     if (!A.messages.length) inbox.innerHTML = '<p class="hint">No messages waiting.</p>';
     for (const m of A.messages) {
       const d = document.createElement('div'); d.className = 'msg'; d.innerHTML = `<span class="from">${Sim.personName(s, m.from)}</span><p>${s.inbox.find(x => x.id === m.msgId).text}</p>`;
-      for (const o of m.options) { const b = document.createElement('button'); b.className = 'opt'; b.disabled = !o.ok || !!s.over; b.innerHTML = `${o.label}${o.hours ? ` <span class="small">(${o.hours} h)</span>` : ''}<small>${o.ok ? o.effect : o.why}</small>`; b.onclick = () => doCommit(m.id, o.id); d.appendChild(b); }
+      for (const o of m.options) { const b = document.createElement('button'); b.className = 'opt' + (Tutorial.allowsOption(o.id) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !Tutorial.allowsOption(o.id); b.innerHTML = `${o.label}${o.hours ? ` <span class="small">(${o.hours} h)</span>` : ''}<small>${o.ok ? o.effect : o.why}</small>`; b.onclick = () => doCommit(m.id, o.id); d.appendChild(b); }
       inbox.appendChild(d);
     }
     const ul = $('arrangements'); ul.innerHTML = '';
@@ -941,7 +1148,9 @@ const UI = (() => {
   function doCommit(id, opt) {
     Sfx.unlock(); const r = Sim.commit(s, id, opt);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    Sfx.confirm(); sel = null; animate(r.events); renderAll();
+    Sfx.confirm(); sel = null; animate(r.events);
+    if (Tutorial.active()) Render.enqueue({ dur: 10, start() { Tutorial.sync(s); renderAll(); } });
+    renderAll();
   }
   function animate(events) {
     for (const e of events) {
@@ -970,6 +1179,10 @@ const UI = (() => {
   }
   function showStart() {
     const box = $('start-chars'); box.innerHTML = '';
+    const first = !seen();
+    $('start-demo-note').textContent = (first ? 'First time here? Start with this. ' : '') + 'Ten minutes. A coach walks you to the border, then the airfield is yours. You play as ' + Data.CHARACTERS[Tutorial.WHO].name + '.';
+    $('start-tutorial').className = first ? 'primary' : '';
+    $('start-free').textContent = first ? 'Or skip it. Start a real run.' : 'Start a real run';
     for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; const b = document.createElement('button'); b.className = 'who'; b.innerHTML = `<b>${c.name}</b><span>${c.title}; ${c.sibling.rel} ${c.sibling.short} is abroad</span><p>${c.blurb}</p>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
     $('start').hidden = false;
   }
@@ -979,10 +1192,22 @@ const UI = (() => {
     $('again').onclick = () => { Sfx.click(); newRun(who); };
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; showStart(); };
     $('startscreen').onclick = () => showStart();
+    $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; newRun(null, true); };
+    $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
+    $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); renderAll(); };
+    $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); log('sys', 'The coach steps back. The run continues live from here.', 'sys'); renderAll(); };
     $('mute').onclick = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').textContent = Sfx.isMuted() ? 'Sound: off' : 'Sound: on'; };
     $('help').onclick = () => { $('helpbox').hidden = !$('helpbox').hidden; };
     setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
-    s = Sim.newRun(1, 'woman'); Render.setState(s); showStart();
+    s = Sim.newRun(1, 'woman'); Render.setState(s); showTitle();
+  }
+  // The title screen: a still of the border at night behind the title and one Start button.
+  // Start is the user's gesture, so it is also what lets the theme play.
+  function showTitle() {
+    const t = Sim.newRun(3, 'woman'); t.pos = 4; t.hour = 36; t.belief = 1;
+    const paint = () => { const url = Render.still(t); if (!url) { setTimeout(paint, 60); return; } $('title').style.backgroundImage = `url(${url})`; };
+    paint(); $('title').hidden = false; $('start').hidden = true;
+    $('title-start').onclick = () => { Sfx.unlock(); Sfx.theme(true); $('title').hidden = true; showStart(); };
   }
   return { boot };
 })();

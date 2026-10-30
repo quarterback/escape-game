@@ -13,7 +13,7 @@ main{display:grid;grid-template-columns:minmax(0,960px) minmax(280px,1fr);gap:12
 #scene canvas{width:100%!important;height:auto!important;image-rendering:pixelated;display:block}
 #side{display:flex;flex-direction:column;gap:8px;max-height:336px}
 #objective{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 12px}#objective b{display:block;color:var(--gold);font:400 16px/1.2 var(--font-title)}#objective p{margin:4px 0 0;color:#c8c8d8;font-size:13px}
-#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;flex:1;overflow-y:auto;font-size:13px;min-height:120px}
+#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;flex:1;overflow-y:auto;font-size:13px;min-height:60px}
 #dialogue .line{margin:0 0 7px;padding-left:4px;border-left:2px solid transparent}#dialogue .line b{font-weight:700;margin-right:5px}
 #dialogue .line.sys{color:var(--mute)}#dialogue .line.enemy{border-left-color:var(--red)}#dialogue .line.roll{border-left-color:var(--gold)}
 .lower{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,1fr) minmax(280px,1fr);gap:12px;padding:0 16px 24px;max-width:1500px;margin:0 auto}
@@ -43,3 +43,23 @@ button.primary{background:#3a5a2a;border-color:#5cd65c}button.primary:hover:not(
 #helpbox{font-size:13px;color:#c8c8d8;margin-top:10px}#helpbox p{margin:4px 0}
 .small{font-size:12px;color:var(--mute)}
 @media (max-width:1100px){main,.lower{grid-template-columns:1fr}#side{max-height:none}#dialogue{max-height:220px}#start-chars{grid-template-columns:1fr}}
+
+/* the coach (guided first run) */
+#coach{background:#1d1a0f;border:1px solid var(--gold);border-radius:6px;padding:10px 12px;font-size:13px;display:flex;flex-direction:column;min-height:0;max-height:240px}#coach-body{overflow-y:auto;min-height:0}#coach[hidden]{display:none}
+#coach .step{font:400 11px/1 var(--font-label);letter-spacing:.08em;color:var(--gold)}#coach h3{margin:4px 0 6px;font:400 17px/1.2 var(--font-title);color:var(--ink)}
+#coach p{margin:0 0 7px}#coach p:last-child{margin-bottom:0}#coach .row{margin:0 0 8px;align-items:center;flex-wrap:wrap}#coach-do{color:#ffb060}#coach-leave{margin-left:auto;font-size:12px;padding:5px 9px}
+.tut-hi{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;animation:tutpulse 1.6s ease-in-out infinite}@keyframes tutpulse{0%,100%{outline-color:var(--gold)}50%{outline-color:rgba(255,210,74,.25)}}
+.act.off,.opt.off{opacity:.3;pointer-events:none}
+#start-demo{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0 6px;padding:12px;background:#1d1a0f;border:1px solid var(--gold);border-radius:6px}#start-demo .small{flex:1;min-width:220px}
+#start-free{margin:14px 0 0;font:400 15px/1.2 var(--font-title);color:var(--mute)}
+
+/* the title screen: a still from a later level, the title, one green button */
+#title{position:fixed;inset:0;z-index:30;background:#0a0a12 center/cover no-repeat;image-rendering:pixelated;display:flex;align-items:center;justify-content:center;text-align:center}#title[hidden]{display:none}
+.title-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,18,.15) 0%,rgba(10,10,18,.35) 45%,rgba(10,10,18,.9) 100%)}
+.title-box{position:relative;padding:24px;max-width:820px}
+.title-kicker{font:400 13px/1 var(--font-label);letter-spacing:.14em;color:#ffb060;text-transform:uppercase;margin-bottom:14px}
+.title-word{margin:0;font:400 clamp(72px,14vw,168px)/.9 var(--font-display);color:var(--gold);letter-spacing:.02em;text-shadow:0 4px 0 #6a4a10,0 10px 40px rgba(0,0,0,.8)}
+.title-line{margin:18px auto 28px;max-width:520px;font-size:17px;color:#e8e6f0;text-shadow:0 2px 8px #000}
+#title-start{font:400 26px/1 var(--font-title);letter-spacing:.12em;text-transform:uppercase;background:#2fa84a;color:#06120a;border:3px solid #7cf07c;border-radius:8px;padding:16px 64px;box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6);animation:startpulse 1.4s ease-in-out infinite}#title-start:hover{background:#3fc45c}
+@keyframes startpulse{0%,100%{box-shadow:0 0 0 4px rgba(124,240,124,.18),0 10px 30px rgba(0,0,0,.6)}50%{box-shadow:0 0 0 10px rgba(124,240,124,.05),0 10px 30px rgba(0,0,0,.6)}}
+.title-foot{margin:26px 0 0;font-size:12px;color:var(--mute)}

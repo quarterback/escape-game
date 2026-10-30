@@ -21,15 +21,14 @@ embedded, all sound is synthesized with Web Audio and career records live in
 
 ## First run
 
-The game opens on a start screen that explains the situation, how a night
-works, and the three characters you can play as (same town, different purse).
-The first time, the primary button is **Play the practice night**: a 23-step
-guided run on a fixed deck (`src/tutorial.js`) that walks through walking,
-playing a card on a target, inspecting before committing, pending work, heat,
-swapping a dead card, favors, bribe inflation and boarding, then explains how
-each character changes the way you have to play. During the practice night
-only the step's own action is enabled. It can be left at any point, and it
-can be replayed from the **Practice night** button in the header.
+The page opens on a title screen: a still of the border post at night, the
+title, and one green Start button. Start is the gesture that lets the theme
+play. Behind it is the start screen. The first time, the primary button is
+**Play the guided first run**: 20 steps on a fixed seed with a scripted die and
+scripted inquiry moves (`src/tutorial.js`), from the residence to the border.
+The coach allows one action per step and dims the rest. At Susana airfield the
+coach hands the run over live. You can skip the demo and pick a character
+instead, or restart it any time from the header.
 
 ## Copy rule
 
@@ -70,7 +69,7 @@ Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.
 | --- | --- |
 | `index.html` | The delivered game (built, self-contained) |
 | `src/sim.js` | Simulation: all game truth, no DOM, no rendering. Node-loadable |
-| `src/tutorial.js` | The practice night: fixed deck, 23 steps, what each step allows |
+| `src/tutorial.js` | The guided first run: fixed seed, scripted die and inquiry, 20 steps, what each step allows |
 | `src/render.js` | p5 pixel-art scene, route presentation and animation queue |
 | `src/ui.js` | HTML hand, targets, inspection, dialogue, controls, start screen and coach box |
 | `src/audio.js` | Web Audio synth |
@@ -79,7 +78,7 @@ Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.
 | `tools/build.py` | Inlines everything, fonts included, into `index.html` |
 | `fonts/` | The owner's licensed webfonts and `LICENSES.md`: Little Grandad Fat (masthead), Kurdis Regular (text and titles), Kurdis Condensed (clock and canvas HUD), Embro (the small capital labels; it has no accents or lowercase) |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing per persona |
-| `tools/tutorial-check.js` | Replays the practice night against the sim; run after changing `sim.js` or `tutorial.js` |
+| `tools/tutorial-check.js` | Replays the guided run against the sim; run after changing `data.js`, `sim.js` or `tutorial.js` |
 
 Rebuild after editing `src/`:
 

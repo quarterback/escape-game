@@ -210,3 +210,32 @@ macron. Kurdis Regular (430 glyphs, every accent the names need) is the body fac
 Embro keeps the small all-caps section labels, where it looks like what it is. Little Grandad Fat
 lacks macrons too, which the masthead words never use. All four families verified loaded in
 Chromium through `document.fonts.check`.
+
+## Addendum: the title screen, the guided run and the theme
+
+The Coalition build shipped without the prototype's first-run demo, and the owner called that
+out: a new player has to be able to do the demo. It is rebuilt on the same architecture as the
+practice night, adjusted for a game whose variance lives in a die and an enemy rather than a
+deck. `Sim.newRun` takes two optional queues, `dice` and `enemy`, consumed before the random
+draw; that is the sim's whole knowledge of the demo. `src/tutorial.js` holds 20 steps, each
+with an `allow` object (which approaches, calls and message options may be used), a `done`
+test on the state, and highlights. Restriction is applied in the UI only, by dimming and
+disabling what the step does not allow. The coach walks the residence, Santa Laura, the
+colônia, Salta and the border on a scripted 5, 4, 5, 3, 6, 5 and three scripted inquiry moves,
+then hands the airfield over live, because the airfield is hours of real waiting on allies
+that a script would misrepresent. `tools/tutorial-check.js` replays the path against the real
+sim and fails the moment a rules change breaks a step. A headless Chromium pass clicks through
+the title, the start screen and all 20 steps, asserting that info steps expose no action and
+act steps expose exactly one.
+
+Two owner additions landed in the same pass. A title screen now comes first: a still of the
+border at night rendered by the game's own renderer (`Render.still`), the title in Little
+Grandad Fat, one green Start button. That press is the user gesture Web Audio needs, so it also
+starts the theme, the owner's 115 BPM synthwave engine ported into `src/audio.js` on the game's
+context and master gain with a fade, stopped when a run begins. And every piece of copy was cut
+to plain language: shorter sentences, one idea each, no long-winded start blurb.
+
+Two faults found by the browser pass, both in the UI: the Wait button stayed live on info
+steps because its state was set only once an inspection was open, and the coach's Finish button
+sat under the lower panels because the side column is capped at the scene's height. The coach's
+buttons now sit above a scrolling body.

@@ -21,7 +21,7 @@ for fam, fn, weight, mime, fmt in FONTS:
     if fam == 'Kurdis-Condensed': css_fonts.append(faces[1])
     css_fonts.append(f"@font-face{{font-family:'{fam}';src:url(data:{mime};base64,{b64}) format('{fmt}');font-weight:{weight};font-style:normal;font-display:block}}")
 shell = shell.replace('/*__FONTS__*/', '\n'.join(css_fonts))
-parts = {'CSS': src / 'style.css', 'P5': root / 'vendor' / 'p5.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
+parts = {'CSS': src / 'style.css', 'P5': root / 'vendor' / 'p5.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
 for k, p in parts.items():
     txt = p.read_text()
     assert '</script' not in txt.lower(), k
