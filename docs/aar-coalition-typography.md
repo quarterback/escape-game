@@ -6,6 +6,14 @@
 **Task or period under review:** Readable typography, route labels and austral favicon  
 **Accountable human:** Ron Bronson, game owner
 
+## Owner correction: current font mapping
+
+The owner corrected the heading choice after viewing it: GC North Sans for
+headings and reading text. Overbit is reserved for the clock and compact numeric
+action details. Little Grandad Fat remains the Coalition title face.
+This mapping supersedes the earlier Overbit-heading decision recorded below.
+Root AGENTS.md and the active CSS reflect the correction.
+
 ## 1. Intent — what was supposed to happen
 
 **Instruction given (actual wording):**

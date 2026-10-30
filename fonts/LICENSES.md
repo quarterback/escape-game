@@ -46,8 +46,9 @@ Webfont kits purchased by the owner (`*-webfont-full`). Embedded in WOFF as supp
 
 ## Active typography
 
-The owner selected Little Grandad Fat for the Coalition title, Overbit Regular
-for headings and GC North Sans Regular/SemiBold for reading and controls.
+The owner selected Little Grandad Fat for the Coalition title and GC North Sans
+Regular/SemiBold for headings, reading and controls. Overbit Regular is limited
+to the clock and compact numeric action details.
 GC North Sans lacks some macrons; Arial/sans-serif supplies missing characters.
 
 The GC North Sans and Overbit WOFF2 files come from the owner's supplied webfont

@@ -1,4 +1,4 @@
-:root{--font-display:'Little Grandad Fat',Impact,sans-serif;--font-title:'GCNorthSans-Regular',Arial,sans-serif;--font-hud:'GCNorthSans-Regular',Arial,sans-serif;--font-body:'GCNorthSans-Regular',Arial,sans-serif;--font-label:'Overbit-Regular',Arial,sans-serif;--font-strong:'GCNorthSans-SemiBold',Arial,sans-serif;--bg:#0d0d16;--panel:#15151f;--panel2:#1c1c29;--ink:#f0eff5;--mute:#bebdce;--line:#2a2a3a;--gold:#ffd24a;--red:#ff6a6a;--green:#5cd65c;--blue:#7ab0ff;--purple:#b48ad8}
+:root{--font-display:'Little Grandad Fat',Impact,sans-serif;--font-title:'GCNorthSans-Regular',Arial,sans-serif;--font-hud:'GCNorthSans-Regular',Arial,sans-serif;--font-body:'GCNorthSans-Regular',Arial,sans-serif;--font-label:'GCNorthSans-SemiBold',Arial,sans-serif;--font-mono:'Overbit-Regular',monospace;--font-strong:'GCNorthSans-SemiBold',Arial,sans-serif;--bg:#0d0d16;--panel:#15151f;--panel2:#1c1c29;--ink:#f0eff5;--mute:#bebdce;--line:#2a2a3a;--gold:#ffd24a;--red:#ff6a6a;--green:#5cd65c;--blue:#7ab0ff;--purple:#b48ad8}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-body)}
 body.busy .act,body.busy #wait,body.busy .opt{opacity:.55;pointer-events:none}
@@ -115,6 +115,10 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 @media(max-width:600px){main,.lower{padding-inline:12px;gap:14px}header{padding:14px 12px}#route-map ol{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px}.startbox{padding:20px}#start{padding:12px}#scene{aspect-ratio:960/336}.title-word{font-size:clamp(54px,16vw,100px)}#over{bottom:12px}}
 @media(prefers-reduced-motion:reduce){.tut-hi,#title-start{animation:none}}
 
-/* Owner font mapping: Overbit headings; Little Grandad only for the game title. */
+/* Owner font mapping: GC North Sans headings; Little Grandad only for the title. */
 #objective b,#coach h3,#inspect h3,#start-free{font-family:var(--font-label)}
 #over h2{font-family:var(--font-label);line-height:1.25}
+
+/* Overbit is limited to compact numeric displays, never headings or reading text. */
+.stat .v,.act .meta{font-family:var(--font-mono)}
+section.panel h2,section.panel h3{text-transform:none;letter-spacing:0}

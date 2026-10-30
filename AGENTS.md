@@ -54,7 +54,8 @@ Check that shortening has preserved who acts, what they need and what follows.
 The owner selected these faces after reporting that the game was hard to read:
 
 - Little Grandad Fat: the Coalition title only.
-- Overbit Regular: section, level and tutorial headings.
+- GC North Sans SemiBold: section, level and tutorial headings.
+- Overbit Regular: the clock and compact numeric action details only. Never use it for headings, instructions or dialogue.
 - GC North Sans Regular: dialogue, instructions, buttons, cards and status text.
 - GC North Sans SemiBold: emphasis. Use Arial/sans-serif as the fallback for
   macrons missing from GC North Sans; preserve the spelling of names.
