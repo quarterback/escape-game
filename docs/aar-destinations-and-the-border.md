@@ -97,3 +97,7 @@ Content check clean, six contract tests pass, both tutorial replays pass.
 ## Addendum, same day: Susana, not Esperanza
 
 Owner correction: Esmeralda is a kels remap of Ecuador and the departure strip is its port, Susana; the Meridian States were the wrong country. Every Esperanza string is Susana again, the `PLACES` record is `susana` on Ecuador's Pacific coast, and Portô Venla sits on Valdória's own coast to the south. The canvas mockups carry the same map.
+
+## Addendum, same day: the card copy failed the copy rules
+
+The owner caught it on the phone: "Who asks" and "The catch" are labels, not sentences a person would write, and the "Has not said yes" pill repeated the subtitle. The mockup had them; copying the mockup is not a copy pass. Each card now reads as two plain sentences from the sponsor record ("Amādū Salek, an old client of the family, will ask for you. He wants the family accounts moved first."), the hours line says "10 hours in the air" in the interface face rather than the clock face, and the three label strings are deleted from the catalog. The same pass took the colons and shorthand out of the ledger lines, the option labels and the two landing texts. A hover ring that stuck to the last card on touch screens is now hover-only. Rule for the next agent: every new string gets the Humanizer and plain-language pass before it ships, including strings copied from a design mockup.

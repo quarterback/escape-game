@@ -536,8 +536,8 @@ const UI = (() => {
     for (const k in Data.DESTS) {
       const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : '');
       b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: d.hours }))}</span></span>`
-        + `<dl><dt>${esc(T('map.who_asks'))}</dt><dd>${esc(d.sponsor.asks)}</dd><dt>${esc(T('map.the_catch'))}</dt><dd>${esc(d.sponsor.catch)}</dd></dl>`
-        + `<span class="dfoot"><span class="pill">${esc(T('map.not_yet'))}</span><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
+        + `<p>${esc(d.sponsor.asks)}</p>`
+        + `<span class="dfoot"><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
       b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b);
     }
   }

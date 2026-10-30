@@ -2366,7 +2366,7 @@
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "Lose {sponsor} and the line to the ministry. The visa will not come. You can still fly without it.",
+   "text": "You lose {sponsor} and the line to the ministry. No visa will come. You can still fly without one.",
    "args": [
     "sponsor"
    ]
@@ -3717,7 +3717,7 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "Ask {sponsor} to seek {name}’s visa. The terms apply.",
+   "text": "Ask {sponsor} to seek {name}’s visa. You accept the terms by calling.",
    "args": [
     "name",
     "sponsor"
@@ -3734,7 +3734,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "Needs a {need}+ roll to confirm the destination; failure delays work six hours.",
+   "text": "Needs a {need}+ roll to confirm the destination. A miss delays the work six hours.",
    "args": [
     "need"
    ]
@@ -3755,7 +3755,7 @@
   {
    "id": "sim.ledger.promised",
    "pattern": "P05",
-   "text": "Promised: {what}. Due {due}.",
+   "text": "Promised {what} by {due}.",
    "args": [
     "what",
     "due"
@@ -3764,7 +3764,7 @@
   {
    "id": "sim.ledger.delivered",
    "pattern": "P05",
-   "text": "Delivered: {what}.",
+   "text": "Delivered {what}.",
    "args": [
     "what"
    ]
@@ -3772,7 +3772,7 @@
   {
    "id": "sim.ledger.nothing_yet",
    "pattern": "P05",
-   "text": "Did not deliver {what}. Will try again if asked.",
+   "text": "Nothing on {what} yet. Will try again if asked.",
    "args": [
     "what"
    ]
@@ -3780,12 +3780,12 @@
   {
    "id": "sim.ledger.still_considering",
    "pattern": "P05",
-   "text": "The ministry is \"still considering\". No visa."
+   "text": "The ministry is still considering. No visa yet."
   },
   {
    "id": "sim.ledger.post_was_bought",
    "pattern": "P05",
-   "text": "The {post} had taken Valdória’s money. Twelve hours lost.",
+   "text": "The {post} had taken Valdória’s money. You lost twelve hours.",
    "args": [
     "post"
    ]
@@ -3819,7 +3819,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda gives you safe passage to its airfield at Susana. It is too close to home to stay. Choose where the jet flies."
+   "text": "Esmeralda gives you safe passage to its airfield at Susana. You cannot stay there. Choose where the jet flies. None of the three has said yes."
   },
   {
    "id": "map.here",
@@ -3842,7 +3842,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "None of the three has said yes. The visa comes once the run starts, or it does not. Changing your mind later costs the hours already spent."
+   "text": "The visa comes once the run starts, or it does not. Changing your mind later costs the hours you have already spent."
   },
   {
    "id": "gov.debrief.taken_on_landing",
@@ -3858,30 +3858,15 @@
   {
    "id": "sim.effect.requires_sponsor_help",
    "pattern": "P08",
-   "text": "Requires {sponsor}’s help. Confirms reception; you owe another favor.",
+   "text": "Needs {sponsor}’s help. Confirms reception. You owe another favor.",
    "args": [
     "sponsor"
    ]
   },
   {
-   "id": "map.who_asks",
-   "pattern": "P01",
-   "text": "Who asks"
-  },
-  {
-   "id": "map.the_catch",
-   "pattern": "P01",
-   "text": "The catch"
-  },
-  {
-   "id": "map.not_yet",
-   "pattern": "P01",
-   "text": "Has not said yes"
-  },
-  {
    "id": "map.hours",
    "pattern": "P01",
-   "text": "{h} h",
+   "text": "{h} hours in the air",
    "args": [
     "h"
    ]
