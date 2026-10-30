@@ -1,5 +1,6 @@
 /* ============================================================
    Last Freight Out: simulation (no DOM, no p5, no audio)
+   Setting: a rail town in Salta, Valdória, on the edge of la Perlā (quarterback/kels: world/valdoria-lore.md, verdenese/).
    The Sim owns all game truth. It returns EVENT lists that the
    renderer may animate and the UI may narrate; nothing here waits
    on an animation.
@@ -15,45 +16,45 @@ const Sim = (() => {
     };
   }
 
-  const TICKS_TOTAL = 14;          // half-hours from 5 p.m. to the midnight freight
+  const TICKS_TOTAL = 14;          // half-hours from 17:00 to the midnight freight (the Nelôxi standard is a 24-hour clock)
   const HEAT_LIMIT = 8;
   const HAND_SIZE = 4;
 
   const STATIONS = [
-    { id: 'attic',      name: 'The attic',        short: 'Attic' },
-    { id: 'market',     name: 'Market Square',    short: 'Market' },
-    { id: 'checkpoint', name: 'The checkpoint',   short: 'Checkpoint' },
-    { id: 'yard',       name: 'Rail yard',        short: 'Yard' },
-    { id: 'platform',   name: 'Freight platform', short: 'Platform' },
+    { id: 'attic',      name: 'The attic over the galpôn',        short: 'Attic' },
+    { id: 'market',     name: 'The ferjā',    short: 'Ferjā' },
+    { id: 'checkpoint', name: 'The customs post',   short: 'Customs' },
+    { id: 'yard',       name: 'The jārd',          short: 'Jārd' },
+    { id: 'platform',   name: 'The frēt platform', short: 'Platform' },
   ];
 
   const PEOPLE = {
-    forger:   { name: 'Dagny the forger', station: 1, state: 'idle',    coat: '#7a4ea8', hat: '#2b1d3a' },
-    lookout:  { name: 'Pip the lookout',  station: 1, state: 'idle',    coat: '#c96a2a', hat: '#5a2d0c', small: true },
-    guard:    { name: 'Sgt. Osric Vane',  station: 2, state: 'alert',   coat: '#3b5d8f', hat: '#1b2a45' },
-    clerk:    { name: 'Mira the clerk',   station: 3, state: 'closed',  coat: '#5f8a4a', hat: '#2f4a22' },
-    teo:      { name: 'Teo the yardman',  station: 3, state: 'hostile', coat: '#8a6a3a', hat: '#4a3a1a' },
-    brakeman: { name: 'Holt the brakeman', station: 4, state: 'wary',    coat: '#444c5a', hat: '#222630' },
+    forger:   { name: 'Lūçīā Ferrārô, forger', station: 1, state: 'idle',    coat: '#7a4ea8', hat: '#2b1d3a' },
+    lookout:  { name: 'Pipô Rosī, lookout', station: 1, state: 'idle',    coat: '#c96a2a', hat: '#5a2d0c', small: true },
+    guard:    { name: 'Gaspār Moralēs, customs guard', station: 2, state: 'alert',   coat: '#3b5d8f', hat: '#1b2a45' },
+    clerk:    { name: 'Mārtā Kovalskā, registry clerk', station: 3, state: 'closed',  coat: '#5f8a4a', hat: '#2f4a22' },
+    teo:      { name: 'Theo Bascom, fôrman', station: 3, state: 'hostile', coat: '#8a6a3a', hat: '#4a3a1a' },
+    brakeman: { name: 'Holt Greer, brakeman', station: 4, state: 'wary',    coat: '#444c5a', hat: '#222630' },
   };
   const OBJECTS = {
-    papers: { name: 'Transit papers', station: 1, state: 'blank' },
-    stall:  { name: 'Map stall',      station: 1, state: 'stocked' },
+    papers: { name: 'Pāsportô with crossing stamp', station: 1, state: 'blank' },
+    stall:  { name: 'Your ferjā stall of charts', station: 1, state: 'stocked' },
     gate:   { name: 'Side gate',      station: 2, state: 'locked' },
-    crate:  { name: 'Freight crate',  station: 4, state: 'sealed' },
+    crate:  { name: 'Bokskār crate',  station: 4, state: 'sealed' },
   };
   const PLACES = {
     attic: { name: 'Your hideout', station: 0 },
   };
 
   const STATE_LABEL = {
-    forger:   { idle: 'idle, waiting for work', busy: 'inking your papers' },
+    forger:   { idle: 'idle, warming her sealing-wax', busy: 'inking your pāsportô' },
     lookout:  { idle: 'kicking stones', running: 'off making trouble' },
-    guard:    { alert: 'alert at the barrier', bribed: 'looking the other way', distracted: 'dealing with a commotion' },
+    guard:    { alert: 'on the customs barrier', bribed: 'looking the other way', distracted: 'dealing with a commotion' },
     clerk:    { closed: 'window shut', open: 'window open' },
-    teo:      { hostile: 'wants you off his yard', friendly: 'will walk you through' },
+    teo:      { hostile: 'wants you off his jārd', friendly: 'will walk you through' },
     brakeman: { wary: 'not taking passengers', agreed: 'holding a crate for you' },
-    papers:   { blank: 'blank', inking: 'being forged', stamped: 'stamped and ready' },
-    stall:    { stocked: 'your maps still on it', sold: 'sold out' },
+    papers:   { blank: 'no crossing stamp', inking: 'being forged', stamped: 'sealed in wax and ready' },
+    stall:    { stocked: 'your charts still on it', sold: 'sold out' },
     gate:     { locked: 'locked', unlocked: 'unlocked' },
     crate:    { sealed: 'sealed', prepared: 'lid loosened, straw inside' },
   };
@@ -61,29 +62,29 @@ const Sim = (() => {
   // ---- deck -------------------------------------------------
   const CARD_DEFS = {
     bribe:    { name: 'Bribe',             cost: { coin: 3 },  time: 1, kind: 'people',
-                flavor: 'Coin changes minds. Changing the wrong one raises heat.' },
+                flavor: 'Australs in the right hand. The wrong hand talks.' },
     forgery:  { name: 'Commission papers', cost: { coin: 2 },  time: 1, kind: 'service',
-                flavor: 'Dagny needs three half-hours and a quiet bench.' },
+                flavor: 'Lūçīā needs three half-hours, ink and sealing-wax.' },
     distract: { name: 'Distraction',       cost: {},           time: 1, kind: 'people',
                 flavor: 'A dropped crate, a shout, a fire in a bin.' },
     talk:     { name: 'Sweet talk',        cost: { favor: 1 }, time: 1, kind: 'people',
-                flavor: 'Spend a favor owed. Some doors open for a friend.' },
+                flavor: 'Spend a favor owed. Some doors open for a kompadrē.' },
     picklock: { name: 'Pick lock',         cost: {},           time: 2, kind: 'objects',
                 flavor: 'Slow, and someone may notice.' },
     sellmaps: { name: 'Sell maps',         cost: {},           time: 1, kind: 'objects',
-                flavor: 'Your own maps. Recognizable, and worth coin.' },
+                flavor: 'Your own charts. Everyone on the ferjā knows the hand that drew them.' },
     laylow:   { name: 'Lay low',           cost: {},           time: 1, kind: 'places',
                 flavor: 'Let the street forget your face.' },
     favor:    { name: 'Call in a favor',  cost: { favor: 1 }, time: 0, kind: 'people',
                 flavor: 'No time spent. Someone owes you.' },
     courier:  { name: 'Hire courier',      cost: { coin: 2 },  time: 1, kind: 'service',
-                flavor: 'Reach the forger without walking to her.' },
+                flavor: 'A niñô from the ferjā runs it. Reach Lūçīā without walking to her.' },
   };
   // Who you are tonight decides the shape of your purse (one wallet, three ways to start).
   const PERSONAS = {
-    cartographer: { name: 'The cartographer', coin: 5, favor: 2, heat: 0, blurb: 'A known hand and a modest purse. A few people owe you.' },
-    niece:        { name: "The smuggler's niece", coin: 8, favor: 1, heat: 1, blurb: 'Plenty of coin and one person who owes you. The patrol already knows your face.' },
-    official:     { name: 'The minor official', coin: 2, favor: 4, heat: 0, blurb: 'Almost no coin, but half the town owes you a favor.' },
+    cartographer: { name: 'The chart-maker', coin: 5, favor: 2, heat: 0, blurb: 'A known hand and a modest purse. A few people owe you.' },
+    niece:        { name: "The toll-taker's niece", coin: 8, favor: 1, heat: 1, blurb: 'Plenty of coin and one person who owes you. The bailiffs already know your face.' },
+    official:     { name: 'The kolôniā clerk', coin: 2, favor: 4, heat: 0, blurb: 'Almost no coin, but half the kolôniā owes you a favor.' },
   };
   const BRIBE_BASE = 3, BRIBE_STEP = 1; // every bribe paid raises the next price: the town learns what you'll pay
 
@@ -131,24 +132,23 @@ const Sim = (() => {
     const g = s.people.guard.state;
     return {
       papers:  { name: 'Papers',  done: s.objects.papers.state === 'stamped',
-                 how: 'Commission Dagny (in person or by courier) and wait for the ink.' },
+                 how: 'Commission Lūçīā, in person or by courier, and wait for the wax.' },
       passage: { name: 'Passage', done: g === 'bribed' || g === 'distracted' || s.objects.gate.state === 'unlocked',
-                 how: 'Bribe or distract Osric, or pick the side gate.' },
+                 how: 'Bribe or distract Gaspār, or pick the side gate.' },
       yard:    { name: 'Yard',    done: s.objects.papers.state === 'stamped' || s.people.teo.state === 'friendly',
-                 how: 'Stamped papers satisfy Mira, or make a friend of Teo.' },
+                 how: 'A stamped pāsportô satisfies Mārtā, or make a friend of Theo.' },
       berth:   { name: 'Berth',   done: s.people.brakeman.state === 'agreed',
-                 how: 'Holt takes coin from Teo\'s friends, or listens to anyone who prepared a crate.' },
+                 how: 'Holt takes coin from Theo\'s friends, or listens to anyone who prepared a crate.' },
     };
   }
 
-  // AP style: figures with a.m./p.m., no ":00", and the words noon and midnight.
+  // The Nelôxi standard is the plain 24-hour number (coursebook, "Clock time"), so the
+  // diegetic clock keeps it; midnight is the word, as both the lore and AP have it.
   function clockText(tick) {
     const minutes = 17 * 60 + tick * 30;
     const h = Math.floor(minutes / 60) % 24, m = minutes % 60;
     if (h === 0 && m === 0) return 'midnight';
-    if (h === 12 && m === 0) return 'noon';
-    const h12 = h % 12 === 0 ? 12 : h % 12, ap = h < 12 ? 'a.m.' : 'p.m.';
-    return m === 0 ? `${h12} ${ap}` : `${h12}:${String(m).padStart(2, '0')} ${ap}`;
+    return `${h}:${String(m).padStart(2, '0')}`;
   }
 
   function canMove(s, dir) {
@@ -156,8 +156,8 @@ const Sim = (() => {
     if (to < 0 || to >= STATIONS.length) return { ok: false, why: 'Nothing that way.' };
     if (dir < 0) return { ok: true, to };
     const a = arrangements(s);
-    if (to === 3 && !a.passage.done) return { ok: false, to, why: 'Osric blocks the barrier. ' + a.passage.how };
-    if (to === 4 && !a.yard.done)    return { ok: false, to, why: 'Mira wants papers and Teo wants you gone. ' + a.yard.how };
+    if (to === 3 && !a.passage.done) return { ok: false, to, why: 'Gaspār blocks the customs barrier. ' + a.passage.how };
+    if (to === 4 && !a.yard.done)    return { ok: false, to, why: 'Mārtā wants a stamp and Theo wants you off his jārd. ' + a.yard.how };
     return { ok: true, to };
   }
 
@@ -187,55 +187,55 @@ const Sim = (() => {
 
     switch (type) {
       case 'bribe':
-        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the sergeant'),
+        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the customs guard'),
           P.guard.state === 'alert' ? [true] : [false, 'He is already not looking.']),
-          ['Osric looks the other way for the night.', 'Heat +1 (he talks when drunk).', 'Passage arranged.']);
-        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the clerk'),
+          ['Gaspār looks the other way for the night.', 'Heat +1 (he talks over vīnô).', 'Passage arranged.']);
+        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the registrar'),
           P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mira opens her window.', 'She will stamp whatever Dagny finishes. Forgery completes one half-hour sooner.']);
-        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Teo'),
-          P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.']),
-          ['Teo pockets it and shrugs.', 'He will walk you past the clerk.', 'Yard arranged.']);
+          ['Mārtā opens her window.', 'She will stamp whatever Lūçīā finishes. Forgery completes one half-hour sooner.']);
+        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Theo'),
+          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your kompadrē.']),
+          ['Theo pockets it and shrugs.', 'He will walk you past the registry window.', 'Yard arranged.']);
         push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
           P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
-          P.teo.state === 'friendly' ? [true] : [false, 'Holt only takes coin from Teo\'s friends.']),
-          ['Holt holds a crate on the midnight freight.', 'Berth arranged.']);
+          P.teo.state === 'friendly' ? [true] : [false, 'Holt only takes coin from Theo\'s friends.']),
+          ['Holt holds a crate on the midnight frēt to Ekuadōr.', 'Berth arranged.']);
         break;
       case 'forgery':
-        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Dagny'),
-          P.forger.state === 'busy' ? [false, 'She is already working on your papers.'] :
-          O.papers.state === 'stamped' ? [false, 'Your papers are done.'] : [true]),
-          ['Dagny starts inking.', `Ready in three half-hours, or two if Mira's window is open.`, 'Papers: forging begins.']);
+        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
+          P.forger.state === 'busy' ? [false, 'She is already working on your pāsportô.'] :
+          O.papers.state === 'stamped' ? [false, 'Your pāsportô is done.'] : [true]),
+          ['Lūçīā starts inking.', `Ready in three half-hours, or two if Mārtā's window is open.`, 'Pāsportô: forging begins.']);
         break;
       case 'courier':
         push('forger', 'person', P.forger.name + ' (by courier)',
-          P.forger.state === 'busy' ? [false, 'She is already working on your papers.'] :
-          O.papers.state === 'stamped' ? [false, 'Your papers are done.'] : [true],
-          ['A boy runs the commission to Dagny.', 'Works from any station.', 'Ready in three half-hours, or two if Mira is open.']);
+          P.forger.state === 'busy' ? [false, 'She is already working on your pāsportô.'] :
+          O.papers.state === 'stamped' ? [false, 'Your pāsportô is done.'] : [true],
+          ['A niñô from the ferjā runs the commission to Lūçīā.', 'Works from any station.', 'Ready in three half-hours, or two if Mārtā is open.']);
         break;
       case 'distract':
-        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the sergeant'),
+        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the customs guard'),
           P.guard.state === 'alert' ? [true] : [false, 'He is already not looking.']),
-          ['You kick over a brazier. Osric runs to it.', 'Distracted for two half-hours.', 'Risk: heat +1.']);
-        push('lookout', 'person', P.lookout.name, both(near(s, P.lookout, 'Pip'),
-          P.lookout.state === 'idle' ? (P.guard.state === 'alert' ? [true] : [false, 'No need. Osric is not looking.'])
-                                     : [false, 'Pip is already out.']),
-          ['Pip runs ahead and starts a fight by the barrier.', 'Osric distracted for three half-hours.', 'No heat on you.']);
+          ['You kick over the coal brazier. Gaspār runs to it.', 'Distracted for two half-hours.', 'Risk: heat +1.']);
+        push('lookout', 'person', P.lookout.name, both(near(s, P.lookout, 'Pipô'),
+          P.lookout.state === 'idle' ? (P.guard.state === 'alert' ? [true] : [false, 'No need. Gaspār is not looking.'])
+                                     : [false, 'Pipô is already out.']),
+          ['Pipô runs ahead and starts a fight by the barrier.', 'Gaspār distracted for three half-hours.', 'No heat on you.']);
         break;
       case 'talk':
-        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the clerk'),
+        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the registrar'),
           P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mira remembers your mother. Window opens.', 'Forgery completes one half-hour sooner.']);
-        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Teo'),
-          P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.']),
-          ['Teo grumbles, then grins.', 'Yard arranged.']);
+          ['Mārtā remembers your mother. Window opens.', 'Forgery completes one half-hour sooner.']);
+        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Theo'),
+          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your kompadrē.']),
+          ['Theo grumbles, then grins.', 'Yard arranged.']);
         push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
           P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
           O.crate.state === 'prepared' ? [true] : [false, 'Holt wants to see a crate already prepared.']),
           ['Holt nods at the crate you prepared.', 'Berth arranged.']);
-        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Dagny'),
+        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
           P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.']),
-          ['Dagny hurries for a friend.', 'Forgery one half-hour sooner.']);
+          ['Lūçīā hurries for a friend.', 'Forgery one half-hour sooner.']);
         break;
       case 'picklock':
         push('gate', 'object', O.gate.name, both(near(s, O.gate, 'the gate'),
@@ -248,7 +248,7 @@ const Sim = (() => {
       case 'sellmaps':
         push('stall', 'object', O.stall.name, both(near(s, O.stall, 'the stall'),
           O.stall.state === 'stocked' ? [true] : [false, 'Sold out.']),
-          ['Coin +4.', 'Heat +1 (your maps are known).']);
+          ['Australs +4.', 'Heat +1 (your charts are known).']);
         break;
       case 'laylow':
         push('attic', 'place', s.places.attic.name, near(s, s.places.attic, 'the attic'),
@@ -259,12 +259,12 @@ const Sim = (() => {
       case 'favor':
         push('forger', 'person', P.forger.name,
           P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.'],
-          ['Dagny calls in her apprentice. No time spent.', 'Forgery two half-hours sooner.']);
+          ['Lūçīā calls in her apprentice. No time spent.', 'Forgery two half-hours sooner.']);
         push('teo', 'person', P.teo.name,
-          P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.'],
-          ['A word from the right person. No time spent.', 'Teo becomes friendly.', 'Yard arranged.']);
+          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your kompadrē.'],
+          ['A word from the right person. No time spent.', 'Theo becomes friendly.', 'Yard arranged.']);
         push('guard', 'person', P.guard.name,
-          P.guard.state === 'distracted' ? [true] : [false, 'Only useful while Osric is distracted.'],
+          P.guard.state === 'distracted' ? [true] : [false, 'Only useful while Gaspār is distracted.'],
           ['A coin keeps the commotion going. No time spent.', 'Distraction lasts two half-hours longer.']);
         break;
     }
@@ -279,7 +279,7 @@ const Sim = (() => {
   }
   function costText(cost) {
     const parts = [];
-    if (cost.coin) parts.push(`${cost.coin} coin`);
+    if (cost.coin) parts.push(`${cost.coin} ${cost.coin === 1 ? 'austral' : 'australs'}`);
     if (cost.favor) parts.push(`${cost.favor} favor`);
     return parts.length ? parts.join(', ') : 'nothing';
   }
@@ -310,8 +310,8 @@ const Sim = (() => {
     const t = forgeryTime(s);
     s.jobs.push({ type: 'forge', remaining: t, who: 'forger' });
     events.push(ev('job', { type: 'forge', remaining: t }));
-    say(events, 'forger', viaCourier ? `"Tell her ${t === 2 ? 'an hour' : 'an hour and a half'}. And tell her I don't do rush."`
-                                    : `"${t === 2 ? 'An hour' : 'An hour and a half'}. Don't stand over me."`);
+    say(events, 'forger', viaCourier ? `"Tell her ${t === 2 ? 'an hour' : 'an hour and a half'}. And tell her I don't do rush, niñô."`
+                                    : `"${t === 2 ? 'An hour' : 'An hour and a half'}. Don't stand over my wax."`);
   }
   function hurryForgery(s, n, events) {
     const j = job(s, 'forge'); if (!j) return;
@@ -331,7 +331,7 @@ const Sim = (() => {
       setState(s, 'people', 'forger', 'idle', events);
       setState(s, 'objects', 'papers', 'stamped', events);
       events.push(ev('arranged', { id: 'papers' }));
-      say(events, 'forger', '"Done. Ink\'s dry. Go."');
+      say(events, 'forger', '"Done. Wax is set. Go."');
     } else if (j.type === 'distract') {
       if (s.people.guard.state === 'distracted') setState(s, 'people', 'guard', 'alert', events);
       say(events, 'guard', '"Right. Back to the barrier."');
@@ -361,10 +361,10 @@ const Sim = (() => {
 
     switch (card.type) {
       case 'bribe':
-        if (targetId === 'guard') { setState(s, 'people', 'guard', 'bribed', events); heat(s, 1, events, 'Osric will talk'); events.push(ev('arranged', { id: 'passage' })); say(events, 'guard', '"I never saw you. Go on before I remember."'); }
-        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"Window\'s open. Bring me something worth stamping."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
-        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Walk behind me and don\'t look at the clerk."'); }
-        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third car, crate with the chalk mark. Midnight. I don\'t wait."'); }
+        if (targetId === 'guard') { setState(s, 'people', 'guard', 'bribed', events); heat(s, 1, events, 'Gaspār will talk'); events.push(ev('arranged', { id: 'passage' })); say(events, 'guard', '"Three australs says I never saw you. Dālē, go on before I remember."'); }
+        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"Window\'s open. Bring me something worth a stamp."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
+        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Walk behind me and don\'t look at the window."'); }
+        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third bokskār, crate with the chalk mark. Midnight, Ekuadōr side. I don\'t wait."'); }
         break;
       case 'forgery': startForgery(s, events, false); break;
       case 'courier': events.push(ev('courier', {})); startForgery(s, events, true); break;
@@ -372,21 +372,21 @@ const Sim = (() => {
         if (targetId === 'guard') {
           distractGuard(s, 2, events);
           if (s._rng() < 0.5) heat(s, 1, events, 'someone saw you kick the brazier');
-          say(events, 'guard', '"Oi. Who did that? Someone get sand."');
+          say(events, 'guard', '"Who did that? Someone get sand on it."');
         } else {
           setState(s, 'people', 'lookout', 'running', events);
           s.jobs.push({ type: 'lookout', remaining: 3, who: 'lookout' });
           events.push(ev('run', { who: 'lookout', to: 2 }));
           distractGuard(s, 3, events);
-          say(events, 'lookout', '"Give me a minute and watch him run."');
+          say(events, 'lookout', '"Give me a minute and watch him run. Trankīlô."');
         }
         events.push(ev('arranged', { id: 'passage' }));
         break;
       case 'talk':
-        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"You have her eyes. Fine. Window\'s open."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
-        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Hah. Fine. Stay close and keep your mouth shut."'); }
+        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"You have her eyes. Dālē. Window\'s open."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
+        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Dālē. Stay close and keep your mouth shut."'); }
         if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"You did the work. I\'ll do the rest."'); }
-        if (targetId === 'forger') { hurryForgery(s, 1, events); say(events, 'forger', '"For you. Only for you."'); }
+        if (targetId === 'forger') { hurryForgery(s, 1, events); say(events, 'forger', '"For you, niñô. Only for you."'); }
         break;
       case 'picklock':
         s.jobs.push({ type: 'picklock', remaining: 2, who: targetId });
@@ -396,16 +396,16 @@ const Sim = (() => {
         break;
       case 'sellmaps':
         setState(s, 'objects', 'stall', 'sold', events); coin(s, 4, events); heat(s, 1, events, 'your maps are recognised');
-        say(events, 'you', 'A merchant buys the lot without haggling. He knows whose hand drew them.');
+        say(events, 'you', 'A ferjā trader buys the lot without haggling. He knows whose hand drew them.');
         break;
       case 'laylow':
         heat(s, targetId === 'attic' ? -3 : -1, events, 'the street forgets you');
-        say(events, 'you', targetId === 'attic' ? 'Half an hour under the eaves, listening to boots.' : 'You study a shop window until the patrol passes.');
+        say(events, 'you', targetId === 'attic' ? 'Half an hour under the eaves, listening to boots in the galpôn.' : 'You study a shop window until the bailiffs pass.');
         break;
       case 'favor':
         if (targetId === 'forger') { hurryForgery(s, 2, events); say(events, 'forger', '"Apprentice. Earn your keep."'); }
-        if (targetId === 'teo')    { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"If Old Benn vouches for you, fine."'); }
-        if (targetId === 'guard')  { const j = job(s, 'distract'); if (j) { j.remaining += 2; events.push(ev('job', { type: 'distract', remaining: j.remaining })); } say(events, 'you', 'A coin to a boy keeps the brazier burning.'); }
+        if (targetId === 'teo')    { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"If old Nonô vouches for you, dālē."'); }
+        if (targetId === 'guard')  { const j = job(s, 'distract'); if (j) { j.remaining += 2; events.push(ev('job', { type: 'distract', remaining: j.remaining })); } say(events, 'you', 'A few coins to a niñô keeps the brazier burning.'); }
         break;
     }
 
@@ -427,13 +427,13 @@ const Sim = (() => {
     events.push(ev('walk', { from, to: c.to }));
     if (c.to === 3 && dir > 0) {
       const g = s.people.guard.state;
-      say(events, 'you', g === 'bribed' ? 'Osric studies the sky as you pass.' :
-                         g === 'distracted' ? 'You slip past while Osric shouts at the smoke.' :
+      say(events, 'you', g === 'bribed' ? 'Gaspār studies the sky as you pass.' :
+                         g === 'distracted' ? 'You slip past while Gaspār shouts at the smoke.' :
                          'You ease through the side gate.');
     }
     if (c.to === 4 && dir > 0) {
-      say(events, 'you', s.people.teo.state === 'friendly' ? 'Teo walks you past the window, talking loudly about rain.' :
-                                                            'Mira glances at the stamp and waves you on.');
+      say(events, 'you', s.people.teo.state === 'friendly' ? 'Theo walks you past the window, talking loudly about the swiç.' :
+                                                            'Mārtā glances at the stamp and waves you on.');
     }
     advance(s, events);
     return { ok: true, events };
@@ -460,7 +460,7 @@ const Sim = (() => {
     if (s.over) return { ok: false, why: 'The game is over.' };
     const c = canBoard(s); if (!c.ok) return c;
     const events = [ev('board', {})];
-    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight freight pulls out with you in it.` };
+    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight frēt pulls out over the passes toward Ekuadōr with you in it, and the debt stays in Valdória.` };
     events.push(ev('over', s.over));
     return { ok: true, events };
   }
@@ -478,17 +478,17 @@ const Sim = (() => {
     }
     // patrol pressure
     if (s.heat >= 3 && s._rng() < (s.heat - 2) * 0.12) {
-      heat(s, 1, events, 'a patrol asks questions on your street');
+      heat(s, 1, events, 'the bailiffs ask questions on your street');
       events.push(ev('patrol', { station: s.pos }));
-      say(events, 'patrol', s.heat >= HEAT_LIMIT ? '"That\'s her. The cartographer. Take her."' : '"Papers? Move along. For now."');
+      say(events, 'patrol', s.heat >= HEAT_LIMIT ? '"That\'s her. The chart-maker from the ledger. Take her."' : '"Pāsportô? Move along. For now."');
     }
     if (s.heat >= HEAT_LIMIT) {
-      s.over = { win: false, reason: 'Too many people were talking about you. The patrol finds you at ' + clockText(s.tick) + '.' };
+      s.over = { win: false, reason: 'Too many people were talking about you. The bailiffs find you at ' + clockText(s.tick) + ' and walk you back to the ledger.' };
       events.push(ev('over', s.over));
       return;
     }
     if (s.tick >= TICKS_TOTAL) {
-      s.over = { win: false, reason: 'Midnight. You hear the freight pull out from ' + STATIONS[s.pos].name.toLowerCase().replace('market square', 'Market Square') + ' without you.' };
+      s.over = { win: false, reason: 'Midnight. You hear the frēt pull out from ' + STATIONS[s.pos].name.replace(/^The /, 'the ') + ' without you.' };
       events.push(ev('over', s.over));
     }
   }

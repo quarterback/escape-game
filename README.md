@@ -1,8 +1,11 @@
 # Last Freight Out
 
-A single-file, offline card-and-route escape game. You are trying to get out of
-the border town of Verlane on the midnight freight. Seven hours, a hand of
-tricks, a street that remembers your face.
+A single-file, offline card-and-route escape game set in the Nelôxia universe
+(quarterback/kels). You are Inēs Biankī, a chart-maker in a rail town in Salta,
+Valdória, on the edge of la Perlā. Your name is in the ledger for a debt you
+cannot pay, and the midnight frēt over the Huhūi passes to Ekuadōr is the last
+one before the line closes. Seven hours, a hand of tricks, a town that knows
+your hand.
 
 Open `index.html` in a browser. Nothing is fetched at runtime. p5.js 1.9.4 is
 embedded, all sound is synthesized with Web Audio and career records live in
@@ -15,17 +18,21 @@ embedded, all sound is synthesized with Web Audio and career records live in
   the pixel-art scene and in the Applications list. Inspect a target to read
   what would happen, then commit. The simulation resolves at once and the
   scene then animates the consequences.
-- The route is five stations: the attic, Market Square, the checkpoint, the
-  rail yard and the freight platform. Walking takes 30 minutes. Two legs are
-  gated: passage past Sgt. Osric Vane, and the yard, which Mira the clerk or
-  Teo the yardman controls. Boarding needs a berth from Holt the brakeman.
-- Pending work is visible. Dagny inks your papers over three half-hours,
-  Osric stays distracted for a while, Pip runs off to cause trouble, the gate
-  and the crate change when your work finishes, Mira's window lights when it
+- The route is five stations: the attic over the galpôn, the ferjā, the customs
+  post, the jārd and the frēt platform. Walking takes 30 minutes. Two legs are
+  gated: passage past Gaspār the customs guard, and the jārd, which Mārtā at the
+  registry window or Theo the fôrman controls. Boarding needs a berth from Holt
+  the brakeman.
+- Pending work is visible. Lūçīā inks your pāsportô over three half-hours,
+  Gaspār stays distracted for a while, Pipô runs off to cause trouble, the gate
+  and the crate change when your work finishes, Mārtā's window lights when it
   opens and the route bar turns green as legs open.
-- One wallet of coin plus favors. Every bribe raises the price of the next.
-  Heat climbs when people notice you, and the patrol takes you at 8. Three
-  personas start the night with different purses.
+- One wallet of australs plus favors. Every bribe raises the price of the
+  next. Heat climbs when people notice you, and the bailiffs take you at 8.
+  Three personas start the night with different purses.
+- The lore that the setting, names and words come from is listed in
+  `docs/aar-last-freight-out.md`; the one piece of new canon the game proposes,
+  Ekuadōr, is in `docs/PROPOSAL-ekuador.md`.
 - Waiting with a card selected swaps that card for a fresh draw.
 
 Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.

@@ -224,7 +224,7 @@ const Render = (() => {
     if (P.brakeman.state === 'agreed') indicator(g, e.x, GROUND - 14, 'ok', t);
     // courier
     if (view.courier) small(g, Math.round(view.courier.x), GROUND, '#3a6a9a', '#223');
-    // the player, Ines
+    // the player, Inēs
     const walk = view.walking && Math.floor(view.stepPhase) % 2 === 0;
     person(g, Math.round(view.playerX) + 2, GROUND, '#8a2f3a', '#3a2418', { scarf: '#d94f5c', walk });
     if (s.objects.papers.state === 'stamped' && !view.walking) { g.fill('#efe6cc'); g.rect(Math.round(view.playerX) + 6, GROUND - 7, 2, 3); }
@@ -296,7 +296,7 @@ const Render = (() => {
     if (view.over) {
       p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height);
       p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a');
-      p.text(view.over.win ? 'You made the freight' : 'Caught in Verlane', p.width / 2, p.height / 2 - 14);
+      p.text(view.over.win ? 'You made the freight' : 'Caught in Salta', p.width / 2, p.height / 2 - 14);
       p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened', p.width / 2, p.height / 2 + 14);
     }
   }
@@ -308,7 +308,7 @@ const Render = (() => {
     for (const id in s.people) add(id, `${s.people[id].name}: ${Sim.STATE_LABEL[id][s.people[id].state]}`);
     for (const id in s.objects) add(id, `${s.objects[id].name}: ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
     add('attic', 'Your hideout');
-    add('self', 'Ines, that is you');
+    add('self', 'Inēs Biankī, that is you');
   }
   function hitTest(mx, my) {
     // selected-card targets take priority, then everything else; last drawn wins

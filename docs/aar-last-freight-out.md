@@ -253,15 +253,15 @@ program, so the pass was done by hand against their rules, string by string.
 
 What changed in the game:
 
-- The clock is AP time. "5 p.m.", "9:30 p.m.", "noon" and "midnight" replace
-  "17:00", "21:30" and "00:00" everywhere, including the calibration harness.
+- The clock was briefly AP time ("5 p.m."). It is back to the 24-hour number
+  because the Nelôxi coursebook sets a 24-hour clock as the standard and the
+  diegetic clock follows the lore; "midnight" is the word in both rulebooks.
 - Numbers one through nine are spelled out in prose ("three half-hours"),
   while stat lines keep figures ("Heat +1", "3 coin", "30 minutes"), which AP
   allows for tabular data and money.
-- Occupational descriptions are lowercase. Dagny the forger, Mira the clerk,
-  Teo the yardman and Holt the brakeman replace the capitalized nameplates.
-  The sergeant gained a surname, Sgt. Osric Vane, because AP puts an
-  abbreviated title before a full name on first reference.
+- Occupational descriptions are lowercase and follow the name ("Lūçīā
+  Ferrārô, forger"), AP's title-after-name form. The invented rank "Sgt."
+  is gone with the invented setting (see the lore addendum).
 - Headlines and card names are sentence case: "Commission papers", "Sell
   maps", "You made the freight". The masthead is uppercase through CSS, not
   in the text.
@@ -279,3 +279,49 @@ What changed in the game:
 What was left alone, on purpose: character dialogue keeps contractions,
 fragments and voice (the humanizer exempts fiction); code identifiers such
 as `favor` were already American; the engineering tables keep figures.
+
+## Addendum: the setting was invented, then corrected twice
+
+The first build was set in "Verlane", a town that exists nowhere, with names
+picked by ear. The owner: "the names you gave them don't fit veloria at all,
+did you look at the kels repo to find the country out and the lore." The
+agent had not. quarterback/kels is the Nelôxia universe: a conlang, a world
+layer, six co-standards and a civil-name system.
+
+The first correction went to **Marīsô**, the Nelôxian border city on the
+eastern seam, with the three-form civil names (Çera Dagnī Lindkvīst and so
+on). Wrong continent. The owner's setting is **Valdória**, the South
+American settler-nation of the Verdenese co-standard
+(`world/valdoria-lore.md`, `verdenese/`). The second correction is what
+ships:
+
+- **Place.** A rail town in Salta on the edge of la Perlā, the Ebony Pearl,
+  the English-speaking rail region whose bounded loan-layer gives Verdenese
+  its railway words: *rēl, jārd, swiç, frēt, bokskār, fôrman*
+  (`verdenese/regional-varieties.md` section 3). The five stations are the
+  attic over the galpôn, the ferjā, the customs post, the jārd and the frēt
+  platform. The freight climbs the Huhūi passes (`verdenese/toponymy.md`).
+- **People.** Settler names through the crisol phonology: Inēs Biankī (the
+  player), Lūçīā Ferrārô (forger), Pipô Rosī (lookout), Gaspār Moralēs
+  (customs guard), Mārtā Kovalskā (registry clerk). Two Pearl railmen keep
+  English names untranslated by ruling T·4: Theo Bascom, fôrman, and Holt
+  Greer, brakeman. Valdória is not Nelôxia, so the Nordic-coded descriptor
+  names of `world/names.md` are not used here.
+- **Words in the mouth.** Only canon Verdenese: *bondiā, dālē, grasiē, çāu,
+  trankīlô, lindô, niñô, kompadrē, matē, vīnô, galpôn, ferjā, kolôniā,
+  pāsportô* and the rail layer above. Nothing coined.
+- **Money.** Australs, on the Neloxian peg; the dozenal count is the lore's,
+  the game's sums stay small integers.
+- **Pursuit.** The lore gives Valdória no police. Inēs is leaving a debt in a
+  ledger and the bailiffs are what the heat meter feeds. No regime invented.
+- **The far side.** The written world has one South American Nelosphere
+  state. The owner ruled a counterfactual second one, Ecuador preferred,
+  "since that's what happened IRL" (a peg state, the dollarization analog).
+  The game names it **Ekuadōr**, formed by the Spanish-zone crisol rules, in
+  four strings. The naming, the capital and the open adjacency question are
+  in `docs/PROPOSAL-ekuador.md` for the owner to ratify in kels. Nothing was
+  written into that repo.
+
+"Veloria" appears in none of the owner's repos; the owner confirmed
+Valdória. The lesson is in the Agent Action Record: when a project has a
+world, read the world before naming a single character.

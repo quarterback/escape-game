@@ -8,8 +8,8 @@ const UI = (() => {
   let s = null, selCard = null, selTarget = null, seed = 1, persona = 'cartographer';
   const $ = (id) => document.getElementById(id);
   const SPEAKER = {
-    you: ['Ines', '#e08a92'], forger: ['Dagny', '#b48ad8'], lookout: ['Pip', '#f0a060'], guard: ['Osric', '#8ab0e0'],
-    clerk: ['Mira', '#9ad080'], teo: ['Teo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Patrol', '#ff6a6a'], sys: ['', '#9a9aaa'],
+    you: ['Inēs', '#e08a92'], forger: ['Lūçīā', '#b48ad8'], lookout: ['Pipô', '#f0a060'], guard: ['Gaspār', '#8ab0e0'],
+    clerk: ['Mārtā', '#9ad080'], teo: ['Theo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Bailiffs', '#ff6a6a'], sys: ['', '#9a9aaa'],
   };
 
   function log(who, text, cls) {
@@ -30,8 +30,8 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `Verlane, ${Sim.clockText(0)}. The midnight freight is the last way out before the border closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
-    log('you', 'Papers, a way past the barrier, a way across the yard and a crate with my name on it. In that order, or any order that works.');
+    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Ekuadōr, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('you', 'A stamped pāsportô, a way past customs, a way across the jārd and a crate with my chalk mark on it. In that order, or any order that works.');
     renderAll();
   }
 
@@ -118,7 +118,7 @@ const UI = (() => {
     if (!s.jobs.length) pend.innerHTML = '<li class="none">Nothing in progress.</li>';
     for (const j of s.jobs) {
       const li = document.createElement('li');
-      const name = { forge: 'Dagny inking your papers', distract: 'Osric distracted', lookout: 'Pip causing trouble', picklock: j.who === 'gate' ? 'You, picking the side gate' : 'You, preparing a crate' }[j.type];
+      const name = { forge: 'Lūçīā inking your pāsportô', distract: 'Gaspār distracted', lookout: 'Pipô causing trouble', picklock: j.who === 'gate' ? 'You, picking the side gate' : 'You, preparing a crate' }[j.type];
       li.innerHTML = `<b>${name}</b> <span>${j.remaining * 30} minutes left</span>`; pend.appendChild(li);
     }
   }
@@ -128,7 +128,7 @@ const UI = (() => {
     const back = Sim.canMove(s, -1), fwd = Sim.canMove(s, 1);
     $('back').disabled = over || !back.ok; $('back').title = back.ok ? `Walk back to ${Sim.STATIONS[back.to].name}, 30 minutes` : back.why;
     $('fwd').disabled = over || !fwd.ok;
-    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to the ${fwd.to === 1 ? 'market' : Sim.STATIONS[fwd.to].short.toLowerCase()}` : 'Walk on';
+    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to the ${Sim.STATIONS[fwd.to].short.toLowerCase()}` : 'Walk on';
     $('fwd').title = fwd.ok ? `Walk to ${Sim.STATIONS[fwd.to].name}, 30 minutes` : (fwd.why || '');
     $('fwdwhy').textContent = (!fwd.ok && fwd.why && fwd.to != null) ? fwd.why : '';
     $('wait').disabled = over;
@@ -162,7 +162,7 @@ const UI = (() => {
     if (!s.over) { o.hidden = true; renderRecords(); return; }
     recordNight(); renderRecords();
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
-    $('overtitle').textContent = s.over.win ? 'Out of Verlane' : 'Caught';
+    $('overtitle').textContent = s.over.win ? 'Bound for Ekuadōr' : 'Caught';
     $('overtext').textContent = s.over.reason + ` You used ${s.tick * 30} minutes and ended at heat ${s.heat}. Seed ${seed}.`;
   }
 

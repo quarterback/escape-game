@@ -109,6 +109,14 @@ The owner is accountable for the product and the branch. The agent is accountabl
 
 "No skill named `closedtab` exists in this session, and the string appears in none of the five repos, so this AAR is written by hand." True as stated, wrong as a conclusion, and written with no hedge into a committed document. The engineering AAR has been corrected.
 
+A third, and the costliest: every character and place name in the first
+build was invented. The owner's other repos include quarterback/kels, a whole
+universe with a naming law, and the agent never looked. The first correction
+then went to the wrong continent (Marīsô in Nelôxia instead of Valdória in
+South America) because the agent matched the word "border" to the first
+border city in the gazetteer instead of asking which country. Two rounds of
+owner correction to reach the setting the owner had in mind from the start.
+
 A smaller one: the first version of the browser-check paragraph explained a "60 min left" reading with arithmetic that did not describe what the test had done. Caught on re-reading the screenshot and fixed before commit.
 
 ## 5. Consequence — what it cost or risked
@@ -141,7 +149,9 @@ Keeping the sim pure and loadable from Node, so a calibration harness can measur
 
 **What belongs with a human rather than an agent:**
 
-The game concept and theme. The feel targets for each persona. Whether the hand swap stays, since it changes the texture of a night. Any renaming of characters or places, per the owner's rule in the tennis repo that names are theirs to pick.
+The game concept and theme, and above all which country of the owner's world
+it sits in and what the far side of the border is called (the Ekuadōr
+proposal in `docs/PROPOSAL-ekuador.md` is the owner's to ratify). The feel targets for each persona. Whether the hand swap stays, since it changes the texture of a night. Any renaming of characters or places, per the owner's rule in the tennis repo that names are theirs to pick.
 
 **Signal that the change worked:**
 
