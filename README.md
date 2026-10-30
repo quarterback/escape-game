@@ -76,7 +76,8 @@ Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.
 | `src/audio.js` | Web Audio synth |
 | `src/style.css`, `src/shell.html` | Styles and page shell |
 | `vendor/p5.min.js` | Pinned p5.js 1.9.4 |
-| `tools/build.py` | Inlines everything into `index.html` |
+| `tools/build.py` | Inlines everything, fonts included, into `index.html` |
+| `fonts/` | The owner's licensed webfonts and `LICENSES.md`: Little Grandad Fat (masthead), Kurdis Regular (text and titles), Kurdis Condensed (clock and canvas HUD), Embro (the small capital labels; it has no accents or lowercase) |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing per persona |
 | `tools/tutorial-check.js` | Replays the practice night against the sim; run after changing `sim.js` or `tutorial.js` |
 

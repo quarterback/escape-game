@@ -193,3 +193,20 @@ the civil record as a document), and the names.
 
 The owner plays a run, changes one number in `src/data.js`, rebuilds, and the change does what
 they expected.
+
+## Addendum: the owner's fonts
+
+The owner supplied licensed webfonts (two Kurdis kits uploaded, the rest pulled from a Dropbox
+archive) and chose a mapping: Little Grandad Fat for the masthead, Kurdis Regular for titles,
+Kurdis Condensed for the clock and the canvas HUD, Embro for running text. The fonts are
+committed under `fonts/` with `LICENSES.md` and embedded by `tools/build.py` as base64
+`@font-face` rules, the YouWorkForThem headers kept beside them as the licence requires. The
+built page grew from 1.12 to 1.28 MB and still makes no network requests.
+
+One correction to the mapping, mine to own: I recommended Embro as a body family without
+reading its character set. fontTools shows 88 glyphs, no accented letters and lowercase drawn as
+capitals, so a first build set every paragraph in caps and dropped to a fallback face on every
+macron. Kurdis Regular (430 glyphs, every accent the names need) is the body face instead, and
+Embro keeps the small all-caps section labels, where it looks like what it is. Little Grandad Fat
+lacks macrons too, which the masthead words never use. All four families verified loaded in
+Chromium through `document.fonts.check`.

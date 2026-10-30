@@ -122,14 +122,14 @@ const Render = (() => {
 
   // ---- HUD ------------------------------------------------------
   function hud(s, t) {
-    p.textFont('monospace'); p.noStroke();
+    p.textFont('Kurdis-Condensed'); p.noStroke();
     const n = Data.LEVELS.length, x0 = 40, x1 = p.width - 40, step = (x1 - x0) / (n - 1), y = 14;
     for (let i = 0; i < n; i++) {
       const x = x0 + i * step;
       if (i < n - 1) { p.stroke(i < s.pos ? '#5cd65c' : '#6a6a7a'); p.strokeWeight(2); p.line(x + 8, y, x + step - 8, y); if (i === 3) { p.noStroke(); p.fill('#c83a3a'); p.rect(x + step / 2 - 1, y - 5, 2, 10); } }
       p.noStroke(); p.fill(i === s.pos ? '#ffd24a' : i < s.pos ? '#5cd65c' : '#9a9aaa'); p.ellipse(x, y, i === s.pos ? 10 : 7);
       if (i === s.belief) { p.fill(`rgba(220,60,60,${0.7 + 0.3 * Math.sin(t / 250)})`); p.ellipse(x, y - 11, 7, 5); p.fill('#111'); p.ellipse(x, y - 11, 2.5, 2.5); }
-      p.fill('#cfd0dd'); p.textSize(10); p.textAlign(p.CENTER, p.TOP); p.text(Data.LEVELS[i].short, x, y + 7);
+      p.fill('#cfd0dd'); p.textSize(11); p.textAlign(p.CENTER, p.TOP); p.text(Data.LEVELS[i].short, x, y + 7);
     }
     p.textSize(10); p.textAlign(p.LEFT, p.CENTER); p.fill('#aab'); p.text('you', x0 + s.pos * step + 9, y + 1); p.fill('#ff8a8a'); if (s.belief >= 0) p.text('they think', x0 + s.belief * step + 9, y - 11);
     // exposure bar, top right under the route
@@ -157,7 +157,7 @@ const Render = (() => {
   let last = 0;
   const sketch = (pp) => {
     p = pp;
-    pp.setup = () => { const c = pp.createCanvas(W * SCALE, H * SCALE); c.parent('scene'); pp.pixelDensity(1); pp.noSmooth(); pp.frameRate(60); pg = pp.createGraphics(W, H); pg.pixelDensity(1); pg.noSmooth(); pg.noStroke(); last = pp.millis(); };
+    pp.setup = () => { if (document.fonts && document.fonts.load) document.fonts.load("12px 'Kurdis-Condensed'"); const c = pp.createCanvas(W * SCALE, H * SCALE); c.parent('scene'); pp.pixelDensity(1); pp.noSmooth(); pp.frameRate(60); pg = pp.createGraphics(W, H); pg.pixelDensity(1); pg.noSmooth(); pg.noStroke(); last = pp.millis(); };
     pp.draw = () => {
       const now = pp.millis(), dt = Math.min(50, now - last); last = now; const s = view.s; if (!s) return;
       stepQueue(dt); for (const f of view.floats) f.t += dt; view.floats = view.floats.filter(f => f.t < f.life);
