@@ -11,7 +11,7 @@ const s = Sim.newRun(Tutorial.SEED, Tutorial.WHO, { dice: Tutorial.DICE, enemy: 
 const must = (r, what) => { if (!r.ok) throw new Error(`${what}: ${r.why}`); return r; };
 const msgId = () => { const m = Sim.actions(s).messages[0]; if (!m) throw new Error('no message at hour ' + s.hour); return m.id; };
 const actions = {
-  3:  () => must(Sim.commit(s, msgId(), 'name_atlanta'), 'name Atlanta'),
+  3:  () => must(Sim.commit(s, msgId(), 'confirm_dest'), 'name Atlanta'),
   4:  () => must(Sim.commit(s, 'call:aircraft'), 'call aircraft'),
   6:  () => must(Sim.commit(s, 'decoy'), 'decoy'),
   9:  () => must(Sim.commit(s, 'call:permission'), 'call permission'),
@@ -20,7 +20,7 @@ const actions = {
   14: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
   15: () => must(Sim.commit(s, 'crate'), 'Holt'),
   16: () => must(Sim.commit(s, 'board'), 'board'),
-  18: () => must(Sim.commit(s, 'show_passport'), 'second passport'),
+  18: () => must(Sim.commit(s, 'post_rail'), 'second passport'),
 };
 Tutorial.start('escape');
 Tutorial.STEPS.forEach((st, i) => {

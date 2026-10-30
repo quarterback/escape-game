@@ -314,3 +314,17 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 #phasehint{flex-basis:100%;margin:0;font-size:15px;line-height:1.35;color:var(--ink)}
 #start-blurb{margin:4px 0 4px;font-size:17px;line-height:1.5;color:var(--ink)}
 @media(min-width:1000px){#start-blurb{font-size:23px;margin:0 0 8px}#phasehint{font-size:16px}#clockbox{padding:0;background:none}}
+
+/* the map: where you could go, before the run starts */
+#map{position:fixed;inset:0;z-index:22;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow-y:auto;padding:16px}#map[hidden]{display:none}
+.mapbox{width:min(1100px,100%);display:flex;flex-direction:column;gap:12px}.mapbox h2{font-size:28px}.mapsub{margin:0;font-size:16px;color:var(--soft);max-width:60ch}
+.mapart{background:#0E0A22;border-radius:16px;overflow:hidden}.mapart svg{display:block;width:100%;height:auto}
+.land{fill:#241B4F;stroke:#3A2D6E;stroke-width:1.2}.grid{stroke:#1C1540;stroke-width:1}.route{fill:none;stroke:#B9B0D9;stroke-width:1.6;stroke-dasharray:6 6;opacity:.7}.route.drive{stroke:#2EE6B5;stroke-dasharray:none;opacity:.9}
+.pt{fill:#FFC93C;stroke:#150F2E;stroke-width:2}.pt.here{fill:#FF7A90}.pt.via{fill:#2EE6B5}.pt.pick{cursor:pointer}.pt.on{stroke:#F6F1FF;stroke-width:3}
+.lbl{font:400 15px var(--font-title);fill:#F6F1FF;paint-order:stroke;stroke:#0E0A22;stroke-width:4;stroke-linejoin:round}.lbl.sub{font:400 12px var(--font-body);fill:#B9B0D9}
+#map-choices{display:grid;grid-template-columns:1fr;gap:10px}.destbtn{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;background:var(--s3);border:0;border-radius:14px;min-height:60px}.destbtn:hover{box-shadow:0 0 0 2px var(--gold)}.destbtn.on{box-shadow:0 0 0 3px var(--gold)}
+.destbtn b{font-size:18px}.destbtn span{font-size:14px;color:var(--soft);line-height:1.45}.destbtn .go{align-self:flex-start;margin-top:6px;font:400 15px/1 var(--font-title);color:#06120A;background:var(--commit);border-radius:999px;padding:9px 16px}
+.maphint{margin:0}
+@media(min-width:1000px){#map-choices{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* the ledger: what each ally promised and what came back */
+.ledger{display:block;font-size:13px;color:var(--mute);line-height:1.4;margin-top:2px}.ledger .h{font-family:var(--font-mono);color:var(--gold)}

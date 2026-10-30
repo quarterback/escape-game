@@ -7,7 +7,7 @@ const path = require('path');
 global.Data = require(path.join(__dirname, '..', 'src', 'data.js'));
 const Sim = require(path.join(__dirname, '..', 'src', 'sim.js'));
 const N = parseInt(process.argv[2], 10) || 300;
-const PREF = { name_atlanta: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0 };
+const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0 };
 function play(seed, who) {
   const s = Sim.newRun(seed, who); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 800) {

@@ -1,0 +1,73 @@
+# Agent Action Record: the destination choice, the three border posts, the ledger
+
+**Review date:** 2026-10-30
+**Reviewed by:** agent self-review; owner review pending
+**Agent / system:** Claude Code (cloud session), branch `claude/vigilant-noether-rmcm7h`
+**Task or period under review:** Three owner directions: the border as a final boss with a bought post, trust as the game, and a destination choice that can be wrong
+**Accountable human (name or role):** Ron Bronson, game owner
+
+## 1. Intent — what was supposed to happen
+
+**Instruction given (actual wording):**
+
+> i feel like the over the border thing cold be a fun trick as a final boss … if you pick the wrong place to go in that country the border guards from the Esmeralda side are actually bribed from Valdorian officials who manage to get you detained long enough for time to run out.
+
+> i also want to see more decisionmaking on who to trust v not, thats really the game
+
+> the Altlanta thing is a confusing peice of narrativ architecture because it reads like Atlanta gerogia … I would pick a city in that country and use that … have other places like Tarun and or Meridian States as options and both of those options don't work out … you land -- ther'ed be a screen for this -- and you get taken into custody
+
+> Coin working names for anything that's not currently available … remove any tells … so your 3 options are zaryanova, Tarun or Atlanta and you shuld have a screen as a first part of the game that shows the world map with the three points youCOULD go and where Valdoria is
+
+**Success defined in advance as:** the plan the owner approved in the previous turn, with Esperanza as the departure strip rather than a destination, and the kels canon used for every name it holds.
+
+**Authority granted to the agent:** edit, commit and push to the designated branch; coin working names where the canon is silent.
+
+**Out of scope:** the government tutorial's content, the other agent's phase-turn interface.
+
+## 2. Action — what actually happened
+
+**Canon used, from quarterback/kels:** Lāyūna is Atlanta's capital (`world/atlanta-lore.md`, `saharannaise`). Gannibal is Zaryanova's capital and Pushkin its largest city (`world/zaryanova.md`). Esperanza, the former French Guiana, is the Meridian States' capital and its South American access (`world/meridian-states.md`). Tarun is the Turkic bloc with no capital named (`world/neighbor-states.md`). Valdória's capital is Portô Venla. The kels repo holds no map file; the world map on the new screen is a schematic drawn in code from rough coordinates of the real ground each country stands on.
+
+**Working names coined, flagged for the owner:** Almatau for Tarun's capital. Three Esmeraldan border posts: Paso Huhūi rail post, Cumbre Alta road post toward Baca, Las Salinas crossing toward the coast. The Esmeralda lore marks town-level naming as open.
+
+**The destination.** A map screen opens after the character choice (and before a daily run): Valdória, Esperanza, and the three cities, each with a blurb written to sound equally plausible. The player picks one. `Data.DESTS` records which country accepts; only Atlanta does. The player never sees that field. Salek's visa call goes to the ministry of the chosen country; for a country that did not agree the job comes back "still considering" every time and the visa stage never fills. Departing without the visa to such a country wins the die and loses the run: the landing text names the city and the officers on the apron, ending kind `landed`. All copy that named Atlanta as the destination now names the chosen city or none: Salek is "a banker abroad with ministries on his phone", the sibling is "abroad", the start blurb says "land somewhere that will have you". The tutorial's destination is fixed to Lāyūna and its step says so.
+
+**Esperanza.** The final stop is the Meridian charter strip at Esperanza, with safe passage to fly and nothing more. The inquiry's request to hold goes to Esmeralda and the Meridian States.
+
+**The border.** Three approaches, one per post. One post is bought at the start of each run (seeded, hidden). Vélez's people, when reception reaches its last stage, cover one of the other two, and her line names it. Crossing at the bought post without her people: the Valdórian die resolves honestly, then the Esmeraldan sergeant takes your passport into the hut and twelve hours go by, exposure up two. Crossing at the covered post is certain. The tutorial crosses at the rail post with the bought post fixed to the coast.
+
+**The ledger.** Every call, delivery, failure and "still considering" is written to the run with the hour, and the route shows each ally's last two lines under their name. The contract tests already pin that nothing in the rules reads the wording.
+
+**Checks.** Content check clean. All six contract tests pass; one needed the bought post to act after an honest roll rather than before it, which is also the better fiction. Both tutorial replays pass. Browser drive at phone width: title, start, map, all twenty tutorial steps through the renamed border step to Esperanza, reload and resume. The drive's government section, written before the phase turns landed, no longer matches that interface and was not repaired here; the government tutorial replay and harness stand in for it.
+
+**Harness, 300 runs, simple policy, destination Atlanta:**
+
+| | Before this change | After |
+| --- | --- | --- |
+| Teresā wins | 41.3% | 32.0% |
+| Matēu wins | 45.0% | 31.3% |
+| House arrests, Teresā | 79 | 104 |
+
+The drop is the bought post: the simple policy picks a post by odds and walks into it a third of the time. Forty runs bound for Tarun: zero wins, fourteen landings, the rest lost earlier.
+
+**Government harness, 200 runs:** 97 escapes, 38 arrests, 45 timeouts, 20 landings. The hidden candidate picks Atlanta eight times in ten; at one in three the government side won 80 percent on her mistakes alone.
+
+## 3. Judgment — human in the loop
+
+**Decisions the agent made on its own:** the twelve-hour detention, the post names, Almatau, the blurb wording, the eight-in-ten weighting for the hidden candidate, and keeping the bought post's roll honest for the contract. The Atlanta blurb first read "says he can reach the ministry", which was a tell; it now reads like the other two.
+
+**Of those, which should a human have made or seen:** the four coined names, the blurbs, and whether a third of simple-policy runs losing twelve hours at the border is the boss the owner wants.
+
+## 4. Deviation — the gaps
+
+The owner's first message had Esperanza as a possible wrong destination; the second corrected it to the departure strip. The build follows the second. The world map is schematic because the canon holds no drawn map.
+
+## 5. Consequence — what it cost or risked
+
+The dev-site project page still describes Susana as the airfield and Atlanta as the destination; it needs a sentence changed when this lands. Saved runs from before this build lack `dest`, `boughtPost` and `ledger`; a resumed old run would default to Atlanta and a rail-post bribe, which is playable but not what that run was.
+
+## 6. Change — what happens next
+
+- Owner plays the map screen and the border on both sides and confirms the four names.
+- Fix the browser drive's government section against the phase-turn interface.
+- Update the dev-site page's two sentences.

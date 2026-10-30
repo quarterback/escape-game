@@ -362,7 +362,7 @@
   {
    "id": "need.visa",
    "pattern": "P05",
-   "text": "Entry visa for Atlanta"
+   "text": "Entry visa"
   },
   {
    "id": "need.officials",
@@ -480,7 +480,7 @@
   {
    "id": "route.role_visa",
    "pattern": "P07",
-   "text": "asking Atlanta for your visa"
+   "text": "asking for your visa"
   },
   {
    "id": "who.unknown",
@@ -1360,7 +1360,7 @@
   {
    "id": "start.demo_note",
    "pattern": "P13",
-   "text": "A guided run as {name} walks you to the airfield, where you take over.",
+   "text": "A guided run as {name} walks you to the airstrip, where you take over.",
    "args": [
     "name"
    ]
@@ -1622,7 +1622,7 @@
   {
    "id": "start.blurb",
    "pattern": "P08",
-   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda and reach the jet your family has booked to Atlanta."
+   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda, reach the jet your family has booked at Esperanza, and land somewhere that will have you."
   },
   {
    "id": "start.continue_plain",
@@ -1729,14 +1729,12 @@
    "text": "Salek now holds the family accounts."
   },
   {
-   "id": "sim.end.atlanta_lets_the_jet_land",
-   "pattern": "P14",
-   "text": "Atlanta lets the jet land and asks questions for a week."
-  },
-  {
    "id": "sim.end.a_car_meets_the_aircraft",
    "pattern": "P14",
-   "text": "A car meets the aircraft at Lāyūna."
+   "text": "A car meets the aircraft at {city}.",
+   "args": [
+    "city"
+   ]
   },
   {
    "id": "sim.inquiry.the_yacht_story_is_dead",
@@ -1821,7 +1819,7 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, and Esmeralda has closed its airfields to you. {epilogue}",
+   "text": "{time}. Your immunity is gone, and the Meridian States have closed the strip to you. {epilogue}",
    "args": [
     "time",
     "epilogue"
@@ -1908,19 +1906,9 @@
    "text": "\"I could not decide for you. Six hours lost.\""
   },
   {
-   "id": "sim.line.i_told_them_atlanta_do",
-   "pattern": "P07",
-   "text": "\"I told them Atlanta. Do not make me a liar.\""
-  },
-  {
    "id": "sim.line.then_call_salek_soon_the",
    "pattern": "P07",
    "text": "\"Then call Salek soon. The crew will not wait on us forever.\""
-  },
-  {
-   "id": "sim.line.atlanta_i_will_tell_the",
-   "pattern": "P07",
-   "text": "\"Atlanta. I will tell the operator.\""
   },
   {
    "id": "sim.why.pick_one_of_the_answers",
@@ -2079,14 +2067,9 @@
    "text": "You do not have Salek's line yet. Call him about permission first."
   },
   {
-   "id": "sim.status.ask_salek_to_seek_atlanta",
-   "pattern": "P05",
-   "text": "Ask Salek to seek Atlanta’s permission. His terms apply."
-  },
-  {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "Contact Salek before reaching Susana."
+   "text": "Contact Salek before reaching Esperanza."
   },
   {
    "id": "sim.status.arrange_reception_through_your_sibling",
@@ -2369,7 +2352,7 @@
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "Lose Salek and his line. Atlanta will not answer. You can still fly without its yes."
+   "text": "Lose Salek and his line. The visa will not come. You can still fly without it."
   },
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
@@ -2440,19 +2423,9 @@
    "text": "Wait until Salek answers"
   },
   {
-   "id": "sim.effect.crew_booking_can_proceed_atlanta",
-   "pattern": "P03",
-   "text": "Crew booking can proceed. Atlanta has not granted permission yet."
-  },
-  {
-   "id": "sim.opt.name_atlanta_now",
-   "pattern": "P01",
-   "text": "Name Atlanta now"
-  },
-  {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"Jet found in Susana. The crew needs a destination. Atlanta, or wait for Salek?\""
+   "text": "\"Jet found. It will be at Esperanza. The crew needs the destination confirmed. Do I give them the city, or wait for Salek?\""
   },
   {
    "id": "sim.day.wednesday",
@@ -3068,7 +3041,7 @@
   {
    "id": "gov.scene.susana_airfield",
    "pattern": "P08",
-   "text": "Susana airfield",
+   "text": "Esperanza airstrip",
    "role": "gov"
   },
   {
@@ -3297,18 +3270,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.report.atlanta_will_receive_her",
-   "pattern": "P06",
-   "text": "Atlanta will receive her.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.report.atlanta_has_issued_her_an",
-   "pattern": "P06",
-   "text": "Atlanta has issued her an entry visa.",
-   "role": "gov"
-  },
-  {
    "id": "gov.report.that_she_has_reached_it",
    "pattern": "P06",
    "text": "That she has reached it.",
@@ -3323,8 +3284,11 @@
   {
    "id": "gov.report.a_charter_to_layuna_is",
    "pattern": "P06",
-   "text": "A charter to Lāyūna is booked at Susana.",
-   "role": "gov"
+   "text": "A charter to {city} is booked out of Esperanza.",
+   "role": "gov",
+   "args": [
+    "city"
+   ]
   },
   {
    "id": "gov.report.a_jet_is_preparing_to",
@@ -3335,8 +3299,11 @@
   {
    "id": "gov.report.a_charter_at_susana_is",
    "pattern": "P06",
-   "text": "A charter at Susana is filing for Lāyūna.",
-   "role": "gov"
+   "text": "A charter at Esperanza is filing for {city}.",
+   "role": "gov",
+   "args": [
+    "city"
+   ]
   },
   {
    "id": "gov.report.that_she_crossed",
@@ -3710,6 +3677,170 @@
    "id": "hint.gov_sosa",
    "pattern": "P08",
    "text": "Her move: read what reached your desk while the order ran.",
+   "role": "gov"
+  },
+  {
+   "id": "sim.end.lets_the_jet_land",
+   "pattern": "P14",
+   "text": "{name} lets the jet land and asks questions for a week.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.line.i_told_them_city_do",
+   "pattern": "P07",
+   "text": "\"I told them {city}. Do not make me a liar.\"",
+   "args": [
+    "city"
+   ]
+  },
+  {
+   "id": "sim.line.city_i_will_tell_the",
+   "pattern": "P07",
+   "text": "\"{city}. I will tell the operator.\"",
+   "args": [
+    "city"
+   ]
+  },
+  {
+   "id": "sim.status.ask_salek_to_seek_visa",
+   "pattern": "P05",
+   "text": "Ask Salek to seek {name}’s visa. His terms apply.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.effect.crew_booking_can_proceed",
+   "pattern": "P03",
+   "text": "Crew booking can proceed. {name} has not issued a visa yet.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.effect.needs_roll_to_confirm",
+   "pattern": "P03",
+   "text": "Needs a {need}+ roll to confirm the destination; failure delays work six hours.",
+   "args": [
+    "need"
+   ]
+  },
+  {
+   "id": "sim.opt.confirm_destination",
+   "pattern": "P01",
+   "text": "Confirm {city}",
+   "args": [
+    "city"
+   ]
+  },
+  {
+   "id": "sim.line.they_are_still_considering",
+   "pattern": "P07",
+   "text": "\"The ministry says they are still considering. These things take time, they tell me.\""
+  },
+  {
+   "id": "sim.ledger.promised",
+   "pattern": "P05",
+   "text": "Promised: {what}. Due {due}.",
+   "args": [
+    "what",
+    "due"
+   ]
+  },
+  {
+   "id": "sim.ledger.delivered",
+   "pattern": "P05",
+   "text": "Delivered: {what}.",
+   "args": [
+    "what"
+   ]
+  },
+  {
+   "id": "sim.ledger.nothing_yet",
+   "pattern": "P05",
+   "text": "Did not deliver {what}. Will try again if asked.",
+   "args": [
+    "what"
+   ]
+  },
+  {
+   "id": "sim.ledger.still_considering",
+   "pattern": "P05",
+   "text": "The ministry is \"still considering\". No visa."
+  },
+  {
+   "id": "sim.ledger.post_was_bought",
+   "pattern": "P05",
+   "text": "The {post} had taken Valdória’s money. Twelve hours lost.",
+   "args": [
+    "post"
+   ]
+  },
+  {
+   "id": "gov.report.visa_issued",
+   "pattern": "P06",
+   "text": "{name} has issued her an entry visa.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "gov.report.will_receive_her",
+   "pattern": "P06",
+   "text": "{name} will receive her.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "over.landed",
+   "pattern": "P02",
+   "text": "Taken on landing"
+  },
+  {
+   "id": "map.title",
+   "pattern": "P02",
+   "text": "Where will you go?"
+  },
+  {
+   "id": "map.sub",
+   "pattern": "P08",
+   "text": "The court has barred you from leaving. Three countries might take you. Your family can book a jet to any of them. None has said yes yet."
+  },
+  {
+   "id": "map.here",
+   "pattern": "P08",
+   "text": "Valdória. You are here."
+  },
+  {
+   "id": "map.via",
+   "pattern": "P08",
+   "text": "Esperanza. Safe passage to fly out, not to stay."
+  },
+  {
+   "id": "map.choose",
+   "pattern": "P01",
+   "text": "Go to {city}",
+   "args": [
+    "city"
+   ]
+  },
+  {
+   "id": "map.hint",
+   "pattern": "P08",
+   "text": "You can ask Salek to seek the visa once the run starts. Changing your mind later costs the hours already spent."
+  },
+  {
+   "id": "gov.debrief.taken_on_landing",
+   "pattern": "P14",
+   "text": "The jet left Esperanza at {time} and landed at {city}. {name} had never agreed to take her. She was held at the airport and handed back.",
+   "args": [
+    "time",
+    "city",
+    "name"
+   ],
    "role": "gov"
   }
  ]

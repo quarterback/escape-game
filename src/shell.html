@@ -120,6 +120,15 @@
 
 <div id="credits" hidden role="dialog" aria-modal="true" aria-labelledby="credits-title">{{credits}}</div>
 
+<div id="map" hidden role="dialog" aria-modal="true" aria-labelledby="map-title">
+  <div class="mapbox">
+    <h2 id="map-title">{{c:map.title}}</h2>
+    <p class="mapsub">{{c:map.sub}}</p>
+    <div class="mapart"><svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-label="A world map with Valdória, Esperanza and the three countries that might take you"></svg></div>
+    <div id="map-choices"></div>
+    <p class="small maphint">{{c:map.hint}}</p>
+  </div>
+</div>
 <div id="start" hidden>
   <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>{{c:title.word}}</h2></div></div>
   <div class="startbox">
