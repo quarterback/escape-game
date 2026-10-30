@@ -129,3 +129,7 @@ Owner, from a phone: "The pixel font isn't readable here." Overbit was on the bi
 ## Addendum, same day: the drift stays
 
 I flagged round one's exposure (0 to 4 in five hours at the residence) as a balance call. Owner: "no, games should be harder. You should be able to do something boneheaded or ill advised and have your run end before it starts." Nothing changed in the rules. The instruction is in AGENTS.md so it outlives this record.
+
+## Addendum, same day: the installed-app icon
+
+Owner: the home-screen and desktop icon should differ from the favicon. The favicon keeps the austral mark; the app icon is now Teresā's sprite from `src/art.js`, scaled onto the game's purple with a ground disc, drawn by `tools/make_icons.py` (which reads the rows and palette out of the art module, so a sprite change carries into the icon on the next run; `mateu` is the other argument). A pixel jet was tried twice first and rejected by the owner, the first draft for its shape. The maskable variant keeps the figure inside the inner 80%.
