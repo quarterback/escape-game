@@ -148,6 +148,10 @@ function check(pkg) {
     if (x.pattern === 'P13' && x.field === 'body') { const n = (x.text.match(/\b(Choose|Select|Press|Call|Tap)\b/g) || []).length; if (n > pol.budgets.P13.maxInstructions + 1) add('C13', 'warn', x.file, x.id, x.field, `${pol.budgets.P13.maxInstructions} instruction per step`, `${n} instructions`, 'Split the step or cut an instruction.'); }
   }
 
+  // C13: objectives stay short (owner's budget in policy.budgets.P08)
+  { const b = pol.budgets.P08, objs = D.LEVELS.map(L => ({ file: 'src/data.js', id: `level.${L.id}`, text: L.objective })).concat(pkg.ui.entries.filter(e => e.note === 'objective').map(e => ({ file: P + 'ui.json', id: e.id, text: e.text })));
+    for (const o of objs) { const w = o.text.split(/\s+/).length, s = (o.text.match(/[.!?](\s|$)/g) || []).length;
+      if (w > b.maxWords || s > b.maxSentences) add('C13', b.severity, o.file, o.id, 'objective', `${b.maxWords} words and ${b.maxSentences} sentences or fewer`, `${w} words, ${s} sentences`, 'Name the one thing to do here. The route and the phone already show the rest.'); } }
   // C12: prose written into code. The baseline lists what predates the catalog and can only shrink.
   const scanned = Object.keys(pkg.sources).filter(f => f.endsWith('.js') && !/data\.js$|content\.js$/.test(f));
   const found = {};

@@ -48,7 +48,10 @@
   },
   "P08": {
    "maxSentences": 2,
-   "severity": "warn"
+   "maxWords": 18,
+   "severity": "error",
+   "scope": "objectives",
+   "note": "Owner, October 30, 2026: objectives were far too wordy on a phone."
   },
   "P13": {
    "maxInstructions": 1,

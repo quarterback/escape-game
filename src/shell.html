@@ -64,7 +64,7 @@
 </div>
 
 <main id="panels">
-  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol></div>
+  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol><p id="phasehint" aria-live="polite"></p></div>
   <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">{{c:action.next}}</button><span id="coach-do" class="small">{{c:coach.do}}</span><button id="coach-leave">{{c:coach.leave}}</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
@@ -121,8 +121,9 @@
 <div id="credits" hidden role="dialog" aria-modal="true" aria-labelledby="credits-title">{{credits}}</div>
 
 <div id="start" hidden>
-  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>{{c:title.word}}</h2><p id="start-blurb">{{c:start.blurb}}</p></div></div>
+  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>{{c:title.word}}</h2></div></div>
   <div class="startbox">
+    <p id="start-blurb">{{c:start.blurb}}</p>
     <button id="continue" class="pill ghost" hidden>{{c:start.continue_plain}}</button>
     <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>{{c:start.daily}}</b><span id="daily-note"></span></button>
     <div id="start-demo"><button id="start-tutorial" class="primary">{{c:start.tutorial}}</button><span class="small" id="start-demo-note"></span><button id="start-gov-tutorial" class="pill ghost">{{c:start.gov_tutorial}}</button></div>

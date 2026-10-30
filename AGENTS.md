@@ -97,7 +97,9 @@ without WebGL or WebGPU, and keep people above the bottom strip of the scene (`G
 
 For copy changes, run `python3 tools/build.py` (it parses the sources and runs
 the content check first), `node tools/tutorial-check.js`,
-`node tools/gov-tutorial-check.js` and `node tools/contract-tests.js`. Check the built game in a browser, including the
+`node tools/gov-tutorial-check.js` and `node tools/contract-tests.js`.
+After a colour, layout or type change, run `node tools/contrast-check.js`
+(once: `cd tools && npm install`). It must report zero WCAG AA failures. Check the built game in a browser, including the
 start screen and tutorial. If editing strings in the simulation or data tables,
 compare the seeded calibration results before and after. Copy edits must not
 change the rules.
