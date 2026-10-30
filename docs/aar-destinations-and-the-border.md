@@ -113,3 +113,7 @@ The owner caught it on the phone: "Who asks" and "The catch" are labels, not sen
 - Four hold events shared an id because the table has none; the adapter numbers them.
 
 Second run: clean. Calibration after the copy pass is identical to before it (the rules did not move). The checker is now in the AGENTS.md verification list.
+
+## Addendum, same day: the owner's round-one screenshot
+
+Three faults, all on the phone. The clock box's second line was set not to wrap, so "Out by Tue 14:00" ran under the Sosā panel; it wraps now and the two boxes no longer overlap at 390 px (measured). The round summary listed exposure once per batch of hours ("rose by 1", then "rose by 3"), with no reason; the Sosā card now folds them into one line for the round and names the cause when the inquiry is looking where you are. "News waiting: {title}" was a label row; it reads "{title}. Read it under News." The round title reads "5 hours passed. It is now Sat 19:00". Rules untouched. Not changed, noted for the owner: exposure 0 to 4 inside the first five hours at the residence is the drift rule (one point every two hours while Sosā looks at the right place) plus the search, as the hold-ladder record calibrated it.

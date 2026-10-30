@@ -875,7 +875,7 @@
   {
    "id": "sosa.title",
    "pattern": "P10",
-   "text": "{hours} h passed. Now {time}",
+   "text": "{hours} hours passed. It is now {time}",
    "args": [
     "hours",
     "time"
@@ -958,7 +958,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "News waiting: {title}",
+   "text": "{title}. Read it under News.",
    "args": [
     "title"
    ]
@@ -3915,6 +3915,30 @@
    "text": "{h}-hour flight",
    "args": [
     "h"
+   ]
+  },
+  {
+   "id": "sum.exposure_round_here",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} this round. Sosā is looking where you are.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_round",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} this round.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_round_fell",
+   "pattern": "P10",
+   "text": "Exposure fell by {n} this round.",
+   "args": [
+    "n"
    ]
   }
  ]
