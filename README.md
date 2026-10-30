@@ -3,7 +3,7 @@
 A single-file, offline card-and-route escape game set in the Nelôxia universe
 (quarterback/kels). You are Inēs Biankī, a chart-maker in a rail town in Salta,
 Valdória, on the edge of la Perlā. Your name is in the ledger for a debt you
-cannot pay, and the midnight frēt over the Huhūi passes to Ekuadōr is the last
+cannot pay, and the midnight frēt over the Huhūi passes to Esmeralda is the last
 one before the line closes. Seven hours, a hand of tricks, a town that knows
 your hand.
 
@@ -32,7 +32,7 @@ embedded, all sound is synthesized with Web Audio and career records live in
   Three personas start the night with different purses.
 - The lore that the setting, names and words come from is listed in
   `docs/aar-last-freight-out.md`; the one piece of new canon the game proposes,
-  Ekuadōr, is in `docs/PROPOSAL-ekuador.md`.
+  Esmeralda, is in `docs/PROPOSAL-esmeralda.md`.
 - Waiting with a card selected swaps that card for a fresh draw.
 
 Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.

@@ -30,7 +30,7 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Ekuadōr, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Esmeralda, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
     log('you', 'A stamped pāsportô, a way past customs, a way across the jārd and a crate with my chalk mark on it. In that order, or any order that works.');
     renderAll();
   }
@@ -162,7 +162,7 @@ const UI = (() => {
     if (!s.over) { o.hidden = true; renderRecords(); return; }
     recordNight(); renderRecords();
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
-    $('overtitle').textContent = s.over.win ? 'Bound for Ekuadōr' : 'Caught';
+    $('overtitle').textContent = s.over.win ? 'Bound for Esmeralda' : 'Caught';
     $('overtext').textContent = s.over.reason + ` You used ${s.tick * 30} minutes and ended at heat ${s.heat}. Seed ${seed}.`;
   }
 

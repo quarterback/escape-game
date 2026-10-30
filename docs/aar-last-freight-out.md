@@ -317,9 +317,9 @@ ships:
 - **The far side.** The written world has one South American Nelosphere
   state. The owner ruled a counterfactual second one, Ecuador preferred,
   "since that's what happened IRL" (a peg state, the dollarization analog).
-  The game names it **Ekuadōr**, formed by the Spanish-zone crisol rules, in
+  The game names it **Esmeralda**, formed by the Spanish-zone crisol rules, in
   four strings. The naming, the capital and the open adjacency question are
-  in `docs/PROPOSAL-ekuador.md` for the owner to ratify in kels. Nothing was
+  in `docs/PROPOSAL-esmeralda.md` for the owner to ratify in kels. Nothing was
   written into that repo.
 
 "Veloria" appears in none of the owner's repos; the owner confirmed

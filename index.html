@@ -69,7 +69,7 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
 </head>
 <body>
 <header>
-  <h1>Last Freight Out<small>Out of Valdória before the midnight frēt to Ekuadōr leaves.</small></h1>
+  <h1>Last Freight Out<small>Out of Valdória before the midnight frēt to Esmeralda leaves.</small></h1>
   <div class="stat"><b>Clock</b><span class="v" id="clock">17:00</span><span class="bar" id="timeline"></span></div>
   <div class="stat"><b>Coin</b><span class="v" id="coin">0</span></div>
   <div class="stat"><b>Favors</b><span class="v" id="favor">0</span></div>
@@ -320,7 +320,7 @@ const Sim = (() => {
         push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
           P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
           P.teo.state === 'friendly' ? [true] : [false, 'Holt only takes coin from Theo\'s friends.']),
-          ['Holt holds a crate on the midnight frēt to Ekuadōr.', 'Berth arranged.']);
+          ['Holt holds a crate on the midnight frēt to Esmeralda.', 'Berth arranged.']);
         break;
       case 'forgery':
         push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
@@ -485,7 +485,7 @@ const Sim = (() => {
         if (targetId === 'guard') { setState(s, 'people', 'guard', 'bribed', events); heat(s, 1, events, 'Gaspār will talk'); events.push(ev('arranged', { id: 'passage' })); say(events, 'guard', '"Three australs says I never saw you. Dālē, go on before I remember."'); }
         if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"Window\'s open. Bring me something worth a stamp."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
         if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Walk behind me and don\'t look at the window."'); }
-        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third bokskār, crate with the chalk mark. Midnight, Ekuadōr side. I don\'t wait."'); }
+        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third bokskār, crate with the chalk mark. Midnight, Esmeralda side. I don\'t wait."'); }
         break;
       case 'forgery': startForgery(s, events, false); break;
       case 'courier': events.push(ev('courier', {})); startForgery(s, events, true); break;
@@ -581,7 +581,7 @@ const Sim = (() => {
     if (s.over) return { ok: false, why: 'The game is over.' };
     const c = canBoard(s); if (!c.ok) return c;
     const events = [ev('board', {})];
-    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight frēt pulls out over the passes toward Ekuadōr with you in it, and the debt stays in Valdória.` };
+    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight frēt pulls out over the passes toward Esmeralda with you in it, and the debt stays in Valdória.` };
     events.push(ev('over', s.over));
     return { ok: true, events };
   }
@@ -1079,7 +1079,7 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Ekuadōr, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Esmeralda, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
     log('you', 'A stamped pāsportô, a way past customs, a way across the jārd and a crate with my chalk mark on it. In that order, or any order that works.');
     renderAll();
   }
@@ -1211,7 +1211,7 @@ const UI = (() => {
     if (!s.over) { o.hidden = true; renderRecords(); return; }
     recordNight(); renderRecords();
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
-    $('overtitle').textContent = s.over.win ? 'Bound for Ekuadōr' : 'Caught';
+    $('overtitle').textContent = s.over.win ? 'Bound for Esmeralda' : 'Caught';
     $('overtext').textContent = s.over.reason + ` You used ${s.tick * 30} minutes and ended at heat ${s.heat}. Seed ${seed}.`;
   }
 

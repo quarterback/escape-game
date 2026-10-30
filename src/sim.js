@@ -199,7 +199,7 @@ const Sim = (() => {
         push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
           P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
           P.teo.state === 'friendly' ? [true] : [false, 'Holt only takes coin from Theo\'s friends.']),
-          ['Holt holds a crate on the midnight frēt to Ekuadōr.', 'Berth arranged.']);
+          ['Holt holds a crate on the midnight frēt to Esmeralda.', 'Berth arranged.']);
         break;
       case 'forgery':
         push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
@@ -364,7 +364,7 @@ const Sim = (() => {
         if (targetId === 'guard') { setState(s, 'people', 'guard', 'bribed', events); heat(s, 1, events, 'Gaspār will talk'); events.push(ev('arranged', { id: 'passage' })); say(events, 'guard', '"Three australs says I never saw you. Dālē, go on before I remember."'); }
         if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"Window\'s open. Bring me something worth a stamp."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
         if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Walk behind me and don\'t look at the window."'); }
-        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third bokskār, crate with the chalk mark. Midnight, Ekuadōr side. I don\'t wait."'); }
+        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third bokskār, crate with the chalk mark. Midnight, Esmeralda side. I don\'t wait."'); }
         break;
       case 'forgery': startForgery(s, events, false); break;
       case 'courier': events.push(ev('courier', {})); startForgery(s, events, true); break;
@@ -460,7 +460,7 @@ const Sim = (() => {
     if (s.over) return { ok: false, why: 'The game is over.' };
     const c = canBoard(s); if (!c.ok) return c;
     const events = [ev('board', {})];
-    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight frēt pulls out over the passes toward Ekuadōr with you in it, and the debt stays in Valdória.` };
+    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight frēt pulls out over the passes toward Esmeralda with you in it, and the debt stays in Valdória.` };
     events.push(ev('over', s.over));
     return { ok: true, events };
   }
