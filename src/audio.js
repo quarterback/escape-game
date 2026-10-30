@@ -87,6 +87,101 @@ const Sfx = (() => {
     }
     return { play, stop, playing: () => !!timer };
   })();
+  /* The credits theme. The game composes it: a seeded generator writes 32 bars as MIDI note numbers
+     (lead, arpeggio, bass, drums), and four voices in the style of an 80s console play it: a 50% pulse
+     lead, a 25% pulse arpeggio, a triangle bass and noise drums. The seed is 1991, the year the
+     Nelosphere began, so the piece is the same every time. Notes are scheduled ahead on the audio clock. */
+  const CREDITS = (() => {
+    const BPM = 132, SIXTEENTH = 60 / BPM / 4, LOOK = 0.12;
+    const midi = (n) => 440 * Math.pow(2, (n - 69) / 12);
+    function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let x = Math.imul(a ^ (a >>> 15), 1 | a); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }; }
+    // compose once: C major, an end-titles lift. Each section is four bars of chords, written as scale degrees.
+    function compose() {
+      const r = rng(1991), KEY = 60, SCALE = [0, 2, 4, 5, 7, 9, 11];
+      const deg = (d, oct = 0) => KEY + SCALE[((d % 7) + 7) % 7] + 12 * (Math.floor(d / 7) + oct);
+      const triad = (root) => [root, root + 2, root + 4];
+      const sections = [[0, 5, 3, 4], [0, 5, 3, 4], [3, 4, 2, 5], [3, 4, 0, 0], [5, 3, 0, 4], [5, 3, 1, 4], [0, 5, 3, 4], [3, 4, 0, 0]];
+      const RHYTHMS = [[0, 4, 6, 8, 12], [0, 3, 6, 8, 10, 12], [0, 4, 8, 10, 12, 14], [0, 2, 4, 8, 12], [0, 6, 8, 12]];
+      const song = { lead: [], arp: [], bass: [], drums: [], steps: sections.length * 4 * 16 };
+      let prev = 7 + 2; // start the melody on E above middle C, as a scale index
+      const motif = RHYTHMS.map(() => null);
+      sections.forEach((sec, si) => sec.forEach((root, bi) => {
+        const bar = (si * 4 + bi) * 16, chord = triad(root), tones = chord.map(d => d + 7);
+        // melody: a rhythm chosen per section, chord tones on the beat, nearest scale steps between
+        const rh = RHYTHMS[(si + (bi === 3 ? 1 : 0)) % RHYTHMS.length];
+        rh.forEach((s, k) => {
+          const onBeat = s % 4 === 0;
+          let target;
+          if (onBeat) { target = tones.reduce((best, d) => { for (const o of [-7, 0, 7]) { const c = d + o; if (Math.abs(c - prev) < Math.abs(best - prev)) best = c; } return best; }, tones[0] + 7); if (r() < 0.25) target += r() < 0.5 ? 2 : -2; }
+          else target = prev + (r() < 0.5 ? 1 : -1) * (r() < 0.7 ? 1 : 2);
+          target = Math.max(5, Math.min(13, target)); prev = target;
+          const len = (rh[k + 1] !== undefined ? rh[k + 1] : 16) - s;
+          song.lead.push({ at: bar + s, n: deg(target), len: Math.min(len, 6) });
+        });
+        // the last bar of each section holds a long note on the root
+        if (bi === 3) { song.lead = song.lead.filter(x => x.at < bar + 8); const home = [chord[0], chord[0] + 7, chord[0] + 14].reduce((b, d) => Math.abs(d - prev) < Math.abs(b - prev) ? d : b); prev = home; song.lead.push({ at: bar + 8, n: deg(home), len: 8 }); }
+        // arpeggio: the chord broken in 16ths, up and down, an octave below the lead
+        const arp = [0, 1, 2, 1].map(i => deg(chord[i]));
+        for (let s = 0; s < 16; s++) song.arp.push({ at: bar + s, n: arp[s % 4] + (s >= 8 && si % 2 ? 12 : 0), len: 1 });
+        // bass: root and fifth in eighths, a walk into the next bar
+        const b = deg(root, -2), f5 = deg(root + 4, -2);
+        [b, b + 12, f5, b + 12, b, b + 12, f5, b + 12].forEach((n, k) => song.bass.push({ at: bar + k * 2, n, len: 2 }));
+        // drums: kick on 1 and 3, snare on 2 and 4, hats on the offbeats, a fill at section ends
+        for (let s = 0; s < 16; s++) {
+          if (s % 8 === 0) song.drums.push({ at: bar + s, k: 'kick' });
+          if (s % 8 === 4) song.drums.push({ at: bar + s, k: 'snare' });
+          if (s % 2 === 1) song.drums.push({ at: bar + s, k: 'hat' });
+          if (bi === 3 && s >= 12) song.drums.push({ at: bar + s, k: 'snare' });
+        }
+      }));
+      return song;
+    }
+    let song = null, out = null, timer = null, startAt = 0, nextStep = 0, pulse25 = null;
+    function wave25() { // a 25% duty pulse from its Fourier series
+      if (pulse25) return pulse25; const N = 32, re = new Float32Array(N), im = new Float32Array(N);
+      for (let k = 1; k < N; k++) im[k] = (2 / (k * Math.PI)) * Math.sin(k * Math.PI * 0.25);
+      return (pulse25 = ctx.createPeriodicWave(re, im));
+    }
+    function voice(kind, n, t, dur, vol) {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      if (kind === 'p25') o.setPeriodicWave(wave25()); else o.type = kind;
+      o.frequency.setValueAtTime(midi(n), t);
+      if (kind === 'square') { const v = ctx.createOscillator(), vg = ctx.createGain(); v.frequency.value = 5.5; vg.gain.value = midi(n) * 0.006; v.connect(vg); vg.connect(o.frequency); v.start(t + 0.12); v.stop(t + dur + 0.05); }
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 0.006); g.gain.setValueAtTime(vol * 0.8, t + Math.min(0.08, dur * 0.5)); g.gain.linearRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.02);
+    }
+    function hit(kind, t) {
+      if (kind === 'kick') { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.1); g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.13); return; }
+      const len = kind === 'snare' ? 0.12 : 0.03, n = Math.floor(ctx.sampleRate * len), buf = ctx.createBuffer(1, n, ctx.sampleRate), d = buf.getChannelData(0);
+      let v = 0; for (let k = 0; k < n; k++) { if (k % (kind === 'snare' ? 6 : 2) === 0) v = Math.random() * 2 - 1; d[k] = v * (1 - k / n); } // stepped noise, like a console noise channel
+      const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf; g.gain.value = kind === 'snare' ? 0.22 : 0.06; src.connect(g); g.connect(out); src.start(t);
+    }
+    function schedule() {
+      const until = ctx.currentTime + LOOK;
+      while (startAt + nextStep * SIXTEENTH < until) {
+        const t = startAt + nextStep * SIXTEENTH, s = nextStep % song.steps;
+        if (!muted) {
+          for (const x of song.lead) if (x.at === s) voice('square', x.n, t, x.len * SIXTEENTH * 0.95, 0.16);
+          for (const x of song.arp) if (x.at === s) voice('p25', x.n, t, SIXTEENTH * 0.8, 0.05);
+          for (const x of song.bass) if (x.at === s) voice('triangle', x.n, t, x.len * SIXTEENTH * 0.9, 0.3);
+          for (const x of song.drums) if (x.at === s) hit(x.k, t);
+        }
+        nextStep += 1;
+      }
+    }
+    function play() {
+      if (timer || !ensure()) return; if (ctx.state === 'suspended') ctx.resume();
+      song = song || compose();
+      out = ctx.createGain(); out.gain.setValueAtTime(0.0001, ctx.currentTime); out.gain.exponentialRampToValueAtTime(0.85, ctx.currentTime + 0.8); out.connect(master);
+      startAt = ctx.currentTime + 0.1; nextStep = 0; timer = setInterval(schedule, 25); schedule();
+    }
+    function stop(fade = 1) {
+      if (!timer) return; clearInterval(timer); timer = null;
+      const o = out; o.gain.cancelScheduledValues(ctx.currentTime); o.gain.setValueAtTime(Math.max(0.0001, o.gain.value), ctx.currentTime); o.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + fade);
+      setTimeout(() => o.disconnect(), fade * 1000 + 300);
+    }
+    return { play, stop, playing: () => !!timer, compose };
+  })();
   /* Place ambience. One quiet bed per scene, day and night, built from a looping noise buffer,
      filters, a few oscillators and one-shots scheduled at random. Beds crossfade over 1.5 s.
      A bed is built by a function (ac, out, night, every) so the same code renders live and in an
@@ -262,6 +357,8 @@ const Sfx = (() => {
 
   return {
     theme(on) { on ? THEME.play() : THEME.stop(); }, themePlaying() { return THEME.playing(); },
+    // The credits theme: Sfx.credits(true) plays it, false fades it out. _creditsScore() returns the composed MIDI notes.
+    credits(on) { on ? CREDITS.play() : CREDITS.stop(); }, creditsPlaying() { return CREDITS.playing(); }, _creditsScore() { return CREDITS.compose(); },
     unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); AMB.onUnlock(); },
     setMuted(m) { muted = m; AMB.onMute(m); }, isMuted() { return muted; },
     // Place ambience: Sfx.ambience('salta', true) crossfades to the Salta night bed; Sfx.ambience(null) stops.

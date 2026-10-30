@@ -1,14 +1,94 @@
 {
- "$id": "coalition-content/0.5/credits", "title": "Credits screen",
- "type": "object", "required": ["contract", "title", "lede", "sections", "licenses", "back"], "additionalProperties": false,
+ "$id": "coalition-content/0.5/credits",
+ "title": "Credits screen",
+ "type": "object",
+ "required": [
+  "contract",
+  "title",
+  "lede",
+  "sections",
+  "licenses",
+  "back",
+  "closing"
+ ],
+ "additionalProperties": false,
  "properties": {
-  "contract": { "type": "string", "pattern": "^coalition-content/0\\.5$" }, "about": { "type": "string" },
-  "title": { "type": "string", "minLength": 1 }, "lede": { "type": "string", "minLength": 1 },
-  "licenses": { "type": "string", "minLength": 1 }, "back": { "type": "string", "minLength": 1 },
-  "sections": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["heading", "items"], "additionalProperties": false, "properties": {
-   "heading": { "type": "string", "minLength": 1 }, "note": { "type": "string" },
-   "items": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["role", "name"], "additionalProperties": false, "properties": {
-    "role": { "type": "string", "minLength": 1 }, "name": { "type": "string", "minLength": 1 }, "note": { "type": "string" },
-    "href": { "type": "string", "pattern": "^https://" } } } } } } }
+  "contract": {
+   "type": "string",
+   "pattern": "^coalition-content/0\\.5$"
+  },
+  "about": {
+   "type": "string"
+  },
+  "title": {
+   "type": "string",
+   "minLength": 1
+  },
+  "lede": {
+   "type": "string",
+   "minLength": 1
+  },
+  "licenses": {
+   "type": "string",
+   "minLength": 1
+  },
+  "back": {
+   "type": "string",
+   "minLength": 1
+  },
+  "sections": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "heading",
+     "items"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "heading": {
+      "type": "string",
+      "minLength": 1
+     },
+     "note": {
+      "type": "string"
+     },
+     "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "role",
+        "name"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "role": {
+         "type": "string",
+         "minLength": 1
+        },
+        "name": {
+         "type": "string",
+         "minLength": 1
+        },
+        "note": {
+         "type": "string"
+        },
+        "href": {
+         "type": "string",
+         "pattern": "^https://"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "closing": {
+   "type": "string",
+   "minLength": 1
+  }
  }
 }

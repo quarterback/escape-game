@@ -128,7 +128,7 @@ function check(pkg) {
   for (const e of pkg.ui.entries) texts.push({ file: P + 'ui.json', id: e.id, field: 'text', text: e.text, scope: 'system', pattern: e.pattern, fragment: !!e.fragment });
   for (const e of pkg.markers.markers) texts.push({ file: P + 'markers.json', id: e.code, field: 'text', text: e.text, scope: 'system', pattern: e.pattern });
   for (const t of pkg.tutorials.tutorials) for (const st of t.steps) for (const f of ['title', 'body']) texts.push({ file: P + 'tutorials.json', id: `tutorial.${t.id}.${st.id}`, field: f, text: st[f], scope: 'system', pattern: 'P13' });
-  { const cr = pkg.credits; for (const f of ['title', 'lede', 'licenses', 'back']) texts.push({ file: P + 'credits.json', id: 'credits', field: f, text: cr[f], scope: 'system', pattern: 'P02' });
+  { const cr = pkg.credits; for (const f of ['title', 'lede', 'licenses', 'back', 'closing']) texts.push({ file: P + 'credits.json', id: 'credits', field: f, text: cr[f], scope: 'system', pattern: 'P02' });
     cr.sections.forEach((s, i) => { texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'heading', text: s.heading, scope: 'system', pattern: 'P02' }); if (s.note) texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'note', text: s.note, scope: 'system', pattern: 'P09' });
       s.items.forEach((it, n) => { for (const f of ['role', 'name', 'note']) if (it[f]) texts.push({ file: P + 'credits.json', id: `credits.${i}.${n}`, field: f, text: it[f], scope: 'system', pattern: 'P09' }); }); }); }
   for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event']]) for (const e of list) {

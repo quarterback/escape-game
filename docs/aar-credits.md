@@ -32,16 +32,34 @@ credits screen listing the tech stack, fonts and references.
   by Lettertype Studio, both through YouWorkForThem. Writing guidance comes from
   `docs/content/source-register.md`.
 
-## Judgment calls for the owner
+## Owner revisions, same day
 
-- **Little Grandad Fat** is credited by name only. Neither the repository, the
-  font file (its name table is stripped) nor a web search identified the
-  designer. Add the foundry to `credits.json` if the purchase receipt names one.
-- **"Agent development: Claude, by Anthropic"** is listed under Built with. It
-  is one item in `credits.json` and can be removed.
-- **Fiction note.** The reporting section says the premise comes from the
-  reporting and the places, people and events are invented. Since the game
-  draws on a real escape, this seemed worth stating once.
+- **Credit line.** Now "A Nelosphere universe game by Ron Bronson", linked to
+  ronbronson.dev on the start screen and plain on the title screen.
+- **Owner credit.** "Game designed & written by Ron Bronson", with "Based on
+  his Nelosphere universe (1991)" beneath it.
+- **Reporting removed.** The owner will cover the articles that prompted the
+  idea in a blog post. The game names no articles, outlets or reporters. The
+  fiction note I had added went with the section.
+- **Agent credit removed.** The owner used several agents and other tools. The
+  credits list the game's own stack, not the tools used to build it.
+- **Closing line.** "Any resemblance to real life events are purely
+  coincidental", in grey at the end of the screen, in the owner's wording.
+- **Credits theme.** `src/audio.js` composes a 32-bar, 58-second piece at
+  132 BPM from a fixed seed (1991). It writes chords, a melody of chord tones
+  and passing notes, arpeggios, bass and drums as MIDI note numbers, and plays
+  them on four 80s console style voices: a 50% pulse lead with slight vibrato,
+  a 25% pulse arpeggio, a triangle bass and stepped noise drums. The music
+  starts when the credits open, and the title theme or place ambience comes
+  back when they close. It follows the mute setting.
+- **MIDI export.** `node tools/credits-midi.js out.mid` writes the composed
+  score as a standard MIDI file with four named tracks.
+
+## Judgment call for the owner
+
+Little Grandad Fat is credited by name only. Neither the repository, the font
+file (its name table is stripped) nor a web search identified the designer.
+Add the foundry to `credits.json` if the purchase receipt names one.
 
 ## Policy change
 
@@ -55,9 +73,15 @@ the browser reports, never shown to a player.
 - **Fixtures:** all 16 caught.
 - **Contract tests:** pass.
 - **Tutorial replays:** both pass.
-- **Browser, phone and desktop:** both credit lines show the new wording. The
-  screen opens, scrolls and closes with Escape, with no missing content IDs and
-  no errors.
+- **Browser:**
+  - The title and start screens show the new credit line, and the link
+    points to ronbronson.dev.
+  - The credits text names no reporting and no agent.
+  - The credits theme plays while the screen is open and the title theme
+    pauses. On close the credits theme stops and the title theme resumes.
+  - No missing content IDs and no errors.
 - **Bug found in the browser check:** the screen first opened scrolled to the
-  bottom, because focusing the Back button scrolled it into view. It now focuses
-  without scrolling and opens at the top.
+  bottom, because focusing the Back button scrolled it into view. It now opens
+  at the top.
+- **Score:** the generated MIDI file parses with mido: 5 tracks, 58.2 seconds.
+  The first draft of the melody leapt to G6, so it now stays between G4 and B5.

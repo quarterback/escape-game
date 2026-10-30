@@ -309,3 +309,4 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 #credits-close{align-self:center;min-height:56px;padding:0 36px;font-size:19px}
 .linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-decoration-color:var(--lav);text-underline-offset:3px;cursor:pointer;min-height:0}
 @media(min-width:1000px){#credits{padding-top:64px}#credits .cbox{gap:44px}}
+#credits .cclosing{margin:8px 0 0;font-size:15px;line-height:1.45;color:var(--mute)}

@@ -531,8 +531,13 @@ const UI = (() => {
     $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
     let creditsFrom = null;
-    const openCredits = () => { Sfx.click(); creditsFrom = document.activeElement; $('credits').hidden = false; $('credits-close').focus({ preventScroll: true }); $('credits').scrollTop = 0; };
-    const closeCredits = () => { Sfx.click(); $('credits').hidden = true; if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
+    let creditsHad = null; // what was playing before the credits: restored on close
+    const openCredits = () => { Sfx.unlock(); Sfx.click(); creditsFrom = document.activeElement; creditsHad = { theme: Sfx.themePlaying(), amb: Sfx.ambienceNow() };
+      if (creditsHad.theme) Sfx.theme(false); if (Sfx.ambience) Sfx.ambience(null); Sfx.credits(true);
+      $('credits').hidden = false; $('credits-close').focus({ preventScroll: true }); $('credits').scrollTop = 0; };
+    const closeCredits = () => { Sfx.click(); $('credits').hidden = true; Sfx.credits(false);
+      if (creditsHad && creditsHad.theme) Sfx.theme(true); if (creditsHad && creditsHad.amb && Sfx.ambience) Sfx.ambience(creditsHad.amb.scene, creditsHad.amb.night); creditsHad = null;
+      if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, false, true); };

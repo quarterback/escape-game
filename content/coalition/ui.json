@@ -1617,7 +1617,7 @@
   {
    "id": "title.foot",
    "pattern": "P08",
-   "text": "A game set in the Nelosphere world by Ron Bronson. Sound on."
+   "text": "A Nelosphere universe game by Ron Bronson"
   },
   {
    "id": "start.blurb",
@@ -1648,7 +1648,7 @@
   {
    "id": "start.byline",
    "pattern": "P02",
-   "text": "A game set in the Nelosphere world by"
+   "text": "A Nelosphere universe game by"
   },
   {
    "id": "start.author",

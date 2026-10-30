@@ -59,7 +59,7 @@ secs = ''.join(f'<section><h2>{E(s["heading"])}</h2>' + (f'<p class="snote">{E(s
 pixi_notice = E((root / 'vendor' / 'pixi.LICENSE').read_text())
 credits_html = (f'<div class="cbox"><h1 class="cword">{E(catalog["title.word"])}</h1><p class="clede" id="credits-title">{E(cr["lede"])}</p>{secs}'
     f'<section><h2>{E(cr["licenses"])}</h2><details><summary>PixiJS</summary><pre>{pixi_notice}</pre></details></section>'
-    f'<button id="credits-close" class="primary">{E(cr["back"])}</button></div>')
+    f'<button id="credits-close" class="primary">{E(cr["back"])}</button><p class="cclosing">{E(cr["closing"])}</p></div>')
 shell = shell.replace('{{credits}}', credits_html)
 content_js = 'const CONTENT_PKG = ' + json.dumps(pkg, ensure_ascii=False) + ';\n' + (src / 'content.js').read_text()
 parts = {'CONTENT': None, 'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'ART': src / 'art.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}

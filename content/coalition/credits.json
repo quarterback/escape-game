@@ -2,40 +2,117 @@
  "contract": "coalition-content/0.5",
  "about": "The credits screen. The build renders it; every line passes the same checks as other content.",
  "title": "Credits",
- "lede": "A game set in the Nelosphere world by Ron Bronson",
+ "lede": "A Nelosphere universe game by Ron Bronson",
  "sections": [
-  { "heading": "Created by", "items": [
-   { "role": "Design, writing and direction", "name": "Ron Bronson", "href": "https://ronbronson.dev" }
-  ] },
-  { "heading": "Built with", "items": [
-   { "role": "Game", "name": "HTML, CSS and JavaScript" },
-   { "role": "Rendering", "name": "PixiJS 8.21.0", "href": "https://pixijs.com", "note": "MIT license, notice below" },
-   { "role": "Sound", "name": "Web Audio, made in the browser" },
-   { "role": "Content structure", "name": "PBBG Content Schema", "href": "https://github.com/quarterback/pbbg-content-schema" },
-   { "role": "Install and offline play", "name": "Progressive web app" },
-   { "role": "Hosting", "name": "GitHub, served through Cloudflare" },
-   { "role": "Agent development", "name": "Claude, by Anthropic", "href": "https://www.anthropic.com/claude" }
-  ] },
-  { "heading": "Type", "items": [
-   { "role": "Title", "name": "Little Grandad Fat" },
-   { "role": "Reading text", "name": "GC North Sans by Glyphonic", "href": "https://youworkforthem.com/font/T31795/gc-north-sans" },
-   { "role": "Clock and numbers", "name": "Overbit by Lettertype Studio", "href": "https://youworkforthem.com/font/T31272/overbit" },
-   { "role": "Licensing", "name": "Webfonts licensed through YouWorkForThem", "href": "https://www.youworkforthem.com/font-license" }
-  ] },
-  { "heading": "Reporting behind the story", "note": "The premise comes from this reporting. The places, people and events in the game are invented.", "items": [
-   { "role": "The Wall Street Journal, October 28, 2026", "name": "How Bolsonaro Fled Brazil: Decoys, a Private Jet and a Friend in the White House", "note": "Vera Bergengruen, Samantha Pearson, Ryan Dubé and Philip Wegmann" },
-   { "role": "The New York Times, October 29, 2026", "name": "Trump and His Aides Helped Bolsonaro Flee Brazil for the U.S.", "note": "Edward Wong, Ana Ionova, Hamed Aleaziz and Tyler Pager" }
-  ] },
-  { "heading": "Writing guidance", "items": [
-   { "role": "Interface writing", "name": "Atlassian Design System", "href": "https://atlassian.design/foundations/content/designing-messages" },
-   { "role": "Interface text", "name": "GitLab Pajamas", "href": "https://design.gitlab.com/content/ui-text/" },
-   { "role": "Content design", "name": "Microsoft Fluent 2", "href": "https://fluent2.microsoft.design/content-design" },
-   { "role": "Voice, tone and accessibility", "name": "Mailchimp Content Style Guide", "href": "https://styleguide.mailchimp.com/" },
-   { "role": "Plain language", "name": "Digital.gov plain language guide", "href": "https://digital.gov/guides/plain-language" },
-   { "role": "Editing", "name": "Humanizer", "href": "https://github.com/blader/humanizer" },
-   { "role": "Agent experience", "name": "Agent Experience", "href": "https://agentexperience.ax/" }
-  ] }
+  {
+   "heading": "Created by",
+   "items": [
+    {
+     "role": "Game designed & written by",
+     "name": "Ron Bronson",
+     "href": "https://ronbronson.dev/",
+     "note": "Based on his Nelosphere universe (1991)"
+    }
+   ]
+  },
+  {
+   "heading": "Built with",
+   "items": [
+    {
+     "role": "Game",
+     "name": "HTML, CSS and JavaScript"
+    },
+    {
+     "role": "Rendering",
+     "name": "PixiJS 8.21.0",
+     "href": "https://pixijs.com",
+     "note": "MIT license, notice below"
+    },
+    {
+     "role": "Sound",
+     "name": "Web Audio, made in the browser, with a credits theme the game composes itself"
+    },
+    {
+     "role": "Content structure",
+     "name": "PBBG Content Schema",
+     "href": "https://github.com/quarterback/pbbg-content-schema"
+    },
+    {
+     "role": "Install and offline play",
+     "name": "Progressive web app"
+    },
+    {
+     "role": "Hosting",
+     "name": "GitHub, served through Cloudflare"
+    }
+   ]
+  },
+  {
+   "heading": "Type",
+   "items": [
+    {
+     "role": "Title",
+     "name": "Little Grandad Fat"
+    },
+    {
+     "role": "Reading text",
+     "name": "GC North Sans by Glyphonic",
+     "href": "https://youworkforthem.com/font/T31795/gc-north-sans"
+    },
+    {
+     "role": "Clock and numbers",
+     "name": "Overbit by Lettertype Studio",
+     "href": "https://youworkforthem.com/font/T31272/overbit"
+    },
+    {
+     "role": "Licensing",
+     "name": "Webfonts licensed through YouWorkForThem",
+     "href": "https://www.youworkforthem.com/font-license"
+    }
+   ]
+  },
+  {
+   "heading": "Writing guidance",
+   "items": [
+    {
+     "role": "Interface writing",
+     "name": "Atlassian Design System",
+     "href": "https://atlassian.design/foundations/content/designing-messages"
+    },
+    {
+     "role": "Interface text",
+     "name": "GitLab Pajamas",
+     "href": "https://design.gitlab.com/content/ui-text/"
+    },
+    {
+     "role": "Content design",
+     "name": "Microsoft Fluent 2",
+     "href": "https://fluent2.microsoft.design/content-design"
+    },
+    {
+     "role": "Voice, tone and accessibility",
+     "name": "Mailchimp Content Style Guide",
+     "href": "https://styleguide.mailchimp.com/"
+    },
+    {
+     "role": "Plain language",
+     "name": "Digital.gov plain language guide",
+     "href": "https://digital.gov/guides/plain-language"
+    },
+    {
+     "role": "Editing",
+     "name": "Humanizer",
+     "href": "https://github.com/blader/humanizer"
+    },
+    {
+     "role": "Agent experience",
+     "name": "Agent Experience",
+     "href": "https://agentexperience.ax/"
+    }
+   ]
+  }
  ],
  "licenses": "Licenses",
- "back": "Back"
+ "back": "Back",
+ "closing": "Any resemblance to real life events are purely coincidental"
 }
