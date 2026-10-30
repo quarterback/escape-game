@@ -33,7 +33,7 @@ out.write_text(shell)
 import hashlib, json, time
 stamp = hashlib.sha1(shell.encode()).hexdigest()[:10]
 manifest = {'name': 'Coalition', 'short_name': 'Coalition', 'start_url': './', 'scope': './', 'display': 'standalone', 'orientation': 'portrait',
-            'background_color': '#150F2E', 'theme_color': '#150F2E', 'description': 'An offline escape game set in the Nelôxia universe.',
+            'background_color': '#150F2E', 'theme_color': '#150F2E', 'description': 'Escape Valdória or run the government inquiry. A turn-based game about allies, pursuit and getting people to act.',
             'icons': [{'src': 'icons/icon-192.png', 'sizes': '192x192', 'type': 'image/png'}, {'src': 'icons/icon-512.png', 'sizes': '512x512', 'type': 'image/png'}, {'src': 'icons/icon-maskable-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'maskable'}]}
 (out.parent / 'manifest.webmanifest').write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n')
 sw = '''// Coalition service worker, build %s. Cache first; navigations answer with the cached page.
