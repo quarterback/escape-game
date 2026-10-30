@@ -238,7 +238,7 @@ const Data = (() => {
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
-    { id: 'search', name: (lv) => `Search ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 1, watch: 1 }, act: 'check_belief', text: 'Send people to the place you believe she is. If she is there, they get close. If not, you learn that.', fail: 'The patrol arrives late and finds a cold room.' },
+    { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1 }, act: 'check_belief', text: 'Send people to the place you believe she is. If she is there, they get close. If not, you learn that.', fail: 'The patrol arrives late and finds a cold room.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'Certain. You learn whether anyone is still inside. You learn nothing new if she has gone.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Follow the latest report: ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Move the search to where the newest report points.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: { records: 1 }, act: 'circulate', text: 'Every post and the border get the ban. A sent message does not close the border until the post confirms.', fail: 'Half the desks file it. A clerk calls a friend of hers.' },

@@ -333,7 +333,7 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   #tab-here{grid-column:1}#tab-hand{grid-column:1}#tab-phone{grid-column:2;align-self:start;padding:22px;background:var(--s2);border-radius:28px;gap:20px}
   #tab-route{grid-column:1/3;padding:12px 0 56px}
   h2{font-size:28px}
-  #approaches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#approaches .actbox{grid-column:1/-1}
+  #approaches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#approaches .actbox,#approaches .reports,#approaches h2{grid-column:1/-1}
   .act{padding:16px 18px}.die{width:44px;height:44px;padding:6px}.die i.p{width:8px;height:8px}.act .nm{font-size:18px}.act .meta{font-size:15px}
   #hand{display:flex;gap:18px;padding:8px 0 12px}.card{flex:1;min-height:320px;padding:18px}.card h3{font-size:22px}.card p{font-size:16px}.card .works,.card .foot{font-size:14px}
   .card:nth-child(odd){transform:rotate(-2deg)}.card:nth-child(even){transform:rotate(2deg) translateY(6px)}
@@ -3174,7 +3174,7 @@ const Data = (() => {
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
-    { id: 'search', name: (lv) => `Search ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 1, watch: 1 }, act: 'check_belief', text: 'Send people to the place you believe she is. If she is there, they get close. If not, you learn that.', fail: 'The patrol arrives late and finds a cold room.' },
+    { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1 }, act: 'check_belief', text: 'Send people to the place you believe she is. If she is there, they get close. If not, you learn that.', fail: 'The patrol arrives late and finds a cold room.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'Certain. You learn whether anyone is still inside. You learn nothing new if she has gone.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Follow the latest report: ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Move the search to where the newest report points.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: { records: 1 }, act: 'circulate', text: 'Every post and the border get the ban. A sent message does not close the border until the post confirms.', fail: 'Half the desks file it. A clerk calls a friend of hers.' },
