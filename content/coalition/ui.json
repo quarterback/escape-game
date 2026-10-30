@@ -3962,121 +3962,6 @@
    "text": "Replay"
   },
   {
-   "id": "about.title",
-   "pattern": "P02",
-   "text": "About the game"
-  },
-  {
-   "id": "about.lede",
-   "pattern": "P08",
-   "text": "A turn-based game about getting people to act while someone is looking for you."
-  },
-  {
-   "id": "about.what_h",
-   "pattern": "P02",
-   "text": "What you are doing"
-  },
-  {
-   "id": "about.what_1",
-   "pattern": "P08",
-   "text": "You lost the election. The court has barred you from leaving Valdória. You have seventy-two hours to cross into Esmeralda, reach the jet your family booked at Susana, and land in a country that will have you."
-  },
-  {
-   "id": "about.what_2",
-   "pattern": "P08",
-   "text": "Nothing moves on its own. Your sibling books the aircraft. A sponsor abroad asks a ministry for your visa. An aide in Baca arranges who meets you at the border. Each of them wants something from you first, and each of them can be reached by the people chasing you."
-  },
-  {
-   "id": "about.turn_h",
-   "pattern": "P02",
-   "text": "How a round goes"
-  },
-  {
-   "id": "about.turn_1",
-   "pattern": "P08",
-   "text": "A run is a few dozen rounds over three days. In each one you read the news, work the phone, make one move and roll a die. Then Inspector Sosā moves."
-  },
-  {
-   "id": "about.turn_2",
-   "pattern": "P08",
-   "text": "The Exposure count shows how close she is. At ten you are stopped. The first stop is questioning. The second is house arrest. The third is the end of the run."
-  },
-  {
-   "id": "about.where_h",
-   "pattern": "P02",
-   "text": "Where you could go"
-  },
-  {
-   "id": "about.where_1",
-   "pattern": "P08",
-   "text": "Before the run you choose a country on a map: Atlanta, Tarun or Zaryanova. Each has a sponsor who will ask for you, and each sponsor has a price. None of the three has said yes."
-  },
-  {
-   "id": "about.where_2",
-   "pattern": "P08",
-   "text": "The visa arrives during the run or it does not. You can take off without it. Where you land decides what happens on the apron."
-  },
-  {
-   "id": "about.cards_h",
-   "pattern": "P02",
-   "text": "Cards and reach"
-  },
-  {
-   "id": "about.cards_1",
-   "pattern": "P08",
-   "text": "Allies hand you cards: a second passport, decoy cars, a word from the party, an introduction to a minister. A card works only where its owner has influence. The party card that opens a gate in the capital means nothing to a sergeant across the line."
-  },
-  {
-   "id": "about.cards_2",
-   "pattern": "P08",
-   "text": "Three of the people on your side have already been approached. You find out which ones when it costs you."
-  },
-  {
-   "id": "about.gov_h",
-   "pattern": "P02",
-   "text": "The other side"
-  },
-  {
-   "id": "about.gov_1",
-   "pattern": "P08",
-   "text": "You can play the government instead. Sofīā Leōnī, aide to the incoming minister, has the same seventy-two hours to find the candidate and stop the flight. She works from reports, and her orders stop at the border."
-  },
-  {
-   "id": "about.start_h",
-   "pattern": "P02",
-   "text": "Ways to start"
-  },
-  {
-   "id": "about.start_1",
-   "pattern": "P08",
-   "text": "The demo runs one scripted escape with a coach beside you, twenty short steps. The daily run gives every player the same seed, so two people can compare how their runs ended."
-  },
-  {
-   "id": "about.start_2",
-   "pattern": "P08",
-   "text": "It is hard on purpose. One bad call in the first hours can end a run before it starts. A run takes about twenty minutes, so start another."
-  },
-  {
-   "id": "about.world_h",
-   "pattern": "P02",
-   "text": "The world"
-  },
-  {
-   "id": "about.world_1",
-   "pattern": "P08",
-   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, a fictional world Ron Bronson has been writing since 1991. The story is fiction. Its countries stand on real ground and borrow real geography, and nothing else."
-  },
-  {
-   "id": "about.tech_h",
-   "pattern": "P02",
-   "text": "On your phone or desk"
-  },
-  {
-   "id": "about.tech_1",
-   "pattern": "P08",
-   "text": "The game is one page that runs in a browser. Once it has loaded it works offline, and you can add it to a home screen or install it as an app. Your run saves itself so you can come back to it."
-  },
-  {
    "id": "about.play",
    "pattern": "P01",
    "text": "Play"
@@ -4105,6 +3990,71 @@
    "id": "about.still_route",
    "pattern": "P02",
    "text": "The route and the people on it"
+  },
+  {
+   "id": "about.lede",
+   "pattern": "P08",
+   "text": "Saturday, two in the afternoon. You lost the election. The court has barred you from leaving Valdória and wants your passports by Monday noon. One of them is in your coat."
+  },
+  {
+   "id": "about.p1",
+   "pattern": "P08",
+   "text": "Two unmarked cars sit outside the house in Portô Venla. Inspector Valentīn Sosā runs the departure inquiry from the Interior Ministry, and he is good at it. Rādiô Portô Venla has you on a yacht in the harbor, which is where you want him looking."
+  },
+  {
+   "id": "about.p2",
+   "pattern": "P08",
+   "text": "Your brother is abroad finding a jet, and no crew will book until he can tell them where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
+  },
+  {
+   "id": "about.p3",
+   "pattern": "P08",
+   "text": "Nando has driven you for eleven years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Three of these people have already talked to Sosā."
+  },
+  {
+   "id": "about.road_h",
+   "pattern": "P02",
+   "text": "The road"
+  },
+  {
+   "id": "about.p4",
+   "pattern": "P08",
+   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three posts cross into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
+  },
+  {
+   "id": "about.p5",
+   "pattern": "P08",
+   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter. Gannibal in Zaryanova, where Mirēlā Vosk wants you on the record with names. None of them has said yes. The visa comes while you run or it does not, and a jet that lands without one is met on the apron."
+  },
+  {
+   "id": "about.p6",
+   "pattern": "P08",
+   "text": "Every call takes hours. Every move is a roll of one die. Every mistake pushes the Exposure count toward ten, and at ten Sosā's people stop you. The first time they ask questions. The second time they put you under house arrest. The third time the run is over. You have seventy-two hours, Saturday afternoon to Tuesday at two."
+  },
+  {
+   "id": "about.gov_h",
+   "pattern": "P02",
+   "text": "The other side"
+  },
+  {
+   "id": "about.p7",
+   "pattern": "P08",
+   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, and the minister wants a location by Tuesday. She has the watch team, the Santa Laura desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border. Her reports are hours old, and some of them are wrong."
+  },
+  {
+   "id": "about.start_h",
+   "pattern": "P02",
+   "text": "Before you start"
+  },
+  {
+   "id": "about.p8",
+   "pattern": "P08",
+   "text": "The demo is one scripted escape with a coach beside you, twenty steps. The daily run hands everyone the same dice, so you and a friend can compare endings. The game is one page. It works offline once it has loaded, and it saves your run. It is hard on purpose: one bad call on Saturday evening can end it before it starts. A run is twenty minutes. Start another."
+  },
+  {
+   "id": "about.world",
+   "pattern": "P08",
+   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991. The countries stand on real ground. The story does not."
   }
  ]
 }
