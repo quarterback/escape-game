@@ -3940,6 +3940,171 @@
    "args": [
     "n"
    ]
+  },
+  {
+   "id": "over.save_run",
+   "pattern": "P01",
+   "text": "Save this run"
+  },
+  {
+   "id": "over.copy_replay",
+   "pattern": "P01",
+   "text": "Copy replay link"
+  },
+  {
+   "id": "over.copied",
+   "pattern": "P10",
+   "text": "Link copied"
+  },
+  {
+   "id": "replay.badge",
+   "pattern": "P02",
+   "text": "Replay"
+  },
+  {
+   "id": "about.title",
+   "pattern": "P02",
+   "text": "About the game"
+  },
+  {
+   "id": "about.lede",
+   "pattern": "P08",
+   "text": "A turn-based game about getting people to act while someone is looking for you."
+  },
+  {
+   "id": "about.what_h",
+   "pattern": "P02",
+   "text": "What you are doing"
+  },
+  {
+   "id": "about.what_1",
+   "pattern": "P08",
+   "text": "You lost the election. The court has barred you from leaving Valdória. You have seventy-two hours to cross into Esmeralda, reach the jet your family booked at Susana, and land in a country that will have you."
+  },
+  {
+   "id": "about.what_2",
+   "pattern": "P08",
+   "text": "Nothing moves on its own. Your sibling books the aircraft. A sponsor abroad asks a ministry for your visa. An aide in Baca arranges who meets you at the border. Each of them wants something from you first, and each of them can be reached by the people chasing you."
+  },
+  {
+   "id": "about.turn_h",
+   "pattern": "P02",
+   "text": "How a round goes"
+  },
+  {
+   "id": "about.turn_1",
+   "pattern": "P08",
+   "text": "A run is a few dozen rounds over three days. In each one you read the news, work the phone, make one move and roll a die. Then Inspector Sosā moves."
+  },
+  {
+   "id": "about.turn_2",
+   "pattern": "P08",
+   "text": "The Exposure count shows how close she is. At ten you are stopped. The first stop is questioning. The second is house arrest. The third is the end of the run."
+  },
+  {
+   "id": "about.where_h",
+   "pattern": "P02",
+   "text": "Where you could go"
+  },
+  {
+   "id": "about.where_1",
+   "pattern": "P08",
+   "text": "Before the run you choose a country on a map: Atlanta, Tarun or Zaryanova. Each has a sponsor who will ask for you, and each sponsor has a price. None of the three has said yes."
+  },
+  {
+   "id": "about.where_2",
+   "pattern": "P08",
+   "text": "The visa arrives during the run or it does not. You can take off without it. Where you land decides what happens on the apron."
+  },
+  {
+   "id": "about.cards_h",
+   "pattern": "P02",
+   "text": "Cards and reach"
+  },
+  {
+   "id": "about.cards_1",
+   "pattern": "P08",
+   "text": "Allies hand you cards: a second passport, decoy cars, a word from the party, an introduction to a minister. A card works only where its owner has influence. The party card that opens a gate in the capital means nothing to a sergeant across the line."
+  },
+  {
+   "id": "about.cards_2",
+   "pattern": "P08",
+   "text": "Some of the people on your side have already been approached. You find out which ones when it costs you."
+  },
+  {
+   "id": "about.gov_h",
+   "pattern": "P02",
+   "text": "The other side"
+  },
+  {
+   "id": "about.gov_1",
+   "pattern": "P08",
+   "text": "You can play the government instead. Sofīā Leōnī, aide to the incoming minister, has the same seventy-two hours to find the candidate and stop the flight. She works from reports, and her orders stop at the border."
+  },
+  {
+   "id": "about.start_h",
+   "pattern": "P02",
+   "text": "Ways to start"
+  },
+  {
+   "id": "about.start_1",
+   "pattern": "P08",
+   "text": "The demo runs one scripted escape with a coach beside you, twenty short steps. The daily run gives every player the same seed, so two people can compare how their runs ended."
+  },
+  {
+   "id": "about.start_2",
+   "pattern": "P08",
+   "text": "It is hard on purpose. One bad call in the first hours can end a run before it starts. Runs are short, so start another."
+  },
+  {
+   "id": "about.world_h",
+   "pattern": "P02",
+   "text": "The world"
+  },
+  {
+   "id": "about.world_1",
+   "pattern": "P08",
+   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, a fictional world Ron Bronson has been writing since 1991. The story is fiction. Its countries stand on real ground and borrow real geography, and nothing else."
+  },
+  {
+   "id": "about.tech_h",
+   "pattern": "P02",
+   "text": "On your phone or desk"
+  },
+  {
+   "id": "about.tech_1",
+   "pattern": "P08",
+   "text": "The game is one page that runs in a browser. Once it has loaded it works offline, and you can add it to a home screen or install it as an app. Your run saves itself so you can come back to it."
+  },
+  {
+   "id": "about.play",
+   "pattern": "P01",
+   "text": "Play"
+  },
+  {
+   "id": "about.back",
+   "pattern": "P01",
+   "text": "Back to the game"
+  },
+  {
+   "id": "title.about",
+   "pattern": "P01",
+   "text": "About the game"
+  },
+  {
+   "id": "about.still_title",
+   "pattern": "P02",
+   "text": "The title screen, with a run playing behind it"
+  },
+  {
+   "id": "about.still_here",
+   "pattern": "P02",
+   "text": "A round at the residence"
+  },
+  {
+   "id": "about.still_route",
+   "pattern": "P02",
+   "text": "The route and the people on it"
   }
  ]
 }

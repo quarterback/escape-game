@@ -33,6 +33,7 @@ const UI = (() => {
   const markSeen = () => { try { localStorage.setItem(SEEN, '1'); } catch (e) { /* storage blocked */ } };
   function saveRun() {
     try {
+      if (replaying) return;
       if (!s || s.over) { localStorage.removeItem(SAVE); return; }
       localStorage.setItem(SAVE, JSON.stringify({ round, daily: daily ? daily.key : null, who, gov: gov ? Gov.serialize(gov) : null, s: gov ? null : Sim.serialize(s), tut: Tutorial.active() ? Tutorial.index() : -1, tutId: Tutorial.side(), log: enemyLog.slice(-8), lines: Array.from($('dialogue').children).slice(-30).map(l => l.outerHTML) }));
     } catch (e) { /* storage blocked: the run simply is not resumable */ }
@@ -50,11 +51,12 @@ const UI = (() => {
   }
 
   // ---- runs --------------------------------------------------------------
-  function newRun(w, demo, isDaily, dest) {
+  let replaying = null; // { queue, speed, timer } while a replay link plays itself
+  function newRun(w, demo, isDaily, dest, seed) {
     markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who, { dest }); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -62,10 +64,10 @@ const UI = (() => {
     log('sys', esc(T('log.start_escape', { clock: Sim.clockText(0), name: c.name, title: c.title, sibling: c.sibling.name, rel: c.sibling.rel })), 'sys');
     animate(s._boot); renderAll(); startRound(true); saveRun();
   }
-  function newGovRun(demo) {
+  function newGovRun(demo, seed) {
     markSeen(); who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
     if (demo) { const G = Tutorial.RUNS.gov; gov = Gov.newRun(G.seed, 'woman', { dice: G.dice, events: G.eventQueue, tutorial: true }); Tutorial.start('gov'); }
-    else { Tutorial.stop(); gov = Gov.newRun((Math.random() * 1e9) >>> 0); }
+    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed); }
     s = gov.c; document.body.classList.add('gov');
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -276,6 +278,67 @@ const UI = (() => {
     $('share').hidden = !(daily && !gov);
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
+  }
+
+  // ---- export and replay ------------------------------------------------------------
+  // A run is its seed, who played, where they were going and every accepted action, in order.
+  function exportRun() {
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+  }
+  const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
+  const replayLink = (rec) => `${location.origin}${location.pathname}#replay=${b64u(JSON.stringify(rec))}`;
+  function downloadRun() {
+    const rec = exportRun(), a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(rec, null, 1)])); a.download = `coalition-run-${rec.kind}-${rec.seed}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  async function copyReplay() {
+    const url = replayLink(exportRun());
+    try { await navigator.clipboard.writeText(url); $('copyreplay').textContent = T('over.copied'); } catch (e) { prompt(T('over.copy_replay'), url); }
+  }
+  // Plays a recorded run back through the same screens a player sees. Nothing is saved while it runs.
+  let attract = null; // { runs, i, wasMuted } while the title screen plays runs behind itself
+  function startReplay(rec, speed, opts) {
+    opts = opts || {};
+    replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
+    if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
+    $('start').hidden = true;
+    if (rec.kind === 'gov') newGovRun(false, rec.seed); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed);
+    replaying.timer = setInterval(replayTick, 150);
+  }
+  function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
+  function replayTick() {
+    const R = replaying; if (!R) return;
+    const now = Date.now(); if (now - R.last < R.speed) return;
+    if (Render.busy() || !$('interstitial').hidden) return;
+    if (s.over || s.pos >= R.cutLevel) { stopReplay(); return; }
+    R.last = now;
+    if (phase === 'roll') { enterPhase('sosa'); return; }
+    if (phase === 'sosa') { startRound(false); return; }
+    if (phase === 'news' && result && result.from === 'news') { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); return; }
+    const next = R.queue.shift(); if (!next) { stopReplay(); return; }
+    if (gov) doGov(next[0], next[1]); else doCommit(next[0], next[1]);
+  }
+  // The title screen: a recorded run plays behind the title, cut before the border so the destination and
+  // the ending stay unknown; when it ends another begins. Nothing is saved, nothing sounds.
+  function startAttract() {
+    if (!ATTRACT_RUNS.length || attract) return;
+    attract = { runs: ATTRACT_RUNS.slice().sort(() => Math.random() - 0.5), i: 0, wasMuted: Sfx.isMuted() };
+    Sfx.setMuted(true); document.body.classList.add('attract'); $('title').style.backgroundImage = '';
+    const next = () => { if (!attract) return; const rec = attract.runs[attract.i++ % attract.runs.length]; startReplay(rec, 700, { attract: true, cutLevel: 4, onDone: () => { if (attract) attract.t = setTimeout(next, 1800); } }); $('title').hidden = false; };
+    next();
+  }
+  function stopAttract() {
+    if (!attract) return; clearTimeout(attract.t); const was = attract.wasMuted; attract = null;
+    if (replaying) { clearInterval(replaying.timer); replaying = null; }
+    document.body.classList.remove('attract'); Sfx.setMuted(was);
+  }
+  function replayFromHash() {
+    const m = /[#&]replay=([^&]+)/.exec(location.hash); if (!m) return false;
+    const sp = /[#&]speed=(\d+)/.exec(location.hash);
+    try { const rec = JSON.parse(unb64u(m[1])); if (rec && rec.game === 'coalition' && Array.isArray(rec.actions)) { startReplay(rec, sp ? +sp[1] : 900); return true; } } catch (e) { /* not a replay link */ }
+    return false;
   }
 
   // ---- commit and animate --------------------------------------------------------
@@ -549,8 +612,9 @@ const UI = (() => {
   function showTitle() {
     const t = Sim.newRun(3, 'woman'); t.pos = 4; t.hour = 36; t.belief = 1;
     const paint = () => { const url = Render.still(t); if (!url) { setTimeout(paint, 60); return; } $('title').style.backgroundImage = `url(${url})`; };
-    paint(); $('title').hidden = false; $('start').hidden = true;
-    $('title-start').onclick = () => { Sfx.unlock(); Sfx.theme(true); $('title').hidden = true; showStart(); };
+    if (ATTRACT_RUNS.length) startAttract(); else paint();
+    $('title').hidden = false; $('start').hidden = true;
+    $('title-start').onclick = () => { stopAttract(); Sfx.unlock(); Sfx.theme(true); $('title').hidden = true; showStart(); };
   }
   function pwa() {
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
@@ -587,6 +651,8 @@ const UI = (() => {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
+    $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
+    $('copyreplay').onclick = () => { Sfx.click(); copyReplay(); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };
     const released = () => { if (gov && !Tutorial.active()) Gov.endTutorial(gov); };
     $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); released(); renderAll(); saveRun(); };
@@ -598,6 +664,7 @@ const UI = (() => {
     setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();
+    if (replayFromHash()) return;
     s = Sim.newRun(1, 'woman'); Render.setState(s); showTitle();
   }
   return { boot };

@@ -333,7 +333,13 @@ const Sim = (() => {
   }
 
   // ---- commit ----------------------------------------------------
+  // Every accepted action goes on s.actions, so seed + actions replays the run (the replay link, the recorder).
   function commit(s, actionId, optionId) {
+    const r = _commit(s, actionId, optionId);
+    if (r.ok) (s.actions = s.actions || []).push(optionId === undefined ? [actionId] : [actionId, optionId]);
+    return r;
+  }
+  function _commit(s, actionId, optionId) {
     if (s.over) return { ok: false, why: T('sim.why.the_run_is_over') };
     const events = [];
     if (actionId.startsWith('evt:')) return resolveEvent(s, actionId.slice(4), events);

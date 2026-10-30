@@ -133,3 +133,18 @@ I flagged round one's exposure (0 to 4 in five hours at the residence) as a bala
 ## Addendum, same day: the installed-app icon
 
 Owner: the home-screen and desktop icon should differ from the favicon. The favicon keeps the austral mark; the app icon is now Teresā's sprite from `src/art.js`, scaled onto the game's purple with a ground disc, drawn by `tools/make_icons.py` (which reads the rows and palette out of the art module, so a sprite change carries into the icon on the next run; `mateu` is the other argument). A pixel jet was tried twice first and rejected by the owner, the first draft for its shape. The maskable variant keeps the figure inside the inner 80%.
+
+## Addendum, same day: sharing a run as video, the title screen plays itself, a landing page
+
+Owner: "is my only option for sharing gameplay to record myself doing it?" No. The game is seed-deterministic, so a run is its seed, who played, where they were going and the list of accepted actions. Four pieces:
+
+- **The action log.** `Sim.commit` and `Gov.commit` record every accepted action on the state. Nothing in the rules reads it.
+- **Save and replay.** The ending screen has "Save this run" (a JSON file) and "Copy replay link" (the run in the URL hash). Opening a replay link plays the run back through the same screens a player sees, muted, with a Replay badge, saving nothing. `tools/sample-run.js` writes the same file from the harness policy, so a clip needs nobody at the controls.
+- **The recorder.** `tools/record-run.js run.json --size phone|desktop|square --speed MS --cut N` opens the built game on the replay link under Playwright, records it, and writes webm, mp4 (h264, for feeds) and a short looping gif (first 20 s, 8 fps, 360 wide; a whole-run gif was 46 MB and is useless). Measured: a 27-action clip at square size is 3.7 MB mp4 and 1.7 MB gif. No sound; the theme is laid on afterwards.
+- **Nothing gives the game away.** Owner: "don't accidentally give away the game by showing the winning run showing where they go." `sample-run.js --cut` and `record-run.js --cut N` stop a run before the border, so a clip never shows the destination's visa arriving, the landing or the ending.
+
+**The title screen runs the game behind itself** (owner: "the game home screen should have it running in the background rather than on the front page"). `tools/attract-runs.json` holds three recorded runs, one per destination and both characters, each cut before the border; the build inlines them and the title plays them in a loop under a darker shade, muted, saving nothing, rotating at random so the three cities appear equally and no ending is ever shown. Start stops it and restores the player's sound setting. The static still is the fallback when the file is empty.
+
+**The landing page** is `about.html`, built from `src/about.html` with the same catalog fill and fonts as the game: what you are doing, how a round goes, where you could go, cards and reach, the other side, ways to start, the world, offline and install. Every sentence is a catalog entry (`about.*`), so the content check and the owner's checker both ran over it; the copy went through the Humanizer rules by hand (no contrasts, no closers, no triads, no label rows, no sales language) and two claims I could not support were softened before shipping. Three stills in `media/` were captured from the built game by Playwright; the title link "About the game" goes to it and its Play buttons come back. Verified at 390 and 1440 with no horizontal overflow.
+
+Checks: content check clean, owner's checker clean, both tutorial replays, six contract tests, build.

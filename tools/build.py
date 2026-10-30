@@ -63,12 +63,18 @@ credits_html = (f'<div class="cbox"><h1 class="cword">{E(catalog["title.word"])}
 shell = shell.replace('{{credits}}', credits_html)
 content_js = 'const CONTENT_PKG = ' + json.dumps(pkg, ensure_ascii=False) + ';\n' + (src / 'content.js').read_text()
 parts = {'CONTENT': None, 'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'ART': src / 'art.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
+attract = root / 'tools' / 'attract-runs.json'
+shell = shell.replace('/*__ATTRACT__*/[]', attract.read_text().strip() if attract.exists() else '[]')
 for k, p in parts.items():
     txt = content_js if k == 'CONTENT' else p.read_text()
     if k == 'PIXI': txt = re.sub(r'\n//# sourceMappingURL=\S+\s*$', '\n', txt)
     assert '</script' not in txt.lower(), k
     shell = shell.replace('/*__%s__*/' % k, txt)
 out.write_text(shell)
+about = (src / 'about.html').read_text()
+about = about.replace('/*__FONTS__*/', '\n'.join(css_fonts)).replace('/*__FAVICON__*/', base64.b64encode((root / 'og' / 'favicon.svg').read_bytes()).decode())
+about = re.sub(r'\{\{([cb]):([a-z0-9_.]+)\}\}', _fill, about)
+(out.parent / 'about.html').write_text(about)
 # PWA: a manifest and a service worker beside index.html. The cache name carries a build stamp,
 # so each build replaces the previous cache; old caches are deleted on activate.
 import hashlib, json, time
