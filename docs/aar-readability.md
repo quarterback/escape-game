@@ -104,3 +104,14 @@ bar's height, since the line can wrap.
   owner's screenshots show the live site, which predates this session's work.
 - The contrast check needs Chromium and so runs locally. Running it in CI
   would need Playwright's browser in the workflow.
+
+## After shipping
+
+- **A stray file.** A measuring command I ran had a mistyped output
+  redirect (`> 0`), which created an empty file named `0` in the repository.
+  It went out in 0b0fd6e and was removed in 0d0516c. The cause was a careless
+  shell command, not the game or its tools. Before committing, check the list
+  of staged files for anything unexpected.
+- **Delivery.** PR #6 had already been merged into main at 69e44e9, so this
+  work is in a new pull request, #7. The live site will show these fixes once
+  #7 is merged and deployed.
