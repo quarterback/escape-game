@@ -1,6 +1,6 @@
 # Coalition
 
-**Seventy-two hours. Escape Valdória, or run the inquiry trying to stop the flight.**
+**72 hours. Escape Valdória, get caught or be the capturer!**
 
 Coalition is a turn-based game about coordinating people under pressure. You can
 have money, political influence and powerful friends, but you still need someone
