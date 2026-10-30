@@ -71,6 +71,21 @@ const Sim = (() => {
         { id: 'skip_doc', label: 'Skip it', hours: 0, effect: 'Keep only your restricted passport.' },
       ]);
     }
+    if (s.pos === 1) {
+      msg(s, events, 'press', `"Rādiô Portô Venla. We hear you are on a yacht off the coast. Can you confirm?"`, [
+        { id: 'confirm_yacht', label: 'Confirm it, from the yacht', hours: 0, effect: 'The inquiry believes the coast for a while. If a friend later turns, the lie costs you.' },
+        { id: 'deny_yacht', label: 'Deny it. You are at home.', hours: 0, effect: 'Sends them to the house you just left. Buys less time, costs nothing later.' },
+        { id: 'no_comment', label: 'Hang up', hours: 0, effect: 'Nothing changes.' },
+      ]);
+    }
+    if (s.pos === 2 && s.arr.permission.stage >= 1 && !s.flags.salekDue) {
+      s.flags.salekDue = true;
+      msg(s, events, 'sponsor', `"The transfer papers are with your brother. Sign tonight, or I stop making calls."`, [
+        { id: 'sign_accounts', label: 'Sign. Move the family accounts.', hours: 1, effect: 'Salek keeps working. Your family will not forgive this quickly.' },
+        { id: 'stall_salek', label: 'Ask for a week', hours: 0, effect: 'Permission stalls twelve hours. He keeps your line open, for now.' },
+        { id: 'refuse_salek', label: 'Refuse', hours: 0, effect: 'Lose Salek and his line. Atlanta will not answer. You can still fly without its yes.' },
+      ]);
+    }
     if (s.pos === 2 && s.arr.reception.stage === 1) {
       msg(s, events, 'sibling', `"Vélez is not answering. I can try again, or ask Salek to reach her uncle."`, [
         { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: 'Try again in six hours. Your sibling must pass a reliability roll.' },
@@ -79,10 +94,26 @@ const Sim = (() => {
       ]);
     }
     if (s.pos === 3) {
+      msg(s, events, 'holt', `"Two men in a car at the yard gate, asking about a woman. Or a man. Midnight or never."`, [
+        { id: 'go_midnight', label: 'Midnight it is', hours: 0, effect: 'Nothing changes. You know the clock now.' },
+        { id: 'send_decoy_yard', label: 'Send Nando past the gate first', hours: 0, effect: 'Needs the decoy card. The men follow the sedan; exposure drops.' },
+      ]);
       const c = s.commitments.find(x => x.to === 'aide' && x.kept === null);
       if (c) msg(s, events, 'aide', `"The party meets tonight. Send your endorsement before midnight. You gave your word."`, [
         { id: 'keep_word', label: 'Send the statement', hours: 1, effect: 'Keep Gianlūka’s support and gain his informant’s help.' },
         { id: 'break_word', label: 'Put him off', hours: 0, effect: 'Lose Gianlūka’s cards. He reveals your location; exposure rises.' },
+      ]);
+    }
+    if (s.pos === 4 && s.commitments.some(x => x.to === 'official')) {
+      msg(s, events, 'official', `"Before my people meet you: you will say, on the record, that Esmeralda receives you as a guest. Not a government."`, [
+        { id: 'guest_yes', label: 'Say it', hours: 0, effect: 'Reception stands. The party at home will read it.' },
+        { id: 'guest_no', label: 'Refuse', hours: 0, effect: 'Vélez withdraws her officials. Her card still opens the tower, not the post.' },
+      ]);
+    }
+    if (s.pos === 5) {
+      msg(s, events, 'enemy', `"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and your brother's name goes on the warrant too."`, [
+        { id: 'sosa_talk', label: 'Keep him talking', hours: 1, effect: 'An hour on the phone. He skips his next move while he thinks you are wavering.' },
+        { id: 'sosa_hang', label: 'Hang up', hours: 0, effect: 'Nothing changes.' },
       ]);
     }
     if (s.pos === 5 && s.flags.leaned) {
@@ -119,6 +150,7 @@ const Sim = (() => {
       for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
       let dc = a.dc;
       if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1; // the sheet is on the desk unless Gianlūka's contact held it
+    if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until) dc += 1;
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
       const need = Math.max(1, dc - bonus);
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
@@ -159,6 +191,8 @@ const Sim = (() => {
     if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return "You do not have Salek's line yet. Call him about permission first.";
     if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return "You do not have Vélez's card.";
     if (o.id === 'aide_asks' && !hasTag(s, 'influence')) return 'Gianlūka is not taking your calls.';
+    if (o.id === 'send_decoy_yard' && !heldTag(s, 'decoy')) return 'Nando and the spare cars are gone.';
+    if (o.id === 'via_sponsor' && s.people.sponsor.turned) return 'Salek is not taking your calls.';
     return '';
   }
   const optionOk = (s, o) => !optionWhy(s, o);
@@ -180,7 +214,7 @@ const Sim = (() => {
     const won = view.need > 6 ? false : die >= view.need;
     events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
     apply(s, won ? a.success : a.fail, events, a);
-    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} You escaped.` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
     pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
     if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
     return finish(s, events);
@@ -244,6 +278,18 @@ const Sim = (() => {
       case 'crew_bonus': stage(s, 'aircraft', 4, events); heat(s, 1, events); say(events, 'pilot', `"The crew is happy. The apron saw you pay them."`); break;
       case 'velez_word': stage(s, 'aircraft', 4, events); say(events, 'pilot', `"The operator just had a call from the minister's office. We are good."`); break;
       case 'ignore_pilot': break;
+      case 'confirm_yacht': s.belief = 0; s.flags.lied = true; heat(s, -1, events); events.push(ev('belief', { belief: 0 })); say(events, 'narrator', 'The radio has you at sea for the evening. Nando laughs in the front seat.'); break;
+      case 'deny_yacht': s.belief = 0; events.push(ev('belief', { belief: 0 })); say(events, 'narrator', 'They go to the house. The house is empty.'); break;
+      case 'no_comment': break;
+      case 'sign_accounts': { const c = s.commitments.find(x => x.to === 'sponsor'); if (c) c.kept = true; s.people.sponsor.trust = 2; s.flags.signed = true; say(events, 'sponsor', `"Good. The ministry will hear from me in the morning."`); } break;
+      case 'stall_salek': for (const j of s.jobs) if (j.arr === 'permission') j.due += 12; say(events, 'sponsor', `"A week. I am not a patient man, but I am a curious one."`); break;
+      case 'refuse_salek': { const c = s.commitments.find(x => x.to === 'sponsor'); if (c) c.kept = false; s.people.sponsor.turned = true; lose(s, 'sponsor_line', events); s.jobs = s.jobs.filter(j => j.arr !== 'permission'); say(events, 'sponsor', `"Then we have nothing to discuss. Good luck with the pilot."`); } break;
+      case 'go_midnight': break;
+      case 'send_decoy_yard': lose(s, 'decoy_cars', events); s.used.push('decoy_cars'); heat(s, -2, events); s.belief = 1; events.push(ev('belief', { belief: 1 })); say(events, 'narrator', 'The sedan rolls past the gate at a crawl. The car follows it north. Nando waves without looking.'); break;
+      case 'guest_yes': s.flags.guest = true; say(events, 'official', `"Thank you. My people will be at the post."`); break;
+      case 'guest_no': { const c = s.commitments.find(x => x.to === 'official'); if (c) c.kept = false; if (s.arr.reception.stage >= 2) stage(s, 'reception', 1, events); s.jobs = s.jobs.filter(j => j.arr !== 'reception'); say(events, 'official', `"Then you will cross like anyone else."`); } break;
+      case 'sosa_talk': s.lastEnemy = s.hour + 2; say(events, 'enemy', `"Think about it. I will call again."`); break;
+      case 'sosa_hang': break;
     }
     pass(s, o.hours || 0, events); return finish(s, events);
   }
@@ -253,10 +299,10 @@ const Sim = (() => {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
-      if (s.belief === s.pos && s.hour % 3 === 0) heat(s, 1, events);
+      if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
       if (s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
-      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive at ${level(s).name} at ${clockText(s.hour)}. They found your location.` }; events.push(ev('over', s.over)); }
-      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out. Esmeralda has closed its airfields to your flight.` }; events.push(ev('over', s.over)); }
+      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive in ${level(s).short} at ${clockText(s.hour)}. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
+      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
     }
   }
   function resolveJob(s, j, events) {
@@ -279,13 +325,33 @@ const Sim = (() => {
       case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
-      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.`; } break; }
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.${s.flags.lied ? ' The yacht story is dead, and the papers say so.' : ''}`; } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }
+      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = pick.text(D.LEVELS[Math.max(0, s.belief)].short); break; }
+      case 'watch_sibling': { text = pick.text(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief }));
   }
   function finish(s, events) { return { ok: true, events }; }
+  // The ending names what the run cost. Built from the state, so every run reads differently.
+  function epilogue(s, win) {
+    const out = [], first = (id) => personName(s, id).split(' ')[0];
+    const turned = Object.keys(s.people).filter(k => s.people[k].turned && k !== 'sponsor');
+    if (win) {
+      out.push(s.arr.permission.stage >= 2 ? 'A car meets the aircraft at Lāyūna.' : 'Atlanta lets the jet land and asks questions for a week.');
+      if (s.flags.signed) out.push('The family accounts sit in Salek\'s house. He calls on the first of every month.');
+    }
+    for (const c of s.commitments) {
+      if (c.to === 'aide') out.push(c.kept === false ? `${first('aide')} leads the party now and says your name only to deny it.` : c.kept ? `${first('aide')} leads the party in your name. He expects you to remember that.` : `${first('aide')} is still waiting for the statement you promised.`);
+      if (c.to === 'official' && c.kept === false) out.push('Baca reads your refusal as a government in exile. The guest room closes.');
+      if (c.to === 'sponsor' && c.kept === false) out.push('Salek tells his clients you do not keep terms.');
+    }
+    if (turned.length) out.push(`${turned.map(first).join(' and ')} talked to the inquiry. ${turned.length > 1 ? 'They' : first(turned[0])} will not be forgiven at home.`);
+    if (s.people.host.trust > 0) out.push('Nonā Rosa\'s truck runs to Salta every week. Nobody at the colônia says who rode in it.');
+    if (!win) out.push(`${personName(s, 'sibling')} is named on the warrant by Monday.`);
+    return out.join(' ');
+  }
 
   return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, actions, commit, clockText, isNight, personName };
 })();

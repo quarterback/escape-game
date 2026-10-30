@@ -30,6 +30,7 @@ const Data = (() => {
     holt:     { name: 'Holt Greer', role: 'brakeman on the Huhūi freight', where: 3, reliability: 2 },
     theo:     { name: 'Theo Bascom', role: 'yard foreman in the Salta rail town', where: 3, reliability: 3 },
     pilot:    { name: 'Capitān Olsēn', role: 'charter pilot, Susana', where: 5, reliability: 3 },
+    press:    { name: 'Rādiô Portô Venla', role: 'the station everyone in the capital has on', where: -1, reliability: 6 },
   };
 
   // The enemy. Inspector Valentīn Sosā, Interior Ministry. Each action is concrete and visible.
@@ -79,7 +80,7 @@ const Data = (() => {
   // and what happens. hours: time spent attempting. Failure never ends the run by itself.
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
-      objective: "Leave without alerting the watch.",
+      objective: "Get out of the house without the watch following. Before you can fly you need four things from four people: a jet (Duartē), a travel document (Mārtā), someone waiting at the border (Vélez), and Atlanta's yes (Salek). Start them now. They take hours.",
       arrive: "Two unmarked cars watch the house. The court wants your passports by Monday.",
       approaches: [
         { id: 'decoy', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
@@ -96,7 +97,7 @@ const Data = (() => {
           fail: { exposure: 1, commit: 'aide', say: 'The car is let through, but the inspector is told whose car it was.' } },
       ] },
     { id: 'road', name: 'The road south, Santa Laura', short: 'Santa Laura', scene: 'road',
-      objective: "Change vehicles. Arrange a second document.",
+      objective: "Change cars and get Mārtā to issue your civil record. Every hour the inquiry looks in the right place, exposure climbs. Keep them looking at the coast.",
       arrive: "Santa Laura. The radio puts you on a yacht in Portô Venla. The posts have not received the restriction yet.",
       approaches: [
         { id: 'second_driver', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
@@ -113,7 +114,7 @@ const Data = (() => {
           fail: { exposure: 3, belief: 1, say: 'The post at the river has your plate. They let you through and pick up the phone.' } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
-      objective: "Help your host, make calls or rest.",
+      objective: "A safe house for the night. Use it: call Duartē, Salek and Vélez. Do not take the road to the border until someone in Baca has your name.",
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative’s truck was impounded this morning.",
       approaches: [
         { id: 'help_host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
@@ -131,7 +132,7 @@ const Data = (() => {
           success: { say: 'Nonā Rosa’s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
-      objective: "Board the freight to the Huhūi passes.",
+      objective: "The midnight freight is the only way over the passes. Holt or Theo can get you on. The yardmaster will take your money and call Sosā.",
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
@@ -152,7 +153,7 @@ const Data = (() => {
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: "Cross into Esmeralda.",
+      objective: "One crossing. Your party means nothing past this line. A document the restriction does not name, people waiting for you, or a guard who takes money. Choose before the restriction reaches the desk.",
       arrive: "Two guards wait at the barrier. Across the line, the Esmeraldan post is lit. Your restriction may already be on the desk.",
       border: true,
       approaches: [
@@ -173,7 +174,7 @@ const Data = (() => {
           fail: { exposure: 3, hours: 4, say: 'They hold you four hours and the inspector is on the radio. The party gets you released pending a hearing you will not attend.' } },
       ] },
     { id: 'airfield', name: 'Susana airfield', short: 'Susana', scene: 'airfield',
-      objective: "Prepare the jet and leave Esmeraldan airspace.",
+      objective: "Get the jet fueled and positioned, get Atlanta's yes, and take off before Esmeralda agrees to hold you. You win when the pilot says you have left Esmeraldan airspace.",
       arrive: "Susana airfield. Check the crew, fuel and landing permission. Sosā has asked Esmeralda to hold you.",
       final: true,
       approaches: [
@@ -208,6 +209,8 @@ const Data = (() => {
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda, through the embassy in Baca, to hold you if you appear.' },
     { id: 'press_story',  w: 2, text: () => 'The ministry briefs the papers that you have already left the country.' },
+    { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
+    { id: 'watch_sibling', w: 2, once: true, after: 9, text: (who) => `Sosā has ${who}'s calls monitored. The operator in Susana goes quiet for a while.` },
   ];
 
   return { CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA };

@@ -261,3 +261,19 @@ reports card use and hours per level. The guided run gained a boarding step and 
 Still open, and handed to the design pass: the dumb policy wins 65 percent, the clock is not felt
 on screen, and the owner reports not knowing what they are up against. Those are presentation
 problems first: the clock, the goal and the inquiry need to be on the scene, not in side panels.
+
+## Addendum: story and gameplay pass, for a stranger
+
+Owner direction: use the interface as it stands (a separate agent owns look and feel) and make
+the game something a stranger can enjoy now. Four things were missing and each is now data or
+rules, not UI. The goal is stated: every level's objective says what to do here and names the
+four people whose work must land before you can fly. Things come at you: a radio station asks you
+to confirm the yacht story (a lie that buys time and costs more if a friend later turns), Holt
+warns of men at the yard gate, Sosā himself calls you at Susana. Promises come due: Salek wants the
+accounts signed over on the colônia night, Vélez wants the words "guest, not a government" at the
+line, and refusing either has a concrete price. The ending is built from the run: who leads the
+party, who talked, where the accounts sit, who is on the warrant. The inquiry gained a checkpoint
+and a tap on your sibling's phone, and exposure now drifts every two hours while it looks in the
+right place. The guided run still replays, with one scripted inquiry move added for the new cadence.
+Harness: the dumb policy wins 62 percent, down from 65; all nine card tags are used. Balance is
+left to the design pass by owner instruction.

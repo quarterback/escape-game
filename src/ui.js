@@ -6,7 +6,7 @@
 const UI = (() => {
   let s = null, sel = null, who = 'woman', enemyLog = [];
   const $ = (id) => document.getElementById(id);
-  const COLORS = { narrator: '#9a9aaa', sibling: '#b48ad8', aide: '#7ab0ff', nando: '#d0b080', sponsor: '#ffd24a', registry: '#9ad080', host: '#f0a060', official: '#e08a92', holt: '#a0a8b8', theo: '#d0b080', pilot: '#8ab0e0', enemy: '#ff6a6a', sys: '#9a9aaa' };
+  const COLORS = { narrator: '#9a9aaa', sibling: '#b48ad8', aide: '#7ab0ff', nando: '#d0b080', sponsor: '#ffd24a', registry: '#9ad080', host: '#f0a060', official: '#e08a92', holt: '#a0a8b8', theo: '#d0b080', press: '#c0c0d0', pilot: '#8ab0e0', enemy: '#ff6a6a', sys: '#9a9aaa' };
   function log(whoId, text, cls) {
     const el = document.createElement('div'); el.className = 'line ' + (cls || '');
     const name = whoId === 'narrator' || whoId === 'sys' ? '' : whoId === 'enemy' ? Data.ENEMY.name : Sim.personName(s, whoId);
