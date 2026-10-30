@@ -70,6 +70,7 @@ Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.
 | `vendor/p5.min.js` | Pinned p5.js 1.9.4 |
 | `tools/build.py` | Inlines everything into `index.html` |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing per persona |
+| `tools/tutorial-check.js` | Replays the practice night against the sim; run after changing `sim.js` or `tutorial.js` |
 
 Rebuild after editing `src/`:
 
