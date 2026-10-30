@@ -113,5 +113,5 @@ bar's height, since the line can wrap.
   shell command, not the game or its tools. Before committing, check the list
   of staged files for anything unexpected.
 - **Delivery.** PR #6 had already been merged into main at 69e44e9, so this
-  work is in a new pull request, #7. The live site will show these fixes once
-  #7 is merged and deployed.
+  work went out in a new pull request, #7. The owner merged it at 0d0516c.
+  This note reached main in its own pull request after that.
