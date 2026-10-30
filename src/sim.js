@@ -473,22 +473,21 @@ const Sim = (() => {
   function restore(json) { const s = JSON.parse(json); s._boot = []; return attachRng(s); }
   // The ending names what the run cost. Built from the state, so every run reads differently.
   function epilogue(s, win) {
+    // at most three lines after the ending itself, most important first
     const out = [], first = (id) => personName(s, id).split(' ')[0];
     const turned = Object.keys(s.people).filter(k => s.people[k].turned && k !== 'sponsor');
-    if (win) {
-      out.push(s.arr.permission.stage >= 2 ? T('sim.end.a_car_meets_the_aircraft') : T('sim.end.atlanta_lets_the_jet_land'));
-      if (s.flags.signed) out.push(T('sim.end.the_family_accounts_sit_in'));
-    }
+    if (win) out.push(s.arr.permission.stage >= 2 ? T('sim.end.a_car_meets_the_aircraft') : T('sim.end.atlanta_lets_the_jet_land'));
+    if (!win) out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') }));
+    if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: s.holds }));
+    if (turned.length) out.push(T('sim.end.talked_to_the_inquiry_will', { and: turned.map(first).join(' and ') }));
     for (const c of s.commitments) {
       if (c.to === 'aide') out.push(c.kept === false ? T('sim.end.leads_the_party_now_and', { aide: first('aide') }) : c.kept ? T('sim.end.leads_the_party_in_your', { aide: first('aide') }) : T('sim.end.is_still_waiting_for_the', { aide: first('aide') }));
       if (c.to === 'official' && c.kept === false) out.push(T('sim.end.baca_reads_your_refusal_as'));
       if (c.to === 'sponsor' && c.kept === false) out.push(T('sim.end.salek_tells_his_clients_you'));
     }
-    if (turned.length) out.push(T('sim.end.talked_to_the_inquiry_will', { and: turned.map(first).join(' and '), turned: turned.length > 1 ? T('sim.end.they') : first(turned[0]) }));
+    if (win && s.flags.signed) out.push(T('sim.end.the_family_accounts_sit_in'));
     if (s.people.host.trust > 0) out.push(T('sim.end.nona_rosa_s_truck_runs'));
-    if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: s.holds }));
-    if (!win) out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') }));
-    return out.join(' ');
+    return out.slice(0, 3).join(' ');
   }
 
   return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };

@@ -87,7 +87,7 @@ const Data = (() => {
   // and what happens. hours: time spent attempting. Failure never ends the run by itself.
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
-      objective: "Get out of the house without the watch following. Before you can fly you need three things from three people: a jet (Duartē), someone waiting at the border (Vélez), and an entry visa for Atlanta (Salek). Start them now. They take hours.",
+      objective: "Get past the watch. Start your calls now: the jet, the border and the visa take hours.",
       arrive: "Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday. One of them is in your coat.",
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
@@ -104,7 +104,7 @@ const Data = (() => {
           fail: { exposure: 1, commit: 'aide', say: 'The car is let through, but the inspector is told whose car it was.' } },
       ] },
     { id: 'road', name: 'The road south, Santa Laura', short: 'Santa Laura', scene: 'road',
-      objective: "Change cars and keep moving. Every hour the inquiry looks in the right place, exposure climbs. Keep them looking at the coast.",
+      objective: "Change cars and keep the inquiry looking at the coast.",
       arrive: "Santa Laura. The radio puts you on a yacht in Portô Venla. The posts have not received the travel ban yet.",
       approaches: [
         { id: 'second_driver', with: 'nando', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
@@ -125,7 +125,7 @@ const Data = (() => {
           fail: { exposure: 3, belief: 1, say: 'The post at the river has your plate. They let you through and pick up the phone.' } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
-      objective: "A safe house for the night. Use it: call Duartē, Salek and Vélez. Do not take the road to the border until someone in Baca has your name.",
+      objective: "Make your calls tonight. Leave for the border once Baca has your name.",
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative’s truck was impounded this morning.",
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
@@ -143,7 +143,7 @@ const Data = (() => {
           success: { say: 'Nonā Rosa’s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
-      objective: "The midnight freight is the only way over the passes. Holt or Theo can get you on. The yardmaster will take your money and call Sosā.",
+      objective: "Get on the midnight freight. The yardmaster will sell you out to Sosā.",
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
@@ -164,7 +164,7 @@ const Data = (() => {
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: "One crossing. Your party means nothing past this line. Your second passport, people waiting for you, or a guard who takes money. Choose before the travel ban reaches the desk.",
+      objective: "Cross before the travel ban reaches the desk.",
       arrive: "Two guards wait at the barrier. Across the line, the Esmeraldan post is lit. The travel ban may already be on the desk.",
       border: true,
       approaches: [
@@ -185,7 +185,7 @@ const Data = (() => {
           fail: { exposure: 3, hours: 4, say: 'They hold you four hours and the inspector is on the radio. The party gets you released pending a hearing you will not attend.' } },
       ] },
     { id: 'airfield', name: 'Susana airfield', short: 'Susana', scene: 'airfield',
-      objective: "Get the jet fueled and positioned, get Atlanta's yes, and take off before Esmeralda agrees to hold you. You win when the pilot says you have left Esmeraldan airspace.",
+      objective: "Fuel the jet, get Atlanta's yes and take off before Esmeralda holds you.",
       arrive: "Susana airfield. Check the crew, fuel and landing permission. Sosā has asked Esmeralda to hold you.",
       final: true,
       approaches: [

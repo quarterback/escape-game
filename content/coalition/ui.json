@@ -515,7 +515,7 @@
   {
    "id": "route.stops_here",
    "pattern": "P09",
-   "text": "{card} stops here.",
+   "text": "Last stop for {card}.",
    "args": [
     "card"
    ]
@@ -523,7 +523,7 @@
   {
    "id": "route.starts_here",
    "pattern": "P09",
-   "text": "{card} starts here.",
+   "text": "First stop for {card}.",
    "args": [
     "card"
    ]
@@ -531,7 +531,7 @@
   {
    "id": "route.velez_starts",
    "pattern": "P09",
-   "text": "Vélez's card starts here."
+   "text": "First stop for Vélez's card."
   },
   {
    "id": "route.you_here",
@@ -594,7 +594,7 @@
   {
    "id": "route.card_stops_line",
    "pattern": "P09",
-   "text": "{card} stops at the line",
+   "text": "{card}, until the line",
    "args": [
     "card"
    ]
@@ -602,7 +602,7 @@
   {
    "id": "route.velez_starts_short",
    "pattern": "P09",
-   "text": "Vélez's card starts here"
+   "text": "First stop for Vélez's card"
   },
   {
    "id": "route.inquiry",
@@ -1679,20 +1679,14 @@
   {
    "id": "sim.end.nona_rosa_s_truck_runs",
    "pattern": "P14",
-   "text": "Nonā Rosa's truck runs to Salta every week. Nobody at the colônia says who rode in it."
-  },
-  {
-   "id": "sim.end.they",
-   "pattern": "P14",
-   "text": "They"
+   "text": "Nonā Rosa's truck still runs to Salta."
   },
   {
    "id": "sim.end.talked_to_the_inquiry_will",
    "pattern": "P14",
-   "text": "{and} talked to the inquiry. {turned} will not be forgiven at home.",
+   "text": "{and} talked to the inquiry.",
    "args": [
-    "and",
-    "turned"
+    "and"
    ]
   },
   {
@@ -1703,7 +1697,7 @@
   {
    "id": "sim.end.baca_reads_your_refusal_as",
    "pattern": "P14",
-   "text": "Baca reads your refusal as a government in exile. The guest room closes."
+   "text": "Baca has closed its guest room to you."
   },
   {
    "id": "sim.end.is_still_waiting_for_the",
@@ -1716,7 +1710,7 @@
   {
    "id": "sim.end.leads_the_party_in_your",
    "pattern": "P14",
-   "text": "{aide} leads the party in your name. He expects you to remember that.",
+   "text": "{aide} leads the party in your name.",
    "args": [
     "aide"
    ]
@@ -1724,7 +1718,7 @@
   {
    "id": "sim.end.leads_the_party_now_and",
    "pattern": "P14",
-   "text": "{aide} leads the party now and says your name only to deny it.",
+   "text": "{aide} leads the party now and denies knowing you.",
    "args": [
     "aide"
    ]
@@ -1732,7 +1726,7 @@
   {
    "id": "sim.end.the_family_accounts_sit_in",
    "pattern": "P14",
-   "text": "The family accounts sit in Salek's house. He calls on the first of every month."
+   "text": "Salek now holds the family accounts."
   },
   {
    "id": "sim.end.atlanta_lets_the_jet_land",
@@ -1827,7 +1821,7 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. {epilogue}",
+   "text": "{time}. Your immunity is gone, and Esmeralda has closed its airfields to you. {epilogue}",
    "args": [
     "time",
     "epilogue"
@@ -3032,38 +3026,44 @@
   {
    "id": "gov.scene.she_may_be_across_the",
    "pattern": "P08",
-   "text": "She may be across the border. Your domestic authority has limited reach.",
-   "role": "gov"
+   "text": "She may be across the border, where your ministry has little reach.",
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.the_crossing_could_happen_before",
    "pattern": "P08",
-   "text": "The crossing could happen before your instructions arrive. A sent message alone does not close the border.",
-   "role": "gov"
+   "text": "She could cross before your orders arrive. A sent ban does not close the border.",
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.a_departure_window_is_approaching",
    "pattern": "P08",
-   "text": "A departure window is approaching. Railway staff give different accounts.",
-   "role": "gov"
+   "text": "The freight leaves soon. Railway staff disagree about who is on it.",
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.someone_is_sheltering_her_your",
    "pattern": "P08",
    "text": "Someone is sheltering her. Your source has conditions.",
-   "role": "gov"
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.reports_conflict_a_patrol_can",
    "pattern": "P08",
    "text": "Reports conflict. A patrol can check one of them.",
-   "role": "gov"
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.the_watched_convoy_splits_the",
    "pattern": "P08",
    "text": "The watched convoy splits. The minister wants a location.",
-   "role": "gov"
+   "role": "gov",
+   "note": "objective"
   },
   {
    "id": "gov.scene.susana_airfield",
@@ -3656,6 +3656,61 @@
    "id": "menu.credits",
    "pattern": "P01",
    "text": "Credits"
+  },
+  {
+   "id": "hint.news",
+   "pattern": "P08",
+   "text": "News: choose how to respond. Each choice shows its cost."
+  },
+  {
+   "id": "hint.phone",
+   "pattern": "P08",
+   "text": "Phone: answer a message or place one call, then press Done with the phone."
+  },
+  {
+   "id": "hint.move",
+   "pattern": "P08",
+   "text": "Move: choose one approach under Here, or lie low for an hour."
+  },
+  {
+   "id": "hint.roll",
+   "pattern": "P08",
+   "text": "Roll: see how your move went."
+  },
+  {
+   "id": "hint.sosa",
+   "pattern": "P08",
+   "text": "Sosā: see what the inquiry did while the hours passed."
+  },
+  {
+   "id": "hint.gov_news",
+   "pattern": "P08",
+   "text": "Reports: choose how to respond. Each choice shows its cost.",
+   "role": "gov"
+  },
+  {
+   "id": "hint.gov_phone",
+   "pattern": "P08",
+   "text": "Desk: answer the minister or send one request, then press Done at the desk.",
+   "role": "gov"
+  },
+  {
+   "id": "hint.gov_move",
+   "pattern": "P08",
+   "text": "Order: give one order under Orders, or wait an hour.",
+   "role": "gov"
+  },
+  {
+   "id": "hint.gov_roll",
+   "pattern": "P08",
+   "text": "Roll: see how your order went.",
+   "role": "gov"
+  },
+  {
+   "id": "hint.gov_sosa",
+   "pattern": "P08",
+   "text": "Her move: read what reached your desk while the order ran.",
+   "role": "gov"
   }
  ]
 }

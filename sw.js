@@ -1,5 +1,5 @@
-// Coalition service worker, build 8742914580. Cache first; navigations answer with the cached page.
-const CACHE = 'coalition-8742914580';
+// Coalition service worker, build 1e2d03fa4d. Cache first; navigations answer with the cached page.
+const CACHE = 'coalition-1e2d03fa4d';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
