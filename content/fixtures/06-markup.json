@@ -1,0 +1,1 @@
+{ "about": "Content carries raw HTML.", "expect": ["C10"], "patch": { "ui": { "entries+": [ { "id": "test.html", "pattern": "P08", "text": "You <i>must</i> leave." } ] } } }

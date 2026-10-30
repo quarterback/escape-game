@@ -1,0 +1,23 @@
+name: content
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Every source file parses
+        run: for f in src/*.js tools/*.js; do node --check "$f"; done
+      - name: Content check
+        run: node tools/content-check.js
+      - name: Invalid fixtures are caught
+        run: node tools/content-check.js --fixtures
+      - name: Contract tests (C03, C04, C14)
+        run: node tools/contract-tests.js
+      - name: Escape tutorial replays
+        run: node tools/tutorial-check.js
+      - name: Government tutorial replays
+        run: node tools/gov-tutorial-check.js
+      - name: Committed build matches the sources
+        run: python3 tools/build.py && git diff --exit-code index.html sw.js manifest.webmanifest

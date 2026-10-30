@@ -1,0 +1,1 @@
+{ "about": "A tutorial step allows an approach that does not exist.", "expect": ["C02"], "patch": { "tutorials": { "tutorials+": [ { "id": "bogus", "side": "escape", "seed": 1, "steps": [ { "id": "s1", "kind": "act", "title": "Fly", "body": "Choose **Fly**.", "goal": "Fly", "allow": { "approaches": ["teleport"] }, "done": { "pos": 5 } } ] } ] } } }

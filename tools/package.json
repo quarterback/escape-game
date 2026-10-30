@@ -1,0 +1,6 @@
+{
+  "name": "coalition-tools",
+  "private": true,
+  "description": "Local checks for Coalition. The content checks need only Node; the contrast check needs these.",
+  "devDependencies": { "axe-core": "4.10.2", "pngjs": "7.0.0" }
+}

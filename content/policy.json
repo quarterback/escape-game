@@ -1,0 +1,93 @@
+{
+ "contract": "coalition-content/0.5",
+ "about": "Rule configuration for the content check. Rule IDs follow docs/content/patterns.md. Changing a rule here is a policy change and belongs in its own commit.",
+ "prohibited": [
+  {
+   "id": "em-dash",
+   "match": "—",
+   "rule": "C11",
+   "severity": "error",
+   "hint": "Use a period, comma, colon or parentheses."
+  },
+  {
+   "id": "en-dash",
+   "match": "–",
+   "rule": "C11",
+   "severity": "error",
+   "hint": "Use a period, comma, colon or parentheses."
+  },
+  {
+   "id": "load-bearing",
+   "match": "load[ -]bearing",
+   "regex": true,
+   "flags": "i",
+   "rule": "C11",
+   "severity": "error",
+   "hint": "The owner bans this phrase."
+  },
+  {
+   "id": "curly-quote",
+   "match": "[“”]",
+   "regex": true,
+   "rule": "C11",
+   "severity": "warn",
+   "hint": "Use straight quotes."
+  }
+ ],
+ "markup": {
+  "allowed": [
+   "**bold**",
+   "blank-line paragraphs"
+  ],
+  "rule": "C10"
+ },
+ "budgets": {
+  "P01": {
+   "maxWords": 6,
+   "severity": "warn"
+  },
+  "P08": {
+   "maxSentences": 2,
+   "maxWords": 18,
+   "severity": "error",
+   "scope": "objectives",
+   "note": "Owner, October 30, 2026: objectives were far too wordy on a phone."
+  },
+  "P13": {
+   "maxInstructions": 1,
+   "severity": "warn"
+  }
+ },
+ "patterns": {
+  "P01": "Action label",
+  "P02": "Navigation and headings",
+  "P03": "Action preview",
+  "P04": "Blocked action",
+  "P05": "Arrangement status",
+  "P06": "Report and uncertain information",
+  "P07": "Dialogue and decisions",
+  "P08": "Scene arrival and objective",
+  "P09": "Help card",
+  "P10": "Action result",
+  "P11": "Technical failure",
+  "P12": "Empty state",
+  "P13": "Tutorial step",
+  "P14": "Ending and debrief"
+ },
+ "technical": [
+  "coalition.daily.",
+  "coalition.save",
+  "#menu2 [data-act=install]",
+  "#menu2 [data-act=mute]",
+  "Coalition",
+  "./content.js",
+  "./data.js",
+  "./sim.js",
+  "PixiJS missing",
+  "Render error, switching to 2D",
+  "PixiJS unavailable, drawing in 2D",
+  "image/png",
+  "'GCNorthSans-Regular', Arial, sans-serif",
+  "Escape"
+ ]
+}

@@ -1,0 +1,1 @@
+{ "about": "A file declares an older contract.", "expect": ["C15"], "patch": { "markers": { "contract": "coalition-content/0.4" } } }
