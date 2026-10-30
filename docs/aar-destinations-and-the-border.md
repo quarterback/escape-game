@@ -101,3 +101,15 @@ Owner correction: Esmeralda is a kels remap of Ecuador and the departure strip i
 ## Addendum, same day: the card copy failed the copy rules
 
 The owner caught it on the phone: "Who asks" and "The catch" are labels, not sentences a person would write, and the "Has not said yes" pill repeated the subtitle. The mockup had them; copying the mockup is not a copy pass. Each card now reads as two plain sentences from the sponsor record ("Amādū Salek, an old client of the family, will ask for you. He wants the family accounts moved first."), the hours line says "10 hours in the air" in the interface face rather than the clock face, and the three label strings are deleted from the catalog. The same pass took the colons and shorthand out of the ledger lines, the option labels and the two landing texts. A hover ring that stuck to the last card on touch screens is now hover-only. Rule for the next agent: every new string gets the Humanizer and plain-language pass before it ships, including strings copied from a design mockup.
+
+## Addendum, same day: the owner's checker now runs over the game
+
+`quarterback/pbbg-content-schema` is the content architecture the owner extracted from this game. Its README said the game had not yet migrated to it. It has not; instead `tools/pbbg-bundle.js` projects the package (the catalog, the tutorials and the records in `src/data.js`: levels, approaches, destinations, posts, stage lines, cards, people, events, holds) into a bundle in the checker's shape, and `tools/pbbg-check.js` runs the checker with `tools/pbbg-policy.json`, the base policy plus the game's own rules: no em or en dashes, the banned phrase, Humanizer stock phrases, "in the air", and the label-row words the owner caught on the phone. First run: 83 findings, 1,147 entries.
+
+- 70 were `SPEAKER`: dialogue with nobody speaking. The catalog never recorded who says a line; the code knows at the call site. `speaker` is now an optional field on a catalog entry, filled for every quoted line from the call sites. The rest were names, roles and interface fragments misfiled as dialogue, now headings or status.
+- Two headings carried terminal punctuation. "Where do you go?" is "Choose where you go"; the airfield tutorial title lost its period.
+- "{h} hours in the air" is "{h}-hour flight", by owner instruction, and Zaryanova's landing said nineteen hours for an eight-hour flight. Fixed.
+- Five action labels over six words shortened, two of them older than this work.
+- Four hold events shared an id because the table has none; the adapter numbers them.
+
+Second run: clean. Calibration after the copy pass is identical to before it (the rules did not move). The checker is now in the AGENTS.md verification list.

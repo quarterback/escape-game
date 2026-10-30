@@ -97,7 +97,11 @@ without WebGL or WebGPU, and keep people above the bottom strip of the scene (`G
 
 For copy changes, run `python3 tools/build.py` (it parses the sources and runs
 the content check first), `node tools/tutorial-check.js`,
-`node tools/gov-tutorial-check.js` and `node tools/contract-tests.js`.
+`node tools/gov-tutorial-check.js`, `node tools/contract-tests.js` and
+`node tools/pbbg-check.js` (the owner's standalone checker from
+`quarterback/pbbg-content-schema`, cloned beside this repo; its policy is
+`tools/pbbg-policy.json`). Every new string gets the Humanizer and plain-language
+pass before it ships, including strings copied from a design mockup.
 After a colour, layout or type change, run `node tools/contrast-check.js`
 (once: `cd tools && npm install`). It must report zero WCAG AA failures. Check the built game in a browser, including the
 start screen and tutorial. If editing strings in the simulation or data tables,

@@ -168,11 +168,11 @@ const Data = (() => {
       arrive: "The passes. Three crossings within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Baca, and the Punta Marēa crossing toward the coast. Somewhere among them, guards who have been paid from your side of the line.",
       border: true,
       approaches: [
-        { id: 'post_rail', post: 'rail', name: 'Cross at the Paso Huhūi rail post', hours: 1, dc: 4, needs: [{ card: 'document' }],
+        { id: 'post_rail', post: 'rail', name: 'Cross at the Paso Huhūi post', hours: 1, dc: 4, needs: [{ card: 'document' }],
           mods: { introduction: 2, influence: 1 }, text: "The freight's own crossing, and the one Sosā expects. Your second passport goes on the desk.",
           success: { say: 'The guard turns the pages, looks at a sheet on the desk, and stamps it.' },
           fail: { exposure: 2, hours: 3, say: 'The guard reads the sheet first. Three hours in a cold room before Gianlūka\'s phone call gets you back outside, on the wrong side.' } },
-        { id: 'post_high', post: 'high', name: 'Take the road post at Ālto Verdē', hours: 3, dc: 3, needs: [],
+        { id: 'post_high', post: 'high', name: 'Take the Ālto Verdē road post', hours: 3, dc: 3, needs: [],
           mods: { introduction: 2, vehicle: 1 }, text: "Three hours of switchbacks toward Baca. The post answers to the interior ministry, where Vélez works.",
           success: { say: 'A long climb. The sergeant at Ālto Verdē reads your name off a list and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it. Two hours while someone in Baca is woken up.' } },
@@ -181,7 +181,7 @@ const Data = (() => {
           success: { exposure: 1, say: 'The barrier goes up. Nobody says thank you.' },
           fail: { exposure: 2, hours: 2, say: 'The older guard takes the money and the younger one calls the ministry. Two hours in the salt wind.' } },
       ],
-      received: { id: 'received', name: "Walk to the people waiting for you", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
+      received: { id: 'received', name: "Walk to the people waiting", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
       bought: { say: 'The sergeant takes your passport, walks into the hut, and does not come back. Through the window you can see him on the telephone. Twelve hours later a Valdórian liaison arrives to "assist". By then it is too late to matter which side of the line you are on.' } },
     { id: 'airfield', name: 'Susana airfield, Esmeralda', short: 'Susana', scene: 'airfield',
       objective: "Safe passage to fly, not to stay. Fuel the jet, get the visa and take off.",
@@ -247,7 +247,7 @@ const Data = (() => {
                             terms: 'She will take it to the ministry if you give a statement, on the record, naming the men who forced the vote.', slow: 0,
                             demand: { text: '"A journalist I trust is holding the line. Give the statement now, with names, and the ministry has a reason to say yes."', accept: 'Give the statement', effect: 'Vosk takes it to the ministry. The inquiry reads it too, and your exposure rises by one.', heat: 1 },
                             kept: 'Your statement runs in Gannibal with the names in it.', broke: 'Vosk tells the ministry you do not keep terms.' },
-                 landing: 'You land at Gannibal after nineteen hours in the air. Officers wait on the apron. Zaryanova never agreed to take you. You are held at the airport until Valdória sends for you.' },
+                 landing: 'You land at Gannibal after eight hours. Officers wait on the apron. Zaryanova never agreed to take you. You are held at the airport until Valdória sends for you.' },
   };
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Susana', city: 'Esmeralda', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
@@ -292,7 +292,7 @@ const Data = (() => {
     { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}. It runs in the morning edition.', choices: [
       { id: 'confirm', label: 'Confirm it on the record', fx: { minister: 1, warn: 1, say: 'The minister likes the headline. So does she.' } },
       { id: 'deny', label: 'Deny it', fx: { minister: -1, say: 'The minister reads your denial in his own paper.' } },
-      { id: 'spin', label: 'Tell the paper she has already crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
+      { id: 'spin', label: 'Tell the paper she has crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
     { id: 'judge', after: 4, title: 'The duty judge wants a hearing', text: 'He will not sign the order for the border post until a hearing tomorrow.', choices: [
       { id: 'wait_judge', label: 'Wait for the hearing', fx: { unban: true, say: 'The post keeps the old list for one more night.' } },
       { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Santa Laura signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
@@ -402,7 +402,7 @@ const Data = (() => {
       { id: 'union', label: 'Pay the union boss', fx: { exposure: 2, say: 'The strike ends for one train.' } },
       { id: 'scabs', label: 'Ride with the strikebreakers', fx: { roll: { need: 4, win: { say: 'Nobody looks at a scab twice.' }, lose: { hold: 1 } } } } ] },
     { id: 'tourbus', at: ['salta'], title: 'A tour bus to the waterfalls', text: 'A bus of tourists leaves for the falls at the border at dawn. One seat is empty.', choices: [
-      { id: 'bus', label: 'Take the seat in a sun hat', fx: { roll: { need: 4, win: { advance: true, belief: 'away', say: 'You sleep through the checkpoint. The guide counts you twice.' }, lose: { hold: 1 } } } },
+      { id: 'bus', label: 'Take the seat in a hat', fx: { roll: { need: 4, win: { advance: true, belief: 'away', say: 'You sleep through the checkpoint. The guide counts you twice.' }, lose: { hold: 1 } } } },
       { id: 'pass', label: 'Let it go', fx: {} } ] },
     { id: 'holt_drunk', at: ['salta'], title: 'Holt has been drinking', text: 'He is loud at the bar about a passenger worth a lot of money.', choices: [
       { id: 'trust_holt', label: 'Trust him anyway', fx: { doubt: 'holt' } },

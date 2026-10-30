@@ -67,6 +67,11 @@
      "note": {
       "type": "string"
      },
+     "speaker": {
+      "type": "string",
+      "pattern": "^[a-z_]+$",
+      "description": "Who says a P07 line: a PEOPLE key, 'sibling', 'enemy', 'narrator', or a government source."
+     },
      "fragment": {
       "type": "boolean",
       "description": "Part of a longer label; exempt from sentence case."
