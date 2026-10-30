@@ -4029,7 +4029,7 @@
   {
    "id": "about.cards_2",
    "pattern": "P08",
-   "text": "Some of the people on your side have already been approached. You find out which ones when it costs you."
+   "text": "Three of the people on your side have already been approached. You find out which ones when it costs you."
   },
   {
    "id": "about.gov_h",
@@ -4054,7 +4054,7 @@
   {
    "id": "about.start_2",
    "pattern": "P08",
-   "text": "It is hard on purpose. One bad call in the first hours can end a run before it starts. Runs are short, so start another."
+   "text": "It is hard on purpose. One bad call in the first hours can end a run before it starts. A run takes about twenty minutes, so start another."
   },
   {
    "id": "about.world_h",

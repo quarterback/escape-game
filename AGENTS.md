@@ -70,6 +70,9 @@ Check that shortening has preserved who acts, what they need and what follows.
 - Use sentence case and American spelling. No em dashes, invented Nelôxi words
   or the phrase "load bearing."
 - Keep build tools, implementation notes and editorial status out of player screens.
+- Write claims flat and sure. Owner, October 30, 2026: "do not soften claims ever." This is
+  a game, not a record of fact; a hedged sentence ("some", "about", "may") reads as a
+  writer who does not know the game. Pick the number, state the rule, move on.
 - Edit `src/`, then rebuild. Do not edit the generated `index.html` directly.
 
 ## Preserve the font mapping
