@@ -37,7 +37,7 @@ const UI = (() => {
 
   // ---- rendering --------------------------------------------
   function renderAll() { renderStatus(); renderHand(); renderTargets(); renderControls(); renderNeeds(); renderOver(); syncHighlight(); }
-  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name}: ${Sim.PERSONAS[k].coin} coin, ${Sim.PERSONAS[k].favor} ${Sim.PERSONAS[k].favor === 1 ? 'favor' : 'favors'}, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
+  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name}: ${Sim.PERSONAS[k].coin} australs, ${Sim.PERSONAS[k].favor} ${Sim.PERSONAS[k].favor === 1 ? 'favor' : 'favors'}, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
 
   function renderStatus() {
     $('coin').textContent = s.coin; $('favor').textContent = s.favor;
@@ -100,7 +100,7 @@ const UI = (() => {
     ins.classList.remove('empty');
     ins.innerHTML = `<h3>${def.name} on ${a.label}</h3>
       <ul class="preview">${a.preview.map(x => `<li>${x}</li>`).join('')}</ul>
-      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ' and no time'}.${card.type === 'bribe' ? ' Every bribe raises the price of the next one by ' + Sim.BRIBE_STEP + ' coin.' : ''}</p>
+      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ' and no time'}.${card.type === 'bribe' ? ' Every bribe raises the price of the next one by ' + Sim.BRIBE_STEP + ' austral.' : ''}</p>
       ${a.ok ? '' : `<p class="blocked">${a.why}</p>`}
       <div class="row"><button id="commit" class="primary" ${a.ok && !s.over ? '' : 'disabled'}>Commit</button><button id="cancel">Cancel</button></div>`;
     $('commit').onclick = commit; $('cancel').onclick = () => { selCard = selTarget = null; Sfx.click(); renderAll(); };
@@ -155,7 +155,7 @@ const UI = (() => {
     const r = loadRecords(); const el = $('records');
     if (!r.nights) { el.textContent = 'No nights played in this browser yet.'; return; }
     el.innerHTML = `${r.escapes} of ${r.nights} nights escaped. Streak ${r.streak}, best ${r.bestStreak}.` +
-      (r.earliest != null ? ` Earliest out ${Sim.clockText(r.earliest)}. Coolest escape at heat ${r.coolest}. Richest escape with ${r.richest} coin.` : '');
+      (r.earliest != null ? ` Earliest out ${Sim.clockText(r.earliest)}. Coolest escape at heat ${r.coolest}. Richest escape with ${r.richest} australs.` : '');
   }
   function renderOver() {
     const o = $('over');
@@ -194,7 +194,7 @@ const UI = (() => {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'walk': Render.walk(e.from, e.to); break;
-        case 'coin': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' coin', '#ffd24a'); Render.enqueue({ dur: 10, start() { Sfx.coin(e.delta > 0); } }); break;
+        case 'coin': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' australs', '#ffd24a'); Render.enqueue({ dur: 10, start() { Sfx.coin(e.delta > 0); } }); break;
         case 'favor': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' favor', '#b48ad8'); break;
         case 'heat': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' heat', e.delta > 0 ? '#ff6a6a' : '#7ad0ff'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'state': Render.flash(e.id); if (e.group === 'people') Render.enqueue({ dur: 10, start() { Sfx.work(); } }); break;
@@ -206,7 +206,7 @@ const UI = (() => {
         case 'board': Render.enqueue({ dur: 300, start() { Sfx.whistle(); } }); break;
         case 'over': Render.gameOver(e); Render.enqueue({ dur: 10, start() { e.win ? Sfx.win() : Sfx.lose(); } }); break;
         case 'draw': Render.enqueue({ dur: 10, start() { Sfx.click(); } }); break;
-        case 'price': Render.float('self', `bribes now cost ${e.bribe} coin`, '#ffb060'); break;
+        case 'price': Render.float('self', `bribes now cost ${e.bribe} australs`, '#ffb060'); break;
       }
     }
     if (events.some(x => x.type === 'state' && x.id === 'lookout' && x.to === 'idle')) Render.pipRun(1);
