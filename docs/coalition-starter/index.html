@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>COALITION — Checkpoint 7</title>
+<style>
+  :root { --ink:#1a1a22; --paper:#e8e4d8; --card:#f7f4ec; --accent:#2d5a88; --warn:#b24a3a; --ok:#2e7d4f; --muted:#6b6659; --gold:#c9a227; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Courier New',monospace; background:var(--paper); color:var(--ink); image-rendering:pixelated; }
+  header { padding:8px 14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; border-bottom:2px solid #b8b0a0; background:#d4cfc2; }
+  header h1 { font-size:14px; margin:0; letter-spacing:.04em; text-transform:uppercase; }
+  header .meta { font-size:11px; opacity:.6; }
+  #app { display:grid; grid-template-columns: 1fr 300px; gap:10px; padding:10px; max-width:1180px; margin:0 auto; }
+  @media (max-width:900px){ #app { grid-template-columns:1fr; } }
+  canvas { background:#f0ece0; border:2px solid #b8b0a0; display:block; width:100%; height:auto; image-rendering:pixelated; image-rendering:crisp-edges; }
+  .panel { background:#f0ece0; border:2px solid #b8b0a0; padding:10px; }
+  .panel h2 { font-size:11px; text-transform:uppercase; letter-spacing:.1em; margin:0 0 6px; color:var(--muted); border-bottom:1px solid #c9c4b6; padding-bottom:4px; }
+  .controls { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  button { padding:7px 12px; border:2px solid #8a8272; background:#e8e4d8; border-radius:0; cursor:pointer; font:inherit; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  button:hover { background:#d4cfc2; }
+  button:disabled { opacity:.35; cursor:not-allowed; }
+  button.primary { background:var(--accent); color:#fff; border-color:#1a3a5c; }
+  button.danger { background:var(--warn); color:#fff; border-color:#7a2a1e; }
+  button.ok { background:var(--ok); color:#fff; border-color:#1a4a2e; }
+  button.gold { background:var(--gold); color:#1a1a22; border-color:#8a6a10; }
+  .person { padding:8px 10px; border:2px solid #c9c4b6; background:#f7f4ec; margin-bottom:6px; }
+  .person .name { font-weight:bold; font-size:14px; }
+  .person .row { font-size:12px; margin-top:2px; display:flex; gap:4px; }
+  .person .row .k { color:var(--muted); min-width:72px; }
+  .stat { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; border-bottom:1px dashed #c9c4b6; }
+  .log { font-size:11px; max-height:130px; overflow:auto; line-height:1.5; }
+  .log div { padding:2px 0; border-bottom:1px solid #e3dfd2; }
+  .overlay { position:fixed; inset:0; background:rgba(20,18,14,.7); display:flex; align-items:center; justify-content:center; z-index:20; padding:16px; }
+  .modal { background:#f0ece0; border:3px solid #8a8272; padding:20px; max-width:640px; width:100%; max-height:88vh; overflow:auto; box-shadow:6px 6px 0 #5a5448; }
+  .modal h2 { margin:0 0 8px; font-size:16px; text-transform:uppercase; letter-spacing:.06em; }
+  .modal h3 { margin:12px 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .modal p { font-size:13px; line-height:1.6; margin:6px 0; }
+  .modal ul { font-size:13px; line-height:1.6; padding-left:18px; }
+  .modal .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:14px; flex-wrap:wrap; }
+  .tag { display:inline-block; font-size:10px; padding:2px 6px; border:1px solid #8a8272; background:#e8e4d8; margin-right:4px; text-transform:uppercase; letter-spacing:.04em; }
+  .tag.help { background:#d4e8dc; color:#1a4a2e; }
+  .tag.block { background:#e8d4d0; color:#7a2a1e; }
+  .endcard { text-align:center; }
+  .endcard h2 { font-size:20px; margin:0 0 6px; text-transform:uppercase; }
+  .endcard .big { font-size:48px; margin:8px 0; }
+  .card { display:inline-block; width:130px; min-height:90px; border:2px solid #8a8272; background:#f7f4ec; padding:6px; margin:4px; vertical-align:top; cursor:pointer; font-size:11px; position:relative; }
+  .card:hover { background:#efe9dc; transform:translateY(-2px); }
+  .card.selected { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+  .card.disabled { opacity:.4; cursor:not-allowed; }
+  .card .ctitle { font-weight:bold; font-size:11px; text-transform:uppercase; letter-spacing:.04em; border-bottom:1px solid #c9c4b6; padding-bottom:3px; margin-bottom:4px; }
+  .card .cdesc { font-size:10px; line-height:1.3; opacity:.8; }
+  .card .ccost { position:absolute; top:4px; right:6px; font-size:10px; font-weight:bold; color:var(--gold); }
+  .hand { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+  .queue-card { padding:4px 8px; border:1px solid #c9c4b6; background:#f7f4ec; margin-bottom:3px; font-size:11px; }
+  .queue-card.target-hint { border-color:var(--warn); }
+</style>
+</head>
+<body>
+<header>
+  <h1>COALITION — Checkpoint 7</h1>
+  <span class="meta">Valdória border office · card-draw roguelike · turn-based · pixel art</span>
+</header>
+
+<div id="app">
+  <div>
+    <canvas id="game" width="640" height="400"></canvas>
+    <div class="panel" style="margin-top:8px">
+      <h2>Hand (click to select, then click a person)</h2>
+      <div class="hand" id="hand"></div>
+      <div class="controls" id="controls"></div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>Current person</h2>
+      <div id="current"></div>
+    </div>
+    <div class="panel">
+      <h2>Queue</h2>
+      <div id="queue"></div>
+    </div>
+    <div class="panel">
+      <h2>Target's journey</h2>
+      <canvas id="journey" width="276" height="48"></canvas>
+      <div id="journeyLabel" style="font-size:11px;opacity:.7;margin-top:3px"></div>
+    </div>
+    <div class="panel">
+      <h2>Record</h2>
+      <canvas id="chart" width="276" height="100"></canvas>
+      <div id="stats"></div>
+    </div>
+    <div class="panel">
+      <h2>Case log</h2>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   COALITION — Checkpoint 7 (card-draw roguelike)
+   You are a clerk at a Valdória border office. Each turn you
+   draw a hand of cards, read the situation, and play cards on
+   people in the queue. One of them is the TARGET. Your side
+   (help or block) determines what you want to happen.
+
+   MECHANICS (Balatro-inspired):
+     - Draw 2 people + 2 action cards per turn
+     - Play action cards on people (costs energy)
+     - Resolve: target advances or is stopped
+     - Between levels: shop (buy 1 card) + advisor beat
+     - Roguelike: fail a level, restart it, keep meta-knowledge
+
+   STUDENT TODO:
+     1. Replace PEOPLE with your scenario's actors.
+     2. Change the recognition rule.
+     3. Change the three decisions and card effects.
+     4. Change the information shown and how it's encoded.
+     5. Change win/lose and level structure.
+     6. Add synergies, NPCs, and narrative branches.
+   ============================================================ */
+
+// ---------- CONFIG ----------
+const ENERGY_PER_TURN = 3;
+const PEOPLE_PER_TURN = 2;
+const ACTIONS_PER_TURN = 2;
+const LEVELS = 3;
+const TURNS_PER_LEVEL = 3;
+const STAGES = ['intake','review','border','transit','departure'];
+
+// ---------- SCENARIO DATA ----------
+const PEOPLE = [
+  { name:'Mara Voss',    origin:'Portô Venla', doc:'Transit pass',   issuedBy:'Portô Venla office',  fact:'renewal, 3 yrs',       target:false },
+  { name:'Ivo Kral',     origin:'Litorāl',     doc:'Work permit',    issuedBy:'Litorāl office',      fact:'expiry in 14 days',    target:false },
+  { name:'Sena Okafor',  origin:'Santa Laura', doc:'Residence form', issuedBy:'Portô Venla office',  fact:'new address',          target:true  },
+  { name:'Tomás Rey',    origin:'Litorāl',     doc:'Transit pass',   issuedBy:'Litorāl office',      fact:'first issue',          target:false },
+  { name:'Lena Park',    origin:'Portô Venla', doc:'Work permit',    issuedBy:'Portô Venla office',  fact:'expiry in 60 days',    target:false },
+  { name:'Dmitri Volk',  origin:'Litorāl',     doc:'Residence form', issuedBy:'Litorāl office',      fact:'address change',       target:false },
+  { name:'Aya Benali',   origin:'Portô Venla', doc:'Transit pass',   issuedBy:'Portô Venla office',  fact:'renewal, 1 yr',        target:false },
+  { name:'Roux Hale',    origin:'Santa Laura', doc:'Work permit',    issuedBy:'Santa Laura office',  fact:'expiry in 3 days',     target:false },
+  { name:'Nia Osei',     origin:'Portô Venla', doc:'Residence form', issuedBy:'Portô Venla office',  fact:'family reunification', target:false },
+  { name:'Kael Brunn',   origin:'Litorāl',     doc:'Transit pass',   issuedBy:'Litorāl office',      fact:'renewal, 6 yrs',       target:false },
+];
+
+// ---------- CARD DEFINITIONS ----------
+// Action cards the player can draw. Each has a cost (energy) and an effect.
+const CARD_DEFS = [
+  { id:'approve', name:'APPROVE', desc:'Process normally. Target advances if target.', cost:1, color:'#2e7d4f' },
+  { id:'deny',    name:'DENY',    desc:'Refuse entry. Target stopped if target.',     cost:1, color:'#b24a3a' },
+  { id:'route',   name:'ROUTE',   desc:'Escalate to supervisor. Target advances.',   cost:1, color:'#2d5a88' },
+  { id:'investigate', name:'INVESTIGATE', desc:'Reveal if person is target. (2 energy)', cost:2, color:'#c9a227' },
+  { id:'expedite', name:'EXPEDITE', desc:'Auto-advance target if approved this turn.', cost:2, color:'#8a5a88' },
+  { id:'delay',   name:'DELAY',   desc:'Stall target one turn (no advance).',        cost:1, color:'#6b6659' },
+];
+
+// Shop cards (buyable between levels)
+const SHOP_CARDS = [
+  { id:'friend', name:'FRIEND IN CUSTOMS', desc:'One person auto-approved next level.', cost:3, color:'#2e7d4f' },
+  { id:'magnify', name:'MAGNIFYING GLASS', desc:'See origin/issue mismatch highlighted.', cost:2, color:'#c9a227' },
+  { id:'bribe', name:'BRIBE', desc:'60% chance to auto-approve. Risky.', cost:2, color:'#b24a3a' },
+  { id:'favor', name:'FAVOR OWED', desc:'+1 energy per turn next level.', cost:4, color:'#2d5a88' },
+  { id:'info', name:'INTEL', desc:'Reveal target identity at level start.', cost:5, color:'#8a5a88' },
+];
+
+// ---------- STATE ----------
+let side = null;
+let started = false;
+let gameOver = false;
+let level = 1;
+let turn = 0;
+let energy = ENERGY_PER_TURN;
+let queue = [];          // people waiting
+let current = null;       // person being processed
+let hand = [];            // action cards in hand
+let deck = [];            // player's deck (card ids)
+let ownedCards = [];      // cards player has bought
+let decisions = [];       // {level,turn,name,action,wasTarget}
+let targetStage = 0;
+let targetStopped = false;
+let targetProcessed = false;
+let citations = 0;
+let suspicion = 0;        // 0-100, how suspicious the supervisor is
+let advisorPending = false;
+let shopPending = false;
+let selectedCard = null;
+let selectedPerson = null;
+let hintShown = false;
+
+// ---------- DOM ----------
+const game = document.getElementById('game');
+const gctx = game.getContext('2d');
+const journey = document.getElementById('journey');
+const jctx = journey.getContext('2d');
+const chart = document.getElementById('chart');
+const cctx = chart.getContext('2d');
+const currentEl = document.getElementById('current');
+const queueEl = document.getElementById('queue');
+const statsEl = document.getElementById('stats');
+const logEl = document.getElementById('log');
+const handEl = document.getElementById('hand');
+const controlsEl = document.getElementById('controls');
+
+function log(msg, cls){ const d=document.createElement('div'); d.textContent=msg; if(cls) d.className=cls; logEl.prepend(d); }
+
+// ---------- HELPERS ----------
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function cardDef(id){ return CARD_DEFS.find(c=>c.id===id) || SHOP_CARDS.find(c=>c.id===id); }
+function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+// ---------- SIDE SELECTION ----------
+function showSideSelect(){
+  showModal(`
+    <h2>Choose your side</h2>
+    <p>You are a clerk at <strong>Checkpoint 7, Valdória border office</strong>.
+    People arrive in a queue. One of them is the <strong>TARGET</strong> — a
+    flagged individual whose journey you are either helping or blocking.</p>
+    <h3>How to recognize the target</h3>
+    <p>Each person's paperwork has a <strong>stated origin</strong> and an
+    <strong>issuing office</strong>. For ordinary people these match. For the
+    target they do not. Read both lines.</p>
+    <h3>Your decisions</h3>
+    <ul>
+      <li><strong>Approve</strong> — process normally, let them through.</li>
+      <li><strong>Deny</strong> — refuse; they stay.</li>
+      <li><strong>Route</strong> — escalate to supervisor.</li>
+    </ul>
+    <p>You also draw <strong>action cards</strong> each turn: Investigate,
+    Expedite, Delay, Bribe. Play them on people to change outcomes.</p>
+    <h3>Winning</h3>
+    <p><span class="tag help">Help side</span> get the target to
+    <em>departure</em> (stage 5).<br>
+    <span class="tag block">Block side</span> stop the target before departure.</p>
+    <p style="font-size:12px;opacity:.7">3 levels, escalating difficulty.
+    Between levels: buy cards and hear from advisors. Fail a level and you
+    restart it — but you keep what you've learned.</p>
+    <div class="actions">
+      <button class="ok" id="helpBtn">Help the target</button>
+      <button class="danger" id="blockBtn">Block the target</button>
+    </div>
+  `);
+  document.getElementById('helpBtn').onclick = ()=>{ closeModal(); side='help'; started=true; initGame(); };
+  document.getElementById('blockBtn').onclick = ()=>{ closeModal(); side='block'; started=true; initGame(); };
+}
+
+function initGame(){
+  deck = ['approve','deny','route','investigate','expedite','delay','delay','approve','deny'];
+  ownedCards = [];
+  level = 1; turn = 0; energy = ENERGY_PER_TURN;
+  decisions = []; targetStage = 0; targetStopped = false; targetProcessed = false;
+  citations = 0; suspicion = 0; gameOver = false; hintShown = false;
+  advisorPending = false; shopPending = false;
+  startLevel();
+}
+
+function startLevel(){
+  turn = 0;
+  queue = [];
+  hand = [];
+  fillQueue();
+  drawHand();
+  log('— Level '+level+' begins. '+TURNS_PER_LEVEL+' turns. —', 'tag '+(side==='help'?'help':'block'));
+  if (level > 1) showAdvisor();
+  else nextTurn();
+}
+
+function fillQueue(){
+  const shuffled = shuffle(PEOPLE);
+  const count = PEOPLE_PER_TURN;
+  for (let i=0;i<count;i++){
+    if (queue.length < count+2) queue.push({...shuffled[i % shuffled.length]});
+  }
+  // ensure target appears once per level
+  if (!queue.some(p=>p.target) && level <= 2){
+    const t = PEOPLE.find(p=>p.target);
+    if (t) queue[Math.floor(Math.random()*queue.length)] = {...t};
+  }
+}
+
+function drawHand(){
+  hand = [];
+  // 2 action cards from deck
+  const deckShuffled = shuffle(deck.concat(ownedCards));
+  for (let i=0;i<ACTIONS_PER_TURN;i++){
+    if (deckShuffled[i]) hand.push(deckShuffled[i]);
+  }
+  renderHand();
+}
+
+function nextTurn(){
+  if (turn >= TURNS_PER_LEVEL){ endLevel(); return; }
+  turn++;
+  energy = ENERGY_PER_TURN + (ownedCards.includes('favor')?1:0);
+  if (queue.length < PEOPLE_PER_TURN) fillQueue();
+  drawHand();
+  selectedCard = null; selectedPerson = null;
+  renderAll();
+  log('Turn '+turn+'/'+TURNS_PER_LEVEL+'. Energy: '+energy+'.', '');
+  if (turn===2 && !hintShown){ log('Pattern note: for ordinary people, origin and issuing office match. Check both lines.', ''); hintShown=true; }
+}
+
+function endLevel(){
+  // check if target was processed this level
+  const targetDecisions = decisions.filter(d=>d.level===level && d.wasTarget);
+  if (targetDecisions.length > 0 && !targetProcessed){
+    const last = targetDecisions[targetDecisions.length-1];
+    if (last.action==='approve' || last.action==='route'){ targetStage = STAGES.length-1; }
+    else { targetStopped = true; }
+    targetProcessed = true;
+  }
+  shopPending = true;
+  showShop();
+}
+
+function showAdvisor(){
+  const advisors = [
+    { name:'Supervisor', text:'"Process faster. The queue is backing up and the regional office is asking questions."' },
+    { name:'Colleague', text:'"Be careful. I heard someone in the office is being watched. Don\'t be the one who stands out."' },
+  ];
+  const a = advisors[Math.floor(Math.random()*advisors.length)];
+  showModal(`
+    <h2>Advisor: ${a.name}</h2>
+    <p>${a.text}</p>
+    <h3>How do you respond?</h3>
+    <div class="actions">
+      <button class="ok" id="advSpeed">"I'll speed up."</button>
+      <button class="primary" id="advCareful">"I'll be careful."</button>
+    </div>
+  `);
+  document.getElementById('advSpeed').onclick = ()=>{ closeModal(); energy = ENERGY_PER_TURN+1; log('You chose to speed up. +1 energy this level.', ''); nextTurn(); };
+  document.getElementById('advCareful').onclick = ()=>{ closeModal(); suspicion = Math.max(0,suspicion-10); log('You chose caution. Suspicion -10.', ''); nextTurn(); };
+}
+
+function showShop(){
+  const options = shuffle(SHOP_CARDS).slice(0,3);
+  showModal(`
+    <h2>Between levels — shop</h2>
+    <p>Buy one card with your energy (you have ${energy} left). Or skip.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+      ${options.map(c=>`<div class="card" data-id="${c.id}" style="border-color:${c.color}">
+        <div class="ctitle" style="color:${c.color}">${c.name}</div>
+        <div class="cdesc">${c.desc}</div>
+        <div class="ccost">${c.cost}⚡</div>
+      </div>`).join('')}
+    </div>
+    <div class="actions">
+      <button id="skipShop">Skip</button>
+    </div>
+  `);
+  options.forEach(c=>{
+    const el = document.querySelector(`.card[data-id="${c.id}"]`);
+    if (el){
+      el.onclick = ()=>{
+        if (energy >= c.cost){ ownedCards.push(c.id); energy -= c.cost; log('Bought: '+c.name+'.', ''); closeModal(); nextLevel(); }
+        else { log('Not enough energy.', ''); }
+      };
+    }
+  });
+  document.getElementById('skipShop').onclick = ()=>{ closeModal(); nextLevel(); };
+}
+
+function nextLevel(){
+  level++;
+  if (level > LEVELS){ endGame(); return; }
+  startLevel();
+}
+
+function decide(action, person){
+  if (!started || gameOver) return;
+  const wasTarget = person.target;
+  const passed = (action === 'approve' || action === 'route');
+  decisions.push({ level, turn, name: person.name, action, wasTarget });
+  if (wasTarget){
+    if (passed){ targetStage = STAGES.length-1; }
+    else { targetStopped = true; }
+    targetProcessed = true;
+  }
+  // suspicion: denying/routing too many raises suspicion
+  if (action === 'deny' || action === 'route') suspicion = Math.min(100, suspicion+5);
+  if (action === 'approve') suspicion = Math.max(0, suspicion-2);
+  // remove person from queue
+  queue = queue.filter(p=>p!==person);
+  log('R'+turn+': '+person.name+' → '+action.toUpperCase()+(wasTarget?' (TARGET)':''), wasTarget?'tag '+(side==='help'?'help':'block'):'');
+  energy -= 1;
+  renderStats(); renderJourney(); renderChart(); renderQueue();
+  if (energy <= 0 || queue.length === 0){ setTimeout(endTurn, 400); }
+}
+
+function playCard(cardId, person){
+  if (!started || gameOver) return;
+  const def = cardDef(cardId);
+  if (!def || energy < def.cost){ log('Not enough energy for '+cardId+'.', ''); return; }
+  energy -= def.cost;
+  hand = hand.filter(c=>c!==cardId);
+  // effect
+  if (cardId === 'investigate'){
+    log(person.name + (person.target ? ' IS the target.' : ' is NOT the target.'), person.target?'tag block':'');
+  } else if (cardId === 'expedite'){
+    if (person.target){ targetStage = Math.min(STAGES.length-1, targetStage+2); log('Expedited target.', 'tag help'); }
+    else { log('Expedite had no effect (not target).', ''); }
+  } else if (cardId === 'delay'){
+    if (person.target){ targetStage = Math.max(0, targetStage-1); log('Delayed target.', 'tag block'); }
+    else { log('Delay had no effect.', ''); }
+  } else if (cardId === 'bribe'){
+    const ok = Math.random() < 0.6;
+    if (ok){ person._bribed = true; log('Bribe succeeded on '+person.name+'.', 'tag help'); }
+    else { citations++; suspicion = Math.min(100,suspicion+15); log('Bribe FAILED on '+person.name+'. Citation issued.', 'tag block'); }
+  } else if (cardId === 'friend'){
+    log('Friend in customs: next approval auto-passes.', '');
+    // store for next approve
+    window._friendActive = true;
+  } else if (cardId === 'magnify'){
+    log('Magnifying glass: origin/issue mismatch highlighted.', '');
+    window._magnifyActive = true;
+  } else if (cardId === 'info'){
+    const t = PEOPLE.find(p=>p.target);
+    if (t) log('INTEL: target is '+t.name+'.', 'tag block');
+  }
+  selectedCard = null; selectedPerson = null;
+  renderHand(); renderStats(); renderJourney(); renderChart();
+}
+
+function endTurn(){
+  if (gameOver) return;
+  // auto-process remaining queue people as "pending" (no decision = no effect)
+  queue.forEach(p=>{ log(p.name+' left unprocessed.', ''); });
+  queue = [];
+  renderQueue();
+  nextTurn();
+}
+
+function endGame(){
+  gameOver = true;
+  let outcome, detail;
+  if (side==='help'){
+    if (targetProcessed && targetStage >= STAGES.length-1 && !targetStopped){ outcome='TARGET DEPARTED'; detail='You helped the target reach departure. Your side prevailed.'; }
+    else { outcome='TARGET STOPPED'; detail='The target did not reach departure. Your side failed.'; }
+  } else {
+    if (targetProcessed && targetStopped){ outcome='TARGET STOPPED'; detail='You held the line. Your side prevailed.'; }
+    else { outcome='TARGET DEPARTED'; detail='The target reached departure. Your side failed.'; }
+  }
+  const correct = decisions.filter(d => {
+    if (!d.wasTarget) return true;
+    const passed = d.action === 'approve' || d.action === 'route';
+    return side==='help' ? passed : !passed;
+  }).length;
+  showModal(`
+    <div class="endcard">
+      <h2>${outcome}</h2>
+      <div class="big">${side==='help'?(targetStage>=STAGES.length-1&&!targetStopped?'✈':'✕'):(targetStopped?'✕':'✈')}</div>
+      <p>${detail}</p>
+      <p><strong>${correct} of ${decisions.length} decisions aligned with your side.</strong></p>
+      <p>Citations: ${citations} · Suspicion: ${suspicion}%</p>
+      <p style="font-size:12px;opacity:.7">The target was <strong>${PEOPLE.find(p=>p.target).name}</strong>
+      (${PEOPLE.find(p=>p.target).origin}, issued by ${PEOPLE.find(p=>p.target).issuedBy}).</p>
+      <h3>Debrief</h3>
+      <p style="font-size:12px;text-align:left">Review the case log. Where did your
+      decisions diverge from your intent? What information did you miss? What
+      would you do differently? This is your "what I learned" note.</p>
+      <div class="actions">
+        <button class="primary" id="againBtn">Play again</button>
+      </div>
+    </div>
+  `);
+  document.getElementById('againBtn').onclick = ()=>{ closeModal(); showSideSelect(); };
+  renderGame();
+}
+
+// ---------- RENDERING ----------
+function renderCurrent(){
+  if (!current){ currentEl.innerHTML = '<em style="opacity:.6">select a person from the queue →</em>'; return; }
+  const mag = window._magnifyActive;
+  const originMismatch = current.origin.split(' ')[0] !== current.issuedBy.split(' ')[0];
+  currentEl.innerHTML =
+    '<div class="person">'+
+      '<div class="name">'+current.name+'</div>'+
+      '<div class="row"><span class="k">Origin</span><span style="color:'+(mag&&originMismatch?'#b24a3a':'inherit')+'">'+current.origin+'</span></div>'+
+      '<div class="row"><span class="k">Document</span><span>'+current.doc+'</span></div>'+
+      '<div class="row"><span class="k">Issued by</span><span style="color:'+(mag&&originMismatch?'#b24a3a':'inherit')+'">'+current.issuedBy+'</span></div>'+
+      '<div class="row"><span class="k">Note</span><span>'+current.fact+'</span></div>'+
+    '</div>';
+  if (mag) window._magnifyActive = false;
+}
+
+function renderQueue(){
+  queueEl.innerHTML = queue.map(p=>{
+    const hint = window._magnifyActive && (p.origin.split(' ')[0] !== p.issuedBy.split(' ')[0]) ? 'target-hint' : '';
+    return '<div class="queue-card '+hint+'">'+p.name+' <span style="opacity:.5;font-size:10px">'+p.doc+'</span></div>';
+  }).join('') || '<em style="opacity:.6">empty</em>';
+}
+
+function renderStats(){
+  const ap = decisions.filter(d=>d.action==='approve').length;
+  const dn = decisions.filter(d=>d.action==='deny').length;
+  const rt = decisions.filter(d=>d.action==='route').length;
+  const tdec = decisions.filter(d=>d.wasTarget).length;
+  statsEl.innerHTML =
+    '<div class="stat"><span>Approved</span><span>'+ap+'</span></div>'+
+    '<div class="stat"><span>Denied</span><span>'+dn+'</span></div>'+
+    '<div class="stat"><span>Routed</span><span>'+rt+'</span></div>'+
+    '<div class="stat"><span>Target seen</span><span>'+tdec+'</span></div>'+
+    '<div class="stat"><span>Citations</span><span>'+citations+'</span></div>'+
+    '<div class="stat"><span>Suspicion</span><span>'+suspicion+'%</span></div>'+
+    '<div class="stat"><span>Energy</span><span>'+energy+'</span></div>'+
+    '<div class="stat"><span>Level</span><span>'+level+' / '+LEVELS+'</span></div>';
+}
+
+function renderHand(){
+  handEl.innerHTML = '';
+  hand.forEach((cid,i)=>{
+    const def = cardDef(cid);
+    if (!def) return;
+    const el = document.createElement('div');
+    el.className = 'card' + (selectedCard===cid?' selected':'') + (energy < def.cost?' disabled':'');
+    el.innerHTML = '<div class="ctitle" style="color:'+def.color+'">'+def.name+'</div>'+
+      '<div class="cdesc">'+def.desc+'</div>'+
+      '<div class="ccost">'+def.cost+'⚡</div>';
+    el.onclick = ()=>{
+      if (energy < def.cost) return;
+      selectedCard = (selectedCard===cid ? null : cid);
+      renderHand();
+      log('Selected card: '+def.name+'. Click a person to play.', '');
+    };
+    handEl.appendChild(el);
+  });
+  if (hand.length===0) handEl.innerHTML = '<em style="opacity:.6;font-size:11px">no cards</em>';
+}
+
+function renderJourney(){
+  const w=journey.width,h=journey.height;
+  jctx.clearRect(0,0,w,h);
+  jctx.fillStyle='#e8e4d8'; jctx.fillRect(0,0,w,h);
+  const n=STAGES.length;
+  const step=(w-24)/(n-1);
+  jctx.strokeStyle='#8a8272'; jctx.lineWidth=2;
+  jctx.beginPath(); jctx.moveTo(12,h/2); jctx.lineTo(w-12,h/2); jctx.stroke();
+  jctx.fillStyle='#6b6659'; jctx.font='9px Courier New'; jctx.textAlign='center';
+  STAGES.forEach((st,i)=>{ jctx.fillText(st, 12+i*step, h-4); });
+  const x = 12 + targetStage*step;
+  jctx.fillStyle = targetStopped?'#b24a3a': (targetStage>=STAGES.length-1?'#2e7d4f':'#2d5a88');
+  jctx.fillRect(x-6, h/2-6, 12, 12);
+  jctx.fillStyle='#fff'; jctx.font='bold 9px Courier New'; jctx.textAlign='center';
+  jctx.fillText(targetStopped?'X':'T', x, h/2+3);
+  jctx.textAlign='left';
+  const label = targetStopped ? 'Target STOPPED' : (targetStage>=STAGES.length-1 ? 'Target at DEPARTURE' : 'Target: '+STAGES[targetStage]);
+  document.getElementById('journeyLabel').textContent = label;
+}
+
+function renderChart(){
+  const w=chart.width,h=chart.height;
+  cctx.clearRect(0,0,w,h);
+  cctx.fillStyle='#e8e4d8'; cctx.fillRect(0,0,w,h);
+  if (decisions.length===0){ cctx.fillStyle='#888'; cctx.font='10px Courier New'; cctx.fillText('no decisions yet', 8, 20); return; }
+  const n=decisions.length;
+  const bw=Math.max(3,(w-16)/n);
+  decisions.forEach((d,i)=>{
+    const x=8+i*bw;
+    const col = d.action==='approve'?'#2e7d4f': d.action==='deny'?'#b24a3a':'#2d5a88';
+    cctx.fillStyle=col; cctx.fillRect(x, h-20, bw-2, 16);
+    if (d.wasTarget){ cctx.fillStyle='#111'; cctx.fillRect(x+bw/2-2, h-24, 4, 4); }
+  });
+  cctx.fillStyle='#555'; cctx.font='9px Courier New';
+  cctx.fillText('green=approve red=deny blue=route  dot=target', 8, 10);
+}
+
+function renderGame(){
+  const w=game.width,h=game.height;
+  gctx.clearRect(0,0,w,h);
+  // wall
+  gctx.fillStyle='#d4cfc2'; gctx.fillRect(0,0,w,h);
+  // desk
+  gctx.fillStyle='#b8a88a'; gctx.fillRect(0,h-100,w,100);
+  gctx.fillStyle='#8a7a5a'; gctx.fillRect(0,h-100,w,3);
+  // title
+  gctx.fillStyle='#1a1a22'; gctx.font='bold 14px Courier New';
+  gctx.fillText('CHECKPOINT 7 — PROCESSING DESK', 12, 22);
+  gctx.font='11px Courier New'; gctx.fillStyle='#555';
+  gctx.fillText('Side: '+(side?side.toUpperCase():'—')+'   Level '+level+'/'+LEVELS+'   Turn '+turn+'/'+TURNS_PER_LEVEL, 12, 40);
+  // stamp
+  gctx.strokeStyle='#b24a3a'; gctx.lineWidth=2; gctx.beginPath(); gctx.arc(w-50,32,22,0,Math.PI*2); gctx.stroke();
+  gctx.fillStyle='#b24a3a'; gctx.font='bold 8px Courier New'; gctx.textAlign='center';
+  gctx.fillText('VALDÓRIA', w-50, 28); gctx.fillText('BORDER', w-50, 40); gctx.textAlign='left';
+  // current person card
+  if (current){
+    gctx.fillStyle='#f7f4ec'; gctx.strokeStyle='#8a8272'; gctx.lineWidth=2;
+    roundRect(gctx, 40, 55, 380, 170, 0); gctx.fill(); gctx.stroke();
+    gctx.fillStyle='#1a1a22'; gctx.font='bold 18px Courier New'; gctx.fillText(current.name, 56, 82);
+    // avatar
+    gctx.fillStyle='#d4cfc2'; gctx.fillRect(370, 65, 40, 40);
+    gctx.fillStyle='#555'; gctx.font='bold 16px Courier New'; gctx.textAlign='center';
+    gctx.fillText(current.name.split(' ').map(s=>s[0]).join(''), 390, 91); gctx.textAlign='left';
+    gctx.font='12px Courier New'; gctx.fillStyle='#444';
+    gctx.fillText('Origin:    '+current.origin, 56, 112);
+    gctx.fillText('Document:  '+current.doc, 56, 132);
+    gctx.fillText('Issued by: '+current.issuedBy, 56, 152);
+    gctx.fillText('Note:      '+current.fact, 56, 172);
+    // magnify highlight
+    if (window._magnifyActive){
+      const mismatch = current.origin.split(' ')[0] !== current.issuedBy.split(' ')[0];
+      if (mismatch){ gctx.strokeStyle='#b24a3a'; gctx.lineWidth=2; gctx.strokeRect(54,100,360,60); }
+      window._magnifyActive = false;
+    }
+  }
+  // queue preview
+  gctx.fillStyle='#555'; gctx.font='11px Courier New';
+  gctx.fillText('Queue: '+queue.length+' remaining', 16, h-88);
+  // energy
+  gctx.fillStyle='#1a1a22'; gctx.font='bold 12px Courier New';
+  gctx.fillText('Energy: '+energy, 16, h-70);
+  for (let i=0;i<ENERGY_PER_TURN+(ownedCards.includes('favor')?1:0);i++){
+    gctx.fillStyle = i < energy ? '#c9a227' : '#8a8272';
+    gctx.fillRect(80+i*14, h-78, 10, 10);
+  }
+}
+
+// ---------- WIRING ----------
+function makeControls(){
+  controlsEl.innerHTML = '';
+  // hand is rendered in handEl; controls just has end turn
+  const b = document.createElement('button');
+  b.textContent = 'End Turn';
+  b.className = 'primary';
+  b.onclick = ()=>{ if(started && !gameOver){ endTurn(); } };
+  controlsEl.appendChild(b);
+}
+makeControls();
+
+function showModal(html){ const o=document.createElement('div'); o.className='overlay'; o.id='overlay'; o.innerHTML='<div class="modal">'+html+'</div>'; document.body.appendChild(o); }
+function closeModal(){ const o=document.getElementById('overlay'); if(o) o.remove(); }
+
+function boot(){ showSideSelect(); }
+
+function renderAll(){ renderCurrent(); renderQueue(); renderStats(); renderJourney(); renderChart(); renderGame(); renderHand(); }
+
+// click on a person in queue to select them
+queueEl.addEventListener('click', (e)=>{
+  const card = e.target.closest('.queue-card');
+  if (!card) return;
+  const name = card.textContent.split(' ')[0]; // rough
+  // find person
+  const p = queue.find(q=>q.name.startsWith(name));
+  if (p){ selectedPerson = p; renderCurrent(); log('Selected: '+p.name, ''); }
+});
+
+// click on current person area to select
+currentEl.addEventListener('click', ()=>{
+  if (current){ selectedPerson = current; log('Selected: '+current.name,''); }
+});
+
+// play card on selected person
+handEl.addEventListener('click', (e)=>{
+  const cardEl = e.target.closest('.card');
+  if (!cardEl) return;
+  const cid = cardEl.dataset ? null : null;
+  // find by index
+  const idx = Array.from(handEl.children).indexOf(cardEl);
+  if (idx < 0 || idx >= hand.length) return;
+  const cid2 = hand[idx];
+  if (selectedPerson){ playCard(cid2, selectedPerson); }
+  else { selectedCard = cid2; renderHand(); log('Card selected. Click a person in the queue.', ''); }
+});
+
+// keyboard shortcuts
+document.addEventListener('keydown', (e)=>{
+  if (!started || gameOver) return;
+  if (e.key==='a' && selectedPerson) decide('approve', selectedPerson);
+  if (e.key==='d' && selectedPerson) decide('deny', selectedPerson);
+  if (e.key==='r' && selectedPerson) decide('route', selectedPerson);
+  if (e.key==='Enter') endTurn();
+});
+
+boot();
+renderAll();
+</script>
+</body>
+</html>
