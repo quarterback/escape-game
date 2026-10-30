@@ -530,6 +530,11 @@ const UI = (() => {
     $('start-gov-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(true); };
     $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
+    let creditsFrom = null;
+    const openCredits = () => { Sfx.click(); creditsFrom = document.activeElement; $('credits').hidden = false; $('credits-close').focus({ preventScroll: true }); $('credits').scrollTop = 0; };
+    const closeCredits = () => { Sfx.click(); $('credits').hidden = true; if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
+    $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, false, true); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };
@@ -539,7 +544,7 @@ const UI = (() => {
     const toggleMute = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').setAttribute('aria-label', T(Sfx.isMuted() ? 'sound.off' : 'sound.on')); $('mute-wave').style.display = Sfx.isMuted() ? 'none' : ''; document.querySelector('#menu2 [data-act=mute]').textContent = T(Sfx.isMuted() ? 'sound.menu_off' : 'sound.menu_on'); };
     const toggleHelp = () => { $('helpbox').hidden = !$('helpbox').hidden; if (!$('helpbox').hidden) setTab('phone'); };
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
-    document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute })[b.dataset.act]());
+    document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
     setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();

@@ -294,3 +294,18 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
   #phases li{font-size:15px;padding:9px 4px}
 }
 #sosa [hidden]{display:none!important}
+/* credits: a scrolling credit screen, centred like a game's end titles */
+#credits{position:fixed;inset:0;z-index:40;overflow-y:auto;background:var(--bg);padding:calc(32px + var(--sat)) 16px calc(40px + var(--sab))}#credits[hidden]{display:none}
+#credits .cbox{max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:36px}
+#credits .cword{font:400 clamp(52px,14vw,96px)/.95 var(--font-display);color:var(--gold);letter-spacing:.02em;text-shadow:0 4px 0 #7A4E0E;margin:0}
+#credits .clede{margin:-20px 0 0;font-size:19px;line-height:1.45;color:var(--ink)}
+#credits h2{font:400 22px/1.2 var(--font-title);color:var(--gold);margin:0 0 14px}
+#credits .snote{margin:-6px 0 14px;font-size:16px;line-height:1.45;color:var(--soft)}
+#credits ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+#credits li{display:flex;flex-direction:column;gap:3px}
+#credits .role{font-size:15px;color:var(--mute)}#credits .nm{font-size:19px;line-height:1.35;color:var(--ink)}#credits .note{font-size:15px;line-height:1.4;color:var(--soft)}
+#credits a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--lav);text-underline-offset:3px}
+#credits details{text-align:left;background:var(--s1);border-radius:14px;padding:12px 16px}#credits summary{cursor:pointer;font-size:17px}#credits pre{white-space:pre-wrap;font:400 14px/1.5 var(--font-body);color:var(--soft);margin:12px 0 0}
+#credits-close{align-self:center;min-height:56px;padding:0 36px;font-size:19px}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-decoration-color:var(--lav);text-underline-offset:3px;cursor:pointer;min-height:0}
+@media(min-width:1000px){#credits{padding-top:64px}#credits .cbox{gap:44px}}

@@ -50,6 +50,17 @@ def _fill(m):
     txt = _html.escape(catalog[cid], quote=True)
     return re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', txt) if kind == 'b' else txt
 shell = re.sub(r'\{\{([cb]):([a-z0-9_.]+)\}\}', _fill, shell)
+# The credits screen, rendered from credits.json; the PixiJS MIT notice ships with it as its license asks.
+cr = pkg['credits']; E = lambda s: _html.escape(s, quote=True)
+def _item(it):
+    name = f'<a href="{E(it["href"])}" rel="noopener" target="_blank">{E(it["name"])}</a>' if it.get('href') else E(it['name'])
+    return f'<li><span class="role">{E(it["role"])}</span><span class="nm">{name}</span>' + (f'<span class="note">{E(it["note"])}</span>' if it.get('note') else '') + '</li>'
+secs = ''.join(f'<section><h2>{E(s["heading"])}</h2>' + (f'<p class="snote">{E(s["note"])}</p>' if s.get('note') else '') + '<ul>' + ''.join(_item(i) for i in s['items']) + '</ul></section>' for s in cr['sections'])
+pixi_notice = E((root / 'vendor' / 'pixi.LICENSE').read_text())
+credits_html = (f'<div class="cbox"><h1 class="cword">{E(catalog["title.word"])}</h1><p class="clede" id="credits-title">{E(cr["lede"])}</p>{secs}'
+    f'<section><h2>{E(cr["licenses"])}</h2><details><summary>PixiJS</summary><pre>{pixi_notice}</pre></details></section>'
+    f'<button id="credits-close" class="primary">{E(cr["back"])}</button></div>')
+shell = shell.replace('{{credits}}', credits_html)
 content_js = 'const CONTENT_PKG = ' + json.dumps(pkg, ensure_ascii=False) + ';\n' + (src / 'content.js').read_text()
 parts = {'CONTENT': None, 'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'ART': src / 'art.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
 for k, p in parts.items():

@@ -59,7 +59,7 @@ function check(pkg) {
   if (pol.contract !== contract) add('C15', 'error', 'content/policy.json', 'policy', 'contract', contract, pol.contract, 'Policy and package must share a contract.');
 
   // schemas (structural failures are C01: the field is not a declared, well-formed content field)
-  for (const k of ['ui', 'markers', 'tutorials', 'glossary', 'facts']) for (const e of schemaErrors(pkg.schemas[k], pkg[k], k)) add('C01', 'error', P + pkg.manifest.files[k], k, e.at, e.expected, e.observed, 'Fix the field to match content/schema/' + k + '.schema.json.');
+  for (const k of ['ui', 'markers', 'tutorials', 'glossary', 'facts', 'credits']) for (const e of schemaErrors(pkg.schemas[k], pkg[k], k)) add('C01', 'error', P + pkg.manifest.files[k], k, e.at, e.expected, e.observed, 'Fix the field to match content/schema/' + k + '.schema.json.');
 
   // C01: unique IDs
   const dup = (list, key, file, label) => { const seen = new Set(); list.forEach((e, i) => { if (seen.has(e[key])) add('C01', 'error', file, e[key], `${label}[${i}].${key}`, 'a unique ID', e[key], 'Rename one of the entries; IDs never repeat.'); seen.add(e[key]); }); };
@@ -128,6 +128,9 @@ function check(pkg) {
   for (const e of pkg.ui.entries) texts.push({ file: P + 'ui.json', id: e.id, field: 'text', text: e.text, scope: 'system', pattern: e.pattern, fragment: !!e.fragment });
   for (const e of pkg.markers.markers) texts.push({ file: P + 'markers.json', id: e.code, field: 'text', text: e.text, scope: 'system', pattern: e.pattern });
   for (const t of pkg.tutorials.tutorials) for (const st of t.steps) for (const f of ['title', 'body']) texts.push({ file: P + 'tutorials.json', id: `tutorial.${t.id}.${st.id}`, field: f, text: st[f], scope: 'system', pattern: 'P13' });
+  { const cr = pkg.credits; for (const f of ['title', 'lede', 'licenses', 'back']) texts.push({ file: P + 'credits.json', id: 'credits', field: f, text: cr[f], scope: 'system', pattern: 'P02' });
+    cr.sections.forEach((s, i) => { texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'heading', text: s.heading, scope: 'system', pattern: 'P02' }); if (s.note) texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'note', text: s.note, scope: 'system', pattern: 'P09' });
+      s.items.forEach((it, n) => { for (const f of ['role', 'name', 'note']) if (it[f]) texts.push({ file: P + 'credits.json', id: `credits.${i}.${n}`, field: f, text: it[f], scope: 'system', pattern: 'P09' }); }); }); }
   for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event']]) for (const e of list) {
     for (const f of ['title', 'text']) texts.push({ file: 'src/data.js', id: `${pre}.${e.id}`, field: f, text: e[f], scope: 'narrative', pattern: f === 'title' ? 'P10' : 'P07' });
     for (const c of e.choices) { texts.push({ file: 'src/data.js', id: `${pre}.${e.id}.${c.id}`, field: 'label', text: c.label, scope: 'narrative', pattern: 'P01' }); const says = []; const walk = (fx) => { if (!fx) return; if (fx.say) says.push(fx.say); if (fx.roll) { walk(fx.roll.win); walk(fx.roll.lose); } }; walk(c.fx); says.forEach((s, i) => texts.push({ file: 'src/data.js', id: `${pre}.${e.id}.${c.id}`, field: `say[${i}]`, text: s, scope: 'narrative', pattern: 'P10' })); }

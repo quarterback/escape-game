@@ -84,6 +84,7 @@
   "Render error, switching to 2D",
   "PixiJS unavailable, drawing in 2D",
   "image/png",
-  "'GCNorthSans-Regular', Arial, sans-serif"
+  "'GCNorthSans-Regular', Arial, sans-serif",
+  "Escape"
  ]
 }

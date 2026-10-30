@@ -39,6 +39,7 @@
     <button id="demo">{{c:menu.guided}}</button>
     <button id="startscreen">{{c:menu.start}}</button>
     <button id="help">{{c:menu.help}}</button>
+    <button id="credits-open">{{c:menu.credits}}</button>
     <button id="install" hidden>{{c:menu.install}}</button>
     <button id="mute" aria-label="{{c:sound.on}}" title="{{c:sound.title}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
   </nav>
@@ -78,7 +79,7 @@
     <h2>{{c:hand.heading}}</h2>
     <div id="hand"></div>
     <h3 class="menu2-h">{{c:hand.game}}</h3>
-    <div class="row" id="menu2"><button data-act="demo">{{c:menu.guided}}</button><button data-act="startscreen">{{c:menu.start}}</button><button data-act="help">{{c:menu.help}}</button><button data-act="install" hidden>{{c:menu.install}}</button><button data-act="mute">{{c:sound.menu_on}}</button></div>
+    <div class="row" id="menu2"><button data-act="demo">{{c:menu.guided}}</button><button data-act="startscreen">{{c:menu.start}}</button><button data-act="help">{{c:menu.help}}</button><button data-act="credits">{{c:menu.credits}}</button><button data-act="install" hidden>{{c:menu.install}}</button><button data-act="mute">{{c:sound.menu_on}}</button></div>
   </section>
 
   <aside class="tab" id="tab-phone" data-tab="phone">
@@ -117,6 +118,8 @@
 
 <div id="title"><div class="title-shade"></div><div class="title-box"><h1 class="title-word">{{c:title.word}}</h1><p class="title-line">{{c:title.line}}</p><button id="title-start">{{c:title.start}}</button><p class="title-foot">{{c:title.foot}}</p></div></div>
 
+<div id="credits" hidden role="dialog" aria-modal="true" aria-labelledby="credits-title">{{credits}}</div>
+
 <div id="start" hidden>
   <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>{{c:title.word}}</h2><p id="start-blurb">{{c:start.blurb}}</p></div></div>
   <div class="startbox">
@@ -125,7 +128,7 @@
     <div id="start-demo"><button id="start-tutorial" class="primary">{{c:start.tutorial}}</button><span class="small" id="start-demo-note"></span><button id="start-gov-tutorial" class="pill ghost">{{c:start.gov_tutorial}}</button></div>
     <h3 id="start-free">{{c:start.pick}}</h3>
     <div id="start-chars"></div>
-    <p class="small byline">{{c:start.byline}} <a href="https://ronbronson.dev">{{c:start.author}}</a></p>
+    <p class="small byline">{{c:start.byline}} <a href="https://ronbronson.dev">{{c:start.author}}</a><span aria-hidden="true"> · </span><button class="linkbtn" id="start-credits">{{c:menu.credits}}</button></p>
   </div>
 </div>
 <script>

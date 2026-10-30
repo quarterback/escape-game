@@ -7,7 +7,8 @@
   "markers": "markers.json",
   "tutorials": "tutorials.json",
   "glossary": "glossary.json",
-  "facts": "facts.json"
+  "facts": "facts.json",
+  "credits": "credits.json"
  },
  "records": "src/data.js",
  "policy": "../policy.json"

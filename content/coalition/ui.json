@@ -1617,7 +1617,7 @@
   {
    "id": "title.foot",
    "pattern": "P08",
-   "text": "An escape game set in Nelôxia. Sound on."
+   "text": "A game set in the Nelosphere world by Ron Bronson. Sound on."
   },
   {
    "id": "start.blurb",
@@ -1648,7 +1648,7 @@
   {
    "id": "start.byline",
    "pattern": "P02",
-   "text": "A Nelosphere universe by"
+   "text": "A game set in the Nelosphere world by"
   },
   {
    "id": "start.author",
@@ -3651,6 +3651,11 @@
    "id": "render.over_inquiry",
    "pattern": "P14",
    "text": "The inquiry wins"
+  },
+  {
+   "id": "menu.credits",
+   "pattern": "P01",
+   "text": "Credits"
   }
  ]
 }
