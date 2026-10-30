@@ -1,84 +1,76 @@
-# Last Freight Out
+# Coalition
 
-## Development direction: read first
+A single-file, offline escape game set in the Nelôxia universe
+([quarterback/kels](https://github.com/quarterback/kels)). You lost the
+presidency of Valdória on Saturday. By noon a court barred you from leaving.
+Cross the border at the Huhūi passes into Esmeralda and leave its airspace in
+a jet bound for Atlanta before the inquiry finds you. You have 72 hours.
 
-The [confirmed COALITION game direction](docs/game-direction.md) governs future gameplay, narrative, progression, and interface work.
+Open `index.html` in a browser. Nothing is fetched at runtime. p5.js 1.9.4 and
+the fonts are embedded, and all sound, the theme included, is synthesized with
+Web Audio.
 
-The intended game follows an escaping person through several distinct levels, coordinating allies and arrangements while enemies interfere. There is one border crossing near the end, followed by a final aircraft escape; victory requires leaving the relevant airspace. Preparation continues while the player travels, and earlier commitments change later options.
-
-The playable Last Freight Out build described below is an earlier prototype. It does not yet implement that structure. Its fixed town route, train ending, and exact economy are not requirements for the developing game. The direction document separates confirmed decisions from examples and open mechanics.
-
-A single-file, offline card-and-route escape game set in the Nelôxia universe
-(quarterback/kels). You are Inēs Biankī, a chart-maker in a rail town in Salta,
-Valdória, on the edge of the Pearl. Your name is in the bailiffs' ledger for a
-debt you cannot pay, and the midnight freight over the Huhūi passes to
-Esmeralda is the last train before the line closes. Seven hours, a hand of
-tricks, a town that knows your hand.
-
-Open `index.html` in a browser. Nothing is fetched at runtime. p5.js 1.9.4 is
-embedded, all sound is synthesized with Web Audio and career records live in
-`localStorage` only.
+The confirmed design is in [docs/game-direction.md](docs/game-direction.md).
+This build is the skeleton of that design: every level exists and is thin.
 
 ## First run
 
 The page opens on a title screen: a still of the border post at night, the
-title, and one green Start button. Start is the gesture that lets the theme
-play. Behind it is the start screen. The first time, the primary button is
-**Play the guided first run**: 20 steps on a fixed seed with a scripted die and
-scripted inquiry moves (`src/tutorial.js`), from the residence to the border.
-The coach allows one action per step and dims the rest. At Susana airfield the
-coach hands the run over live. You can skip the demo and pick a character
-instead, or restart it any time from the header.
-
-## Copy rule
-
-Game text is English. Verdenese appears only in names (people, places, the
-austral) and in a few words characters say (*dālē, trankīlô, niñô*). Stations
-are the attic, the market, the customs post, the rail yard and the freight
-platform. The lore the setting, names and words come from is listed in
-`docs/aar-last-freight-out.md`; the far side of the line is Esmeralda, the
-second Nelosphere state in South America (capital Baca, largest city Susana),
-owner canon of 2026-10-30.
+title and one green Start button. Start lets the theme play. Behind it is the
+start screen. The first time, the primary button is **Play the guided first
+run**: 20 steps on a fixed seed with a scripted die and scripted inquiry moves
+(`src/tutorial.js`), from the residence to the border. The coach allows one
+action per step and dims the rest. At Susana airfield it hands the run over
+live. You can skip the demo and pick a character instead, or restart it from
+the header.
 
 ## How it plays
 
-- Cards are tricks: bribe, distraction, forgery, favors, lock picking.
-  Selecting one lights up every person, object or place it can affect, in
-  the pixel-art scene and in the Targets list. Inspect a target to read what
-  would happen, then commit. The simulation resolves at once and the scene
-  then animates the consequences.
-- The route is five stations. Walking takes 30 minutes. Two legs are gated:
-  passage past Gaspār the customs guard, and the yard, which Mārtā at the
-  registry window or Theo the foreman controls. Boarding needs a berth from
-  Holt the brakeman. The "What you still need" list names the four things
-  (papers, passage, yard, berth) and how to get each.
-- Pending work is visible. Lūçīā inks your passport over three half-hours,
-  Gaspār stays distracted for a while, Pipô runs off to cause trouble, the gate
-  and the crate change when your work finishes, Mārtā's window lights when it
-  opens and the route bar turns green as legs open.
-- One wallet of australs plus favors. Every bribe raises the price of the
-  next. Heat climbs when people notice you, and the bailiffs take you at 8.
-  Three characters start the night with different purses.
-- Waiting with a card selected swaps that card for a fresh draw.
+- **Two problems at once.** Each level is a local problem under **Here** and
+  everything your allies are doing elsewhere under **The phone**: the jet, the
+  document, the landing rights, who meets you across the line. Allies keep
+  working while you travel. Each one rolls a die to deliver, and a promise is
+  not an arrangement until they do.
+- **Approaches and the die.** Each approach shows its hours and the die it
+  needs. Select it to read what helps it and what happens either way, then
+  commit. The simulation resolves first and the scene animates after.
+- **Cards are specific help from specific people.** They lower the die and
+  some approaches need one. The party card means nothing in Esmeralda.
+- **Money is never short.** The question is whether the person takes it.
+- **The inquiry acts in the open** every four hours: circulating the order,
+  pressing an ally, briefing the papers, asking Esmeralda to hold you.
+- **Exposure** is how sure they are of where you are. At 10 they arrive. The
+  route bar shows where you are and where they think you are.
+- **Commitments come due.** Terms you accepted are listed under People and
+  promises, and earlier choices change how later levels can be solved.
+- You win when the jet leaves Esmeraldan airspace.
 
-Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.
+## Copy rule
+
+Game text is English. Verdenese and Nelôxi appear only in names and in a few
+words people say. Esmeralda is the second Nelosphere state in South America
+(capital Baca, largest city Susana), owner canon of 2026-10-30.
 
 ## Layout
 
 | Path | What |
 | --- | --- |
-| `index.html` | The delivered game (built, self-contained) |
+| `index.html` | The delivered game, built and self-contained |
+| `src/data.js` | Characters, people, arrangements, cards, levels, enemy actions |
 | `src/sim.js` | Simulation: all game truth, no DOM, no rendering. Node-loadable |
 | `src/tutorial.js` | The guided first run: fixed seed, scripted die and inquiry, 20 steps, what each step allows |
-| `src/render.js` | p5 pixel-art scene, route presentation and animation queue |
-| `src/ui.js` | HTML hand, targets, inspection, dialogue, controls, start screen and coach box |
-| `src/audio.js` | Web Audio synth |
-| `src/style.css`, `src/shell.html` | Styles and page shell |
+| `src/render.js` | p5 pixel-art scenes, route HUD, animation queue, title still |
+| `src/ui.js` | HTML panels, inspection, dialogue, title and start screens, coach box |
+| `src/audio.js` | Web Audio sound effects and the theme |
+| `src/style.css`, `src/shell.html` | Styles, page shell, Open Graph and Twitter card tags |
+| `fonts/` | The owner's licensed webfonts and `LICENSES.md` |
+| `og/card.png` | The 1200 by 630 link preview image |
 | `vendor/p5.min.js` | Pinned p5.js 1.9.4 |
-| `tools/build.py` | Inlines everything, fonts included, into `index.html` |
-| `fonts/` | The owner's licensed webfonts and `LICENSES.md`: Little Grandad Fat (masthead), Kurdis Regular (text and titles), Kurdis Condensed (clock and canvas HUD), Embro (the small capital labels; it has no accents or lowercase) |
-| `tools/calibrate.js` | Policy harness: win rate, loss causes and timing per persona |
+| `tools/build.py` | Inlines everything into `index.html` |
+| `tools/calibrate.js` | Policy harness: win rate, loss causes and timing |
 | `tools/tutorial-check.js` | Replays the guided run against the sim; run after changing `data.js`, `sim.js` or `tutorial.js` |
+| `legacy/last-freight-out/` | The earlier prototype, kept for reference |
+| `docs/` | Game direction and the Agent Action Records |
 
 Rebuild after editing `src/`:
 
@@ -86,12 +78,16 @@ Rebuild after editing `src/`:
 python3 tools/build.py
 ```
 
-Measure the economy before retuning a number:
+Check the guided run and measure the economy:
+
+```bash
+node tools/tutorial-check.js
+```
 
 ```bash
 node tools/calibrate.js 500
 ```
 
-Design notes and measurements are in `docs/aar-last-freight-out.md`. The
-closedtab Agent Action Record for the build is
-`docs/aar-last-freight-out-first-build.md`.
+The record of this build is `docs/aar-coalition-skeleton.md`. The link
+preview image points at the `main` branch, so it resolves once this work is
+merged.
