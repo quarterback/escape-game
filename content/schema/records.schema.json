@@ -1,0 +1,120 @@
+{
+ "$id": "coalition-content/0.5/records",
+ "title": "Rule records with narrative fields (src/data.js)",
+ "about": "Dispatch events, government events and holds. Mechanics stay in the record; narrative fields are classified by pattern so each has a stable content ID: <collection>.<id>.<field>.",
+ "$defs": {
+  "choice": {
+   "type": "object",
+   "required": [
+    "id",
+    "label",
+    "fx"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z0-9_]+$"
+    },
+    "label": {
+     "type": "string",
+     "x-pattern": "P01"
+    },
+    "needs": {},
+    "fx": {
+     "type": "object"
+    }
+   }
+  },
+  "event": {
+   "type": "object",
+   "required": [
+    "id",
+    "title",
+    "text",
+    "choices"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z0-9_]+$"
+    },
+    "at": {},
+    "after": {
+     "type": "integer"
+    },
+    "cond": {
+     "x-adapter": "function"
+    },
+    "title": {
+     "type": "string",
+     "x-pattern": "P10"
+    },
+    "text": {
+     "type": "string",
+     "x-pattern": "P07"
+    },
+    "choices": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "#/$defs/choice"
+     }
+    }
+   }
+  }
+ },
+ "effects": {
+  "escape": [
+   "hours",
+   "exposure",
+   "belief",
+   "card",
+   "lose",
+   "trust",
+   "doubt",
+   "cut",
+   "test",
+   "stage",
+   "flag",
+   "deadline",
+   "skipEnemy",
+   "mod",
+   "hold",
+   "rung",
+   "advance",
+   "end",
+   "roll",
+   "say"
+  ],
+  "gov": [
+   "hours",
+   "lead",
+   "false",
+   "follow",
+   "card",
+   "lose",
+   "act",
+   "press",
+   "warn",
+   "stall",
+   "crossing",
+   "ban",
+   "unban",
+   "holdup",
+   "dc",
+   "minister",
+   "sooner",
+   "roll",
+   "say"
+  ],
+  "roll": [
+   "need",
+   "face",
+   "decoy",
+   "win",
+   "lose"
+  ]
+ }
+}

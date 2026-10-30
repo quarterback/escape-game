@@ -1,0 +1,8 @@
+{
+  "id": "coalition",
+  "version": "0.5.0",
+  "contract": "coalition-content/0.5",
+  "files": { "ui": "ui.json", "markers": "markers.json", "tutorials": "tutorials.json", "glossary": "glossary.json" },
+  "records": "src/data.js",
+  "policy": "../policy.json"
+}

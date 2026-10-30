@@ -1,0 +1,14 @@
+{
+  "$id": "coalition-content/0.5/glossary", "title": "Concept glossary (C05)",
+  "type": "object", "required": ["contract", "concepts"],
+  "properties": {
+    "contract": { "type": "string", "pattern": "^coalition-content/0\\.5$" },
+    "concepts": { "type": "array", "items": {
+      "type": "object", "required": ["id", "approved", "prohibited", "scope"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" }, "approved": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "prohibited": { "type": "array", "items": { "type": "string" } },
+        "scope": { "type": "string", "enum": ["all", "system"] }, "note": { "type": "string" }
+      } } }
+  }
+}

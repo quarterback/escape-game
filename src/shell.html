@@ -33,103 +33,106 @@
 <body>
 <div id="frame">
 <header id="top">
-  <div class="wordmark">Coalition</div>
+  <div class="wordmark">{{c:nav.wordmark}}</div>
   <span class="whoami" id="whoami"></span>
-  <nav class="menu" aria-label="Game">
-    <button id="demo">Guided run</button>
-    <button id="startscreen">Start screen</button>
-    <button id="help">Help</button>
-    <button id="install" hidden>Install</button>
-    <button id="mute" aria-label="Sound on" title="Sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
+  <nav class="menu" aria-label="{{c:nav.menu_label}}">
+    <button id="demo">{{c:menu.guided}}</button>
+    <button id="startscreen">{{c:menu.start}}</button>
+    <button id="help">{{c:menu.help}}</button>
+    <button id="install" hidden>{{c:menu.install}}</button>
+    <button id="mute" aria-label="{{c:sound.on}}" title="{{c:sound.title}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
   </nav>
 </header>
 
 <div id="world">
-  <div id="scene" aria-label="Pixel-art scene of the current level"></div>
+  <div id="scene" aria-label="{{c:scene.label}}"></div>
   <div class="shade top" aria-hidden="true"></div>
   <div class="shade bottom" aria-hidden="true"></div>
-  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span class="num" id="left"></span> left. <span id="leftverb">Out by</span> <span class="mono gold" id="deadline"></span></span></div>
-  <div id="goalbox"><span class="lbl">Goal</span><span class="txt"><span id="goaltxt">Leave Esmeraldan airspace by</span> <span class="mono gold" id="deadline2"></span></span></div>
+  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span class="num" id="left"></span> {{c:scene.left}} <span id="leftverb">{{c:scene.out_by}}</span> <span class="mono gold" id="deadline"></span></span></div>
+  <div id="goalbox"><span class="lbl">{{c:scene.goal_label}}</span><span class="txt"><span id="goaltxt">{{c:scene.goal}}</span> <span class="mono gold" id="deadline2"></span></span></div>
   <div id="sosa">
-    <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">Sosā, looking here</span></span>
+    <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">{{c:scene.sosa_here}}</span></span>
     <span class="where" id="sosa-where"></span>
-    <span class="row2"><span id="sosa-nextl">Next move</span> <span class="num coral" id="sosa-next"></span></span>
-    <span class="row2 exp">Exposure <span><span class="mono orange" id="heatnum"></span> of 10</span></span>
+    <span class="row2"><span id="sosa-nextl">{{c:scene.next_move}}</span> <span class="num coral" id="sosa-next"></span></span>
+    <span class="row2 exp">{{c:scene.exposure}} <span><span class="mono orange" id="heatnum"></span> {{c:scene.of_ten}}</span></span>
     <span class="bar" id="heat"></span>
-    <span class="row2 arrive">At 10 they arrive.</span>
+    <span class="row2 arrive">{{c:scene.held_at}}</span>
   </div>
-  <div id="expline"><span id="expl"><span id="expl-l">Exposure</span> <b id="expl-b"></b></span><span class="bar" id="heat2"></span><span class="mono orange" id="heatnum2"></span></div>
+  <div id="expline"><span id="expl"><span id="expl-l">{{c:scene.exposure}}</span> <b id="expl-b"></b></span><span class="bar" id="heat2"></span><span class="mono orange" id="heatnum2"></span></div>
   <div id="lvlhead"><h1 id="lvlname"></h1><p id="lvlobj"></p></div>
 </div>
 
 <main id="panels">
-  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">News</li><li data-ph="phone">Phone</li><li data-ph="move">Move</li><li data-ph="roll">Roll</li><li data-ph="sosa">Sosā</li></ol></div>
-  <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
+  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol></div>
+  <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">{{c:action.next}}</button><span id="coach-do" class="small">{{c:coach.do}}</span><button id="coach-leave">{{c:coach.leave}}</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
     <div id="lvlhead2"><h1 id="lvlname2"></h1><p id="lvlobj2"></p></div>
     <section id="phasecard" hidden aria-live="polite"></section>
-    <div class="h2row" id="herehead"><h2>Here</h2><button id="wait" class="pill">Lie low one hour</button></div>
+    <div class="h2row" id="herehead"><h2>{{c:nav.here}}</h2><button id="wait" class="pill">{{c:action.wait}}</button></div>
     <div id="approaches"></div>
-    <details id="logbox"><summary>What happened</summary><div id="dialogue" aria-live="polite"></div></details>
+    <details id="logbox"><summary>{{c:log.heading}}</summary><div id="dialogue" aria-live="polite"></div></details>
   </section>
 
   <section class="tab" id="tab-hand" data-tab="hand">
-    <h2>Your hand</h2>
+    <h2>{{c:hand.heading}}</h2>
     <div id="hand"></div>
-    <h3 class="menu2-h">Game</h3>
-    <div class="row" id="menu2"><button data-act="demo">Guided run</button><button data-act="startscreen">Start screen</button><button data-act="help">Help</button><button data-act="install" hidden>Install</button><button data-act="mute">Sound: on</button></div>
+    <h3 class="menu2-h">{{c:hand.game}}</h3>
+    <div class="row" id="menu2"><button data-act="demo">{{c:menu.guided}}</button><button data-act="startscreen">{{c:menu.start}}</button><button data-act="help">{{c:menu.help}}</button><button data-act="install" hidden>{{c:menu.install}}</button><button data-act="mute">{{c:sound.menu_on}}</button></div>
   </section>
 
   <aside class="tab" id="tab-phone" data-tab="phone">
-    <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg><span id="phoneh">The phone</span></h2><span class="chip lav" id="waiting"></span></div>
-    <button id="phasedone" class="primary" hidden>Done with the phone</button>
+    <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg><span id="phoneh">{{c:nav.phone}}</span></h2><span class="chip lav" id="waiting"></span></div>
+    <button id="phasedone" class="primary" hidden>{{c:phase.done_phone}}</button>
     <div id="inbox"></div>
-    <h3>Calls</h3>
+    <h3>{{c:phone.calls}}</h3>
     <div id="calls"></div>
     <div id="helpbox" hidden>
-      <p>Choose an approach under <b>Here</b>, read its chances, then commit. Use <b>The phone</b> to arrange help while you travel. Calls can fail; check when a reply is due.</p>
-      <p>Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse.</p>
-      <p>Each round: News, Phone, Move, Roll, Sosā. At exposure 10 you are held. Each hold is worse than the last; the third is house arrest. Leave Esmeraldan airspace within 72 hours to win.</p>
-      <p id="ioshint" hidden>To install on an iPhone: tap Share, then Add to Home Screen.</p>
+      <p>{{b:help.approach}}</p>
+      <p>{{b:help.cards}}</p>
+      <p>{{b:help.rounds}}</p>
+      <p id="ioshint" hidden>{{c:help.ios}}</p>
     </div>
   </aside>
 
   <section class="tab" id="tab-route" data-tab="route">
-    <div class="h2row"><h2>The route</h2><span class="legend"><span><i class="sw inhand"></i>In hand</span><span><i class="sw promised"></i>Promised, not delivered</span><span><i class="sw notyet"></i>Not started</span></span></div>
+    <div class="h2row"><h2>{{c:route.heading}}</h2><span class="legend"><span><i class="sw inhand"></i>{{c:route.legend_inhand}}</span><span><i class="sw promised"></i>{{c:route.legend_promised}}</span><span><i class="sw notyet"></i>{{c:route.legend_notyet}}</span></span></div>
     <div id="board"></div>
     <ol id="rail"></ol>
   </section>
 </main>
 
-<nav id="tabs" aria-label="Panels">
-  <button data-tab="here" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Here</button>
-  <button data-tab="phone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>Phone<span class="badge" id="tab-badge" hidden></span></button>
-  <button data-tab="route"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="M6 7v4a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4"></path></svg>Route</button>
-  <button data-tab="hand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="11" height="15" rx="2"></rect><path d="M9 3h10a2 2 0 0 1 2 2v12"></path></svg>Hand</button>
+<nav id="tabs" aria-label="{{c:nav.panels}}">
+  <button data-tab="here" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>{{c:tab.here}}</button>
+  <button data-tab="phone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>{{c:tab.phone}}<span class="badge" id="tab-badge" hidden></span></button>
+  <button data-tab="route"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="M6 7v4a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4"></path></svg>{{c:tab.route}}</button>
+  <button data-tab="hand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="11" height="15" rx="2"></rect><path d="M9 3h10a2 2 0 0 1 2 2v12"></path></svg>{{c:tab.hand}}</button>
 </nav>
 </div>
 
 <div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
-<div id="update" hidden><span>New version ready.</span><button id="reload">Reload</button></div>
+<div id="update" hidden><span>{{c:update.ready}}</span><button id="reload">{{c:update.reload}}</button></div>
 
-<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>Share your result</button><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
+<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>{{c:over.share}}</button><button id="again" class="primary">{{c:over.again}}</button><button id="changewho">{{c:over.choose}}</button></div></div></div>
 
-<div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
+<div id="title"><div class="title-shade"></div><div class="title-box"><h1 class="title-word">{{c:title.word}}</h1><p class="title-line">{{c:title.line}}</p><button id="title-start">{{c:title.start}}</button><p class="title-foot">{{c:title.foot}}</p></div></div>
 
 <div id="start" hidden>
-  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>Coalition</h2><p id="start-blurb">You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda and reach the jet your family has booked to Atlanta.</p></div></div>
+  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>{{c:title.word}}</h2><p id="start-blurb">{{c:start.blurb}}</p></div></div>
   <div class="startbox">
-    <button id="continue" class="pill ghost" hidden>Continue your run</button>
-    <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>Daily run</b><span id="daily-note"></span></button>
-    <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
-    <h3 id="start-free">Pick who you play</h3>
+    <button id="continue" class="pill ghost" hidden>{{c:start.continue_plain}}</button>
+    <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>{{c:start.daily}}</b><span id="daily-note"></span></button>
+    <div id="start-demo"><button id="start-tutorial" class="primary">{{c:start.tutorial}}</button><span class="small" id="start-demo-note"></span><button id="start-gov-tutorial" class="pill ghost">{{c:start.gov_tutorial}}</button></div>
+    <h3 id="start-free">{{c:start.pick}}</h3>
     <div id="start-chars"></div>
-    <p class="small byline">A Nelosphere universe by <a href="https://ronbronson.dev">Ron Bronson</a></p>
+    <p class="small byline">{{c:start.byline}} <a href="https://ronbronson.dev">{{c:start.author}}</a></p>
   </div>
 </div>
 <script>
 /*__PIXI__*/
+</script>
+<script>
+/*__CONTENT__*/
 </script>
 <script>
 /*__DATA__*/

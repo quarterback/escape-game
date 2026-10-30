@@ -10,17 +10,22 @@
 const Gov = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
+  const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
+  const M = (k, code, args) => C.marker(k, code, args);
   const ev = (type, data) => Object.assign({ type }, data);
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
   const EVERY = 5, LEAK = 0.5; // a stop she reaches is reported only some of the time
   const place = (i) => i === 0 ? 'the residence' : i === 4 ? 'the line' : LV(i).short;
 
-  function newRun(seed, target) {
-    target = target || 'woman';
+  function newRun(seed, target, opts) {
+    target = target || 'woman'; opts = opts || {};
     const c = S.newRun(seed, target, { manualEnemy: true });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
       timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
-      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0 };
+      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0 };
+    if (opts.dice) g._dice = opts.dice.slice();
+    if (opts.events) g._events = opts.events.slice();
+    if (opts.tutorial) g.tutorial = true;
     g._rngState = (seed ^ 0x9e3779b9) >>> 0;
     attach(g);
     const events = [];
@@ -33,7 +38,7 @@ const Gov = (() => {
     g._boot = events; return g;
   }
   function attach(g) { g._rng = function () { let a = (g._rngState + 0x6D2B79F5) | 0; g._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return g; }
-  const roll = (g) => 1 + Math.floor(g._rng() * 6);
+  const roll = (g) => (g._dice && g._dice.length) ? g._dice.shift() : 1 + Math.floor(g._rng() * 6);
   const personName = (g, id) => ({ minister: 'The minister', watch: 'The watch team', desk: 'The Santa Laura desk', rail: 'The railway contact', embassy: 'The embassy in Baca', aviation: 'The aviation desk', enemy: 'Inspector Sosā', press: 'Rādiô Portô Venla' })[id] || S.personName(g.c, id);
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
@@ -151,7 +156,7 @@ const Gov = (() => {
     if (id === 'wait') { pass(g, events, 1); return done(g, events); }
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: 'That message is gone.' };
-      g.inbox.splice(i, 1); events.push(ev('answered', { label: optionId }));
+      g.inbox.splice(i, 1); g.answered.push(optionId); events.push(ev('answered', { label: optionId }));
       if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } events.push(ev('say', { who: 'minister', text: right ? `"Good. Sosā has the address. Do not lose her."` : `"${place(g.belief)[0].toUpperCase() + place(g.belief).slice(1)}. I will say so at six."` })); if (!right) { c.belief = g.belief; events.push(ev('enemy', { id: 'claim', text: `The minister names ${place(g.belief)} on the evening news. Every desk in the province drives there.` })); } }
       if (optionId === 'ask_time') { g.flags.askedTime += 1; g.ministerBy = c.hour + 6; events.push(ev('say', { who: 'minister', text: `"Six hours. Then I want a town and a street."` })); }
       if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: `"Then I will tell them she has fled the country. Find her before the papers find you."` })); S.enemyAct(c, 'press_story', events); }
@@ -200,29 +205,32 @@ const Gov = (() => {
   const fill = (g, t) => String(t).replace(/\{there\}/g, place(g.belief));
   function eventOk(g, e) { return !g.seenEvents.includes(e.id) && (!e.after || g.c.hour >= e.after) && (!e.at || e.at.includes(g.belief)); }
   function drawEvent(g, events) {
-    const pool = D.GOV_EVENTS.filter(e => eventOk(g, e)); g.nextEventAt = g.c.hour + EVERY;
+    g.nextEventAt = g.c.hour + EVERY;
+    // a guided run draws only its scripted events
+    if (g._events) { if (!g._events.length) return; const id = g._events.shift(); const e = D.GOV_EVENTS.find(x => x.id === id); g.event = { id }; g.seenEvents.push(id); events.push(ev('dispatch', { title: e.title })); return; }
+    const pool = D.GOV_EVENTS.filter(e => eventOk(g, e));
     if (!pool.length) return;
     const e = pool[Math.floor(g._rng() * pool.length)]; g.event = { id: e.id }; g.seenEvents.push(e.id);
     events.push(ev('dispatch', { title: e.title }));
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push({ k: 'roll', t: `Roll ${fx.roll.need}+` }); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` }); if (w.length) out.push({ k: 'gain', t: 'Win: ' + w.map(x => x.t.toLowerCase()).join(', ') }); if (l.length) out.push({ k: 'risk', t: 'Fail: ' + l.map(x => x.t.toLowerCase()).join(', ') }); return out; }
-    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
-    if (fx.lead !== undefined) out.push({ k: 'gain', t: fx.lead ? `A real lead in ${fx.lead} h` : 'A real lead now' });
-    if (fx.false) out.push({ k: 'risk', t: 'A false lead' });
-    if (fx.act === 'check_belief') out.push({ k: 'gain', t: `Search ${place(g.belief)}` });
-    if (fx.press) out.push({ k: 'gain', t: 'Harder for her to hide' });
-    if (fx.warn) out.push({ k: 'lose', t: 'Her side is warned' });
-    if (fx.stall) out.push({ k: 'gain', t: `Her plans slip ${fx.stall} h` });
-    if (fx.crossing) out.push({ k: 'gain', t: `Line harder to cross for ${fx.crossing} h` });
-    if (fx.ban) out.push({ k: 'gain', t: 'Ban confirmed at the post' });
-    if (fx.unban) out.push({ k: 'lose', t: 'Post loses the ban' });
-    if (fx.holdup) out.push({ k: 'gain', t: 'Esmeralda moves on your hold' });
-    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.GOV_CARDS[fx.card].name}` });
-    if (fx.dc) out.push({ k: fx.dc[0] < 0 ? 'gain' : 'lose', t: `Orders ${fx.dc[0] < 0 ? 'easier' : 'harder'} for ${fx.dc[1]} h` });
-    if (fx.minister) out.push({ k: fx.minister > 0 ? 'gain' : 'lose', t: fx.minister > 0 ? 'Minister pleased' : 'Minister angry' });
-    if (fx.sooner) out.push({ k: 'lose', t: `Minister wants it ${fx.sooner} h sooner` });
+    if (fx.roll) { out.push(M('roll', 'roll.need', { need: fx.roll.need })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', 'time.hours', { hours: fx.hours })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.hours) out.push(M('time', 'time.hours', { hours: fx.hours }));
+    if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: fx.lead }) : M('gain', 'lead.real_now'));
+    if (fx.false) out.push(M('risk', 'lead.false'));
+    if (fx.act === 'check_belief') out.push(M('gain', 'search.at', { place: place(g.belief) }));
+    if (fx.press) out.push(M('gain', 'her.exposed'));
+    if (fx.warn) out.push(M('lose', 'her.warned'));
+    if (fx.stall) out.push(M('gain', 'her.slips', { hours: fx.stall }));
+    if (fx.crossing) out.push(M('gain', 'line.harder', { hours: fx.crossing }));
+    if (fx.ban) out.push(M('gain', 'ban.confirmed'));
+    if (fx.unban) out.push(M('lose', 'ban.lost'));
+    if (fx.holdup) out.push(M('gain', 'hold.esmeralda_moves'));
+    if (fx.card) out.push(M('gain', 'card.gain', { card: D.GOV_CARDS[fx.card].name }));
+    if (fx.dc) out.push(M(fx.dc[0] < 0 ? 'gain' : 'lose', fx.dc[0] < 0 ? 'orders.easier' : 'orders.harder', { hours: fx.dc[1] }));
+    if (fx.minister) out.push(M(fx.minister > 0 ? 'gain' : 'lose', fx.minister > 0 ? 'minister.pleased' : 'minister.angry'));
+    if (fx.sooner) out.push(M('lose', 'minister.sooner', { hours: fx.sooner }));
     return out;
   }
   function eventView(g) {
@@ -231,7 +239,7 @@ const Gov = (() => {
   }
   function resolveEvent(g, choiceId, events) {
     const d = D.GOV_EVENTS.find(e => e.id === g.event.id), ch = d.choices.find(c => c.id === choiceId);
-    if (!ch) return; g.event = null; events.push(ev('chose', { label: fill(g, ch.label) }));
+    if (!ch) return; g.event = null; g.chosen += 1; events.push(ev('chose', { label: fill(g, ch.label) }));
     g.timeline.push({ hour: g.c.hour, pos: g.c.pos, belief: g.belief, order: fill(g, ch.label) });
     applyFx(g, ch.fx, events);
   }
@@ -281,6 +289,8 @@ const Gov = (() => {
   }
   function serialize(g) { const o = Object.assign({}, g); delete o._rng; delete o._boot; o.c = S.serialize(g.c); return JSON.stringify(o); }
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }
-  return { newRun, view, commit, debrief, serialize, restore, personName };
+  // the guided run ends: rolls and news are no longer scripted
+  function endTutorial(g) { delete g._dice; delete g._events; delete g.tutorial; }
+  return { newRun, view, commit, debrief, serialize, restore, personName, endTutorial };
 })();
 if (typeof module !== 'undefined') module.exports = Gov;

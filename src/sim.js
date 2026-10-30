@@ -7,6 +7,8 @@
 'use strict';
 const Sim = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
+  const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
+  const M = (k, code, args) => C.marker(k, code, args);
   // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
   function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
@@ -235,25 +237,26 @@ const Sim = (() => {
   // Markers: what a choice costs or gives, as short tags the UI shows instead of sentences.
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push({ k: 'roll', t: `Roll ${need}+` }); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push({ k: 'risk', t: 'Fail: ' + lose.map(x => x.t.toLowerCase()).join(', ') }); return out; }
-    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
-    if (fx.exposure) out.push({ k: fx.exposure > 0 ? 'up' : 'down', t: `Exposure ${fx.exposure > 0 ? '+' : ''}${fx.exposure}` });
-    if (fx.belief === 'away') out.push({ k: 'down', t: 'Sosā looks elsewhere' });
-    if (fx.belief === 'here') out.push({ k: 'up', t: 'Sosā finds you' });
-    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.CARDS[fx.card].name}` });
-    if (fx.lose) out.push({ k: 'lose', t: fx.lose === 'random' || fx.lose === 'best' ? 'Lose a card' : `Lose: ${D.CARDS[fx.lose].name}` });
-    if (fx.trust) for (const k in fx.trust) out.push({ k: fx.trust[k] > 0 ? 'gain' : 'lose', t: `${personName(s, k).split(' ')[0]} ${fx.trust[k] > 0 ? 'trusts you more' : 'trusts you less'}` });
-    if (fx.doubt) out.push({ k: 'risk', t: `Rely on ${personName(s, fx.doubt).split(' ')[0]}` });
-    if (fx.cut) out.push({ k: 'lose', t: `Cut off ${personName(s, fx.cut).split(' ')[0]}` });
-    if (fx.test) out.push({ k: 'time', t: 'Learn the truth' });
-    if (fx.stage) out.push({ k: 'gain', t: 'Reception moves' });
-    if (fx.deadline) out.push({ k: 'up', t: `Deadline ${fx.deadline < 0 ? 'sooner' : 'later'}` });
-    if (fx.skipEnemy) out.push({ k: 'down', t: 'Sosā loses a move' });
-    if (fx.mod) out.push({ k: fx.mod < 0 ? 'down' : 'up', t: `Rolls here ${fx.mod < 0 ? 'easier' : 'harder'}` });
-    if (fx.hold) out.push({ k: 'risk', t: 'Held' });
-    if (fx.advance) out.push({ k: 'gain', t: 'Reach the next stop' });
-    if (fx.end) out.push({ k: 'risk', t: 'Ends the run' });
-    if (fx.flag && fx.flag.dark) out.push({ k: 'up', t: 'Allies slower' });
+    const first = (id) => personName(s, id).split(' ')[0];
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.hours) out.push(M('time', 'time.hours', { hours: fx.hours }));
+    if (fx.exposure) out.push(M(fx.exposure > 0 ? 'up' : 'down', 'exposure.change', { signed: (fx.exposure > 0 ? '+' : '') + fx.exposure }));
+    if (fx.belief === 'away') out.push(M('down', 'search.elsewhere'));
+    if (fx.belief === 'here') out.push(M('up', 'search.finds'));
+    if (fx.card) out.push(M('gain', 'card.gain', { card: D.CARDS[fx.card].name }));
+    if (fx.lose) out.push(fx.lose === 'random' || fx.lose === 'best' ? M('lose', 'card.lose_any') : M('lose', 'card.lose', { card: D.CARDS[fx.lose].name }));
+    if (fx.trust) for (const k in fx.trust) out.push(M(fx.trust[k] > 0 ? 'gain' : 'lose', fx.trust[k] > 0 ? 'trust.more' : 'trust.less', { person: first(k) }));
+    if (fx.doubt) out.push(M('risk', 'trust.rely', { person: first(fx.doubt) }));
+    if (fx.cut) out.push(M('lose', 'trust.cut', { person: first(fx.cut) }));
+    if (fx.test) out.push(M('time', 'trust.test'));
+    if (fx.stage) out.push(M('gain', 'arrangement.moves'));
+    if (fx.deadline) out.push(M('up', fx.deadline < 0 ? 'deadline.sooner' : 'deadline.later'));
+    if (fx.skipEnemy) out.push(M('down', 'search.loses_move'));
+    if (fx.mod) out.push(M(fx.mod < 0 ? 'down' : 'up', fx.mod < 0 ? 'rolls.easier' : 'rolls.harder'));
+    if (fx.hold) out.push(M('risk', 'hold.climb'));
+    if (fx.advance) out.push(M('gain', 'route.advance'));
+    if (fx.end) out.push(M('risk', 'run.ends'));
+    if (fx.flag && fx.flag.dark) out.push(M('up', 'allies.slower'));
     return out;
   }
   function eventView(s) {

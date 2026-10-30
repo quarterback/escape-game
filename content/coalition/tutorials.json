@@ -1,0 +1,531 @@
+{
+ "contract": "coalition-content/0.5",
+ "tutorials": [
+  {
+   "id": "escape",
+   "side": "escape",
+   "who": "woman",
+   "seed": 11,
+   "dice": [
+    5,
+    4,
+    5,
+    5,
+    6,
+    5,
+    5,
+    6,
+    5,
+    5,
+    6,
+    5
+   ],
+   "enemy": [
+    "circulate",
+    "press_story",
+    "check_belief",
+    "press_story",
+    "check_belief",
+    "press_story",
+    "check_belief",
+    "press_story"
+   ],
+   "events": false,
+   "steps": [
+    {
+     "id": "intro",
+     "kind": "read",
+     "title": "A guided first run",
+     "body": "You are Teresā Albukerkē, the defeated candidate. Reach Atlanta within 72 hours.\n\nThis tutorial guides you to the border. The airfield is yours to play.",
+     "goal": "Know the goal and the deadline",
+     "highlight": []
+    },
+    {
+     "id": "map",
+     "kind": "read",
+     "title": "The map",
+     "body": "The gold dot marks you. The red eye marks where the inquiry is looking. Exposure rises when they match.\n\nAt exposure 10 you are held. Each hold is worse than the last. The third is house arrest.",
+     "goal": "Read exposure and the inquiry on the map",
+     "highlight": [
+      "#scene",
+      "#heat"
+     ]
+    },
+    {
+     "id": "phases",
+     "kind": "read",
+     "title": "Each round has five phases",
+     "body": "**News**, **Phone**, **Move**, **Roll**, **Sosā**. On the phone you answer messages and place one call. Then you make one move.",
+     "goal": "Know the five phases",
+     "highlight": [
+      "#phasebar"
+     ]
+    },
+    {
+     "id": "answer_brother",
+     "kind": "act",
+     "title": "Answer your brother",
+     "body": "Duartē found a jet. He needs a destination to book the crew.\n\nChoose **Name Atlanta now**.",
+     "goal": "Answer a message",
+     "highlight": [
+      "#inbox"
+     ],
+     "allow": {
+      "options": [
+       "name_atlanta"
+      ]
+     },
+     "done": {
+      "flag": "destination"
+     }
+    },
+    {
+     "id": "call_aircraft",
+     "kind": "act",
+     "title": "Start an arrangement",
+     "body": "**Call Duartē about aircraft**. The call takes an hour; his reply is due six hours later.",
+     "goal": "Start an arrangement by phone",
+     "highlight": [
+      "#calls"
+     ],
+     "allow": {
+      "calls": [
+       "aircraft"
+      ]
+     },
+     "done": {
+      "job": "aircraft"
+     }
+    },
+    {
+     "id": "promise",
+     "kind": "read",
+     "title": "A promise is not an arrangement",
+     "body": "The route shows when the reply is due. An ally must pass a reliability roll to deliver. If the call fails, try again.",
+     "goal": "Tell a promise from a delivered arrangement",
+     "highlight": [
+      "#board",
+      "#rail"
+     ]
+    },
+    {
+     "id": "leave_house",
+     "kind": "act",
+     "title": "Leave the house",
+     "body": "Select **Decoy convoy**. Read the time and roll required, then press **Commit**. Nando's card makes this approach available.",
+     "goal": "Read an approach before committing",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "decoy"
+      ]
+     },
+     "done": {
+      "pos": 1
+     }
+    },
+    {
+     "id": "die",
+     "kind": "read",
+     "title": "The die",
+     "body": "Cards lower the roll you need. They stay in your hand unless used or withdrawn.\n\nYou reached Santa Laura. The inquiry still watches the house.",
+     "goal": "See how cards change the roll",
+     "highlight": [
+      "#scene"
+     ]
+    },
+    {
+     "id": "inquiry_acts",
+     "kind": "read",
+     "title": "The inquiry acts",
+     "body": "Sosā sent the travel ban to every post. Border rolls are now one point harder unless you hold a delay card.\n\nThe inquiry acts every three hours.",
+     "goal": "See the inquiry act on a schedule",
+     "highlight": [
+      "#sosa"
+     ]
+    },
+    {
+     "id": "call_sponsor",
+     "kind": "act",
+     "title": "Engage the sponsor",
+     "body": "**Call Salek about your visa**. He can ask Atlanta to let you in.\n\nRead his terms before committing. Calling accepts them.",
+     "goal": "Accept terms by calling",
+     "highlight": [
+      "#calls"
+     ],
+     "allow": {
+      "calls": [
+       "permission"
+      ]
+     },
+     "done": {
+      "any": [
+       {
+        "job": "permission"
+       },
+       {
+        "stage": [
+         "permission",
+         1
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "hire_driver",
+     "kind": "act",
+     "title": "Pay someone who takes money",
+     "body": "Nando's cousin accepts money. Choose **Hire a driver and plain car**.",
+     "goal": "Use an ally who takes money",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "second_driver"
+      ]
+     },
+     "done": {
+      "pos": 2
+     }
+    },
+    {
+     "id": "work_while_driving",
+     "kind": "read",
+     "title": "Work finished while you drove",
+     "body": "Duartē confirmed the crew while you drove.\n\nThe inquiry told the papers you had left. They are now looking in Portô Venla.",
+     "goal": "See arrangements progress while you travel",
+     "highlight": [
+      "#board",
+      "#rail"
+     ]
+    },
+    {
+     "id": "nona_rosa",
+     "kind": "act",
+     "title": "Nonā Rosa's problem",
+     "body": "Nonā Rosa's cooperative truck was impounded.\n\nChoose **Help Nonā Rosa free the truck**. It takes three hours and earns her help.",
+     "goal": "Earn help by helping",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "help_host"
+      ]
+     },
+     "done": {
+      "pos": 3
+     }
+    },
+    {
+     "id": "relationships",
+     "kind": "read",
+     "title": "Relationships give cards",
+     "body": "Nonā Rosa offers her truck and a driver. Their card can help you later.\n\nTrusted allies are less likely to inform when Sosā questions them.",
+     "goal": "Know that trust lowers the risk of betrayal",
+     "highlight": [
+      "#hand",
+      "#board",
+      "#rail"
+     ]
+    },
+    {
+     "id": "call_reception",
+     "kind": "act",
+     "title": "Who meets you across the line",
+     "body": "**Call Duartē about reception**. He can reach Vélez in Esmeralda. Her officials could meet you at the border.",
+     "goal": "Arrange reception across the line",
+     "highlight": [
+      "#calls"
+     ],
+     "allow": {
+      "calls": [
+       "reception"
+      ]
+     },
+     "done": {
+      "any": [
+       {
+        "job": "reception"
+       },
+       {
+        "stage": [
+         "reception",
+         1
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "freight_crate",
+     "kind": "act",
+     "title": "Onto the freight",
+     "body": "Choose **Pay Holt for a crate**. Your truck card improves the roll.\n\nThe yardmaster will take your money and report you.",
+     "goal": "Get a card for one place",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "crate"
+      ]
+     },
+     "done": {
+      "card": "crate"
+     }
+    },
+    {
+     "id": "board_freight",
+     "kind": "act",
+     "title": "Board at midnight",
+     "body": "Holt's crate is in your hand. It works in one place: this yard, tonight. **Board the midnight freight**. The card makes the roll certain, and it is spent when the train leaves.",
+     "goal": "Spend a card where it counts",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "board"
+      ]
+     },
+     "done": {
+      "pos": 4
+     }
+    },
+    {
+     "id": "border",
+     "kind": "read",
+     "title": "The border",
+     "body": "Your second passport counts from here on. The border has Sosā's ban, but Gianlūka's card still helps on this side of the line.\n\nYou can cross now or wait for Vélez's people.",
+     "goal": "Know where the second passport counts",
+     "highlight": [
+      "#approaches",
+      "#hand"
+     ]
+    },
+    {
+     "id": "show_passport",
+     "kind": "act",
+     "title": "Show your second passport",
+     "body": "Select **Show your second passport**. Read how the ban and your cards change the roll, then commit.",
+     "goal": "Read how the ban changes a roll",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "show_passport"
+      ]
+     },
+     "done": {
+      "pos": 5
+     }
+    },
+    {
+     "id": "airfield",
+     "kind": "read",
+     "title": "Susana airfield. The rest is yours.",
+     "body": "You crossed. Now fuel the jet and get Atlanta's visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
+     "goal": "Play the airfield alone",
+     "highlight": [
+      "#board",
+      "#rail",
+      "#hand"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gov",
+   "side": "gov",
+   "seed": 7,
+   "dice": [
+    5,
+    5,
+    4,
+    5
+   ],
+   "events": true,
+   "eventQueue": [
+    "sightings"
+   ],
+   "steps": [
+    {
+     "id": "intro",
+     "kind": "read",
+     "title": "A guided run as Sofīā",
+     "goal": "Know the goal and what you cannot see",
+     "body": "You are Sofīā Leōnī, aide to the incoming government. Stop Teresā Albukerkē before her jet leaves on Tuesday afternoon.\n\nYou never see where she is. You see reports, and reports arrive late.",
+     "highlight": []
+    },
+    {
+     "id": "view",
+     "kind": "read",
+     "title": "What the scene shows",
+     "goal": "Tell your search from her position",
+     "body": "The scene shows where your search is looking. The box at the top says how old your last report is.\n\nShe could be anywhere else on the route.",
+     "highlight": [
+      "#scene",
+      "#sosa"
+     ]
+    },
+    {
+     "id": "phases",
+     "kind": "read",
+     "title": "Each round has five phases",
+     "goal": "Know the five phases",
+     "body": "**Reports**, **Desk**, **Order**, **Roll**, **Her move**. At the desk you answer the minister and send one request. Then you give one order.",
+     "highlight": [
+      "#phasebar"
+     ]
+    },
+    {
+     "id": "minister",
+     "kind": "act",
+     "title": "The minister wants a location",
+     "goal": "Answer a message without guessing",
+     "body": "You have nothing to tell him yet. If you name the wrong town, your own offices chase it.\n\nChoose **Ask for six hours**.",
+     "highlight": [
+      "#inbox"
+     ],
+     "allow": {
+      "options": [
+       "ask_time"
+      ]
+     },
+     "done": {
+      "answered": "ask_time"
+     }
+    },
+    {
+     "id": "hold",
+     "kind": "act",
+     "title": "Ask Esmeralda early",
+     "goal": "Start a slow request before you need it",
+     "body": "Your ministry has no power across the border. Esmeralda can hold her, but the embassy takes ten hours to answer.\n\nChoose **Ask Esmeralda to hold her**, then **Send**.",
+     "highlight": [
+      "#calls"
+     ],
+     "allow": {
+      "calls": [
+       "req:hold"
+      ]
+     },
+     "done": {
+      "request": "hold"
+     }
+    },
+    {
+     "id": "ban",
+     "kind": "act",
+     "title": "Put the ban on paper",
+     "goal": "Read an order before sending it",
+     "body": "Select **Circulate the travel ban**. Read the roll it needs and the hours it takes, then press **Send the order**.",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "circulate"
+      ]
+     },
+     "done": {
+      "ban": true
+     }
+    },
+    {
+     "id": "reports",
+     "kind": "read",
+     "title": "Reports prove less than they say",
+     "goal": "Judge a report by what it proves",
+     "body": "While your order ran, she moved. Press **See what came in** to read what reached your desk.\n\nEach report says what it proves and what it does not. A car leaving is not proof she was in it.",
+     "highlight": [
+      "#phasecard"
+     ]
+    },
+    {
+     "id": "news",
+     "kind": "act",
+     "title": "News on your side",
+     "goal": "Weigh a choice by its tags",
+     "body": "Every few hours something happens at the ministry. Each choice shows its cost as tags. A real lead is a true report; a false lead points the wrong way.\n\nWhen the news card opens, choose **Check the one that gave plates**.",
+     "highlight": [
+      "#phasecard"
+     ],
+     "allow": {
+      "options": [
+       "plates"
+      ],
+      "events": true
+     },
+     "done": {
+      "chose": true
+     }
+    },
+    {
+     "id": "confirm",
+     "kind": "act",
+     "title": "A sent ban is not a closed border",
+     "goal": "Confirm a request reached the people who act on it",
+     "body": "The ban went out, but the border post has not read it.\n\nChoose **Confirm the travel ban reached the border post**, then **Send**.",
+     "highlight": [
+      "#calls"
+     ],
+     "allow": {
+      "calls": [
+       "req:ban"
+      ]
+     },
+     "done": {
+      "request": "ban"
+     }
+    },
+    {
+     "id": "search",
+     "kind": "act",
+     "title": "Act on the lead",
+     "goal": "Move the search to the newest report",
+     "body": "The plates gave you a real lead. Follow it if it points somewhere new. Search if it points where you are already looking.",
+     "highlight": [
+      "#approaches"
+     ],
+     "allow": {
+      "approaches": [
+       "follow",
+       "search"
+      ]
+     },
+     "done": {
+      "orders": 2
+     }
+    },
+    {
+     "id": "pressure",
+     "kind": "read",
+     "title": "How she gets caught",
+     "goal": "Know how searches turn into holds",
+     "body": "When your search sits on her stop, her exposure rises. At 10 she is held. The third hold is house arrest, and that is your win.\n\nShe will move when she knows you are close.",
+     "highlight": [
+      "#scene"
+     ]
+    },
+    {
+     "id": "alone",
+     "kind": "read",
+     "title": "The rest is yours",
+     "goal": "Play on without the guide",
+     "body": "Rolls and news are no longer scripted. The debrief at the end shows where she really was.\n\nPress **Finish** to continue.",
+     "highlight": [
+      "#approaches",
+      "#calls"
+     ]
+    }
+   ]
+  }
+ ]
+}

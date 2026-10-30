@@ -1,0 +1,1 @@
+{ "about": "New player-facing prose written straight into code.", "expect": ["C12"], "patch": { "sources": { "src/extra.js": "el.textContent = 'You slipped past the checkpoint at dawn.';" } } }

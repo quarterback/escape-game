@@ -1,0 +1,1 @@
+{ "about": "Text uses a placeholder its args do not declare.", "expect": ["C02"], "patch": { "ui": { "entries+": [ { "id": "test.bad_arg", "pattern": "P10", "text": "Rolled {die}" } ] } } }

@@ -1,0 +1,1 @@
+{ "about": "A prohibited alias for the second passport.", "expect": ["C05"], "patch": { "ui": { "entries+": [ { "id": "test.alias", "pattern": "P05", "text": "Your civil record is ready." } ] } } }

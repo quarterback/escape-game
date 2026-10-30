@@ -293,3 +293,4 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
   body.phased .tab,body.phased.coaching .tab{top:auto}
   #phases li{font-size:15px;padding:9px 4px}
 }
+#sosa [hidden]{display:none!important}

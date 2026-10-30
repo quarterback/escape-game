@@ -1,4 +1,19 @@
 import pathlib, sys
+import shutil, subprocess
+_root = pathlib.Path(__file__).resolve().parent.parent
+# Every source file must parse before anything else runs.
+if shutil.which('node'):
+    for _f in sorted((_root / 'src').glob('*.js')):
+        _c = subprocess.run(['node', '--check', str(_f)], capture_output=True, text=True)
+        if _c.returncode != 0: sys.stderr.write(_c.stderr); raise SystemExit(f'build stopped: {_f.name} does not parse')
+# The content check runs first; a content error stops the build (docs/content/patterns.md).
+if shutil.which('node'):
+    _r = subprocess.run(['node', str(_root / 'tools' / 'content-check.js')], capture_output=True, text=True)
+    if _r.returncode != 0:
+        sys.stdout.write(_r.stdout); sys.stderr.write(_r.stderr); raise SystemExit('build stopped: content check failed')
+    print(_r.stdout.strip().splitlines()[-1])
+else:
+    print('warning: node not found; content check skipped')
 root = pathlib.Path(__file__).resolve().parent.parent
 src = root / 'src'
 out = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else root / 'index.html'
@@ -21,9 +36,24 @@ for fam, fn, weight, mime, fmt, license_file in FONTS:
     b64 = base64.b64encode((root / 'fonts' / fn).read_bytes()).decode()
     css_fonts.append(f"@font-face{{font-family:'{fam}';src:url(data:{mime};base64,{b64}) format('{fmt}');font-weight:{weight};font-style:normal;font-display:swap}}")
 shell = shell.replace('/*__FONTS__*/', '\n'.join(css_fonts))
-parts = {'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'ART': src / 'art.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
+# Content package: fill {{c:id}} (plain) and {{b:id}} (with **bold**) from the interface catalog,
+# then inline the package for the runtime. An unknown ID stops the build (rule C02).
+import json, html as _html
+cdir = root / 'content' / 'coalition'
+manifest = json.loads((cdir / 'manifest.json').read_text())
+pkg = {'manifest': manifest}
+for k, f in manifest['files'].items(): pkg[k] = json.loads((cdir / f).read_text())
+catalog = {e['id']: e['text'] for e in pkg['ui']['entries']}
+def _fill(m):
+    kind, cid = m.group(1), m.group(2)
+    if cid not in catalog: raise SystemExit(f'C02 unknown content id in shell.html: {cid}')
+    txt = _html.escape(catalog[cid], quote=True)
+    return re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', txt) if kind == 'b' else txt
+shell = re.sub(r'\{\{([cb]):([a-z0-9_.]+)\}\}', _fill, shell)
+content_js = 'const CONTENT_PKG = ' + json.dumps(pkg, ensure_ascii=False) + ';\n' + (src / 'content.js').read_text()
+parts = {'CONTENT': None, 'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'ART': src / 'art.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
 for k, p in parts.items():
-    txt = p.read_text()
+    txt = content_js if k == 'CONTENT' else p.read_text()
     if k == 'PIXI': txt = re.sub(r'\n//# sourceMappingURL=\S+\s*$', '\n', txt)
     assert '</script' not in txt.lower(), k
     shell = shell.replace('/*__%s__*/' % k, txt)

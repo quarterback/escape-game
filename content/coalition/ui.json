@@ -1,0 +1,1659 @@
+{
+ "contract": "coalition-content/0.5",
+ "entries": [
+  {
+   "id": "name.inspector",
+   "pattern": "P07",
+   "text": "Inspector Sosā"
+  },
+  {
+   "id": "log.start_escape",
+   "pattern": "P08",
+   "text": "{clock}. You are {name}, {title}. {sibling}, {rel}, is abroad and has started on the aircraft.",
+   "args": [
+    "clock",
+    "name",
+    "title",
+    "sibling",
+    "rel"
+   ]
+  },
+  {
+   "id": "log.start_gov",
+   "pattern": "P08",
+   "text": "{clock}. You are {name}, {title}. {target} lost on Saturday and the court has barred her from leaving. The minister wants a location.",
+   "args": [
+    "clock",
+    "name",
+    "title",
+    "target"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.gov_goal",
+   "pattern": "P08",
+   "text": "Stop {her} before",
+   "args": [
+    "her"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report",
+   "pattern": "P06",
+   "text": "Last report {age}",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.no_reports",
+   "pattern": "P12",
+   "text": "No reports yet.",
+   "role": "gov"
+  },
+  {
+   "id": "scene.none",
+   "pattern": "P12",
+   "text": "none",
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report_label",
+   "pattern": "P02",
+   "text": "Last report",
+   "role": "gov"
+  },
+  {
+   "id": "scene.minister_by",
+   "pattern": "P08",
+   "text": "The minister wants a location by {time}.",
+   "args": [
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.suspected",
+   "pattern": "P02",
+   "text": "Suspected:",
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report_lc",
+   "pattern": "P06",
+   "text": "last report {age}",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.no_reports_lc",
+   "pattern": "P12",
+   "text": "no reports",
+   "role": "gov"
+  },
+  {
+   "id": "action.wait_gov",
+   "pattern": "P01",
+   "text": "Wait one hour",
+   "role": "gov"
+  },
+  {
+   "id": "nav.desk",
+   "pattern": "P02",
+   "text": "The desk",
+   "role": "gov"
+  },
+  {
+   "id": "nav.orders",
+   "pattern": "P02",
+   "text": "Orders",
+   "role": "gov"
+  },
+  {
+   "id": "scene.goal",
+   "pattern": "P08",
+   "text": "Leave Esmeraldan airspace by"
+  },
+  {
+   "id": "scene.out_by",
+   "pattern": "P08",
+   "text": "Out by"
+  },
+  {
+   "id": "scene.sosa_here",
+   "pattern": "P06",
+   "text": "Sosā, looking here"
+  },
+  {
+   "id": "scene.sosa_at",
+   "pattern": "P06",
+   "text": "Sosā, looking at {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.sosa_right",
+   "pattern": "P06",
+   "text": "Looking at {place}. He is right.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.sosa_wrong",
+   "pattern": "P06",
+   "text": "Looking at {place}. He is wrong.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.next_move",
+   "pattern": "P02",
+   "text": "Next move"
+  },
+  {
+   "id": "scene.next_in",
+   "pattern": "P05",
+   "text": "in {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "scene.held_again",
+   "pattern": "P05",
+   "text": "At 10 you are held again. Holds: {hold} of 3.",
+   "args": [
+    "hold"
+   ]
+  },
+  {
+   "id": "scene.held_at",
+   "pattern": "P05",
+   "text": "At 10 you are held."
+  },
+  {
+   "id": "scene.exposure",
+   "pattern": "P02",
+   "text": "Exposure"
+  },
+  {
+   "id": "action.wait",
+   "pattern": "P01",
+   "text": "Lie low one hour"
+  },
+  {
+   "id": "nav.phone",
+   "pattern": "P02",
+   "text": "The phone"
+  },
+  {
+   "id": "nav.here",
+   "pattern": "P02",
+   "text": "Here"
+  },
+  {
+   "id": "coach.step",
+   "pattern": "P13",
+   "text": "Guided run · step {n} of {total}",
+   "args": [
+    "n",
+    "total"
+   ]
+  },
+  {
+   "id": "action.finish",
+   "pattern": "P01",
+   "text": "Finish"
+  },
+  {
+   "id": "action.next",
+   "pattern": "P01",
+   "text": "Next"
+  },
+  {
+   "id": "action.uses",
+   "pattern": "P03",
+   "text": "Uses {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "action.uses_a",
+   "pattern": "P03",
+   "text": "a {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "action.uses_an",
+   "pattern": "P03",
+   "text": "an {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "marker.night",
+   "pattern": "P03",
+   "text": "Night only"
+  },
+  {
+   "id": "action.certain",
+   "pattern": "P03",
+   "text": "Certain"
+  },
+  {
+   "id": "action.impossible",
+   "pattern": "P04",
+   "text": "No die can"
+  },
+  {
+   "id": "action.cancel",
+   "pattern": "P01",
+   "text": "Cancel"
+  },
+  {
+   "id": "action.commit",
+   "pattern": "P01",
+   "text": "Commit"
+  },
+  {
+   "id": "phone.waiting",
+   "pattern": "P05",
+   "text": "{n} waiting",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "phone.empty",
+   "pattern": "P12",
+   "text": "No messages waiting."
+  },
+  {
+   "id": "phone.sibling_role",
+   "pattern": "P07",
+   "text": "{rel}, arranging the aircraft",
+   "args": [
+    "rel"
+   ]
+  },
+  {
+   "id": "phone.call_about",
+   "pattern": "P01",
+   "text": "{name} about {what}",
+   "args": [
+    "name",
+    "what"
+   ]
+  },
+  {
+   "id": "phone.your_visa",
+   "pattern": "P01",
+   "text": "your visa",
+   "fragment": true
+  },
+  {
+   "id": "action.call",
+   "pattern": "P01",
+   "text": "Call"
+  },
+  {
+   "id": "card.works_on",
+   "pattern": "P09",
+   "text": "Works on:"
+  },
+  {
+   "id": "card.counts_here",
+   "pattern": "P09",
+   "text": "Counts here"
+  },
+  {
+   "id": "card.counts_at",
+   "pattern": "P09",
+   "text": "Counts at {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "place.the_line",
+   "pattern": "P09",
+   "text": "the line"
+  },
+  {
+   "id": "card.not_here",
+   "pattern": "P09",
+   "text": "Not recognized here"
+  },
+  {
+   "id": "hand.empty",
+   "pattern": "P12",
+   "text": "No cards yet."
+  },
+  {
+   "id": "card.yours",
+   "pattern": "P09",
+   "text": "Yours"
+  },
+  {
+   "id": "card.from",
+   "pattern": "P09",
+   "text": "From {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "need.aircraft_ready",
+   "pattern": "P05",
+   "text": "Aircraft ready"
+  },
+  {
+   "id": "need.visa",
+   "pattern": "P05",
+   "text": "Entry visa for Atlanta"
+  },
+  {
+   "id": "need.officials",
+   "pattern": "P05",
+   "text": "Officials at the border"
+  },
+  {
+   "id": "need.expects",
+   "pattern": "P05",
+   "text": "Esmeralda expects you"
+  },
+  {
+   "id": "need.crew",
+   "pattern": "P05",
+   "text": "Crew confirmed"
+  },
+  {
+   "id": "need.charter",
+   "pattern": "P05",
+   "text": "Charter booked"
+  },
+  {
+   "id": "need.working",
+   "pattern": "P05",
+   "text": "{stage}. {ally} working, due {time}",
+   "args": [
+    "stage",
+    "ally",
+    "time"
+   ]
+  },
+  {
+   "id": "need.velez",
+   "pattern": "P05",
+   "text": "Vélez's people"
+  },
+  {
+   "id": "need.baca",
+   "pattern": "P05",
+   "text": "Someone at the ministry in Baca has your name"
+  },
+  {
+   "id": "need.salek",
+   "pattern": "P05",
+   "text": "Salek asks the ministry"
+  },
+  {
+   "id": "need.passport",
+   "pattern": "P05",
+   "text": "Your second passport"
+  },
+  {
+   "id": "need.passage",
+   "pattern": "P05",
+   "text": "A passage card"
+  },
+  {
+   "id": "need.decoy",
+   "pattern": "P05",
+   "text": "A decoy card"
+  },
+  {
+   "id": "need.influence",
+   "pattern": "P05",
+   "text": "An influence card"
+  },
+  {
+   "id": "need.card",
+   "pattern": "P05",
+   "text": "A {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "need.passport_held",
+   "pattern": "P05",
+   "text": "In hand. The ban lists your other one."
+  },
+  {
+   "id": "need.in_hand",
+   "pattern": "P05",
+   "text": "In hand."
+  },
+  {
+   "id": "need.passage_from",
+   "pattern": "P05",
+   "text": "From Holt or Theo. The freight leaves at midnight."
+  },
+  {
+   "id": "need.nobody",
+   "pattern": "P05",
+   "text": "Nobody has given you one."
+  },
+  {
+   "id": "need.night",
+   "pattern": "P05",
+   "text": "Night"
+  },
+  {
+   "id": "need.is_night",
+   "pattern": "P05",
+   "text": "It is night."
+  },
+  {
+   "id": "need.after",
+   "pattern": "P04",
+   "text": "After 22:00."
+  },
+  {
+   "id": "route.role_aircraft",
+   "pattern": "P07",
+   "text": "arranging the aircraft"
+  },
+  {
+   "id": "route.role_visa",
+   "pattern": "P07",
+   "text": "asking Atlanta for your visa"
+  },
+  {
+   "id": "who.unknown",
+   "pattern": "P07",
+   "text": "Unknown"
+  },
+  {
+   "id": "who.cut",
+   "pattern": "P07",
+   "text": "Cut off"
+  },
+  {
+   "id": "who.talked",
+   "pattern": "P07",
+   "text": "Talked"
+  },
+  {
+   "id": "who.clean",
+   "pattern": "P07",
+   "text": "Clean"
+  },
+  {
+   "id": "who.doubted",
+   "pattern": "P07",
+   "text": "Doubted"
+  },
+  {
+   "id": "who.trusted",
+   "pattern": "P07",
+   "text": "Trusted"
+  },
+  {
+   "id": "route.stops_here",
+   "pattern": "P09",
+   "text": "{card} stops here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.starts_here",
+   "pattern": "P09",
+   "text": "{card} starts here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.velez_starts",
+   "pattern": "P09",
+   "text": "Vélez's card starts here."
+  },
+  {
+   "id": "route.you_here",
+   "pattern": "P02",
+   "text": "You are here"
+  },
+  {
+   "id": "route.border",
+   "pattern": "P02",
+   "text": "The border"
+  },
+  {
+   "id": "route.esmeralda",
+   "pattern": "P02",
+   "text": "Esmeralda"
+  },
+  {
+   "id": "route.inquiry_here",
+   "pattern": "P06",
+   "text": "Inquiry looking here"
+  },
+  {
+   "id": "route.who_acts",
+   "pattern": "P02",
+   "text": "Who acts here: {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "route.abroad_phone",
+   "pattern": "P02",
+   "text": "Abroad, by phone"
+  },
+  {
+   "id": "route.abroad",
+   "pattern": "P02",
+   "text": "Abroad"
+  },
+  {
+   "id": "route.by_phone",
+   "pattern": "P02",
+   "text": "By phone"
+  },
+  {
+   "id": "route.who_acts_label",
+   "pattern": "P02",
+   "text": "Who acts here"
+  },
+  {
+   "id": "route.needed",
+   "pattern": "P02",
+   "text": "Needed to leave"
+  },
+  {
+   "id": "route.cards_count",
+   "pattern": "P02",
+   "text": "Where your cards count"
+  },
+  {
+   "id": "route.card_stops_line",
+   "pattern": "P09",
+   "text": "{card} stops at the line",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.velez_starts_short",
+   "pattern": "P09",
+   "text": "Vélez's card starts here"
+  },
+  {
+   "id": "route.inquiry",
+   "pattern": "P02",
+   "text": "The inquiry"
+  },
+  {
+   "id": "route.looking_here",
+   "pattern": "P06",
+   "text": "Looking here"
+  },
+  {
+   "id": "route.no_inquiry",
+   "pattern": "P12",
+   "text": "No inquiry moves yet. The court wants your passports by Monday."
+  },
+  {
+   "id": "over.gov_win",
+   "pattern": "P14",
+   "text": "She got out"
+  },
+  {
+   "id": "over.gov_stopped",
+   "pattern": "P14",
+   "text": "Stopped"
+  },
+  {
+   "id": "over.out",
+   "pattern": "P14",
+   "text": "Out"
+  },
+  {
+   "id": "over.arrest",
+   "pattern": "P14",
+   "text": "House arrest"
+  },
+  {
+   "id": "over.clock",
+   "pattern": "P14",
+   "text": "Out of time"
+  },
+  {
+   "id": "over.deal",
+   "pattern": "P14",
+   "text": "You took the deal"
+  },
+  {
+   "id": "over.caught",
+   "pattern": "P14",
+   "text": "Caught"
+  },
+  {
+   "id": "over.play_her",
+   "pattern": "P01",
+   "text": "Play her side"
+  },
+  {
+   "id": "over.choose",
+   "pattern": "P01",
+   "text": "Choose character"
+  },
+  {
+   "id": "result.your_move",
+   "pattern": "P10",
+   "text": "Your move"
+  },
+  {
+   "id": "result.your_choice",
+   "pattern": "P10",
+   "text": "Your choice"
+  },
+  {
+   "id": "result.lay_low",
+   "pattern": "P10",
+   "text": "You lay low"
+  },
+  {
+   "id": "result.lay_low_title",
+   "pattern": "P10",
+   "text": "One hour out of sight"
+  },
+  {
+   "id": "result.your_order",
+   "pattern": "P10",
+   "text": "Your order",
+   "role": "gov"
+  },
+  {
+   "id": "result.waited",
+   "pattern": "P10",
+   "text": "You waited",
+   "role": "gov"
+  },
+  {
+   "id": "result.waited_title",
+   "pattern": "P10",
+   "text": "One hour for reports",
+   "role": "gov"
+  },
+  {
+   "id": "phase.news",
+   "pattern": "P02",
+   "text": "News"
+  },
+  {
+   "id": "phase.reports",
+   "pattern": "P02",
+   "text": "Reports"
+  },
+  {
+   "id": "phase.phone",
+   "pattern": "P02",
+   "text": "Phone"
+  },
+  {
+   "id": "phase.desk",
+   "pattern": "P02",
+   "text": "Desk"
+  },
+  {
+   "id": "phase.move",
+   "pattern": "P02",
+   "text": "Move"
+  },
+  {
+   "id": "phase.order",
+   "pattern": "P02",
+   "text": "Order"
+  },
+  {
+   "id": "phase.roll",
+   "pattern": "P02",
+   "text": "Roll"
+  },
+  {
+   "id": "phase.sosa",
+   "pattern": "P02",
+   "text": "Sosā"
+  },
+  {
+   "id": "phase.her_move",
+   "pattern": "P02",
+   "text": "Her move"
+  },
+  {
+   "id": "round.label",
+   "pattern": "P02",
+   "text": "Round {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "round.searching",
+   "pattern": "P02",
+   "text": "Searching {place}",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "round.held",
+   "pattern": "P02",
+   "text": "{place}. Held {hold} of 3",
+   "args": [
+    "place",
+    "hold"
+   ]
+  },
+  {
+   "id": "phase.done_desk",
+   "pattern": "P01",
+   "text": "Done at the desk",
+   "role": "gov"
+  },
+  {
+   "id": "phase.done_phone",
+   "pattern": "P01",
+   "text": "Done with the phone"
+  },
+  {
+   "id": "phase.see_came_in",
+   "pattern": "P01",
+   "text": "See what came in",
+   "role": "gov"
+  },
+  {
+   "id": "phase.see_sosa",
+   "pattern": "P01",
+   "text": "See what Sosā did"
+  },
+  {
+   "id": "card.kind_news",
+   "pattern": "P02",
+   "text": "News"
+  },
+  {
+   "id": "card.kind_rumor",
+   "pattern": "P02",
+   "text": "A rumor"
+  },
+  {
+   "id": "card.kind_hold",
+   "pattern": "P02",
+   "text": "The inquiry has you"
+  },
+  {
+   "id": "card.rung",
+   "pattern": "P02",
+   "text": " · {rung} of 3",
+   "args": [
+    "rung"
+   ]
+  },
+  {
+   "id": "action.continue",
+   "pattern": "P01",
+   "text": "Continue"
+  },
+  {
+   "id": "result.success",
+   "pattern": "P10",
+   "text": "Success"
+  },
+  {
+   "id": "result.failed",
+   "pattern": "P10",
+   "text": "Failed"
+  },
+  {
+   "id": "result.rolled",
+   "pattern": "P10",
+   "text": "Rolled {die}, needed {need}",
+   "args": [
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "result.done",
+   "pattern": "P10",
+   "text": "Done"
+  },
+  {
+   "id": "sosa.quiet_gov",
+   "pattern": "P12",
+   "text": "No new reports. She could be anywhere on the route.",
+   "role": "gov"
+  },
+  {
+   "id": "sosa.quiet",
+   "pattern": "P12",
+   "text": "Quiet. Nobody moved against you."
+  },
+  {
+   "id": "sosa.kind_gov",
+   "pattern": "P10",
+   "text": "While your orders ran",
+   "role": "gov"
+  },
+  {
+   "id": "sosa.kind",
+   "pattern": "P10",
+   "text": "While you moved"
+  },
+  {
+   "id": "sosa.title",
+   "pattern": "P10",
+   "text": "{hours} h passed. Now {time}",
+   "args": [
+    "hours",
+    "time"
+   ]
+  },
+  {
+   "id": "action.next_round",
+   "pattern": "P01",
+   "text": "Next round"
+  },
+  {
+   "id": "sum.held_firm",
+   "pattern": "P10",
+   "text": "held firm under questioning"
+  },
+  {
+   "id": "sum.talked",
+   "pattern": "P10",
+   "text": "talked to Sosā"
+  },
+  {
+   "id": "sum.delivered",
+   "pattern": "P10",
+   "text": "delivered"
+  },
+  {
+   "id": "sum.not_yet",
+   "pattern": "P10",
+   "text": "not yet"
+  },
+  {
+   "id": "sum.person",
+   "pattern": "P10",
+   "text": "{person}: {what}",
+   "args": [
+    "person",
+    "what"
+   ]
+  },
+  {
+   "id": "sum.card",
+   "pattern": "P10",
+   "text": "Card: {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.lost",
+   "pattern": "P10",
+   "text": "Lost: {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.reached",
+   "pattern": "P10",
+   "text": "Reached {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sum.sold",
+   "pattern": "P10",
+   "text": "{person} sold you out",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "id": "sum.hold",
+   "pattern": "P10",
+   "text": "{title}. You deal with it next.",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "sum.news",
+   "pattern": "P10",
+   "text": "News waiting: {title}",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "sum.message",
+   "pattern": "P10",
+   "text": "Message from {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.exposure",
+   "pattern": "P10",
+   "text": "Exposure {signed}",
+   "args": [
+    "signed"
+   ]
+  },
+  {
+   "id": "sum.exposure_rose",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} while time passed",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_fell",
+   "pattern": "P10",
+   "text": "Exposure fell by {n} while time passed",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "daily.out",
+   "pattern": "P14",
+   "text": "{name} got out at {time}",
+   "args": [
+    "name",
+    "time"
+   ]
+  },
+  {
+   "id": "daily.clock",
+   "pattern": "P14",
+   "text": "{name} ran out of time",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "daily.deal",
+   "pattern": "P14",
+   "text": "{name} took the deal",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "daily.arrest",
+   "pattern": "P14",
+   "text": "{name} ended under house arrest in {place}",
+   "args": [
+    "name",
+    "place"
+   ]
+  },
+  {
+   "id": "daily.share_one",
+   "pattern": "P14",
+   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} time. Round {round}. Exposure {exposure}.\n{url}",
+   "args": [
+    "date",
+    "line",
+    "holds",
+    "round",
+    "exposure",
+    "url"
+   ]
+  },
+  {
+   "id": "daily.share_many",
+   "pattern": "P14",
+   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} times. Round {round}. Exposure {exposure}.\n{url}",
+   "args": [
+    "date",
+    "line",
+    "holds",
+    "round",
+    "exposure",
+    "url"
+   ]
+  },
+  {
+   "id": "log.try",
+   "pattern": "P10",
+   "text": "You try: {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.rolled",
+   "pattern": "P10",
+   "text": "Rolled {die}; needed {need}.",
+   "args": [
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.rolled_lowered",
+   "pattern": "P10",
+   "text": "Rolled {die}; needed {need} (lowered by {list}).",
+   "args": [
+    "die",
+    "need",
+    "list"
+   ]
+  },
+  {
+   "id": "log.success",
+   "pattern": "P10",
+   "text": "Success."
+  },
+  {
+   "id": "log.failed",
+   "pattern": "P10",
+   "text": "Failed."
+  },
+  {
+   "id": "log.pressed_holds",
+   "pattern": "P10",
+   "text": "Sosā presses {name}: {die} against {need}. Holds.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.pressed_breaks",
+   "pattern": "P10",
+   "text": "Sosā presses {name}: {die} against {need}. Breaks.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.ally_delivers",
+   "pattern": "P10",
+   "text": "{name} rolls: {die} against {need}. Delivered.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.ally_not_yet",
+   "pattern": "P10",
+   "text": "{name} rolls: {die} against {need}. Not yet.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.gives",
+   "pattern": "P10",
+   "text": "{name} gives you: {card}.",
+   "args": [
+    "name",
+    "card"
+   ]
+  },
+  {
+   "id": "log.card_lost",
+   "pattern": "P10",
+   "text": "Card lost: {card}.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "log.owe",
+   "pattern": "P10",
+   "text": "You now owe {name}: {text}",
+   "args": [
+    "name",
+    "text"
+   ]
+  },
+  {
+   "id": "log.reply_by",
+   "pattern": "P05",
+   "text": "{name} will reply by {time}.",
+   "args": [
+    "name",
+    "time"
+   ]
+  },
+  {
+   "id": "log.message",
+   "pattern": "P10",
+   "text": "Message from {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.answer",
+   "pattern": "P10",
+   "text": "You answer: {label}.",
+   "args": [
+    "label"
+   ]
+  },
+  {
+   "id": "log.order",
+   "pattern": "P10",
+   "text": "Order sent: {name}.",
+   "args": [
+    "name"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "log.news",
+   "pattern": "P10",
+   "text": "News: {title}.",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "log.chose",
+   "pattern": "P10",
+   "text": "You chose: {label}.",
+   "args": [
+    "label"
+   ]
+  },
+  {
+   "id": "log.person_role",
+   "pattern": "P07",
+   "text": "{name}: {role}.",
+   "args": [
+    "name",
+    "role"
+   ]
+  },
+  {
+   "id": "log.tutorial_ended",
+   "pattern": "P13",
+   "text": "Tutorial ended. Continue on your own."
+  },
+  {
+   "id": "action.send_order",
+   "pattern": "P01",
+   "text": "Send the order",
+   "role": "gov"
+  },
+  {
+   "id": "nav.reports",
+   "pattern": "P02",
+   "text": "Reports",
+   "role": "gov"
+  },
+  {
+   "id": "report.just_now",
+   "pattern": "P06",
+   "text": "just now",
+   "role": "gov"
+  },
+  {
+   "id": "report.ago",
+   "pattern": "P06",
+   "text": "{age} ago",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "report.proves",
+   "pattern": "P06",
+   "text": "Proves",
+   "role": "gov"
+  },
+  {
+   "id": "report.not_prove",
+   "pattern": "P06",
+   "text": "Does not prove",
+   "role": "gov"
+  },
+  {
+   "id": "report.empty",
+   "pattern": "P12",
+   "text": "No reports yet. The watch team is at the residence.",
+   "role": "gov"
+  },
+  {
+   "id": "desk.empty",
+   "pattern": "P12",
+   "text": "No calls waiting.",
+   "role": "gov"
+  },
+  {
+   "id": "action.send",
+   "pattern": "P01",
+   "text": "Send",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_here",
+   "pattern": "P09",
+   "text": "Counts where you are looking",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_abroad",
+   "pattern": "P09",
+   "text": "Counts across the line",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_valdoria",
+   "pattern": "P09",
+   "text": "Counts in Valdória",
+   "role": "gov"
+  },
+  {
+   "id": "gov.not_yours",
+   "pattern": "P09",
+   "text": "Not yet yours",
+   "role": "gov"
+  },
+  {
+   "id": "gov.would_start",
+   "pattern": "P09",
+   "text": "Would start at the line",
+   "role": "gov"
+  },
+  {
+   "id": "route.report_src",
+   "pattern": "P06",
+   "text": "{source}, {age}",
+   "args": [
+    "source",
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "route.does_not_prove",
+   "pattern": "P06",
+   "text": "Does not prove {what}",
+   "args": [
+    "what"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "route.may_be_here",
+   "pattern": "P06",
+   "text": "She may be here",
+   "role": "gov"
+  },
+  {
+   "id": "route.no_command",
+   "pattern": "P04",
+   "text": "Your ministry does not command this tower",
+   "role": "gov"
+  },
+  {
+   "id": "route.ask_esm",
+   "pattern": "P04",
+   "text": "Ask Esmeralda. The request must reach the people who can stop the flight.",
+   "role": "gov"
+  },
+  {
+   "id": "route.esm_intro",
+   "pattern": "P09",
+   "text": "An Esmeraldan introduction would start at the line",
+   "role": "gov"
+  },
+  {
+   "id": "start.continue",
+   "pattern": "P01",
+   "text": "Continue your run as {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "start.demo_note",
+   "pattern": "P13",
+   "text": "A guided run as {name} walks you to the airfield, where you take over.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "start.pick",
+   "pattern": "P02",
+   "text": "Pick who you play"
+  },
+  {
+   "id": "start.sibling_her",
+   "pattern": "P08",
+   "text": "Her {rel} {name} is booking the jet",
+   "args": [
+    "rel",
+    "name"
+   ]
+  },
+  {
+   "id": "start.sibling_his",
+   "pattern": "P08",
+   "text": "His {rel} {name} is booking the jet",
+   "args": [
+    "rel",
+    "name"
+   ]
+  },
+  {
+   "id": "daily.done_note",
+   "pattern": "P14",
+   "text": "{line}. Play again or share it.",
+   "args": [
+    "line"
+   ]
+  },
+  {
+   "id": "daily.note",
+   "pattern": "P08",
+   "text": "Everyone plays the same run today, as {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "share.copied",
+   "pattern": "P10",
+   "text": "Copied"
+  },
+  {
+   "id": "sound.off",
+   "pattern": "P02",
+   "text": "Sound off"
+  },
+  {
+   "id": "sound.on",
+   "pattern": "P02",
+   "text": "Sound on"
+  },
+  {
+   "id": "sound.menu_off",
+   "pattern": "P01",
+   "text": "Sound: off"
+  },
+  {
+   "id": "sound.menu_on",
+   "pattern": "P01",
+   "text": "Sound: on"
+  },
+  {
+   "id": "nav.wordmark",
+   "pattern": "P02",
+   "text": "Coalition"
+  },
+  {
+   "id": "menu.guided",
+   "pattern": "P01",
+   "text": "Guided run"
+  },
+  {
+   "id": "menu.start",
+   "pattern": "P01",
+   "text": "Start screen"
+  },
+  {
+   "id": "menu.help",
+   "pattern": "P01",
+   "text": "Help"
+  },
+  {
+   "id": "menu.install",
+   "pattern": "P01",
+   "text": "Install"
+  },
+  {
+   "id": "sound.title",
+   "pattern": "P02",
+   "text": "Sound"
+  },
+  {
+   "id": "nav.menu_label",
+   "pattern": "P02",
+   "text": "Game"
+  },
+  {
+   "id": "scene.label",
+   "pattern": "P02",
+   "text": "Pixel-art scene of the current level"
+  },
+  {
+   "id": "scene.left",
+   "pattern": "P05",
+   "text": "left."
+  },
+  {
+   "id": "scene.goal_label",
+   "pattern": "P02",
+   "text": "Goal"
+  },
+  {
+   "id": "scene.of_ten",
+   "pattern": "P05",
+   "text": "of 10"
+  },
+  {
+   "id": "coach.do",
+   "pattern": "P13",
+   "text": "Choose the highlighted action."
+  },
+  {
+   "id": "coach.leave",
+   "pattern": "P01",
+   "text": "Leave"
+  },
+  {
+   "id": "log.heading",
+   "pattern": "P02",
+   "text": "What happened"
+  },
+  {
+   "id": "hand.heading",
+   "pattern": "P02",
+   "text": "Your hand"
+  },
+  {
+   "id": "hand.game",
+   "pattern": "P02",
+   "text": "Game"
+  },
+  {
+   "id": "phone.calls",
+   "pattern": "P02",
+   "text": "Calls"
+  },
+  {
+   "id": "help.approach",
+   "pattern": "P09",
+   "text": "Choose an approach under **Here**, read its chances, then commit. Use **The phone** to arrange help while you travel. Calls can fail; check when a reply is due."
+  },
+  {
+   "id": "help.cards",
+   "pattern": "P09",
+   "text": "Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse."
+  },
+  {
+   "id": "help.rounds",
+   "pattern": "P09",
+   "text": "Each round: News, Phone, Move, Roll, Sosā. At exposure 10 you are held. Each hold is worse than the last; the third is house arrest. Leave Esmeraldan airspace within 72 hours to win."
+  },
+  {
+   "id": "help.ios",
+   "pattern": "P11",
+   "text": "To install on an iPhone: tap Share, then Add to Home Screen."
+  },
+  {
+   "id": "route.heading",
+   "pattern": "P02",
+   "text": "The route"
+  },
+  {
+   "id": "route.legend_inhand",
+   "pattern": "P05",
+   "text": "In hand"
+  },
+  {
+   "id": "route.legend_promised",
+   "pattern": "P05",
+   "text": "Promised, not delivered"
+  },
+  {
+   "id": "route.legend_notyet",
+   "pattern": "P05",
+   "text": "Not started"
+  },
+  {
+   "id": "nav.panels",
+   "pattern": "P02",
+   "text": "Panels"
+  },
+  {
+   "id": "tab.here",
+   "pattern": "P02",
+   "text": "Here"
+  },
+  {
+   "id": "tab.phone",
+   "pattern": "P02",
+   "text": "Phone"
+  },
+  {
+   "id": "tab.route",
+   "pattern": "P02",
+   "text": "Route"
+  },
+  {
+   "id": "tab.hand",
+   "pattern": "P02",
+   "text": "Hand"
+  },
+  {
+   "id": "update.ready",
+   "pattern": "P11",
+   "text": "New version ready."
+  },
+  {
+   "id": "update.reload",
+   "pattern": "P01",
+   "text": "Reload"
+  },
+  {
+   "id": "over.share",
+   "pattern": "P01",
+   "text": "Share your result"
+  },
+  {
+   "id": "over.again",
+   "pattern": "P01",
+   "text": "Run it again"
+  },
+  {
+   "id": "title.word",
+   "pattern": "P02",
+   "text": "Coalition"
+  },
+  {
+   "id": "title.line",
+   "pattern": "P08",
+   "text": "Seventy-two hours to escape. Your allies are on the phone."
+  },
+  {
+   "id": "title.start",
+   "pattern": "P01",
+   "text": "Start"
+  },
+  {
+   "id": "title.foot",
+   "pattern": "P08",
+   "text": "An escape game set in Nelôxia. Sound on."
+  },
+  {
+   "id": "start.blurb",
+   "pattern": "P08",
+   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda and reach the jet your family has booked to Atlanta."
+  },
+  {
+   "id": "start.continue_plain",
+   "pattern": "P01",
+   "text": "Continue your run"
+  },
+  {
+   "id": "start.daily",
+   "pattern": "P01",
+   "text": "Daily run"
+  },
+  {
+   "id": "start.tutorial",
+   "pattern": "P01",
+   "text": "Play the tutorial"
+  },
+  {
+   "id": "start.gov_tutorial",
+   "pattern": "P01",
+   "text": "Guided run as Sofīā",
+   "role": "gov"
+  },
+  {
+   "id": "start.byline",
+   "pattern": "P02",
+   "text": "A Nelosphere universe by"
+  },
+  {
+   "id": "start.author",
+   "pattern": "P02",
+   "text": "Ron Bronson"
+  }
+ ]
+}

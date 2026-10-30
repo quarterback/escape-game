@@ -1,0 +1,1 @@
+{ "about": "An action label ends with a period.", "expect": ["C06"], "patch": { "ui": { "entries+": [ { "id": "test.label", "pattern": "P01", "text": "Board the freight." } ] } } }
