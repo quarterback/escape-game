@@ -31,6 +31,13 @@ archive exclusion unless the owner explicitly changes that instruction.
 
 ## Edit player text
 
+Read the [content pattern specification](docs/content/patterns.md) and its
+[source register](docs/content/source-register.md) before extending the content
+system. They distinguish published guidance, Coalition adaptations and proposed
+checks. Runtime enforcement is not implemented by those documents. Preserve
+current owner requirements while migrating; do not treat proposed budgets as
+permission to rewrite gameplay or character voice.
+
 Use [Humanizer](https://github.com/blader/humanizer/blob/main/SKILL.md) when writing
 or reviewing game copy. Read its full rules before the first copy pass. Apply
 [federal plain-language guidance](https://digital.gov/guides/plain-language) as well.
