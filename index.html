@@ -360,6 +360,47 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 /* Overlays on the scene are read-only; let the pointer reach the people in the scene. */
 #clockbox,#goalbox,#sosa,#expline,#lvlhead{pointer-events:none}
 
+/* ---- phase turns ---------------------------------------------------- */
+#phasebar{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 12px 6px;background:var(--bg)}#phasebar[hidden]{display:none}
+#phasebar .round{font:400 14px/1 var(--font-title);color:var(--soft);white-space:nowrap}
+#phases{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex:1;min-width:0}
+#phases li{flex:1;text-align:center;padding:7px 2px;border-radius:999px;background:var(--s1);color:var(--soft);font:400 13px/1 var(--font-body);white-space:nowrap}
+#phases li.done{color:var(--mint);background:transparent}#phases li.now{background:var(--gold);color:#2A1A00;font-family:var(--font-title)}
+#phasedone{align-self:flex-start;min-height:48px;padding:0 22px}#phasedone[hidden]{display:none}
+#approaches[hidden],#herehead[hidden],#lvlhead2[hidden]{display:none!important}
+body.phased .tab{top:52px}body.phased #coach{top:58px}body.phased.coaching .tab{top:calc(var(--coachh,0px) + 66px)}
+#phasecard{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--s3);box-shadow:0 0 0 3px var(--lav)}#phasecard[hidden]{display:none}
+#phasecard.hold{box-shadow:0 0 0 3px var(--coral2);background:#3D1640}#phasecard.rumor{box-shadow:0 0 0 3px var(--orange)}#phasecard.roll{box-shadow:0 0 0 3px var(--gold)}#phasecard.sosa{box-shadow:0 0 0 3px var(--coral2)}
+#phasecard .kind{display:flex;align-items:center;gap:8px;font:400 14px/1 var(--font-title);color:var(--soft)}
+#phasecard h3{margin:0;font:400 22px/1.25 var(--font-title)}#phasecard p{margin:0;font-size:16px;line-height:1.5}
+#phasecard .outcome{font:400 30px/1 var(--font-title)}#phasecard .outcome.ok{color:var(--mint)}#phasecard .outcome.no{color:var(--coral2)}
+#phasecard .choice{display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px 14px;background:var(--s1);color:var(--ink);border:1px solid #5A4F99;border-radius:14px;font:400 16px/1.35 var(--font-body)}
+#phasecard .choice:disabled{opacity:.45}#phasecard .choice .why{font-size:14px;color:var(--soft)}
+#phasecard .rows{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}#phasecard .rows li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+#phasecard .rows li i{flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;background:var(--coral2)}#phasecard .rows li.gain i{background:var(--mint)}#phasecard .rows li.news i{background:var(--lav)}
+#phasecard .next{align-self:flex-start;min-height:48px;padding:0 24px}
+body.busy #phasecard button{opacity:.5;pointer-events:none}
+.mks{display:flex;flex-wrap:wrap;gap:6px}
+.mk{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font:400 13px/1.1 var(--font-body);background:var(--s2);color:var(--ink);white-space:nowrap}
+.mk.time{box-shadow:inset 0 0 0 1.5px var(--lav)}.mk.roll{background:var(--gold);color:#2A1A00}.mk.up,.mk.risk{background:#5A2040;color:#FFC4CF}.mk.risk{background:var(--coral2);color:#2A0610}
+.mk.down,.mk.gain{background:#183A36;color:#8FF5D8}.mk.lose{background:#4A3418;color:#FFD3A8}
+.mk.trust{background:#183A36;color:#8FF5D8}.mk.doubt{background:#4A3418;color:#FFD3A8}.mk.talked{background:#5A2040;color:#FFC4CF}.mk.cut{background:var(--s1);color:var(--soft);text-decoration:line-through}.mk.unknown{background:var(--s1);color:var(--soft)}
+.mk.night{box-shadow:inset 0 0 0 1.5px #7FB2E5;color:#B7D4F2}
+.act .mks{margin-top:6px}
+#interstitial{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(10,8,24,.82);animation:ifade 1.3s ease forwards}#interstitial[hidden]{display:none}
+#interstitial .ibox{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px 32px;animation:irise 1.3s ease forwards}
+#interstitial .iclock{font:400 40px/1 var(--font-clock);color:var(--gold)}#interstitial b{font:400 28px/1.2 var(--font-title)}#interstitial span{color:var(--soft);font-size:16px}
+@keyframes ifade{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}@keyframes irise{0%{transform:translateY(12px)}20%{transform:none}}
+@media(prefers-reduced-motion:reduce){#interstitial,#interstitial .ibox{animation:none}}
+.dailybtn{display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;padding:12px 14px;background:var(--s3);color:var(--ink);border:0;border-radius:14px;box-shadow:0 0 0 2px var(--gold);min-height:56px;font:400 16px/1.3 var(--font-body)}
+.dailybtn b{font:400 18px/1.2 var(--font-title)}.dailybtn .mono{color:var(--gold)}.dailybtn span:last-child{color:var(--soft);font-size:14px}
+@media(min-width:1000px){
+  #phasebar{position:static;grid-column:1/3;grid-row:1;padding:0;background:transparent}
+  #coach{grid-row:2}#tab-here{grid-row:3}#tab-hand{grid-row:4}#tab-phone{grid-row:2/5}#tab-route{grid-row:5}
+  body.phased .tab,body.phased.coaching .tab{top:auto}
+  #phases li{font-size:15px;padding:9px 4px}
+}
+
 </style>
 </head>
 <body>
@@ -395,11 +436,13 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 </div>
 
 <main id="panels">
+  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">News</li><li data-ph="phone">Phone</li><li data-ph="move">Move</li><li data-ph="roll">Roll</li><li data-ph="sosa">Sosā</li></ol></div>
   <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
     <div id="lvlhead2"><h1 id="lvlname2"></h1><p id="lvlobj2"></p></div>
-    <div class="h2row"><h2>Here</h2><button id="wait" class="pill">Wait one hour</button></div>
+    <section id="phasecard" hidden aria-live="polite"></section>
+    <div class="h2row" id="herehead"><h2>Here</h2><button id="wait" class="pill">Lie low one hour</button></div>
     <div id="approaches"></div>
     <details id="logbox"><summary>What happened</summary><div id="dialogue" aria-live="polite"></div></details>
   </section>
@@ -413,13 +456,14 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 
   <aside class="tab" id="tab-phone" data-tab="phone">
     <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>The phone</h2><span class="chip lav" id="waiting"></span></div>
+    <button id="phasedone" class="primary" hidden>Done with the phone</button>
     <div id="inbox"></div>
     <h3>Calls</h3>
     <div id="calls"></div>
     <div id="helpbox" hidden>
       <p>Choose an approach under <b>Here</b>, read its chances, then commit. Use <b>The phone</b> to arrange help while you travel. Calls can fail; check when a reply is due.</p>
       <p>Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse.</p>
-      <p>At exposure 10, you are caught. Leave Esmeraldan airspace within 72 hours to win.</p>
+      <p>Each round: News, Phone, Move, Roll, Sosā. At exposure 10 you are held. Each hold is worse than the last; the third is house arrest. Leave Esmeraldan airspace within 72 hours to win.</p>
       <p id="ioshint" hidden>To install on an iPhone: tap Share, then Add to Home Screen.</p>
     </div>
   </aside>
@@ -439,9 +483,10 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 </nav>
 </div>
 
+<div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
 <div id="update" hidden><span>New version ready.</span><button id="reload">Reload</button></div>
 
-<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
+<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>Share your result</button><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
 
 <div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
 
@@ -449,6 +494,7 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><span class="kicker mono">Sat 14:00, Valdória</span><h2>Coalition</h2><p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p></div></div>
   <div class="startbox">
     <button id="continue" class="pill ghost" hidden>Continue your run</button>
+    <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>Daily run</b><span id="daily-note"></span></button>
     <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
     <h3 id="start-free">Or choose your character</h3>
     <div id="start-chars"></div>
@@ -2810,10 +2856,16 @@ const Data = (() => {
   const CHARACTERS = {
     woman: { id: 'woman', name: 'Teresā Albukerkē', short: 'Teresā', title: 'the defeated candidate', pronoun: 'she',
              sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
-             blurb: "Former interior minister. Wealthy, well connected and defeated by four points." },
+             blurb: "Former interior minister. Wealthy, well connected and defeated by four points.",
+             // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
+             hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], exposure: 1, faceKnown: true,
+             edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
     man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
              sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
-             blurb: "Former senator and shipping heir. Defeated by four points and watched since the count." },
+             blurb: "Former senator and shipping heir. Defeated by four points and watched since the count.",
+             // Matēu has the family barges, but he has been watched since the count.
+             hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], exposure: 3, faceKnown: false,
+             edge: 'Your family barges on the river', flaw: 'Watched since the count' },
   };
 
   // Allies. reliability: the die result a delegated job needs (lower is better). where: level index they act from.
@@ -2870,6 +2922,10 @@ const Data = (() => {
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Amādū Salek's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: 'Anyone who banks. Vélez’s uncle. A nervous pilot.',
                     text: "Salek’s name opens doors money alone does not. He keeps count." },
+    barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Santa Laura.',
+                    text: "The barges still run the river. The captains still owe your father." },
+    grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
+                    text: "Nineteen, quick, and he knows which boxcar the guards skip." },
     informant:    { name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where Sosā is looking and who is on duty." },
   };
@@ -2881,7 +2937,7 @@ const Data = (() => {
       objective: "Get out of the house without the watch following. Before you can fly you need three things from three people: a jet (Duartē), someone waiting at the border (Vélez), and an entry visa for Atlanta (Salek). Start them now. They take hours.",
       arrive: "Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday. One of them is in your coat.",
       approaches: [
-        { id: 'decoy', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
+        { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
           mods: { information: 2 }, text: "Send three cars in different directions. The watch must follow the wrong one.",
           success: { belief: 0, exposure: -1, say: "The watch follows a decoy. You leave by the service lane." },
           fail: { exposure: 2, say: 'The second car is stopped at the avenida. Nando talks his way out, but they know the cars now.' } },
@@ -2889,7 +2945,7 @@ const Data = (() => {
           mods: { information: 1 }, text: "Leave with the kitchen staff after 22:00.",
           success: { belief: 0, say: 'The night cook lends you an apron and a cigarette. Nobody looks at the help.' },
           fail: { exposure: 2, say: 'A flash from a parked car. Someone photographed the help tonight.' } },
-        { id: 'partycar', name: "The party's official car", hours: 1, dc: 2, needs: [{ card: 'influence' }],
+        { id: 'partycar', with: 'aide', name: "The party's official car", hours: 1, dc: 2, needs: [{ card: 'influence' }],
           mods: {}, text: "Use Gianlūka’s official car. He will expect your promised endorsement.",
           success: { belief: 0, commit: 'aide', say: 'The flags get you through. Gianlūka reminds you, gently, what he asked for.' },
           fail: { exposure: 1, commit: 'aide', say: 'The car is let through, but the inspector is told whose car it was.' } },
@@ -2898,14 +2954,18 @@ const Data = (() => {
       objective: "Change cars and keep moving. Every hour the inquiry looks in the right place, exposure climbs. Keep them looking at the coast.",
       arrive: "Santa Laura. The radio puts you on a yacht in Portô Venla. The posts have not received the travel ban yet.",
       approaches: [
-        { id: 'second_driver', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
+        { id: 'second_driver', with: 'nando', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
           mods: { information: 1 }, text: "Nando’s cousin offers a taxi and his silence.",
           success: { say: "You leave by taxi. Nando drives your sedan north as a decoy." },
           fail: { exposure: 1, hours: 2, say: 'The cousin wants more, then wants nothing to do with it. Two hours lost.' } },
-        { id: 'siblings_driver', name: "Leave with Duartē's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
+        { id: 'siblings_driver', with: 'sibling', name: "Leave with Duartē's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
           mods: { information: 1 }, text: 'Your sibling knows a man in Santa Laura. Once the charter is booked, he drives you to Nova Trentô.',
           success: { say: 'He asks nothing and drives the back roads. The radio stays off.' },
           fail: { exposure: 1, hours: 1, say: 'He is late, then nervous. An hour on a side street waiting for him to decide.' } },
+        { id: 'barge', name: 'Take a family barge upriver', hours: 3, dc: 2, needs: [{ card: 'boat' }], with: 'self',
+          mods: { information: 1 }, text: 'A captain who owes your father takes you up the river to the colônia. Nobody checks a barge.',
+          success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
+          fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
         { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [],
           mods: { delay: 2, decoy: 2 }, text: "Risk the posts in a car they recognize. Nando's spare sedans can run ahead of you.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
@@ -2915,7 +2975,7 @@ const Data = (() => {
       objective: "A safe house for the night. Use it: call Duartē, Salek and Vélez. Do not take the road to the border until someone in Baca has your name.",
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative’s truck was impounded this morning.",
       approaches: [
-        { id: 'help_host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
+        { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
           mods: { influence: 2 }, text: "Free the cooperative’s truck instead of calling your own contacts.",
           success: { card: 'truck', trust: 'host', say: "The truck is released. Nonā Rosa offers it with a driver and keeps your visit quiet." },
           fail: { card: 'truck', hours: 1, say: 'The truck comes back at dawn, late and dented. She is grateful anyway.' } },
@@ -2937,11 +2997,11 @@ const Data = (() => {
           mods: { passage: 2 }, text: "The freight leaves at midnight. Holt or Theo gets you on; you still have to be there.",
           success: { say: 'The train pulls out at twelve past. Cold straw, then the sound of the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars. You miss the midnight and wait for the next.' } },
-        { id: 'crate', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
+        { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
           mods: { vehicle: 1, information: 1 }, text: "Pay Holt to hide you in the third boxcar.",
           success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Midnight. I don\'t wait."' },
           fail: { exposure: 1, say: 'Holt wants to see who else is asking. You spend two hours in a shed waiting for him to decide.' } },
-        { id: 'foreman', name: "Theo's walk-through", hours: 2, dc: 4, needs: [],
+        { id: 'foreman', with: 'theo', name: "Theo's walk-through", hours: 2, dc: 4, needs: [],
           mods: { vehicle: 2, information: 1, influence: 1 }, text: "Theo escorts you through the yard. The colônia’s truck strengthens your case.",
           success: { card: 'yard_walk', trust: 'theo', say: 'Theo talks about switches the whole way across the yard. Nobody interrupts a foreman.' },
           fail: { exposure: 1, say: 'The registry window is open late tonight. Theo shakes his head and tells you to come back at the shift change.' } },
@@ -2955,7 +3015,7 @@ const Data = (() => {
       arrive: "Two guards wait at the barrier. Across the line, the Esmeraldan post is lit. The travel ban may already be on the desk.",
       border: true,
       approaches: [
-        { id: 'received', name: 'Walk to the people waiting for you', hours: 1, dc: 1, needs: [{ arr: 'reception', stage: 3 }],
+        { id: 'received', with: 'official', name: 'Walk to the people waiting for you', hours: 1, dc: 1, needs: [{ arr: 'reception', stage: 3 }],
           mods: {}, text: "Esmeraldan officials are at the line. The Valdórian side can watch you go.",
           success: { say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' }, fail: { say: '' } },
         { id: 'show_passport', name: 'Show your second passport', hours: 1, dc: 4, needs: [{ card: 'document' }],
@@ -2976,11 +3036,11 @@ const Data = (() => {
       arrive: "Susana airfield. Check the crew, fuel and landing permission. Sosā has asked Esmeralda to hold you.",
       final: true,
       approaches: [
-        { id: 'depart', name: 'Board and depart', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 4 }, { arr: 'permission', stage: 2 }],
+        { id: 'depart', with: 'pilot', name: 'Board and depart', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 4 }, { arr: 'permission', stage: 2 }],
           mods: { introduction: 1, document: 1 }, text: "The jet is ready. You still need the tower to clear departure.",
           success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Esmeraldan airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you on the apron for two hours while a request from Valdória is read, and reread.' } },
-        { id: 'depart_nopermit', name: 'Depart without Atlanta\'s answer', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
+        { id: 'depart_nopermit', with: 'pilot', name: 'Depart without Atlanta\'s answer', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
           mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave before Atlanta grants landing permission. Salek’s name helps; the party’s does not.",
           success: { win: true, say: 'Capitān Olsēn files for Lāyūna and asks no questions. Amādū Salek answers his phone somewhere over the Atlantic.' },
           fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance. Three hours arguing in a hangar.' } },
@@ -3007,6 +3067,7 @@ const Data = (() => {
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda, through the embassy in Baca, to hold you if you appear.' },
     { id: 'press_story',  w: 2, text: () => 'The ministry briefs the papers that you have already left the country.' },
     { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
+    { id: 'trace',        w: 3, after: 4, text: () => 'The ministry traces your recent calls.' },
     { id: 'watch_sibling', w: 2, once: true, after: 9, text: (who) => `Sosā has ${who}'s calls monitored. The operator in Susana goes quiet for a while.` },
   ];
 
@@ -3034,7 +3095,140 @@ const Data = (() => {
     { id: 'rail_ask', name: () => 'Ask the Salta yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He tells you who asked about the midnight freight.', where: [3], fail: 'He wants to see who else is asking first.' },
     { id: 'lean', name: () => "Review the charter operator's licence", hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'The operator withdraws the crew until she reassures him. It pauses the booking; it does not find her.', after: 12 },
   ];
-  return { CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS };
+
+  // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
+  // at: level ids where it can be drawn (null = anywhere). cond(s, C): extra test. Text placeholders: {sib}, {here}.
+  // Choice fx: hours, exposure, belief ('away' | 'here'), card (gain), lose (card id | 'random' | 'best'), trust {who: +n},
+  // doubt, cut, test (person ids), stage {arr: +n}, flag {k: v}, deadline (hours, negative = sooner), skipEnemy, mod (roll
+  // change at this stop), hold (climb a rung), advance (reach the next stop), end {reason}, roll {need, win: fx, lose: fx}, say.
+  // needs: like approach needs ({ card: tag }).
+  const EVENTS = [
+    // the residence
+    { id: 'selfie', at: ['residence'], title: 'A photo from the kitchen', text: "The cook's nephew posted a photo. You are in the window behind him.", choices: [
+      { id: 'buy_phone', label: "Buy the nephew's phone", fx: { hours: 1, exposure: -1, say: 'Nando pays twice what the phone is worth.' } },
+      { id: 'beach', label: 'Post an old beach photo', needs: [{ card: 'influence' }], fx: { belief: 'away', exposure: -1, flag: { lied: true }, say: "Gianlūka's people post you on the coast." } },
+      { id: 'let_it', label: 'Let it stand', fx: { exposure: 2 } } ] },
+    { id: 'dog', at: ['residence'], title: 'The dog will not stay', text: 'Your youngest will not leave without the dog. The dog barks at strangers.', choices: [
+      { id: 'bring_dog', label: 'Bring the dog', fx: { flag: { dog: true }, trust: { sibling: 1 }, say: 'The dog sleeps across your feet.' } },
+      { id: 'leave_dog', label: 'Leave him with the cook', fx: { hours: 1, say: 'An hour of crying in the back seat.' } } ] },
+    { id: 'summons', at: ['residence'], title: 'A court officer at the gate', text: 'He has a summons and orders to hand it to you in person.', choices: [
+      { id: 'accept', label: 'Take the summons', fx: { deadline: -12, say: 'The court now has your signature. The deadline moves up twelve hours.' } },
+      { id: 'lawyer', label: "Send Gianlūka's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer argues at the gate for two hours.' } },
+      { id: 'ignore', label: 'Keep the gate shut', fx: { exposure: 1 } } ] },
+    { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
+      { id: 'speak', label: 'Speak on the steps', fx: { exposure: 3, trust: { aide: 1 }, card: 'delay_report', say: 'The party loves it. So does Sosā.' } },
+      { id: 'refuse', label: 'Refuse', fx: { trust: { aide: -1 }, say: 'Gianlūka goes quiet on the phone.' } } ] },
+    // Santa Laura
+    { id: 'fuel', at: ['road'], title: 'Fuel is rationed', text: 'Every pump in Santa Laura has a line and a police officer.', choices: [
+      { id: 'queue', label: 'Wait in line', fx: { hours: 2, exposure: 1 } },
+      { id: 'farmer', label: 'Buy from a farmer', fx: { roll: { need: 3, win: { hours: 1, say: 'Twenty liters from a tractor shed.' }, lose: { hours: 2, exposure: 2, say: 'The farmer calls his nephew, who calls the radio.' } } } },
+      { id: 'river', label: 'Leave the car, take the river', needs: [{ card: 'boat' }], fx: { mod: -1, say: 'The river has no pumps and no police.' } } ] },
+    { id: 'hitchhiker', at: ['road'], title: 'A hitchhiker knows your face', text: 'A young reporter flags you down. She recognizes you before the door closes.', choices: [
+      { id: 'interview', label: 'Give her the interview', fx: { exposure: 2, belief: 'away', say: 'Her story puts you on the coast road.' } },
+      { id: 'silence', label: 'Buy her silence', fx: { roll: { need: 4, win: { say: 'She keeps the money and the story.' }, lose: { exposure: 3, say: 'She takes the money and files anyway.' } } } },
+      { id: 'drop', label: 'Drop her at the next town', fx: { hours: 1 } } ] },
+    { id: 'flood', at: ['road'], title: 'Flash flood at the bridge', text: 'The river is over the road. Trucks are turning back.', choices: [
+      { id: 'wait_water', label: 'Wait for the water', fx: { hours: 4 } },
+      { id: 'ford', label: 'Drive through it', fx: { roll: { need: 4, win: { exposure: -1, say: 'Water to the doors, then dry road.' }, lose: { hours: 2, exposure: 1, lose: 'random', say: 'The engine floods. You leave something in the car.' } } } },
+      { id: 'ferry', label: "Pay a smuggler's ferry", fx: { hours: 1, exposure: 1, say: 'The ferryman knows who you are and says nothing. For now.' } } ] },
+    { id: 'decoy_ditch', at: ['road'], cond: (s) => s.hand.includes('decoy_cars'), title: 'A decoy on the evening news', text: 'One of your spare sedans rolled into a ditch on camera. The plates are yours.', choices: [
+      { id: 'claim', label: 'Say it was you', fx: { belief: 'away', exposure: -2, lose: 'decoy_cars', say: 'For one evening you are in a ditch two hundred kilometers away.' } },
+      { id: 'quiet', label: 'Say nothing', fx: { exposure: 1 } } ] },
+    // the colônia
+    { id: 'bishop', at: ['colonia'], title: 'The bishop offers a blessing', text: 'A public blessing at evening mass. The whole colônia would see you.', choices: [
+      { id: 'blessing', label: 'Accept the blessing', fx: { exposure: 2, trust: { host: 1 } } },
+      { id: 'decline', label: 'Decline', fx: { trust: { host: -1 } } } ] },
+    { id: 'wedding', at: ['colonia'], title: 'A wedding for three hundred', text: "A cousin's wedding fills every street tonight. Nobody counts faces at a wedding.", choices: [
+      { id: 'dance', label: 'Hide among the guests', fx: { hours: 3, exposure: -3, say: 'You dance with a great aunt who never asks your name.' } },
+      { id: 'skip', label: 'Stay inside', fx: {} } ] },
+    { id: 'grandson', at: ['colonia'], title: 'The grandson wants out', text: "Nonā Rosa's grandson is nineteen, knows the rail yard and wants to come.", choices: [
+      { id: 'take', label: 'Take him with you', fx: { card: 'grandson' } },
+      { id: 'no', label: 'Say no', fx: { trust: { host: -1 } } } ] },
+    { id: 'raid', at: ['colonia'], title: 'Police raid the next farm', text: 'Federal police are searching the neighbor for contraband. Not for you. Yet.', choices: [
+      { id: 'cellar', label: 'Hide in the wine cellar', fx: { hours: 4 } },
+      { id: 'slip', label: 'Slip out now', fx: { roll: { need: 3, win: { hours: 1 }, lose: { hold: 1 } } } } ] },
+    // Salta
+    { id: 'strike', at: ['salta'], title: 'Rail strike tonight', text: 'The union stopped the yard. No freight moves unless someone breaks the strike.', choices: [
+      { id: 'wait_strike', label: 'Wait it out', fx: { hours: 8 } },
+      { id: 'union', label: 'Pay the union boss', fx: { exposure: 2, say: 'The strike ends for one train.' } },
+      { id: 'scabs', label: 'Ride with the strikebreakers', fx: { roll: { need: 4, win: { say: 'Nobody looks at a scab twice.' }, lose: { hold: 1 } } } } ] },
+    { id: 'tourbus', at: ['salta'], title: 'A tour bus to the waterfalls', text: 'A bus of tourists leaves for the falls at the border at dawn. One seat is empty.', choices: [
+      { id: 'bus', label: 'Take the seat in a sun hat', fx: { roll: { need: 4, win: { advance: true, belief: 'away', say: 'You sleep through the checkpoint. The guide counts you twice.' }, lose: { hold: 1 } } } },
+      { id: 'pass', label: 'Let it go', fx: {} } ] },
+    { id: 'holt_drunk', at: ['salta'], title: 'Holt has been drinking', text: 'He is loud at the bar about a passenger worth a lot of money.', choices: [
+      { id: 'trust_holt', label: 'Trust him anyway', fx: { doubt: 'holt' } },
+      { id: 'sober', label: 'Sober him up', fx: { hours: 2, trust: { holt: 1 } } },
+      { id: 'cut_holt', label: 'Go to Theo instead', fx: { cut: 'holt' } } ] },
+    { id: 'yard_debt', at: ['salta'], title: 'The yardmaster owes your family', text: "His wife's father once worked for your father. He might remember.", choices: [
+      { id: 'favor', label: 'Ask the favor', fx: { roll: { need: 3, win: { card: 'yard_walk', say: 'He remembers. He walks you to the train himself.' }, lose: { exposure: 2, say: 'He remembers differently.' } } } },
+      { id: 'leave_it', label: 'Do not risk it', fx: {} } ] },
+    // the line
+    { id: 'old_guard', at: ['border'], title: 'A guard you know', text: 'The night guard once worked for your family. He is staring at you.', choices: [
+      { id: 'loyalty', label: 'Appeal to old loyalty', fx: { roll: { need: 3, win: { mod: -2, say: 'He looks at his boots and waves the queue on.' }, lose: { hold: 1 } } } },
+      { id: 'next_shift', label: 'Wait for the next shift', fx: { hours: 3 } } ] },
+    { id: 'pilgrims', at: ['border'], title: 'Pilgrims at the barrier', text: 'Forty pilgrims and their luggage are at the post. The guards are tired.', choices: [
+      { id: 'queue_pilgrims', label: 'Join the queue', fx: { mod: -1 } },
+      { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2 } } ] },
+    { id: 'blizzard', at: ['border'], title: 'A blizzard closes the pass', text: "The post is shut. A smugglers' path runs over the ridge.", choices: [
+      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'Nobody moves. Not you, not Sosā.' } },
+      { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Esmeralda with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
+    { id: 'dog_bark', at: ['border'], cond: (s) => s.flags.dog, title: 'The dog barks at the post', text: 'The guards look up. A dog in your car was on the news.', choices: [
+      { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },
+      { id: 'give_dog', label: 'Give the dog to a trucker', fx: { trust: { sibling: -1 }, say: 'Your daughter does not speak to you until Esmeralda.' } } ] },
+    { id: 'esm_press', at: ['border'], title: 'Cameras across the line', text: 'Someone told the press in Baca. Cameras wait on the far side.', choices: [
+      { id: 'speak_esm', label: 'Speak to them', fx: { exposure: 2, stage: { reception: 1 }, say: 'Esmeralda sees you. So does Valdória.' } },
+      { id: 'cover', label: 'Cover your face', fx: {} } ] },
+    // Susana
+    { id: 'crew_double', at: ['airfield'], title: 'The crew wants double', text: "The operator's insurer called. The pilot wants twice the fee or a guarantee.", choices: [
+      { id: 'pay_double', label: 'Pay double', fx: { exposure: 1 } },
+      { id: 'guarantee', label: 'Have Salek guarantee it', needs: [{ card: 'permission' }], fx: { trust: { sponsor: -1 }, say: 'Salek adds it to what you owe.' } },
+      { id: 'other_pilot', label: 'Find another pilot', fx: { hours: 4 } } ] },
+    { id: 'overflight', at: ['airfield'], title: 'No overflight permit', text: 'The refuel stop will not let the jet cross. The long route adds hours.', choices: [
+      { id: 'long', label: 'Take the long route', fx: { hours: 3 } },
+      { id: 'short', label: 'Risk the short route', fx: { mod: 1, say: 'The pilot files it anyway. The tower will look twice.' } } ] },
+    { id: 'goodbye_post', at: ['airfield'], title: 'A goodbye online', text: 'Your daughter posted a photo from the airfield lounge. It is everywhere.', choices: [
+      { id: 'takedown', label: 'Get it taken down', fx: { roll: { need: 4, win: {}, lose: { exposure: 3 } } } },
+      { id: 'stand', label: 'Let it stand', fx: { exposure: 2, flag: { asked: true }, say: 'Valdória asks Esmeralda to hold you within the hour.' } } ] },
+    { id: 'rival_deal', at: ['airfield', 'border'], title: 'The president calls', text: 'Concede on camera, come home, and the case quietly closes.', choices: [
+      { id: 'take_deal', label: 'Take the deal', fx: { end: { kind: 'deal', reason: 'You concede on camera at noon. The case closes quietly. The party never forgives you.' } } },
+      { id: 'hang_up', label: 'Hang up', fx: {} } ] },
+    // anywhere
+    { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed in Atlanta. You are still in {here}.', choices: [
+      { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Even your own people stop calling back. They think you have landed.' } },
+      { id: 'correct', label: 'Correct it', fx: { exposure: 1 } } ] },
+    { id: 'bodyguard', at: null, title: 'An old bodyguard wants money', text: 'He knows your route. He will sell it tonight unless you pay.', choices: [
+      { id: 'pay_guard', label: 'Pay him', fx: { exposure: 1 } },
+      { id: 'bluff', label: 'Call his bluff', fx: { roll: { need: 3, win: { say: 'He never calls anyone.' }, lose: { belief: 'here', exposure: 3, say: 'He calls Sosā before midnight.' } } } },
+      { id: 'gianluka', label: 'Have Gianlūka handle him', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 } } } ] },
+    { id: 'coffee', at: ['residence', 'road', 'colonia', 'salta'], title: 'A police car pulls in beside you', text: 'Two officers get out for coffee. One glances at your window.', choices: [
+      { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },
+      { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
+    { id: 'hearing', at: null, cond: (s) => s.hour < 30, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
+      { id: 'noted', label: 'Keep going', fx: { deadline: -10 } } ] },
+    { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios and the inquiry go quiet.', choices: [
+      { id: 'dark', label: 'Use the dark', fx: { exposure: -1, skipEnemy: true } } ] },
+  ];
+  // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
+  const HOLDS = {
+    1: { title: 'Stopped and questioned', text: 'A patrol stops you in {here}. An officer wants to know where you are going.', choices: [
+      { id: 'calm', label: 'Answer calmly', fx: { roll: { need: 3, face: 1, win: { hours: 1, say: 'He writes down a name that is not yours.' }, lose: { hours: 3, lose: 'random', exposure: 1, say: 'Three hours on a bench. They keep something of yours.' } } } },
+      { id: 'lawyer', label: "Call the party's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer arrives shouting. They let you go.' } },
+      { id: 'bribe', label: 'Pay the officer', fx: { hours: 1, exposure: 2, say: 'The money disappears. So does the report, maybe.' } } ] },
+    2: { title: 'Held at the station', text: 'They take you to the station in {here}. Your phone goes in a plastic bag.', choices: [
+      { id: 'wait_lawyer', label: 'Wait for a lawyer', fx: { hours: 8, lose: 'best', say: 'Eight hours. They keep what they found on you.' } },
+      { id: 'embassy', label: '{sib} calls an embassy', fx: { roll: { need: 4, win: { hours: 4, say: 'A diplomat calls the station chief. You are released.' }, lose: { hours: 10, lose: 'best', say: 'Nobody important answers until morning.' } } } },
+      { id: 'walk_out', label: 'Walk out at shift change', fx: { roll: { need: 5, win: { hours: 1, exposure: 3, say: 'Nobody stops a person walking like they belong.' }, lose: { hold: 1 } } } } ] },
+    3: { title: 'House arrest', text: 'The court placed you under house arrest. Two officers sit outside the door.', choices: [
+      { id: 'climb', label: 'Climb out at the shift change', fx: { roll: { need: 5, decoy: 1, win: { hours: 2, exposure: 8, rung: 2, say: 'Over the back wall, into a car that was not there yesterday.' }, lose: { end: { reason: 'The officers catch you on the wall. The hearing is Monday. You will be there.' } } } } },
+      { id: 'accept', label: 'Accept it', fx: { end: { reason: 'You sit by the window and watch the officers change shifts. The hearing is Monday.' } } } ] },
+  };
+  // Rumors: a hint about who might be selling you out. Sometimes it is wrong.
+  const RUMORS = [
+    (n) => `Someone saw ${n} talking to a police car.`,
+    (n) => `${n} asked twice which car you will take.`,
+    (n) => `${n} paid off a debt this morning. In cash.`,
+  ];
+  return { EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;
 
@@ -3055,6 +3249,9 @@ const Sim = (() => {
   const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
+  const DEADLINE = 46; // Monday 12:00: the passports were due; after it the own passport is cancelled and the ban is everywhere
+  const SUSPECTS = ['aide', 'nando', 'host', 'holt', 'theo', 'pilot', 'official'];
+  const EVENT_EVERY = 6; // hours at one stop between dispatches
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
   // opts.dice: a queue of die results used before the rng (the demo). opts.enemy: a queue of
@@ -3064,16 +3261,21 @@ const Sim = (() => {
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
-      arr: {}, people: {}, hand: ['passport', 'decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
+      arr: {}, people: {}, hand: (ch.hand || ['passport', 'decoy_cars', 'aide_word']).slice(), used: [], commitments: [], inbox: [], jobs: [],
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
       nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
+      // the deeper game: one dispatch or hold waits at a time; holds climb a ladder; the passport deadline is Monday noon.
+      event: null, seenEvents: [], hold: 0, holds: 0, deadline: DEADLINE, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
     };
+    s.exposure = ch.exposure || 1;
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
     s._dice = opts.dice ? opts.dice.slice() : null;
     s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
-    for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
+    for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false, doubt: false, cut: false, known: false, bad: false };
     s._rngState = seed >>> 0; attachRng(s);
+    // Two people on the ground are secretly working for the inquiry. Which two changes every run.
+    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < 2; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
     const events = [];
     arrive(s, events, true);
     s._boot = events;
@@ -3099,6 +3301,7 @@ const Sim = (() => {
     const L = level(s);
     events.push(ev('arrive', { level: s.pos }));
     say(events, 'narrator', L.arrive);
+    s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events);
     // scripted arrivals: what the phone brings at each level
     if (s.pos === 0 && first) {
       msg(s, events, 'sibling', `"Jet found in Susana. The crew needs a destination. Atlanta, or wait for Salek?"`, [
@@ -3174,22 +3377,28 @@ const Sim = (() => {
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
   function needText(s, n) {
     if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? `Your ${n.card} card is not recognized here.` : `Needs a ${n.card} card.`);
-    if (n.night) return isNight(s) ? null : `Available at night. Current time: ${clockText(s.hour).split(' ')[1]}. Shift change: 22:00.`;
-    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Requires ${D.ARRANGEMENTS[n.arr].name}: "${D.ARRANGEMENTS[n.arr].stages[n.stage]}". Now: "${D.ARRANGEMENTS[n.arr].stages[a.stage]}".`; }
+    if (n.night) return isNight(s) ? null : 'After 22:00.';
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs: ${D.ARRANGEMENTS[n.arr].stages[n.stage]}.`; }
     return null;
   }
   function approachList(s) {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
+      if (s.event) whys.unshift(s.event.kind === 'hold' ? 'You are being held.' : 'Answer the news first.');
+      if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(`You cut off ${personName(s, a.with)}.`);
+      else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(`${personName(s, a.with)} talked to the inquiry.`);
       let bonus = 0; const used = [];
       for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
       let dc = a.dc;
       if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1; // the sheet is on the desk unless Gianlūka's contact held it
     if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until) dc += 1;
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
+      dc += s.mods[s.pos] || 0;
+      if (ch(s).faceKnown && L.border && a.id !== 'received') dc += 1; // every officer knows Teresā's face
+      if (a.id === 'own_passport' && s.flags.cancelled) dc = 7; // cancelled at Monday noon
       const need = Math.max(1, dc - bonus);
-      out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
+      out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
         preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed with your current help.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
     }
@@ -3204,6 +3413,7 @@ const Sim = (() => {
       if (a.stage >= def.stages.length - 1) return;
       const p = pending(k);
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: `${def.name}: ${personName(s, ally)} is on it`, ok: false, why: `Resolves at ${clockText(p.due)}.`, hours: 0, preview: [text] }); return; }
+      if (s.event) whys.unshift('Answer the news first.');
       out.push({ kind: 'call', id: 'call:' + k, name: `Call ${personName(s, ally)} about ${def.name.toLowerCase()}`, ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
         preview: [text, `Next: ${def.stages[a.stage + 1]}. Reply in ${jobHours(k)} hours. ${personName(s, ally)} needs a roll of ${D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0)} or more before trust bonuses.`] });
     };
@@ -3228,13 +3438,117 @@ const Sim = (() => {
     if (o.id === 'via_sponsor' && s.people.sponsor.turned) return 'Salek is not taking your calls.';
     return '';
   }
-  const optionOk = (s, o) => !optionWhy(s, o);
-  function actions(s) { return { approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Wait one hour', ok: !s.over, hours: 1 } }; }
+  const optionOk = (s, o) => !optionWhy(s, o) && !s.event;
+  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Lie low one hour', ok: !s.over && !s.event, hours: 1 } }; }
+
+  // ---- dispatches and holds: the News phase --------------------
+  const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, level(s).short);
+  function drawEvent(s, events) {
+    if (s.event || s.tutorial || s.over) return;
+    const L = level(s);
+    // a rumor about someone here, more often about someone who really is selling you out
+    const here = Object.keys(D.PEOPLE).filter(k => D.PEOPLE[k].where === s.pos && !s.people[k].known && !s.people[k].turned && !s.people[k].cut && !s.people[k].rumored);
+    if (here.length && s._rng() < 0.4) {
+      const bad = here.filter(k => s.people[k].bad), who = bad.length && s._rng() < 0.65 ? bad[0] : here[Math.floor(s._rng() * here.length)];
+      s.people[who].rumored = true; s.people[who].doubt = true;
+      s.event = { kind: 'rumor', who, line: Math.floor(s._rng() * D.RUMORS.length) };
+      const v = eventView(s); events.push(ev('dispatch', { id: 'rumor', title: v.title, text: v.text })); return;
+    }
+    const pool = D.EVENTS.filter(e => (!e.at || e.at.includes(L.id)) && !s.seenEvents.includes(e.id) && (!e.cond || e.cond(s)));
+    if (!pool.length) return;
+    const pick = pool[Math.floor(s._rng() * pool.length)];
+    s.seenEvents.push(pick.id); s.event = { kind: 'event', id: pick.id };
+    events.push(ev('dispatch', { id: pick.id, title: fill(s, pick.title), text: fill(s, pick.text) }));
+  }
+  function climbHold(s, events) {
+    if (s.tutorial || s.over) return;
+    let r = s.hold + 1; if (s.flags.cancelled && s.hold === 0) r = 2; // after Monday noon the first hold is a station, not a roadside
+    s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos;
+    s.event = { kind: 'hold', rung: s.hold };
+    events.push(ev('hold', { rung: s.hold, title: D.HOLDS[s.hold].title, text: fill(s, D.HOLDS[s.hold].text) }));
+  }
+  function choiceWhy(s, c) { for (const n of c.needs || []) { const w = needText(s, n); if (w) return w; } if (c.id === 'embassy' && s.people.sibling.turned) return `${ch(s).sibling.short} is not answering.`; return ''; }
+  // Markers: what a choice costs or gives, as short tags the UI shows instead of sentences.
+  function fxTags(s, fx, out) {
+    out = out || []; if (!fx) return out;
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push({ k: 'roll', t: `Roll ${need}+` }); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push({ k: 'risk', t: 'Fail: ' + lose.map(x => x.t.toLowerCase()).join(', ') }); return out; }
+    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
+    if (fx.exposure) out.push({ k: fx.exposure > 0 ? 'up' : 'down', t: `Exposure ${fx.exposure > 0 ? '+' : ''}${fx.exposure}` });
+    if (fx.belief === 'away') out.push({ k: 'down', t: 'Sosā looks elsewhere' });
+    if (fx.belief === 'here') out.push({ k: 'up', t: 'Sosā finds you' });
+    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.CARDS[fx.card].name}` });
+    if (fx.lose) out.push({ k: 'lose', t: fx.lose === 'random' || fx.lose === 'best' ? 'Lose a card' : `Lose: ${D.CARDS[fx.lose].name}` });
+    if (fx.trust) for (const k in fx.trust) out.push({ k: fx.trust[k] > 0 ? 'gain' : 'lose', t: `${personName(s, k).split(' ')[0]} ${fx.trust[k] > 0 ? 'trusts you more' : 'trusts you less'}` });
+    if (fx.doubt) out.push({ k: 'risk', t: `Rely on ${personName(s, fx.doubt).split(' ')[0]}` });
+    if (fx.cut) out.push({ k: 'lose', t: `Cut off ${personName(s, fx.cut).split(' ')[0]}` });
+    if (fx.test) out.push({ k: 'time', t: 'Learn the truth' });
+    if (fx.stage) out.push({ k: 'gain', t: 'Reception moves' });
+    if (fx.deadline) out.push({ k: 'up', t: `Deadline ${fx.deadline < 0 ? 'sooner' : 'later'}` });
+    if (fx.skipEnemy) out.push({ k: 'down', t: 'Sosā loses a move' });
+    if (fx.mod) out.push({ k: fx.mod < 0 ? 'down' : 'up', t: `Rolls here ${fx.mod < 0 ? 'easier' : 'harder'}` });
+    if (fx.hold) out.push({ k: 'risk', t: 'Held' });
+    if (fx.advance) out.push({ k: 'gain', t: 'Reach the next stop' });
+    if (fx.end) out.push({ k: 'risk', t: 'Ends the run' });
+    if (fx.flag && fx.flag.dark) out.push({ k: 'up', t: 'Allies slower' });
+    return out;
+  }
+  function eventView(s) {
+    const e = s.event; if (!e) return null;
+    let def, kind = e.kind;
+    if (kind === 'hold') def = D.HOLDS[e.rung];
+    else if (kind === 'rumor') { const n = personName(s, e.who); def = { title: `A rumor about ${n.split(' ')[0]}`, text: D.RUMORS[e.line](n), choices: [
+      { id: 'trust', label: `Keep trusting ${n.split(' ')[0]}`, fx: { doubt: e.who } },
+      { id: 'test', label: 'Test them quietly', fx: { hours: 2, test: e.who } },
+      { id: 'cut', label: 'Cut them off', fx: { cut: e.who } } ] }; }
+    else def = D.EVENTS.find(x => x.id === e.id);
+    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, tags: fxTags(s, c.fx) }; }) };
+  }
+  function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; return D.EVENTS.find(x => x.id === v.id); }
+  function resolveEvent(s, choiceId, events) {
+    if (!s.event) return { ok: false, why: 'No news waiting.' };
+    const def = eventDef(s), c = def.choices.find(x => x.id === choiceId); if (!c) return { ok: false, why: 'Pick one of the choices.' };
+    const why = choiceWhy(s, c); if (why) return { ok: false, why };
+    const was = s.event; s.event = null;
+    events.push(ev('chose', { kind: was.kind, label: fill(s, c.label) }));
+    if (was.kind === 'hold' && s.hold < 3) s.exposure = Math.max(s.exposure, 0);
+    applyFx(s, c.fx, events);
+    return finish(s, events);
+  }
+  function applyFx(s, fx, events) {
+    if (!fx || s.over) return;
+    if (fx.roll) {
+      const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0);
+      const die = roll(s), won = die >= need; events.push(ev('roll', { die, need, won }));
+      applyFx(s, won ? fx.roll.win : fx.roll.lose, events); return;
+    }
+    say(events, 'narrator', fx.say);
+    if (fx.exposure) heat(s, fx.exposure, events);
+    if (fx.belief === 'away') { s.belief = s.pos === 0 ? 1 : s.pos - 1; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.belief === 'here') { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.card) gain(s, fx.card, events);
+    if (fx.lose) { const pool = s.hand.filter(id => fx.lose === 'best' ? true : id !== 'passport'); let id = fx.lose; if (fx.lose === 'random') id = pool[Math.floor(s._rng() * pool.length)]; if (fx.lose === 'best') id = s.hand.includes('passport') ? 'passport' : pool[Math.floor(s._rng() * pool.length)]; if (id) { lose(s, id, events); s.used.push(id); } }
+    if (fx.trust) for (const k in fx.trust) { s.people[k].trust = Math.max(-2, Math.min(3, s.people[k].trust + fx.trust[k])); events.push(ev('trust', { who: k, trust: s.people[k].trust })); }
+    if (fx.doubt) s.people[fx.doubt].doubt = true;
+    if (fx.cut) { s.people[fx.cut].cut = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.cut) lose(s, id, events); say(events, 'narrator', `You stop answering ${personName(s, fx.cut)}.`); }
+    if (fx.test) { const p = s.people[fx.test]; p.known = true; p.doubt = false; if (p.bad) { p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.test) lose(s, id, events); say(events, 'narrator', `${personName(s, fx.test)} was working for Sosā. You find out before it costs you.`); } else { p.trust = Math.max(p.trust, 2); say(events, 'narrator', `${personName(s, fx.test)} is clean. And offended you asked.`); } }
+    if (fx.stage) for (const k in fx.stage) stage(s, k, s.arr[k].stage + fx.stage[k], events);
+    if (fx.flag) Object.assign(s.flags, fx.flag);
+    if (fx.deadline) { s.deadline = Math.max(s.hour + 1, s.deadline + fx.deadline); }
+    if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
+    if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
+    if (fx.rung !== undefined) s.hold = fx.rung;
+    if (fx.end) { s.over = { win: false, kind: fx.end.kind || 'arrest', reason: `${fx.end.reason} ${epilogue(s, false)}` }; events.push(ev('over', s.over)); return; }
+    if (fx.hold) climbHold(s, events);
+    if (fx.advance) advanceLevel(s, events);
+    if (fx.hours) pass(s, fx.hours, events);
+  }
 
   // ---- commit ----------------------------------------------------
   function commit(s, actionId, optionId) {
     if (s.over) return { ok: false, why: 'The run is over.' };
     const events = [];
+    if (actionId.startsWith('evt:')) return resolveEvent(s, actionId.slice(4), events);
+    if (s.event) return { ok: false, why: s.event.kind === 'hold' ? 'You are being held.' : 'Answer the news first.' };
     if (actionId === 'wait') { pass(s, 1, events); return finish(s, events); }
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
@@ -3247,7 +3561,12 @@ const Sim = (() => {
     const won = view.need > 6 ? false : die >= view.need;
     events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
     apply(s, won ? a.success : a.fail, events, a);
-    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+    // the wrong person to trust: a compromised ally may sell the move
+    if (a.with && s.people[a.with] && s.people[a.with].bad && !s.people[a.with].known && s._rng() < 0.6) {
+      const p = s.people[a.with]; p.known = true; p.turned = true; s.belief = s.pos; heat(s, 3, events); events.push(ev('belief', { belief: s.belief }));
+      say(events, 'narrator', `${personName(s, a.with)} sold you out. Sosā knows where you are.`); events.push(ev('betrayal', { who: a.with }));
+    }
+    if (won && a.success.win) { s.over = { win: true, kind: 'out', reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
     pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
     if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
     return finish(s, events);
@@ -3284,7 +3603,8 @@ const Sim = (() => {
     if (!c || !c.ok) return { ok: false, why: c ? c.why : 'Nothing to call about.' };
     if (k === 'permission' && s.arr.permission.stage === 0 && !s.commitments.some(x => x.to === 'sponsor')) { s.commitments.push({ to: 'sponsor', text: D.PEOPLE.sponsor.terms, kept: true }); events.push(ev('commit', { to: 'sponsor', text: D.PEOPLE.sponsor.terms })); }
     if (k === 'reception' && s.arr.reception.stage === 1 && !s.commitments.some(x => x.to === 'official')) { s.commitments.push({ to: 'official', text: D.PEOPLE.official.terms, kept: true }); events.push(ev('commit', { to: 'official', text: D.PEOPLE.official.terms })); }
-    const due = s.hour + 1 + jobHours(k);
+    s.calledAt = s.hour;
+    const due = s.hour + 1 + jobHours(k) + (s.flags.dark ? 2 : 0);
     s.jobs.push({ arr: k, ally: c.ally, target: s.arr[k].stage + 1, due });
     events.push(ev('job', { arr: k, ally: c.ally, due, dueText: clockText(due) }));
     say(events, c.ally, k === 'aircraft' ? `"Leave it with me. Six hours."` : k === 'reception' ? (c.ally === 'official' ? `"I will see what the minister can spare. Call it a courtesy."` : `"I have a name in Baca. Give me six hours."`) : `"Ten hours, and you understand what I asked."`);
@@ -3328,10 +3648,12 @@ const Sim = (() => {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
+      if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: 'Monday noon. Your own passport is cancelled and the ban is at every post.', belief: s.belief })); }
       if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
-      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive in ${level(s).short} at ${clockText(s.hour)}. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
-      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
+      if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 6; climbHold(s, events); } }
+      if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: `${clockText(s.hour)}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
+      if (!s.over && !s.event && s.hour >= s.nextEventAt) { s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events); }
     }
   }
   function resolveJob(s, j, events) {
@@ -3352,7 +3674,8 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += ' The last call came from where you are.'; } else text += ' Nothing new.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
       case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.${s.flags.lied ? ' The yacht story is dead, and the papers say so.' : ''}`; } break; }
@@ -3386,11 +3709,12 @@ const Sim = (() => {
     }
     if (turned.length) out.push(`${turned.map(first).join(' and ')} talked to the inquiry. ${turned.length > 1 ? 'They' : first(turned[0])} will not be forgiven at home.`);
     if (s.people.host.trust > 0) out.push('Nonā Rosa\'s truck runs to Salta every week. Nobody at the colônia says who rode in it.');
+    if (s.holds) out.push(s.holds === 1 ? 'You were held once along the way.' : `You were held ${s.holds} times along the way.`);
     if (!win) out.push(`${personName(s, 'sibling')} is named on the warrant by Monday.`);
     return out.join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
 
@@ -3419,9 +3743,9 @@ const Tutorial = (() => {
     info('A guided first run',
       `<p>You are Teresā Albukerkē, the defeated candidate. Reach Atlanta within 72 hours.</p><p>This tutorial guides you to the border. The airfield is yours to play.</p>`),
     info('The map',
-      `<p>The gold dot marks you. The red eye marks where the inquiry is looking. Exposure rises when they match.</p><p>At exposure 10, Sosā catches you.</p>`, ['#scene', '#heat']),
-    info('Two problems at once',
-      `<p><b>Here</b> shows your next move. <b>The phone</b> lets you arrange help elsewhere while you travel.</p>`, ['#here-panel', '#phone-panel']),
+      `<p>The gold dot marks you. The red eye marks where the inquiry is looking. Exposure rises when they match.</p><p>At exposure 10 you are held. Each hold is worse than the last. The third is house arrest.</p>`, ['#scene', '#heat']),
+    info('Each round has five phases',
+      `<p><b>News</b>, <b>Phone</b>, <b>Move</b>, <b>Roll</b>, <b>Sosā</b>. On the phone you answer messages and place one call. Then you make one move.</p>`, ['#phasebar']),
     act('Answer your brother',
       `<p>Duartē found a jet. He needs a destination to book the crew.</p><p>Choose <b>Name Atlanta now</b>.</p>`,
       ['#inbox'], { options: ['name_atlanta'] }, (s) => s.flags.destination),
@@ -3536,6 +3860,8 @@ const Gov = (() => {
   const PREF = { name_atlanta: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, confirm_yacht: 1, sign_accounts: 1, go_midnight: 1, guest_yes: 1, sosa_hang: 1 };
   function herStep(g) {
     const c = g.c, A = S.actions(c), before = c.hour;
+    // her dispatches and holds come first; she takes the choice whose markers look cheapest
+    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
     const calls = A.calls.filter(x => x.ok), lvl = c.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
@@ -3560,6 +3886,7 @@ const Gov = (() => {
       if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', 'A charter to Lāyūna is booked at Susana.', 'An aircraft is booked.', 'That she has reached it.', 3, c.hour);
       if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', 'Atlanta has issued her an entry visa.', 'Atlanta will receive her.', 'Where she is now.', 4, c.hour);
       if (e.type === 'enemy' && e.id === 'press_ally' && /tells them/.test(e.text)) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, 'Where she was last seen.', 'Where she is now.', 0, c.hour); }
+      if (e.type === 'hold') report(g, events, c.pos, 'desk', `A patrol report: ${e.title.toLowerCase()} in ${place(c.pos)}.`, 'Where she was stopped.', 'Where she goes after release.', 1, c.hour);
       if (e.type === 'over') g.over = e;
     }
   }
@@ -3678,7 +4005,7 @@ const Gov = (() => {
   // ---- the debrief: what happened against what you believed ------------------------------------
   function debrief(g) {
     const c = g.c, esc = (t) => String(t).replace(/</g, '&lt;');
-    const win = !c.over.win && /arrive/.test(c.over.reason);
+    const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal'); // outcome codes, never prose
     const head = c.over.win ? `The jet left Esmeraldan airspace at ${S.clockText(c.hour)}. ${g.req.hold === 'inhand' ? 'Esmeralda acknowledged your hold. The tower never received it.' : 'Esmeralda was never asked in time.'}` : win ? `Sosā's people reached her at ${place(c.pos)} at ${S.clockText(c.hour)}. She is in custody for the hearing.` : `${S.clockText(c.hour)}. She never left. The hearing proceeds without her in custody.`;
     const label = (t) => { if (t.pos === t.belief) return ['right', 'Right']; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', 'Decoy']; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', 'Wrong']; };
     const rows = g.timeline.map(t => { const [k, l] = label(t); return `<tr><td class="mono">${esc(S.clockText(t.hour).replace(/^(\w{3})\w+/, '$1'))}</td><td>${esc(place(t.pos)[0].toUpperCase() + place(t.pos).slice(1))}</td><td>${esc(place(t.belief)[0].toUpperCase() + place(t.belief).slice(1))} <span class="v ${k}">${l}</span></td></tr>`; }).join('');
@@ -3785,10 +4112,188 @@ const Sfx = (() => {
     }
     return { play, stop, playing: () => !!timer };
   })();
+  /* Place ambience. One quiet bed per scene, day and night, built from a looping noise buffer,
+     filters, a few oscillators and one-shots scheduled at random. Beds crossfade over 1.5 s.
+     A bed is built by a function (ac, out, night, every) so the same code renders live and in an
+     OfflineAudioContext for tests; `every(fn, minS, maxS)` schedules fn(time) repeatedly. */
+  const AMB = (() => {
+    const LEVEL = 0.12, FADE = 1.5;
+    const bufs = new WeakMap();
+    function noiseBuf(ac) {
+      if (bufs.has(ac)) return bufs.get(ac);
+      const n = ac.sampleRate * 2, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      bufs.set(ac, b); return b;
+    }
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    // A continuous filtered noise layer. lfo: { rate, depth, on: 'gain'|'freq' } for wind, surf and water.
+    function bed(ac, out, type, freq, q, vol, lfo, nodes) {
+      const src = ac.createBufferSource(); src.buffer = noiseBuf(ac); src.loop = true; src.loopStart = Math.random();
+      const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      const g = ac.createGain(); g.gain.value = vol;
+      src.connect(f); f.connect(g); g.connect(out); src.start(ac.currentTime, Math.random() * 1.5);
+      nodes.push(src);
+      if (lfo) {
+        const o = ac.createOscillator(), d = ac.createGain(); o.frequency.value = lfo.rate; d.gain.value = lfo.depth;
+        o.connect(d); d.connect(lfo.on === 'freq' ? f.frequency : g.gain); o.start(); nodes.push(o);
+      }
+      return { f, g };
+    }
+    function hum(ac, out, freq, type, vol, nodes, lp) {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = freq; g.gain.value = vol;
+      if (lp) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; o.connect(f); f.connect(g); } else o.connect(g);
+      g.connect(out); o.start(); nodes.push(o); return { o, g };
+    }
+    // ---- one-shots: fn(ac, out, t) ----
+    function env(ac, g, t, a, peak, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+    function burst(ac, out, t, type, freq, q, a, peak, d, sweepTo) {
+      const src = ac.createBufferSource(); src.buffer = noiseBuf(ac);
+      const f = ac.createBiquadFilter(); f.type = type; f.frequency.setValueAtTime(freq, t); f.Q.value = q;
+      if (sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + a + d);
+      const g = ac.createGain(); env(ac, g, t, a, peak, d);
+      src.connect(f); f.connect(g); g.connect(out); src.start(t, Math.random()); src.stop(t + a + d + 0.05);
+    }
+    function blip(ac, out, t, freq, type, a, peak, d, slideTo) {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + a + d);
+      env(ac, g, t, a, peak, d); o.connect(g); g.connect(out); o.start(t); o.stop(t + a + d + 0.05);
+    }
+    const carPass = (ac, out, t) => burst(ac, out, t, 'bandpass', 300, 0.7, 1.4, 0.35, 1.6, 900);
+    const cricket = (ac, out, t) => { for (let i = 0; i < 3; i++) blip(ac, out, t + i * 0.09, 4600 + rnd(-150, 150), 'sine', 0.01, 0.06, 0.05); };
+    const dog = (ac, out, t) => { const n = 1 + Math.floor(rnd(0, 3)); for (let i = 0; i < n; i++) blip(ac, out, t + i * 0.32, 420, 'sawtooth', 0.01, 0.05, 0.12, 300); };
+    const truck = (ac, out, t) => { burst(ac, out, t, 'lowpass', 180, 0.5, 1.6, 0.5, 2.2, 120); blip(ac, out, t, 55, 'sawtooth', 1.4, 0.06, 2.2, 48); };
+    const bird = (ac, out, t) => { const n = 2 + Math.floor(rnd(0, 4)), b = rnd(2400, 3600); for (let i = 0; i < n; i++) blip(ac, out, t + i * rnd(0.08, 0.16), b + rnd(-300, 400), 'sine', 0.01, 0.07, 0.07, b * rnd(1.15, 1.4)); };
+    const frog = (ac, out, t) => { for (let i = 0; i < 4; i++) blip(ac, out, t + i * 0.045, 170 + rnd(-10, 10), 'square', 0.005, 0.04, 0.03); };
+    const bell = (ac, out, t) => { for (const [m, v] of [[1, 0.09], [2.01, 0.05], [2.76, 0.035], [5.4, 0.015]]) blip(ac, out, t, 392 * m, 'sine', 0.005, v, 3.2 / Math.sqrt(m)); };
+    const clank = (ac, out, t) => { for (const fr of [310, 797, 1489, 2240]) blip(ac, out, t, fr * rnd(0.97, 1.03), 'triangle', 0.002, 0.05, rnd(0.25, 0.6)); burst(ac, out, t, 'bandpass', 2500, 2, 0.002, 0.15, 0.08); };
+    const steam = (ac, out, t) => burst(ac, out, t, 'highpass', 3500, 0.5, 0.15, 0.22, rnd(0.8, 1.6));
+    const horn = (ac, out, t) => { for (const fr of [233, 277]) { const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain(); o.type = 'sawtooth'; o.frequency.value = fr; f.type = 'lowpass'; f.frequency.value = 500; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.3); g.gain.setValueAtTime(0.05, t + 1.6); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4); o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t + 2.5); } };
+    const crackle = (ac, out, t) => { const n = 3 + Math.floor(rnd(0, 6)); for (let i = 0; i < n; i++) burst(ac, out, t + rnd(0, 0.5), 'highpass', 2000, 1, 0.001, rnd(0.08, 0.25), 0.02); };
+    const gust = (ac, out, t) => burst(ac, out, t, 'bandpass', 500, 0.8, 1.2, 0.3, 2.2, 1100);
+    const gull = (ac, out, t) => { const n = 1 + Math.floor(rnd(0, 3)); for (let i = 0; i < n; i++) blip(ac, out, t + i * 0.35, 1500, 'sawtooth', 0.03, 0.025, 0.28, 900); };
+    const beaconTick = (ac, out, t) => blip(ac, out, t, 2100, 'square', 0.002, 0.025, 0.03);
+    const wave = (ac, out, t) => burst(ac, out, t, 'lowpass', 600, 0.4, 1.8, 0.4, 2.6, 1800);
+
+    const BEDS = {
+      residence(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 220, 0.6, 0.85, { rate: 0.07, depth: 0.2, on: 'gain' }, nodes); // city hum
+        hum(ac, out, 58, 'sawtooth', 0.025, nodes, 160);
+        every(carPass, night ? 9 : 4, night ? 20 : 10);
+        if (night) { every(cricket, 0.4, 1.4); every(dog, 12, 30); }
+      },
+      road(ac, out, night, every, nodes) {
+        bed(ac, out, 'bandpass', 900, 0.5, 0.5, { rate: 0.3, depth: 0.12, on: 'gain' }, nodes); // river
+        bed(ac, out, 'bandpass', 2600, 1.2, 0.12, { rate: 0.9, depth: 0.06, on: 'gain' }, nodes); // ripples
+        bed(ac, out, 'lowpass', 400, 0.5, 0.25, { rate: 0.05, depth: 0.18, on: 'gain' }, nodes); // wind
+        every(truck, 10, 22);
+        if (night) every(cricket, 0.8, 2.2);
+      },
+      colonia(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 700, 0.4, 0.32, { rate: 0.06, depth: 0.12, on: 'gain' }, nodes); // breeze in the vines
+        if (night) { every(cricket, 0.25, 0.8); every(frog, 0.8, 2.4); every(bell, 22, 45); }
+        else { every(bird, 1.2, 4); every(bell, 40, 80); }
+      },
+      salta(ac, out, night, every, nodes) {
+        const r = hum(ac, out, 42, 'sawtooth', 0.09, nodes, 140); // idling locomotive
+        const lfo = ac.createOscillator(), d = ac.createGain(); lfo.frequency.value = 5.5; d.gain.value = 0.04; lfo.connect(d); d.connect(r.g.gain); lfo.start(); nodes.push(lfo);
+        bed(ac, out, 'lowpass', 160, 0.7, 0.35, null, nodes);
+        every(clank, 2.5, 7); every(steam, 4, 10); every(horn, 25, 50);
+      },
+      border(ac, out, night, every, nodes) {
+        bed(ac, out, 'bandpass', 650, 0.6, 0.55, { rate: 0.11, depth: 0.3, on: 'gain' }, nodes); // mountain wind
+        bed(ac, out, 'highpass', 5000, 0.4, 0.08, null, nodes); // snow hiss
+        every(gust, 4, 9); every(crackle, 0.7, 2.2);
+      },
+      airfield(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 500, 0.4, 0.4, { rate: 0.12, depth: 0.25, on: 'gain' }, nodes); // surf
+        hum(ac, out, 1150, 'sine', 0.008, nodes); // distant jet idle whine
+        bed(ac, out, 'bandpass', 180, 1.2, 0.15, null, nodes); // turbine rumble
+        every(wave, 5, 9); every(beaconTick, 1.4, 1.4);
+        if (!night) every(gull, 6, 15);
+      },
+    };
+
+    // ---- live playback ----
+    let bus = null, cur = null, want = null, unlocked = false;
+    function busNode() {
+      if (!bus) { bus = ctx.createGain(); bus.gain.value = muted ? 0.0001 : LEVEL; bus.connect(ctx.destination); }
+      return bus;
+    }
+    function startBed(scene, night) {
+      const out = ctx.createGain(), nodes = [], timers = [];
+      out.gain.setValueAtTime(0.0001, ctx.currentTime); out.gain.exponentialRampToValueAtTime(1, ctx.currentTime + FADE); out.connect(busNode());
+      const every = (fn, a, b) => { const go = () => { if (!muted) fn(ctx, out, ctx.currentTime + 0.05); timers.push(setTimeout(go, rnd(a, b) * 1000)); }; timers.push(setTimeout(go, rnd(0.2, Math.min(b, 4)) * 1000)); };
+      BEDS[scene](ctx, out, night, every, nodes);
+      return { scene, night, out, nodes, timers };
+    }
+    function stopBed(b) {
+      if (!b) return;
+      b.timers.forEach(clearTimeout); b.timers.length = 0;
+      const t = ctx.currentTime; b.out.gain.cancelScheduledValues(t); b.out.gain.setValueAtTime(Math.max(0.0001, b.out.gain.value), t); b.out.gain.exponentialRampToValueAtTime(0.0001, t + FADE);
+      setTimeout(() => { b.nodes.forEach(n => { try { n.stop(); } catch (e) { /* already stopped */ } }); b.out.disconnect(); }, FADE * 1000 + 150);
+    }
+    function apply() {
+      if (!unlocked || !ensure()) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      const w = want;
+      if (cur && w && cur.scene === w.scene && cur.night === w.night) return;
+      stopBed(cur); cur = null;
+      if (w && BEDS[w.scene]) cur = startBed(w.scene, w.night);
+    }
+    function set(scene, night) {
+      const w = scene ? { scene, night: !!night } : null;
+      if (w && !BEDS[scene]) return;
+      if (want && w && want.scene === w.scene && want.night === w.night) return;
+      want = w; apply();
+    }
+    function onUnlock() { unlocked = true; apply(); }
+    function onMute(m) {
+      if (!bus || !ctx) return;
+      const t = ctx.currentTime; bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), t);
+      bus.gain.exponentialRampToValueAtTime(m ? 0.0001 : LEVEL, t + 0.3);
+    }
+    // ---- offline render for tests: RMS and peak of one bed at the bus level ----
+    function render(scene, night, secs = 4) {
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext; if (!OAC || !BEDS[scene]) return Promise.resolve(null);
+      const ac = new OAC(1, Math.floor(44100 * secs), 44100), out = ac.createGain(); out.gain.value = LEVEL; out.connect(ac.destination);
+      const every = (fn, a, b) => { for (let t = rnd(0.2, Math.min(b, 2)); t < secs; t += rnd(a, b)) fn(ac, out, t); };
+      BEDS[scene](ac, out, !!night, every, []);
+      return ac.startRendering().then(buf => { const d = buf.getChannelData(0); let s = 0, p = 0; for (let i = 0; i < d.length; i++) { s += d[i] * d[i]; p = Math.max(p, Math.abs(d[i])); } return { rms: Math.sqrt(s / d.length), peak: p }; });
+    }
+    return { set, onUnlock, onMute, render, current: () => (cur ? { scene: cur.scene, night: cur.night } : null) };
+  })();
+
+  /* Short stings for the turn system. */
+  function sting(kind) {
+    if (muted || !ensure()) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    const t = ctx.currentTime + 0.01;
+    const hit = (freq, to, vol, dur) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05); };
+    const thud = (vol, dur, freq = 200) => { const n = Math.floor(ctx.sampleRate * dur), b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2; const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = b; f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(master); s.start(t); };
+    switch (kind) {
+      case 'phase': { const n = Math.floor(ctx.sampleRate * 0.12), b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / n); const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = b; f.type = 'highpass'; f.frequency.value = 2500; g.gain.value = 0.25; s.connect(f); f.connect(g); g.connect(master); s.start(t); tone(1250, 0.05, 'sine', 0.15, 0.08); break; }
+      case 'questioned': hit(90, 45, 0.7, 0.6); thud(0.6, 0.3, 300); tone(155, 0.5, 'sawtooth', 0.18, 0.02); tone(164, 0.5, 'sawtooth', 0.18, 0.02); break;
+      case 'held': thud(0.7, 0.25, 500); for (const fr of [220, 563, 1043, 1720]) tone(fr, 0.6, 'triangle', 0.16, 0.01); break;
+      case 'arrest': {
+        hit(70, 32, 0.9, 0.9); thud(0.8, 0.4, 250);
+        const o = ctx.createOscillator(), l = ctx.createOscillator(), ld = ctx.createGain(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+        o.type = 'sawtooth'; o.frequency.value = 700; l.frequency.value = 1.6; ld.gain.value = 140; l.connect(ld); ld.connect(o.frequency);
+        f.type = 'lowpass'; f.frequency.value = 1800; g.gain.setValueAtTime(0.0001, t + 0.2); g.gain.exponentialRampToValueAtTime(0.12, t + 1.2); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+        o.connect(f); f.connect(g); g.connect(master); o.start(t + 0.2); l.start(t + 0.2); o.stop(t + 2.3); l.stop(t + 2.3); break;
+      }
+      case 'event': for (let i = 0; i < 3; i++) tone(1800, 0.04, 'square', 0.2, i * 0.08); break;
+    }
+  }
+
   return {
     theme(on) { on ? THEME.play() : THEME.stop(); }, themePlaying() { return THEME.playing(); },
-    unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); },
-    setMuted(m) { muted = m; }, isMuted() { return muted; },
+    unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); AMB.onUnlock(); },
+    setMuted(m) { muted = m; AMB.onMute(m); }, isMuted() { return muted; },
+    // Place ambience: Sfx.ambience('salta', true) crossfades to the Salta night bed; Sfx.ambience(null) stops.
+    ambience(scene, night) { AMB.set(scene, night); }, ambienceNow() { return AMB.current(); },
+    // Test hook: render one bed offline and resolve to { rms, peak }.
+    _renderAmbience(scene, night, secs) { return AMB.render(scene, night, secs); },
+    sting,
     click()   { tone(880, 0.05, 'square', 0.5); },
     select()  { tone(660, 0.06, 'triangle', 0.6); tone(990, 0.08, 'triangle', 0.5, 0.05); },
     confirm() { tone(523, 0.08, 'square', 0.5); tone(784, 0.12, 'square', 0.5, 0.08); },
@@ -4299,6 +4804,8 @@ const Render = (() => {
 'use strict';
 const UI = (() => {
   let s = null, sel = null, who = 'woman', enemyLog = [], tab = 'here', gov = null, installEvt = null;
+  // Phase turns (escape side): News, Phone, Move, Roll, Sosā. One call and one move per round.
+  let phase = 'move', round = 1, phoneCalls = 0, movedThisRound = false, result = null, roundSum = { theirs: [], hours: 0 }, daily = null;
   const $ = (id) => document.getElementById(id);
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
   const short = (h) => { const [d, t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t}`; };
@@ -4321,7 +4828,7 @@ const UI = (() => {
   function saveRun() {
     try {
       if (!s || s.over) { localStorage.removeItem(SAVE); return; }
-      localStorage.setItem(SAVE, JSON.stringify({ who, gov: gov ? Gov.serialize(gov) : null, s: gov ? null : Sim.serialize(s), tut: Tutorial.active() ? Tutorial.index() : -1, log: enemyLog.slice(-8), lines: Array.from($('dialogue').children).slice(-30).map(l => l.outerHTML) }));
+      localStorage.setItem(SAVE, JSON.stringify({ round, daily: daily ? daily.key : null, who, gov: gov ? Gov.serialize(gov) : null, s: gov ? null : Sim.serialize(s), tut: Tutorial.active() ? Tutorial.index() : -1, log: enemyLog.slice(-8), lines: Array.from($('dialogue').children).slice(-30).map(l => l.outerHTML) }));
     } catch (e) { /* storage blocked: the run simply is not resumable */ }
   }
   function savedRun() { try { const j = localStorage.getItem(SAVE); return j ? JSON.parse(j) : null; } catch (e) { return null; } }
@@ -4332,20 +4839,22 @@ const UI = (() => {
     else { gov = null; s = Sim.restore(r.s); if (r.tut >= 0) { Tutorial.start(); while (Tutorial.index() < r.tut) Tutorial.forward(); } else Tutorial.stop(); }
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = (r.lines || []).join(''); $('start').hidden = true; document.body.classList.toggle('gov', !!gov);
-    setTab('here'); renderAll(); return true;
+    round = r.round || 1; daily = r.daily && r.daily === dailyInfo().key ? dailyInfo() : null;
+    setTab('here'); renderAll(); if (!gov) startRound(true); return true;
   }
 
   // ---- runs --------------------------------------------------------------
-  function newRun(w, demo) {
-    markSeen(); gov = null; document.body.classList.remove('gov');
-    if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start(); }
+  function newRun(w, demo, isDaily) {
+    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1;
+    if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true }); Tutorial.stop(); }
+    else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start(); }
     else { who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
     const c = Data.CHARACTERS[who];
     log('sys', `${Sim.clockText(0)}. You are ${c.name}, ${c.title}. ${c.sibling.name}, ${c.sibling.rel}, is abroad and has started on the aircraft.`, 'sys');
-    animate(s._boot); renderAll(); saveRun();
+    animate(s._boot); renderAll(); startRound(true); saveRun();
   }
   function newGovRun() {
     markSeen(); Tutorial.stop(); who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false);
@@ -4360,7 +4869,8 @@ const UI = (() => {
 
   function renderAll() {
     if (!s) return;
-    renderScene(); renderCoach();
+    renderScene(); renderCoach(); renderPhase();
+    if (Sfx.ambience) Sfx.ambience(s.over ? null : Data.LEVELS[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovHand(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderHand(); renderRoute(); }
     renderOver(); document.body.classList.toggle('busy', Render.busy());
@@ -4387,7 +4897,7 @@ const UI = (() => {
     $('sosa-where').textContent = `Looking at ${Data.LEVELS[s.belief].short.toLowerCase() === Data.LEVELS[s.belief].short ? Data.LEVELS[s.belief].short : 'the ' + Data.LEVELS[s.belief].short.toLowerCase()}. He is ${right ? 'right.' : 'wrong.'}`;
     $('sosa-nextl').textContent = 'Next move';
     $('sosa-next').textContent = `in ${Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy))} h`;
-    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = 'At 10 they arrive.';
+    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? `At 10 you are held again. Holds: ${s.hold} of 3.` : 'At 10 you are held.';
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = 'Exposure'; $('expl-b').textContent = ''; $('heat2').hidden = false;
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
@@ -4406,7 +4916,7 @@ const UI = (() => {
     for (const q of st.highlight) { const el = document.querySelector(q); if (el) el.classList.add('tut-hi'); }
     requestAnimationFrame(() => $('panels').style.setProperty('--coachh', box.offsetHeight + 'px'));
     // on the phone, switch to the tab the step points at
-    if (window.innerWidth < 1000 && st.highlight.length) { const q = st.highlight[0]; const t = q === '#inbox' || q === '#calls' || q === '#arrangements' ? 'phone' : q === '#hand' || q === '#people' ? 'hand' : q === '#enemy' || q === '#board' ? 'route' : null; if (t) setTab(t); else if (q === '#approaches') setTab('here'); }
+    if (window.innerWidth < 1000 && st.highlight.length && !['news', 'roll', 'sosa'].includes(phase)) { const q = st.highlight[0]; const t = q === '#inbox' || q === '#calls' || q === '#arrangements' ? 'phone' : q === '#hand' || q === '#people' ? 'hand' : q === '#enemy' || q === '#board' ? 'route' : null; if (t) setTab(t); else if (q === '#approaches') setTab('here'); }
   }
 
   // ---- Here: approaches with a die face -------------------------------------
@@ -4416,7 +4926,8 @@ const UI = (() => {
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${a.ok ? `<span class="meta"><span class="nd">${a.need <= 1 ? 'Certain' : a.need > 6 ? 'No die can' : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span>` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night) marks.push({ k: 'night', t: 'Night only' });
+    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `<span class="meta"><span class="nd">${a.need <= 1 ? 'Certain' : a.need > 6 ? 'No die can' : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span>` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -4428,8 +4939,8 @@ const UI = (() => {
   }
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
-    for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, 'Commit', () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id))); }
-    $('wait').disabled = !!s.over || !Tutorial.allowsWait();
+    for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, 'Commit', () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
+    $('wait').disabled = !!s.over || !Tutorial.allowsWait() || phase !== 'move';
   }
 
   // ---- the phone: a thread, then calls --------------------------------------
@@ -4454,14 +4965,14 @@ const UI = (() => {
     if (!A.messages.length) inbox.innerHTML = '<p class="hint">No messages waiting.</p>';
     for (const m of A.messages) {
       const role = m.from === 'sibling' ? `${Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '')}, arranging the aircraft` : m.from === 'enemy' ? Data.ENEMY.role : (Data.PEOPLE[m.from] || {}).role || '';
-      inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id)));
+      inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && phase === 'phone'));
     }
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? `${pname(c.ally)} about ${arr === 'permission' ? 'your visa' : def.name.toLowerCase()}` : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">Call</button><button class="cancel">Cancel</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
-      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr), label));
+      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && phase === 'phone' && phoneCalls < 1, label));
     }
   }
 
@@ -4507,7 +5018,8 @@ const UI = (() => {
   }
   function whoActs(i) { return Object.keys(Data.PEOPLE).filter(k => Data.PEOPLE[k].where === i).map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned })); }
   const abroad = () => ['sibling', 'sponsor'].map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned, role: k === 'sibling' ? 'arranging the aircraft' : 'asking Atlanta for your visa' }));
-  const whoHtml = (w) => `<span class="${w.turned ? 'turned' : w.trust ? 'trust' : ''}">${esc(w.name)}${w.trust ? ' (trusts you)' : ''}${w.turned ? ' (talked)' : ''}</span>`;
+  function whoMark(k) { const p = s.people[k]; if (!p) return ['unknown', 'Unknown']; if (p.cut) return ['cut', 'Cut off']; if (p.turned) return ['talked', 'Talked']; if (p.known) return ['trust', 'Clean']; if (p.doubt) return ['doubt', 'Doubted']; if (p.trust >= 2) return ['trust', 'Trusted']; return ['unknown', 'Unknown']; }
+  const whoHtml = (w) => { const [c, t] = whoMark(w.k); return `<span class="whoi">${esc(w.name)} <span class="mk ${c}">${t}</span></span>`; };
   function cardNotes(i) {
     const notes = [];
     for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(c.name)} stops here.</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(c.name)} starts here.</span>`); }
@@ -4546,9 +5058,11 @@ const UI = (() => {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
-    $('overtitle').textContent = gov ? (s.over.win ? 'She got out' : 'Stopped') : s.over.win ? 'Out' : 'Caught';
+    $('overtitle').textContent = gov ? (s.over.win ? 'She got out' : 'Stopped') : ({ out: 'Out', arrest: 'House arrest', clock: 'Out of time', deal: 'You took the deal' })[s.over.kind] || (s.over.win ? 'Out' : 'Caught');
     $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
     $('changewho').textContent = gov ? 'Play her side' : 'Choose character';
+    $('share').hidden = !(daily && !gov);
+    if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
 
@@ -4558,8 +5072,121 @@ const UI = (() => {
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
     Sfx.confirm(); sel = null; animate(r.events);
     if (Tutorial.active()) Render.enqueue({ dur: 10, start() { Tutorial.sync(s); renderAll(); } });
+    const sid = String(id), sm = summarize(r.events, 'Your move', null);
+    roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
+    if (sid.startsWith('evt:')) { result = summarize(r.events, 'Your choice', null); result.from = 'news'; phase = 'news'; }
+    else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('msg:')) { /* stay on the phone */ }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = 'You lay low'; result.title = 'One hour out of sight'; } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
+
+  // ---- phase turns ------------------------------------------------------------------
+  const PH = ['news', 'phone', 'move', 'roll', 'sosa'];
+  const mks = (tags) => `<span class="mks">${tags.map(t => `<span class="mk ${t.k}">${esc(t.t)}</span>`).join('')}</span>`;
+  function phoneUseful() {
+    const A = Sim.actions(s);
+    return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id))) || (phoneCalls < 1 && A.calls.some(c => c.ok && Tutorial.allowsCall(c.arr)));
+  }
+  function startRound(first) {
+    if (gov || !s || s.over) return;
+    if (!first) round += 1;
+    phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
+    interstitial(short(s.hour), `Round ${round}`, `${Data.LEVELS[s.pos].short}${s.hold ? `. Held ${s.hold} of 3` : ''}`);
+    enterPhase(Sim.actions(s).event ? 'news' : 'phone');
+  }
+  function enterPhase(p) {
+    if (p === 'phone' && !phoneUseful()) p = 'move';
+    phase = p; sel = null;
+    if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
+    if (Sfx.sting) Sfx.sting('phase');
+    renderAll();
+  }
+  function interstitial(clock, title, sub) {
+    const el = $('interstitial'); $('i-clock').textContent = clock; $('i-title').textContent = title; $('i-sub').textContent = sub;
+    el.hidden = false; clearTimeout(interstitial.t); interstitial.t = setTimeout(() => { el.hidden = true; }, 1300);
+    el.onclick = () => { el.hidden = true; };
+  }
+  function renderPhase() {
+    const on = !gov && !!s && !s.over && $('start').hidden;
+    $('phasebar').hidden = !on; document.body.classList.toggle('phased', on);
+    if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
+    if (!Render.busy()) {
+      if (phase === 'move' && Tutorial.active() && !movedThisRound && phoneUseful()) phase = 'phone';
+      if (phase === 'phone' && !phoneUseful()) phase = 'move';
+      if ((phase === 'phone' || phase === 'move') && Sim.actions(s).event && !movedThisRound) phase = 'news';
+    }
+    $('round').textContent = `Round ${round}`;
+    const idx = PH.indexOf(phase);
+    document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; });
+    $('phasedone').hidden = phase !== 'phone';
+    const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
+    const was = card.dataset.ph; card.dataset.ph = phase;
+    card.hidden = !showCard; $('herehead').hidden = showCard; $('approaches').hidden = showCard; $('lvlhead2').hidden = showCard;
+    if (was !== phase) { $('tab-here').scrollTop = 0; $('tab-phone').scrollTop = 0; }
+    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, 'See what Sosā did', () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
+  }
+  const KIND = { event: 'News', rumor: 'A rumor', hold: 'The inquiry has you' };
+  function newsCard(card) {
+    if (result && result.from === 'news') { resultCard(card, result, 'Continue', () => { result = null; enterPhase(Sim.actions(s).event ? 'news' : 'phone'); }); return; }
+    const v = Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
+    card.className = v.kind;
+    card.innerHTML = `<span class="kind">${KIND[v.kind]}${v.kind === 'hold' ? ` · ${v.rung} of 3` : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
+    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over; b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => doCommit('evt:' + c.id); card.appendChild(b); }
+  }
+  function resultCard(card, r, nextLabel, next) {
+    if (!r) { card.innerHTML = ''; return; }
+    card.className = 'roll';
+    const out = r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${r.roll.won ? 'Success' : 'Failed'}</span><span class="mks"><span class="mk roll">Rolled ${r.roll.die}, needed ${r.roll.need}</span></span>` : '<span class="outcome ok">Done</span>';
+    const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
+    card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
+    const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b);
+  }
+  function sosaCard(card) {
+    card.className = 'sosa';
+    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : '<li class="gain"><i></i><span>Quiet. Nobody moved against you.</span></li>';
+    card.innerHTML = `<span class="kind">While you moved</span><h3>${roundSum.hours} h passed. Now ${esc(short(s.hour))}</h3><ul class="rows">${rows}</ul>`;
+    const b = document.createElement('button'); b.className = 'primary next'; b.textContent = 'Next round'; b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
+  }
+  function summarize(events, kind, title) {
+    const r = { kind, title, roll: null, line: '', mine: [], theirs: [], hours: 0 }; let after = false, expMine = 0, expTheirs = 0;
+    for (const e of events) {
+      if (e.type === 'hour') { after = true; r.hours += 1; continue; }
+      const bucket = after ? r.theirs : r.mine;
+      switch (e.type) {
+        case 'attempt': r.title = e.name; break;
+        case 'chose': r.title = r.title || e.label; break;
+        case 'roll': if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: `${pname(e.who).split(' ')[0]}: ${e.pressed ? (e.won ? 'held firm under questioning' : 'talked to Sosā') : (e.won ? 'delivered' : 'not yet')}` }); else if (!r.roll && !after) r.roll = e; break;
+        case 'say': if (e.who === 'narrator' && !after && !r.line) r.line = e.text; break;
+        case 'exposure': if (after) expTheirs += e.delta; else expMine += e.delta; break;
+        case 'card': bucket.push({ k: 'gain', t: `Card: ${e.name}` }); break;
+        case 'cardlost': bucket.push({ k: 'lose', t: `Lost: ${e.name}` }); break;
+        case 'travel': r.mine.push({ k: 'gain', t: `Reached ${Data.LEVELS[e.to].short}` }); break;
+        case 'betrayal': r.mine.push({ k: 'risk', t: `${pname(e.who).split(' ')[0]} sold you out` }); break;
+        case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
+        case 'enemy': r.theirs.push({ k: 'enemy', t: e.text }); break;
+        case 'hold': r.theirs.push({ k: 'enemy', t: `${e.title}. You deal with it next.` }); break;
+        case 'dispatch': r.theirs.push({ k: 'news', t: `News waiting: ${e.title}` }); break;
+        case 'message': r.theirs.push({ k: 'news', t: `Message from ${pname(e.from)}` }); break;
+        default: break;
+      }
+    }
+    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: `Exposure ${expMine > 0 ? '+' : ''}${expMine}` });
+    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', t: `Exposure ${expTheirs > 0 ? 'rose' : 'fell'} by ${Math.abs(expTheirs)} while time passed` });
+    return r;
+  }
+
+  // ---- the daily run -----------------------------------------------------------------
+  function dailyInfo() {
+    const d = new Date(), key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    let h = 2166136261; for (const c of 'coalition' + key) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+    const dayNum = Math.floor(new Date(key + 'T12:00:00').getTime() / 86400000);
+    return { key, seed: h >>> 0, who: dayNum % 2 ? 'man' : 'woman', label: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) };
+  }
+  const DAILY = 'coalition.daily.';
+  function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
+  function outcomeLine(o) { const name = Data.CHARACTERS[who].short; return o.win ? `${name} got out at ${short(s.hour)}` : o.kind === 'clock' ? `${name} ran out of time` : o.kind === 'deal' ? `${name} took the deal` : `${name} ended under house arrest in ${Data.LEVELS[s.pos].short}`; }
+  function shareText() { return `Coalition daily, ${daily.label}\n${outcomeLine(s.over)}.\nHeld ${s.holds || 0} time${s.holds === 1 ? '' : 's'}. Round ${round}. Exposure ${s.exposure}.\n${location.href.split('#')[0]}`; }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -4580,6 +5207,10 @@ const UI = (() => {
         case 'report': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log(e.from, e.text); } }); break;
         case 'order': Render.enqueue({ dur: 10, start() { log('sys', `Order sent: ${e.name}.`, 'sys'); } }); break;
         case 'travel': Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
+        case 'dispatch': Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting('event'); log('sys', `News: ${e.title}.`, 'sys'); } }); break;
+        case 'hold': { const kind = e.rung === 1 ? 'questioned' : e.rung === 2 ? 'held' : 'arrest'; if (Render.detain) Render.detain(kind); else Render.enemy(); Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting(kind); log('enemy', `${e.title}. ${e.text}`, 'enemy'); } }); break; }
+        case 'chose': Render.enqueue({ dur: 10, start() { log('sys', `You chose: ${e.label}.`, 'sys'); } }); break;
+        case 'betrayal': Render.enemy(); break;
         case 'over': if (e.win && !gov) Render.enqueue({ dur: 1600, start() { Sfx.jet(); } }); Render.gameOver(gov ? { win: !e.win } : e); Render.enqueue({ dur: 10, start() { (gov ? !e.win : e.win) ? Sfx.win() : Sfx.lose(); } }); break;
         default: break;
       }
@@ -4640,7 +5271,10 @@ const UI = (() => {
     for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(c.sibling.rel[0].toUpperCase() + c.sibling.rel.slice(1))} ${esc(c.sibling.short)} is abroad</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
     const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title)}. Stop the escape.</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
     const url = Render.runwayStill(); if (url) $('start-art').style.backgroundImage = `url(${url})`;
-    $('start').hidden = false;
+    const D = dailyInfo(), done = dailyResult(D.key);
+    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? `${done.line}. Play again or share.` : `Today: ${Data.CHARACTERS[D.who].name}. Same run for everyone.`;
+    if (Sfx.ambience) Sfx.ambience(null);
+    $('start').hidden = false; document.body.classList.remove('phased');
   }
   function showTitle() {
     const t = Sim.newRun(3, 'woman'); t.pos = 4; t.hour = 36; t.belief = 1;
@@ -4664,12 +5298,15 @@ const UI = (() => {
     Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', `${pname(id)}: ${Data.PEOPLE[id].role}.`, 'sys'); } });
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
-    $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who); };
+    $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; newRun(null, true); };
     $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
+    $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, false, true); };
+    $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
+    $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = 'Copied'; } } catch (e) { /* share dismissed */ } };
     $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); renderAll(); saveRun(); };
     $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); log('sys', 'Tutorial ended. Continue on your own.', 'sys'); renderAll(); saveRun(); };
     const toggleMute = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').setAttribute('aria-label', Sfx.isMuted() ? 'Sound off' : 'Sound on'); $('mute-wave').style.display = Sfx.isMuted() ? 'none' : ''; document.querySelector('#menu2 [data-act=mute]').textContent = Sfx.isMuted() ? 'Sound: off' : 'Sound: on'; };

@@ -87,10 +87,188 @@ const Sfx = (() => {
     }
     return { play, stop, playing: () => !!timer };
   })();
+  /* Place ambience. One quiet bed per scene, day and night, built from a looping noise buffer,
+     filters, a few oscillators and one-shots scheduled at random. Beds crossfade over 1.5 s.
+     A bed is built by a function (ac, out, night, every) so the same code renders live and in an
+     OfflineAudioContext for tests; `every(fn, minS, maxS)` schedules fn(time) repeatedly. */
+  const AMB = (() => {
+    const LEVEL = 0.12, FADE = 1.5;
+    const bufs = new WeakMap();
+    function noiseBuf(ac) {
+      if (bufs.has(ac)) return bufs.get(ac);
+      const n = ac.sampleRate * 2, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      bufs.set(ac, b); return b;
+    }
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    // A continuous filtered noise layer. lfo: { rate, depth, on: 'gain'|'freq' } for wind, surf and water.
+    function bed(ac, out, type, freq, q, vol, lfo, nodes) {
+      const src = ac.createBufferSource(); src.buffer = noiseBuf(ac); src.loop = true; src.loopStart = Math.random();
+      const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      const g = ac.createGain(); g.gain.value = vol;
+      src.connect(f); f.connect(g); g.connect(out); src.start(ac.currentTime, Math.random() * 1.5);
+      nodes.push(src);
+      if (lfo) {
+        const o = ac.createOscillator(), d = ac.createGain(); o.frequency.value = lfo.rate; d.gain.value = lfo.depth;
+        o.connect(d); d.connect(lfo.on === 'freq' ? f.frequency : g.gain); o.start(); nodes.push(o);
+      }
+      return { f, g };
+    }
+    function hum(ac, out, freq, type, vol, nodes, lp) {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = freq; g.gain.value = vol;
+      if (lp) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; o.connect(f); f.connect(g); } else o.connect(g);
+      g.connect(out); o.start(); nodes.push(o); return { o, g };
+    }
+    // ---- one-shots: fn(ac, out, t) ----
+    function env(ac, g, t, a, peak, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+    function burst(ac, out, t, type, freq, q, a, peak, d, sweepTo) {
+      const src = ac.createBufferSource(); src.buffer = noiseBuf(ac);
+      const f = ac.createBiquadFilter(); f.type = type; f.frequency.setValueAtTime(freq, t); f.Q.value = q;
+      if (sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + a + d);
+      const g = ac.createGain(); env(ac, g, t, a, peak, d);
+      src.connect(f); f.connect(g); g.connect(out); src.start(t, Math.random()); src.stop(t + a + d + 0.05);
+    }
+    function blip(ac, out, t, freq, type, a, peak, d, slideTo) {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + a + d);
+      env(ac, g, t, a, peak, d); o.connect(g); g.connect(out); o.start(t); o.stop(t + a + d + 0.05);
+    }
+    const carPass = (ac, out, t) => burst(ac, out, t, 'bandpass', 300, 0.7, 1.4, 0.35, 1.6, 900);
+    const cricket = (ac, out, t) => { for (let i = 0; i < 3; i++) blip(ac, out, t + i * 0.09, 4600 + rnd(-150, 150), 'sine', 0.01, 0.06, 0.05); };
+    const dog = (ac, out, t) => { const n = 1 + Math.floor(rnd(0, 3)); for (let i = 0; i < n; i++) blip(ac, out, t + i * 0.32, 420, 'sawtooth', 0.01, 0.05, 0.12, 300); };
+    const truck = (ac, out, t) => { burst(ac, out, t, 'lowpass', 180, 0.5, 1.6, 0.5, 2.2, 120); blip(ac, out, t, 55, 'sawtooth', 1.4, 0.06, 2.2, 48); };
+    const bird = (ac, out, t) => { const n = 2 + Math.floor(rnd(0, 4)), b = rnd(2400, 3600); for (let i = 0; i < n; i++) blip(ac, out, t + i * rnd(0.08, 0.16), b + rnd(-300, 400), 'sine', 0.01, 0.07, 0.07, b * rnd(1.15, 1.4)); };
+    const frog = (ac, out, t) => { for (let i = 0; i < 4; i++) blip(ac, out, t + i * 0.045, 170 + rnd(-10, 10), 'square', 0.005, 0.04, 0.03); };
+    const bell = (ac, out, t) => { for (const [m, v] of [[1, 0.09], [2.01, 0.05], [2.76, 0.035], [5.4, 0.015]]) blip(ac, out, t, 392 * m, 'sine', 0.005, v, 3.2 / Math.sqrt(m)); };
+    const clank = (ac, out, t) => { for (const fr of [310, 797, 1489, 2240]) blip(ac, out, t, fr * rnd(0.97, 1.03), 'triangle', 0.002, 0.05, rnd(0.25, 0.6)); burst(ac, out, t, 'bandpass', 2500, 2, 0.002, 0.15, 0.08); };
+    const steam = (ac, out, t) => burst(ac, out, t, 'highpass', 3500, 0.5, 0.15, 0.22, rnd(0.8, 1.6));
+    const horn = (ac, out, t) => { for (const fr of [233, 277]) { const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain(); o.type = 'sawtooth'; o.frequency.value = fr; f.type = 'lowpass'; f.frequency.value = 500; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.3); g.gain.setValueAtTime(0.05, t + 1.6); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4); o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t + 2.5); } };
+    const crackle = (ac, out, t) => { const n = 3 + Math.floor(rnd(0, 6)); for (let i = 0; i < n; i++) burst(ac, out, t + rnd(0, 0.5), 'highpass', 2000, 1, 0.001, rnd(0.08, 0.25), 0.02); };
+    const gust = (ac, out, t) => burst(ac, out, t, 'bandpass', 500, 0.8, 1.2, 0.3, 2.2, 1100);
+    const gull = (ac, out, t) => { const n = 1 + Math.floor(rnd(0, 3)); for (let i = 0; i < n; i++) blip(ac, out, t + i * 0.35, 1500, 'sawtooth', 0.03, 0.025, 0.28, 900); };
+    const beaconTick = (ac, out, t) => blip(ac, out, t, 2100, 'square', 0.002, 0.025, 0.03);
+    const wave = (ac, out, t) => burst(ac, out, t, 'lowpass', 600, 0.4, 1.8, 0.4, 2.6, 1800);
+
+    const BEDS = {
+      residence(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 220, 0.6, 0.85, { rate: 0.07, depth: 0.2, on: 'gain' }, nodes); // city hum
+        hum(ac, out, 58, 'sawtooth', 0.025, nodes, 160);
+        every(carPass, night ? 9 : 4, night ? 20 : 10);
+        if (night) { every(cricket, 0.4, 1.4); every(dog, 12, 30); }
+      },
+      road(ac, out, night, every, nodes) {
+        bed(ac, out, 'bandpass', 900, 0.5, 0.5, { rate: 0.3, depth: 0.12, on: 'gain' }, nodes); // river
+        bed(ac, out, 'bandpass', 2600, 1.2, 0.12, { rate: 0.9, depth: 0.06, on: 'gain' }, nodes); // ripples
+        bed(ac, out, 'lowpass', 400, 0.5, 0.25, { rate: 0.05, depth: 0.18, on: 'gain' }, nodes); // wind
+        every(truck, 10, 22);
+        if (night) every(cricket, 0.8, 2.2);
+      },
+      colonia(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 700, 0.4, 0.32, { rate: 0.06, depth: 0.12, on: 'gain' }, nodes); // breeze in the vines
+        if (night) { every(cricket, 0.25, 0.8); every(frog, 0.8, 2.4); every(bell, 22, 45); }
+        else { every(bird, 1.2, 4); every(bell, 40, 80); }
+      },
+      salta(ac, out, night, every, nodes) {
+        const r = hum(ac, out, 42, 'sawtooth', 0.09, nodes, 140); // idling locomotive
+        const lfo = ac.createOscillator(), d = ac.createGain(); lfo.frequency.value = 5.5; d.gain.value = 0.04; lfo.connect(d); d.connect(r.g.gain); lfo.start(); nodes.push(lfo);
+        bed(ac, out, 'lowpass', 160, 0.7, 0.35, null, nodes);
+        every(clank, 2.5, 7); every(steam, 4, 10); every(horn, 25, 50);
+      },
+      border(ac, out, night, every, nodes) {
+        bed(ac, out, 'bandpass', 650, 0.6, 0.55, { rate: 0.11, depth: 0.3, on: 'gain' }, nodes); // mountain wind
+        bed(ac, out, 'highpass', 5000, 0.4, 0.08, null, nodes); // snow hiss
+        every(gust, 4, 9); every(crackle, 0.7, 2.2);
+      },
+      airfield(ac, out, night, every, nodes) {
+        bed(ac, out, 'lowpass', 500, 0.4, 0.4, { rate: 0.12, depth: 0.25, on: 'gain' }, nodes); // surf
+        hum(ac, out, 1150, 'sine', 0.008, nodes); // distant jet idle whine
+        bed(ac, out, 'bandpass', 180, 1.2, 0.15, null, nodes); // turbine rumble
+        every(wave, 5, 9); every(beaconTick, 1.4, 1.4);
+        if (!night) every(gull, 6, 15);
+      },
+    };
+
+    // ---- live playback ----
+    let bus = null, cur = null, want = null, unlocked = false;
+    function busNode() {
+      if (!bus) { bus = ctx.createGain(); bus.gain.value = muted ? 0.0001 : LEVEL; bus.connect(ctx.destination); }
+      return bus;
+    }
+    function startBed(scene, night) {
+      const out = ctx.createGain(), nodes = [], timers = [];
+      out.gain.setValueAtTime(0.0001, ctx.currentTime); out.gain.exponentialRampToValueAtTime(1, ctx.currentTime + FADE); out.connect(busNode());
+      const every = (fn, a, b) => { const go = () => { if (!muted) fn(ctx, out, ctx.currentTime + 0.05); timers.push(setTimeout(go, rnd(a, b) * 1000)); }; timers.push(setTimeout(go, rnd(0.2, Math.min(b, 4)) * 1000)); };
+      BEDS[scene](ctx, out, night, every, nodes);
+      return { scene, night, out, nodes, timers };
+    }
+    function stopBed(b) {
+      if (!b) return;
+      b.timers.forEach(clearTimeout); b.timers.length = 0;
+      const t = ctx.currentTime; b.out.gain.cancelScheduledValues(t); b.out.gain.setValueAtTime(Math.max(0.0001, b.out.gain.value), t); b.out.gain.exponentialRampToValueAtTime(0.0001, t + FADE);
+      setTimeout(() => { b.nodes.forEach(n => { try { n.stop(); } catch (e) { /* already stopped */ } }); b.out.disconnect(); }, FADE * 1000 + 150);
+    }
+    function apply() {
+      if (!unlocked || !ensure()) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      const w = want;
+      if (cur && w && cur.scene === w.scene && cur.night === w.night) return;
+      stopBed(cur); cur = null;
+      if (w && BEDS[w.scene]) cur = startBed(w.scene, w.night);
+    }
+    function set(scene, night) {
+      const w = scene ? { scene, night: !!night } : null;
+      if (w && !BEDS[scene]) return;
+      if (want && w && want.scene === w.scene && want.night === w.night) return;
+      want = w; apply();
+    }
+    function onUnlock() { unlocked = true; apply(); }
+    function onMute(m) {
+      if (!bus || !ctx) return;
+      const t = ctx.currentTime; bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), t);
+      bus.gain.exponentialRampToValueAtTime(m ? 0.0001 : LEVEL, t + 0.3);
+    }
+    // ---- offline render for tests: RMS and peak of one bed at the bus level ----
+    function render(scene, night, secs = 4) {
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext; if (!OAC || !BEDS[scene]) return Promise.resolve(null);
+      const ac = new OAC(1, Math.floor(44100 * secs), 44100), out = ac.createGain(); out.gain.value = LEVEL; out.connect(ac.destination);
+      const every = (fn, a, b) => { for (let t = rnd(0.2, Math.min(b, 2)); t < secs; t += rnd(a, b)) fn(ac, out, t); };
+      BEDS[scene](ac, out, !!night, every, []);
+      return ac.startRendering().then(buf => { const d = buf.getChannelData(0); let s = 0, p = 0; for (let i = 0; i < d.length; i++) { s += d[i] * d[i]; p = Math.max(p, Math.abs(d[i])); } return { rms: Math.sqrt(s / d.length), peak: p }; });
+    }
+    return { set, onUnlock, onMute, render, current: () => (cur ? { scene: cur.scene, night: cur.night } : null) };
+  })();
+
+  /* Short stings for the turn system. */
+  function sting(kind) {
+    if (muted || !ensure()) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    const t = ctx.currentTime + 0.01;
+    const hit = (freq, to, vol, dur) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05); };
+    const thud = (vol, dur, freq = 200) => { const n = Math.floor(ctx.sampleRate * dur), b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2; const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = b; f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(master); s.start(t); };
+    switch (kind) {
+      case 'phase': { const n = Math.floor(ctx.sampleRate * 0.12), b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / n); const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = b; f.type = 'highpass'; f.frequency.value = 2500; g.gain.value = 0.25; s.connect(f); f.connect(g); g.connect(master); s.start(t); tone(1250, 0.05, 'sine', 0.15, 0.08); break; }
+      case 'questioned': hit(90, 45, 0.7, 0.6); thud(0.6, 0.3, 300); tone(155, 0.5, 'sawtooth', 0.18, 0.02); tone(164, 0.5, 'sawtooth', 0.18, 0.02); break;
+      case 'held': thud(0.7, 0.25, 500); for (const fr of [220, 563, 1043, 1720]) tone(fr, 0.6, 'triangle', 0.16, 0.01); break;
+      case 'arrest': {
+        hit(70, 32, 0.9, 0.9); thud(0.8, 0.4, 250);
+        const o = ctx.createOscillator(), l = ctx.createOscillator(), ld = ctx.createGain(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+        o.type = 'sawtooth'; o.frequency.value = 700; l.frequency.value = 1.6; ld.gain.value = 140; l.connect(ld); ld.connect(o.frequency);
+        f.type = 'lowpass'; f.frequency.value = 1800; g.gain.setValueAtTime(0.0001, t + 0.2); g.gain.exponentialRampToValueAtTime(0.12, t + 1.2); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+        o.connect(f); f.connect(g); g.connect(master); o.start(t + 0.2); l.start(t + 0.2); o.stop(t + 2.3); l.stop(t + 2.3); break;
+      }
+      case 'event': for (let i = 0; i < 3; i++) tone(1800, 0.04, 'square', 0.2, i * 0.08); break;
+    }
+  }
+
   return {
     theme(on) { on ? THEME.play() : THEME.stop(); }, themePlaying() { return THEME.playing(); },
-    unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); },
-    setMuted(m) { muted = m; }, isMuted() { return muted; },
+    unlock() { ensure(); if (ctx && ctx.state === 'suspended') ctx.resume(); AMB.onUnlock(); },
+    setMuted(m) { muted = m; AMB.onMute(m); }, isMuted() { return muted; },
+    // Place ambience: Sfx.ambience('salta', true) crossfades to the Salta night bed; Sfx.ambience(null) stops.
+    ambience(scene, night) { AMB.set(scene, night); }, ambienceNow() { return AMB.current(); },
+    // Test hook: render one bed offline and resolve to { rms, peak }.
+    _renderAmbience(scene, night, secs) { return AMB.render(scene, night, secs); },
+    sting,
     click()   { tone(880, 0.05, 'square', 0.5); },
     select()  { tone(660, 0.06, 'triangle', 0.6); tone(990, 0.08, 'triangle', 0.5, 0.05); },
     confirm() { tone(523, 0.08, 'square', 0.5); tone(784, 0.12, 'square', 0.5, 0.08); },

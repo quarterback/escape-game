@@ -13,6 +13,9 @@ const Sim = (() => {
   const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
+  const DEADLINE = 46; // Monday 12:00: the passports were due; after it the own passport is cancelled and the ban is everywhere
+  const SUSPECTS = ['aide', 'nando', 'host', 'holt', 'theo', 'pilot', 'official'];
+  const EVENT_EVERY = 6; // hours at one stop between dispatches
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
   // opts.dice: a queue of die results used before the rng (the demo). opts.enemy: a queue of
@@ -22,16 +25,21 @@ const Sim = (() => {
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
-      arr: {}, people: {}, hand: ['passport', 'decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
+      arr: {}, people: {}, hand: (ch.hand || ['passport', 'decoy_cars', 'aide_word']).slice(), used: [], commitments: [], inbox: [], jobs: [],
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
       nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
+      // the deeper game: one dispatch or hold waits at a time; holds climb a ladder; the passport deadline is Monday noon.
+      event: null, seenEvents: [], hold: 0, holds: 0, deadline: DEADLINE, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
     };
+    s.exposure = ch.exposure || 1;
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
     s._dice = opts.dice ? opts.dice.slice() : null;
     s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
-    for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
+    for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false, doubt: false, cut: false, known: false, bad: false };
     s._rngState = seed >>> 0; attachRng(s);
+    // Two people on the ground are secretly working for the inquiry. Which two changes every run.
+    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < 2; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
     const events = [];
     arrive(s, events, true);
     s._boot = events;
@@ -57,6 +65,7 @@ const Sim = (() => {
     const L = level(s);
     events.push(ev('arrive', { level: s.pos }));
     say(events, 'narrator', L.arrive);
+    s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events);
     // scripted arrivals: what the phone brings at each level
     if (s.pos === 0 && first) {
       msg(s, events, 'sibling', `"Jet found in Susana. The crew needs a destination. Atlanta, or wait for Salek?"`, [
@@ -132,22 +141,28 @@ const Sim = (() => {
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
   function needText(s, n) {
     if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? `Your ${n.card} card is not recognized here.` : `Needs a ${n.card} card.`);
-    if (n.night) return isNight(s) ? null : `Available at night. Current time: ${clockText(s.hour).split(' ')[1]}. Shift change: 22:00.`;
-    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Requires ${D.ARRANGEMENTS[n.arr].name}: "${D.ARRANGEMENTS[n.arr].stages[n.stage]}". Now: "${D.ARRANGEMENTS[n.arr].stages[a.stage]}".`; }
+    if (n.night) return isNight(s) ? null : 'After 22:00.';
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs: ${D.ARRANGEMENTS[n.arr].stages[n.stage]}.`; }
     return null;
   }
   function approachList(s) {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
+      if (s.event) whys.unshift(s.event.kind === 'hold' ? 'You are being held.' : 'Answer the news first.');
+      if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(`You cut off ${personName(s, a.with)}.`);
+      else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(`${personName(s, a.with)} talked to the inquiry.`);
       let bonus = 0; const used = [];
       for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
       let dc = a.dc;
       if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1; // the sheet is on the desk unless Gianlūka's contact held it
     if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until) dc += 1;
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
+      dc += s.mods[s.pos] || 0;
+      if (ch(s).faceKnown && L.border && a.id !== 'received') dc += 1; // every officer knows Teresā's face
+      if (a.id === 'own_passport' && s.flags.cancelled) dc = 7; // cancelled at Monday noon
       const need = Math.max(1, dc - bonus);
-      out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
+      out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
         preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed with your current help.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
     }
@@ -162,6 +177,7 @@ const Sim = (() => {
       if (a.stage >= def.stages.length - 1) return;
       const p = pending(k);
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: `${def.name}: ${personName(s, ally)} is on it`, ok: false, why: `Resolves at ${clockText(p.due)}.`, hours: 0, preview: [text] }); return; }
+      if (s.event) whys.unshift('Answer the news first.');
       out.push({ kind: 'call', id: 'call:' + k, name: `Call ${personName(s, ally)} about ${def.name.toLowerCase()}`, ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
         preview: [text, `Next: ${def.stages[a.stage + 1]}. Reply in ${jobHours(k)} hours. ${personName(s, ally)} needs a roll of ${D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0)} or more before trust bonuses.`] });
     };
@@ -186,13 +202,117 @@ const Sim = (() => {
     if (o.id === 'via_sponsor' && s.people.sponsor.turned) return 'Salek is not taking your calls.';
     return '';
   }
-  const optionOk = (s, o) => !optionWhy(s, o);
-  function actions(s) { return { approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Wait one hour', ok: !s.over, hours: 1 } }; }
+  const optionOk = (s, o) => !optionWhy(s, o) && !s.event;
+  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Lie low one hour', ok: !s.over && !s.event, hours: 1 } }; }
+
+  // ---- dispatches and holds: the News phase --------------------
+  const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, level(s).short);
+  function drawEvent(s, events) {
+    if (s.event || s.tutorial || s.over) return;
+    const L = level(s);
+    // a rumor about someone here, more often about someone who really is selling you out
+    const here = Object.keys(D.PEOPLE).filter(k => D.PEOPLE[k].where === s.pos && !s.people[k].known && !s.people[k].turned && !s.people[k].cut && !s.people[k].rumored);
+    if (here.length && s._rng() < 0.4) {
+      const bad = here.filter(k => s.people[k].bad), who = bad.length && s._rng() < 0.65 ? bad[0] : here[Math.floor(s._rng() * here.length)];
+      s.people[who].rumored = true; s.people[who].doubt = true;
+      s.event = { kind: 'rumor', who, line: Math.floor(s._rng() * D.RUMORS.length) };
+      const v = eventView(s); events.push(ev('dispatch', { id: 'rumor', title: v.title, text: v.text })); return;
+    }
+    const pool = D.EVENTS.filter(e => (!e.at || e.at.includes(L.id)) && !s.seenEvents.includes(e.id) && (!e.cond || e.cond(s)));
+    if (!pool.length) return;
+    const pick = pool[Math.floor(s._rng() * pool.length)];
+    s.seenEvents.push(pick.id); s.event = { kind: 'event', id: pick.id };
+    events.push(ev('dispatch', { id: pick.id, title: fill(s, pick.title), text: fill(s, pick.text) }));
+  }
+  function climbHold(s, events) {
+    if (s.tutorial || s.over) return;
+    let r = s.hold + 1; if (s.flags.cancelled && s.hold === 0) r = 2; // after Monday noon the first hold is a station, not a roadside
+    s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos;
+    s.event = { kind: 'hold', rung: s.hold };
+    events.push(ev('hold', { rung: s.hold, title: D.HOLDS[s.hold].title, text: fill(s, D.HOLDS[s.hold].text) }));
+  }
+  function choiceWhy(s, c) { for (const n of c.needs || []) { const w = needText(s, n); if (w) return w; } if (c.id === 'embassy' && s.people.sibling.turned) return `${ch(s).sibling.short} is not answering.`; return ''; }
+  // Markers: what a choice costs or gives, as short tags the UI shows instead of sentences.
+  function fxTags(s, fx, out) {
+    out = out || []; if (!fx) return out;
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push({ k: 'roll', t: `Roll ${need}+` }); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push({ k: 'risk', t: 'Fail: ' + lose.map(x => x.t.toLowerCase()).join(', ') }); return out; }
+    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
+    if (fx.exposure) out.push({ k: fx.exposure > 0 ? 'up' : 'down', t: `Exposure ${fx.exposure > 0 ? '+' : ''}${fx.exposure}` });
+    if (fx.belief === 'away') out.push({ k: 'down', t: 'Sosā looks elsewhere' });
+    if (fx.belief === 'here') out.push({ k: 'up', t: 'Sosā finds you' });
+    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.CARDS[fx.card].name}` });
+    if (fx.lose) out.push({ k: 'lose', t: fx.lose === 'random' || fx.lose === 'best' ? 'Lose a card' : `Lose: ${D.CARDS[fx.lose].name}` });
+    if (fx.trust) for (const k in fx.trust) out.push({ k: fx.trust[k] > 0 ? 'gain' : 'lose', t: `${personName(s, k).split(' ')[0]} ${fx.trust[k] > 0 ? 'trusts you more' : 'trusts you less'}` });
+    if (fx.doubt) out.push({ k: 'risk', t: `Rely on ${personName(s, fx.doubt).split(' ')[0]}` });
+    if (fx.cut) out.push({ k: 'lose', t: `Cut off ${personName(s, fx.cut).split(' ')[0]}` });
+    if (fx.test) out.push({ k: 'time', t: 'Learn the truth' });
+    if (fx.stage) out.push({ k: 'gain', t: 'Reception moves' });
+    if (fx.deadline) out.push({ k: 'up', t: `Deadline ${fx.deadline < 0 ? 'sooner' : 'later'}` });
+    if (fx.skipEnemy) out.push({ k: 'down', t: 'Sosā loses a move' });
+    if (fx.mod) out.push({ k: fx.mod < 0 ? 'down' : 'up', t: `Rolls here ${fx.mod < 0 ? 'easier' : 'harder'}` });
+    if (fx.hold) out.push({ k: 'risk', t: 'Held' });
+    if (fx.advance) out.push({ k: 'gain', t: 'Reach the next stop' });
+    if (fx.end) out.push({ k: 'risk', t: 'Ends the run' });
+    if (fx.flag && fx.flag.dark) out.push({ k: 'up', t: 'Allies slower' });
+    return out;
+  }
+  function eventView(s) {
+    const e = s.event; if (!e) return null;
+    let def, kind = e.kind;
+    if (kind === 'hold') def = D.HOLDS[e.rung];
+    else if (kind === 'rumor') { const n = personName(s, e.who); def = { title: `A rumor about ${n.split(' ')[0]}`, text: D.RUMORS[e.line](n), choices: [
+      { id: 'trust', label: `Keep trusting ${n.split(' ')[0]}`, fx: { doubt: e.who } },
+      { id: 'test', label: 'Test them quietly', fx: { hours: 2, test: e.who } },
+      { id: 'cut', label: 'Cut them off', fx: { cut: e.who } } ] }; }
+    else def = D.EVENTS.find(x => x.id === e.id);
+    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, tags: fxTags(s, c.fx) }; }) };
+  }
+  function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; return D.EVENTS.find(x => x.id === v.id); }
+  function resolveEvent(s, choiceId, events) {
+    if (!s.event) return { ok: false, why: 'No news waiting.' };
+    const def = eventDef(s), c = def.choices.find(x => x.id === choiceId); if (!c) return { ok: false, why: 'Pick one of the choices.' };
+    const why = choiceWhy(s, c); if (why) return { ok: false, why };
+    const was = s.event; s.event = null;
+    events.push(ev('chose', { kind: was.kind, label: fill(s, c.label) }));
+    if (was.kind === 'hold' && s.hold < 3) s.exposure = Math.max(s.exposure, 0);
+    applyFx(s, c.fx, events);
+    return finish(s, events);
+  }
+  function applyFx(s, fx, events) {
+    if (!fx || s.over) return;
+    if (fx.roll) {
+      const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0);
+      const die = roll(s), won = die >= need; events.push(ev('roll', { die, need, won }));
+      applyFx(s, won ? fx.roll.win : fx.roll.lose, events); return;
+    }
+    say(events, 'narrator', fx.say);
+    if (fx.exposure) heat(s, fx.exposure, events);
+    if (fx.belief === 'away') { s.belief = s.pos === 0 ? 1 : s.pos - 1; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.belief === 'here') { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.card) gain(s, fx.card, events);
+    if (fx.lose) { const pool = s.hand.filter(id => fx.lose === 'best' ? true : id !== 'passport'); let id = fx.lose; if (fx.lose === 'random') id = pool[Math.floor(s._rng() * pool.length)]; if (fx.lose === 'best') id = s.hand.includes('passport') ? 'passport' : pool[Math.floor(s._rng() * pool.length)]; if (id) { lose(s, id, events); s.used.push(id); } }
+    if (fx.trust) for (const k in fx.trust) { s.people[k].trust = Math.max(-2, Math.min(3, s.people[k].trust + fx.trust[k])); events.push(ev('trust', { who: k, trust: s.people[k].trust })); }
+    if (fx.doubt) s.people[fx.doubt].doubt = true;
+    if (fx.cut) { s.people[fx.cut].cut = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.cut) lose(s, id, events); say(events, 'narrator', `You stop answering ${personName(s, fx.cut)}.`); }
+    if (fx.test) { const p = s.people[fx.test]; p.known = true; p.doubt = false; if (p.bad) { p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.test) lose(s, id, events); say(events, 'narrator', `${personName(s, fx.test)} was working for Sosā. You find out before it costs you.`); } else { p.trust = Math.max(p.trust, 2); say(events, 'narrator', `${personName(s, fx.test)} is clean. And offended you asked.`); } }
+    if (fx.stage) for (const k in fx.stage) stage(s, k, s.arr[k].stage + fx.stage[k], events);
+    if (fx.flag) Object.assign(s.flags, fx.flag);
+    if (fx.deadline) { s.deadline = Math.max(s.hour + 1, s.deadline + fx.deadline); }
+    if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
+    if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
+    if (fx.rung !== undefined) s.hold = fx.rung;
+    if (fx.end) { s.over = { win: false, kind: fx.end.kind || 'arrest', reason: `${fx.end.reason} ${epilogue(s, false)}` }; events.push(ev('over', s.over)); return; }
+    if (fx.hold) climbHold(s, events);
+    if (fx.advance) advanceLevel(s, events);
+    if (fx.hours) pass(s, fx.hours, events);
+  }
 
   // ---- commit ----------------------------------------------------
   function commit(s, actionId, optionId) {
     if (s.over) return { ok: false, why: 'The run is over.' };
     const events = [];
+    if (actionId.startsWith('evt:')) return resolveEvent(s, actionId.slice(4), events);
+    if (s.event) return { ok: false, why: s.event.kind === 'hold' ? 'You are being held.' : 'Answer the news first.' };
     if (actionId === 'wait') { pass(s, 1, events); return finish(s, events); }
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
@@ -205,7 +325,12 @@ const Sim = (() => {
     const won = view.need > 6 ? false : die >= view.need;
     events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
     apply(s, won ? a.success : a.fail, events, a);
-    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+    // the wrong person to trust: a compromised ally may sell the move
+    if (a.with && s.people[a.with] && s.people[a.with].bad && !s.people[a.with].known && s._rng() < 0.6) {
+      const p = s.people[a.with]; p.known = true; p.turned = true; s.belief = s.pos; heat(s, 3, events); events.push(ev('belief', { belief: s.belief }));
+      say(events, 'narrator', `${personName(s, a.with)} sold you out. Sosā knows where you are.`); events.push(ev('betrayal', { who: a.with }));
+    }
+    if (won && a.success.win) { s.over = { win: true, kind: 'out', reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
     pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
     if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
     return finish(s, events);
@@ -242,7 +367,8 @@ const Sim = (() => {
     if (!c || !c.ok) return { ok: false, why: c ? c.why : 'Nothing to call about.' };
     if (k === 'permission' && s.arr.permission.stage === 0 && !s.commitments.some(x => x.to === 'sponsor')) { s.commitments.push({ to: 'sponsor', text: D.PEOPLE.sponsor.terms, kept: true }); events.push(ev('commit', { to: 'sponsor', text: D.PEOPLE.sponsor.terms })); }
     if (k === 'reception' && s.arr.reception.stage === 1 && !s.commitments.some(x => x.to === 'official')) { s.commitments.push({ to: 'official', text: D.PEOPLE.official.terms, kept: true }); events.push(ev('commit', { to: 'official', text: D.PEOPLE.official.terms })); }
-    const due = s.hour + 1 + jobHours(k);
+    s.calledAt = s.hour;
+    const due = s.hour + 1 + jobHours(k) + (s.flags.dark ? 2 : 0);
     s.jobs.push({ arr: k, ally: c.ally, target: s.arr[k].stage + 1, due });
     events.push(ev('job', { arr: k, ally: c.ally, due, dueText: clockText(due) }));
     say(events, c.ally, k === 'aircraft' ? `"Leave it with me. Six hours."` : k === 'reception' ? (c.ally === 'official' ? `"I will see what the minister can spare. Call it a courtesy."` : `"I have a name in Baca. Give me six hours."`) : `"Ten hours, and you understand what I asked."`);
@@ -286,10 +412,12 @@ const Sim = (() => {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
+      if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: 'Monday noon. Your own passport is cancelled and the ban is at every post.', belief: s.belief })); }
       if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
-      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive in ${level(s).short} at ${clockText(s.hour)}. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
-      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
+      if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 6; climbHold(s, events); } }
+      if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: `${clockText(s.hour)}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
+      if (!s.over && !s.event && s.hour >= s.nextEventAt) { s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events); }
     }
   }
   function resolveJob(s, j, events) {
@@ -310,7 +438,8 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += ' The last call came from where you are.'; } else text += ' Nothing new.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
       case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.${s.flags.lied ? ' The yacht story is dead, and the papers say so.' : ''}`; } break; }
@@ -344,10 +473,11 @@ const Sim = (() => {
     }
     if (turned.length) out.push(`${turned.map(first).join(' and ')} talked to the inquiry. ${turned.length > 1 ? 'They' : first(turned[0])} will not be forgiven at home.`);
     if (s.people.host.trust > 0) out.push('Nonā Rosa\'s truck runs to Salta every week. Nobody at the colônia says who rode in it.');
+    if (s.holds) out.push(s.holds === 1 ? 'You were held once along the way.' : `You were held ${s.holds} times along the way.`);
     if (!win) out.push(`${personName(s, 'sibling')} is named on the warrant by Monday.`);
     return out.join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;

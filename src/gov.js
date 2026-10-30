@@ -44,6 +44,8 @@ const Gov = (() => {
   const PREF = { name_atlanta: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, confirm_yacht: 1, sign_accounts: 1, go_midnight: 1, guest_yes: 1, sosa_hang: 1 };
   function herStep(g) {
     const c = g.c, A = S.actions(c), before = c.hour;
+    // her dispatches and holds come first; she takes the choice whose markers look cheapest
+    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
     const calls = A.calls.filter(x => x.ok), lvl = c.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
@@ -68,6 +70,7 @@ const Gov = (() => {
       if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', 'A charter to Lāyūna is booked at Susana.', 'An aircraft is booked.', 'That she has reached it.', 3, c.hour);
       if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', 'Atlanta has issued her an entry visa.', 'Atlanta will receive her.', 'Where she is now.', 4, c.hour);
       if (e.type === 'enemy' && e.id === 'press_ally' && /tells them/.test(e.text)) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, 'Where she was last seen.', 'Where she is now.', 0, c.hour); }
+      if (e.type === 'hold') report(g, events, c.pos, 'desk', `A patrol report: ${e.title.toLowerCase()} in ${place(c.pos)}.`, 'Where she was stopped.', 'Where she goes after release.', 1, c.hour);
       if (e.type === 'over') g.over = e;
     }
   }
@@ -186,7 +189,7 @@ const Gov = (() => {
   // ---- the debrief: what happened against what you believed ------------------------------------
   function debrief(g) {
     const c = g.c, esc = (t) => String(t).replace(/</g, '&lt;');
-    const win = !c.over.win && /arrive/.test(c.over.reason);
+    const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal'); // outcome codes, never prose
     const head = c.over.win ? `The jet left Esmeraldan airspace at ${S.clockText(c.hour)}. ${g.req.hold === 'inhand' ? 'Esmeralda acknowledged your hold. The tower never received it.' : 'Esmeralda was never asked in time.'}` : win ? `Sosā's people reached her at ${place(c.pos)} at ${S.clockText(c.hour)}. She is in custody for the hearing.` : `${S.clockText(c.hour)}. She never left. The hearing proceeds without her in custody.`;
     const label = (t) => { if (t.pos === t.belief) return ['right', 'Right']; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', 'Decoy']; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', 'Wrong']; };
     const rows = g.timeline.map(t => { const [k, l] = label(t); return `<tr><td class="mono">${esc(S.clockText(t.hour).replace(/^(\w{3})\w+/, '$1'))}</td><td>${esc(place(t.pos)[0].toUpperCase() + place(t.pos).slice(1))}</td><td>${esc(place(t.belief)[0].toUpperCase() + place(t.belief).slice(1))} <span class="v ${k}">${l}</span></td></tr>`; }).join('');

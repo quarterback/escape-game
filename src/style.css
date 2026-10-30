@@ -245,3 +245,44 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 
 /* Overlays on the scene are read-only; let the pointer reach the people in the scene. */
 #clockbox,#goalbox,#sosa,#expline,#lvlhead{pointer-events:none}
+
+/* ---- phase turns ---------------------------------------------------- */
+#phasebar{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 12px 6px;background:var(--bg)}#phasebar[hidden]{display:none}
+#phasebar .round{font:400 14px/1 var(--font-title);color:var(--soft);white-space:nowrap}
+#phases{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex:1;min-width:0}
+#phases li{flex:1;text-align:center;padding:7px 2px;border-radius:999px;background:var(--s1);color:var(--soft);font:400 13px/1 var(--font-body);white-space:nowrap}
+#phases li.done{color:var(--mint);background:transparent}#phases li.now{background:var(--gold);color:#2A1A00;font-family:var(--font-title)}
+#phasedone{align-self:flex-start;min-height:48px;padding:0 22px}#phasedone[hidden]{display:none}
+#approaches[hidden],#herehead[hidden],#lvlhead2[hidden]{display:none!important}
+body.phased .tab{top:52px}body.phased #coach{top:58px}body.phased.coaching .tab{top:calc(var(--coachh,0px) + 66px)}
+#phasecard{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--s3);box-shadow:0 0 0 3px var(--lav)}#phasecard[hidden]{display:none}
+#phasecard.hold{box-shadow:0 0 0 3px var(--coral2);background:#3D1640}#phasecard.rumor{box-shadow:0 0 0 3px var(--orange)}#phasecard.roll{box-shadow:0 0 0 3px var(--gold)}#phasecard.sosa{box-shadow:0 0 0 3px var(--coral2)}
+#phasecard .kind{display:flex;align-items:center;gap:8px;font:400 14px/1 var(--font-title);color:var(--soft)}
+#phasecard h3{margin:0;font:400 22px/1.25 var(--font-title)}#phasecard p{margin:0;font-size:16px;line-height:1.5}
+#phasecard .outcome{font:400 30px/1 var(--font-title)}#phasecard .outcome.ok{color:var(--mint)}#phasecard .outcome.no{color:var(--coral2)}
+#phasecard .choice{display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px 14px;background:var(--s1);color:var(--ink);border:1px solid #5A4F99;border-radius:14px;font:400 16px/1.35 var(--font-body)}
+#phasecard .choice:disabled{opacity:.45}#phasecard .choice .why{font-size:14px;color:var(--soft)}
+#phasecard .rows{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}#phasecard .rows li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+#phasecard .rows li i{flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;background:var(--coral2)}#phasecard .rows li.gain i{background:var(--mint)}#phasecard .rows li.news i{background:var(--lav)}
+#phasecard .next{align-self:flex-start;min-height:48px;padding:0 24px}
+body.busy #phasecard button{opacity:.5;pointer-events:none}
+.mks{display:flex;flex-wrap:wrap;gap:6px}
+.mk{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font:400 13px/1.1 var(--font-body);background:var(--s2);color:var(--ink);white-space:nowrap}
+.mk.time{box-shadow:inset 0 0 0 1.5px var(--lav)}.mk.roll{background:var(--gold);color:#2A1A00}.mk.up,.mk.risk{background:#5A2040;color:#FFC4CF}.mk.risk{background:var(--coral2);color:#2A0610}
+.mk.down,.mk.gain{background:#183A36;color:#8FF5D8}.mk.lose{background:#4A3418;color:#FFD3A8}
+.mk.trust{background:#183A36;color:#8FF5D8}.mk.doubt{background:#4A3418;color:#FFD3A8}.mk.talked{background:#5A2040;color:#FFC4CF}.mk.cut{background:var(--s1);color:var(--soft);text-decoration:line-through}.mk.unknown{background:var(--s1);color:var(--soft)}
+.mk.night{box-shadow:inset 0 0 0 1.5px #7FB2E5;color:#B7D4F2}
+.act .mks{margin-top:6px}
+#interstitial{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(10,8,24,.82);animation:ifade 1.3s ease forwards}#interstitial[hidden]{display:none}
+#interstitial .ibox{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px 32px;animation:irise 1.3s ease forwards}
+#interstitial .iclock{font:400 40px/1 var(--font-clock);color:var(--gold)}#interstitial b{font:400 28px/1.2 var(--font-title)}#interstitial span{color:var(--soft);font-size:16px}
+@keyframes ifade{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}@keyframes irise{0%{transform:translateY(12px)}20%{transform:none}}
+@media(prefers-reduced-motion:reduce){#interstitial,#interstitial .ibox{animation:none}}
+.dailybtn{display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;padding:12px 14px;background:var(--s3);color:var(--ink);border:0;border-radius:14px;box-shadow:0 0 0 2px var(--gold);min-height:56px;font:400 16px/1.3 var(--font-body)}
+.dailybtn b{font:400 18px/1.2 var(--font-title)}.dailybtn .mono{color:var(--gold)}.dailybtn span:last-child{color:var(--soft);font-size:14px}
+@media(min-width:1000px){
+  #phasebar{position:static;grid-column:1/3;grid-row:1;padding:0;background:transparent}
+  #coach{grid-row:2}#tab-here{grid-row:3}#tab-hand{grid-row:4}#tab-phone{grid-row:2/5}#tab-route{grid-row:5}
+  body.phased .tab,body.phased.coaching .tab{top:auto}
+  #phases li{font-size:15px;padding:9px 4px}
+}

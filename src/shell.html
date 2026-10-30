@@ -63,11 +63,13 @@
 </div>
 
 <main id="panels">
+  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">News</li><li data-ph="phone">Phone</li><li data-ph="move">Move</li><li data-ph="roll">Roll</li><li data-ph="sosa">Sosā</li></ol></div>
   <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
     <div id="lvlhead2"><h1 id="lvlname2"></h1><p id="lvlobj2"></p></div>
-    <div class="h2row"><h2>Here</h2><button id="wait" class="pill">Wait one hour</button></div>
+    <section id="phasecard" hidden aria-live="polite"></section>
+    <div class="h2row" id="herehead"><h2>Here</h2><button id="wait" class="pill">Lie low one hour</button></div>
     <div id="approaches"></div>
     <details id="logbox"><summary>What happened</summary><div id="dialogue" aria-live="polite"></div></details>
   </section>
@@ -81,13 +83,14 @@
 
   <aside class="tab" id="tab-phone" data-tab="phone">
     <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>The phone</h2><span class="chip lav" id="waiting"></span></div>
+    <button id="phasedone" class="primary" hidden>Done with the phone</button>
     <div id="inbox"></div>
     <h3>Calls</h3>
     <div id="calls"></div>
     <div id="helpbox" hidden>
       <p>Choose an approach under <b>Here</b>, read its chances, then commit. Use <b>The phone</b> to arrange help while you travel. Calls can fail; check when a reply is due.</p>
       <p>Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse.</p>
-      <p>At exposure 10, you are caught. Leave Esmeraldan airspace within 72 hours to win.</p>
+      <p>Each round: News, Phone, Move, Roll, Sosā. At exposure 10 you are held. Each hold is worse than the last; the third is house arrest. Leave Esmeraldan airspace within 72 hours to win.</p>
       <p id="ioshint" hidden>To install on an iPhone: tap Share, then Add to Home Screen.</p>
     </div>
   </aside>
@@ -107,9 +110,10 @@
 </nav>
 </div>
 
+<div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
 <div id="update" hidden><span>New version ready.</span><button id="reload">Reload</button></div>
 
-<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
+<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>Share your result</button><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
 
 <div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
 
@@ -117,6 +121,7 @@
   <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><span class="kicker mono">Sat 14:00, Valdória</span><h2>Coalition</h2><p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p></div></div>
   <div class="startbox">
     <button id="continue" class="pill ghost" hidden>Continue your run</button>
+    <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>Daily run</b><span id="daily-note"></span></button>
     <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
     <h3 id="start-free">Or choose your character</h3>
     <div id="start-chars"></div>
