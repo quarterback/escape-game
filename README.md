@@ -12,7 +12,7 @@ Web Audio. Served over HTTPS it installs to a phone's home screen and runs
 offline after the first visit (`manifest.webmanifest`, `sw.js`, `icons/`); a run
 is saved after every move and can be continued from the start screen.
 
-Two sides. As the defeated candidate you escape. As the minister's aide you run
+Two sides. As the defeated candidate you escape. As Sofīā Leōnī, the minister's aide, you run
 the inquiry: you see reports that arrive late and prove less than they say, you
 send orders and requests, and you never see her real position until the debrief.
 

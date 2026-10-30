@@ -308,8 +308,7 @@ actions by hand with a die and a named actor, and requests that take hours (the 
 hold, the operator's licence, confirming the ban reached the post). Across the line nothing
 can be ordered until Esmeralda agrees. The debrief tables where she was against where you
 looked, names the misleading report, who delivered, and the minister's reaction from your
-choices. A sixty-run smoke test splits 29 captures, 30 escapes, 1 timeout. The character's
-name is the owner's to set; the title stands in.
+choices. A sixty-run smoke test splits 29 captures, 30 escapes, 1 timeout. The owner named her Sofīā Leōnī.
 
 PWA. Manifest, service worker with a build stamp, icons from the austral, `_headers` for
 Cloudflare, install button on `beforeinstallprompt`, an iPhone hint in Help, and a saved

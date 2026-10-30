@@ -210,8 +210,7 @@ const Data = (() => {
   ];
 
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
-  // The name is the owner's to set; the title stands in for it until then.
-  const GOV = { id: 'gov', name: "The minister's aide", title: 'senior aide, the winning party', pronoun: 'they',
+  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'senior aide, the winning party', pronoun: 'she',
                 blurb: 'Stop the escape. Prevent the departure and bring the candidate to the hearing. Your ministry does not command every desk, and none across the line.' };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
