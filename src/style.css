@@ -11,10 +11,10 @@ header h1 small{display:block;font:400 11px/1.4 system-ui;letter-spacing:0;color
 .bar{display:flex;gap:2px}.bar i{display:block;width:9px;height:12px;background:#2a2a3a;border-radius:2px}
 #heat i.on{background:#e06a3a}#heat i.on.hot{background:var(--red)}
 #timeline i{width:7px}#timeline i.on{background:#6a6a9a}
-main{display:grid;grid-template-columns:minmax(0,960px) minmax(260px,1fr);gap:12px;padding:12px 16px;max-width:1500px;margin:0 auto}
+main{display:grid;align-items:start;grid-template-columns:minmax(0,960px) minmax(260px,1fr);gap:12px;padding:12px 16px;max-width:1500px;margin:0 auto}
 #scene{line-height:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#000;aspect-ratio:960/336}
 #scene canvas{width:100%!important;height:auto!important;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
-#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;height:100%;min-height:200px;max-height:336px;overflow-y:auto;font-size:13px}
+#dialogue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;flex:1 1 auto;min-height:200px;max-height:336px;overflow-y:auto;font-size:13px}
 #dialogue .line{margin:0 0 7px;padding-left:4px;border-left:2px solid transparent}
 #dialogue .line b{font-weight:700;margin-right:5px}
 #dialogue .line.sys{color:var(--mute)}#dialogue .line.act{border-left-color:#3a3a5a}
@@ -57,3 +57,32 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
 #over.lose{border-color:var(--red)}#over h2{margin:0 0 6px}#over p{margin:0 0 12px}
 #helpbox{font-size:13px;color:#c8c8d8}#helpbox p{margin:4px 0}
 @media (max-width:1100px){main,.lower{grid-template-columns:1fr}#dialogue{max-height:220px}}
+/* ---- start screen, coach box, tutorial state ---- */
+header .stat.right{margin-left:auto}
+button.ghost{background:transparent;border-color:#3a3a55;color:var(--mute)}button.ghost:hover:not(:disabled){color:var(--ink)}
+.card.locked{opacity:.35}
+body.tutorial #nightctl{display:none}
+.why{font-size:12px;color:var(--red);min-height:1.2em;margin:0 0 8px}
+#controls h3,#helpbox h3{font-size:13px;margin:10px 0 4px;color:var(--ink)}
+#needs li{cursor:help}
+.coach-target{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;animation:coach 1.4s infinite;position:relative;z-index:5}
+@keyframes coach{50%{outline-color:rgba(255,210,74,.25)}}
+#side{display:flex;flex-direction:column;gap:10px;min-height:0}
+#coach{background:#1a1a2a;border:2px solid var(--gold);border-radius:8px;padding:14px 16px;font-size:13px}
+body.tutorial #dialogue{max-height:200px;flex:0 0 auto}
+#coach h3{margin:2px 0 8px;font-size:16px;color:var(--gold)}#coach p{margin:0 0 8px}#coach .row{align-items:center;margin-top:6px}
+#coach-step{margin:0;letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+#start{position:fixed;inset:0;background:rgba(6,6,12,.88);z-index:30;overflow:auto;padding:24px 16px}
+.start-card{max-width:980px;margin:0 auto;background:var(--panel);border:1px solid #3a3a55;border-radius:10px;padding:26px 30px}
+.start-card h1{font:700 30px/1 "Courier New",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
+.start-card h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.start-card .lede{font-size:16px;line-height:1.5;margin:0 0 20px;color:var(--ink)}
+.start-card p{margin:0 0 10px;font-size:14px;color:#d4d2de}
+.start-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.persona{display:block;background:var(--panel2);border:1px solid #33334a;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.persona.sel{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,210,74,.3)}
+.persona input{margin-right:8px}.persona .pname{font-weight:700}.persona .pstats{display:block;font-size:12px;color:var(--gold);margin:2px 0 4px 22px}
+.persona .pblurb{display:block;font-size:13px;margin-left:22px}.persona .phow{display:block;font-size:12px;color:var(--mute);margin:3px 0 0 22px}
+.first{background:#2a2614;border:1px solid #6a5a20;border-radius:6px;padding:8px 10px;font-size:13px;margin:16px 0 0}
+.start-actions{margin-top:16px}.start-actions button{padding:10px 16px;font-size:14px}
+@media (max-width:800px){.start-cols{grid-template-columns:1fr}}

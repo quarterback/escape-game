@@ -297,7 +297,7 @@ const Render = (() => {
       p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height);
       p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a');
       p.text(view.over.win ? 'You made the freight' : 'Caught in Salta', p.width / 2, p.height / 2 - 14);
-      p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened', p.width / 2, p.height / 2 + 14);
+      p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened and offers another night', p.width / 2, p.height / 2 + 14);
     }
   }
 
@@ -308,7 +308,7 @@ const Render = (() => {
     for (const id in s.people) add(id, `${s.people[id].name}: ${Sim.STATE_LABEL[id][s.people[id].state]}`);
     for (const id in s.objects) add(id, `${s.objects[id].name}: ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
     add('attic', 'Your hideout');
-    add('self', 'Inēs Biankī, that is you');
+    add('self', 'Inēs Biankī: you');
   }
   function hitTest(mx, my) {
     // selected-card targets take priority, then everything else; last drawn wins
