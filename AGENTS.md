@@ -17,6 +17,16 @@ archived work. Historical AARs are records, not design requirements. Do not use
 `docs/aar-last-freight-out*.md` or `docs/aar-narrative-architecture.md` for current
 work. Earlier-build references in other AARs confer no authority to reuse them.
 
+## Difficulty is the owner's, and it stays hard
+
+Owner, October 30, 2026: "no, games should be harder. You should be able to do
+something boneheaded or ill advised and have your run end before it starts."
+Exposure drifting from 0 to 4 in the first five hours at the residence, the
+bought border post, the hold ladder and a wrong destination ending on the apron
+are all working as intended. Do not soften a rule because a harness win rate or
+a first-round screenshot looks harsh. A balance change needs the owner's words
+and a calibration before and after; see `docs/aar-hold-ladder-balance.md`.
+
 ## Preserve the copy decisions
 
 Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,
@@ -68,8 +78,7 @@ The owner selected these faces after reporting that the game was hard to read:
 
 - Little Grandad Fat: the Coalition title only.
 - GC North Sans SemiBold: section, level and tutorial headings.
-- Overbit Shadow Bold: the clock on the scene. Overbit Shadow: the hours left and the inquiry's next move. Both approved by the owner in the design pass.
-- Overbit Regular: compact numeric action details only. Never use any Overbit face for headings, instructions or dialogue.
+- Overbit Shadow Bold: the big clock on the scene and the interstitial clock, and nothing else. Owner, October 30, 2026, from a phone screenshot: the pixel faces are unreadable at small sizes, so the hours left, the inquiry's next move, odds and hour chips and the exposure number are all set in GC North Sans. Never use any Overbit face below the clock size, and never for headings, instructions or dialogue.
 - GC North Sans Regular: dialogue, instructions, buttons, cards and status text.
 - GC North Sans SemiBold: emphasis. Use Arial/sans-serif as the fallback for
   macrons missing from GC North Sans; preserve the spelling of names.
@@ -97,7 +106,11 @@ without WebGL or WebGPU, and keep people above the bottom strip of the scene (`G
 
 For copy changes, run `python3 tools/build.py` (it parses the sources and runs
 the content check first), `node tools/tutorial-check.js`,
-`node tools/gov-tutorial-check.js` and `node tools/contract-tests.js`.
+`node tools/gov-tutorial-check.js`, `node tools/contract-tests.js` and
+`node tools/pbbg-check.js` (the owner's standalone checker from
+`quarterback/pbbg-content-schema`, cloned beside this repo; its policy is
+`tools/pbbg-policy.json`). Every new string gets the Humanizer and plain-language
+pass before it ships, including strings copied from a design mockup.
 After a colour, layout or type change, run `node tools/contrast-check.js`
 (once: `cd tools && npm install`). It must report zero WCAG AA failures. Check the built game in a browser, including the
 start screen and tutorial. If editing strings in the simulation or data tables,

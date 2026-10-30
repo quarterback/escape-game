@@ -1,0 +1,31 @@
+{
+ "schemaVersion": "0.5.0",
+ "id": "coalition",
+ "principles": [
+  "Preserve game facts, named entities and consequences.",
+  "Apply writing guidance to the declared content type.",
+  "Keep numeric costs in action data and bind their display.",
+  "Review comprehension and character voice separately from mechanical checks."
+ ],
+ "domainGuidance": {
+  "interface": ["Use consistent terminology and sentence case, preserving proper names.", "Name the action or requirement directly.", "Write sentences a person would say, never label-and-value pairs."],
+  "narrative": ["Preserve speaker identity and the conditions under which a passage is valid.", "Distinguish a character's claim from confirmed state.", "Use the game's own voice; narrative need not sound like system instructions."]
+ },
+ "rules": [
+  { "id": "TEXT-01", "domains": ["interface"], "patterns": ["action-label", "navigation-heading"], "check": "terminal-punctuation", "severity": "error", "guidance": "Omit terminal sentence punctuation from labels and headings." },
+  { "id": "TEXT-02", "domains": ["interface"], "patterns": ["action-label"], "check": "max-words", "value": 6, "severity": "warning", "guidance": "Review action labels longer than six words. Preserve clarity and names." },
+  { "id": "TEXT-03", "domains": ["interface", "narrative"], "check": "markup", "severity": "error", "guidance": "Text is plain text. Apply presentation through components, not HTML in content." },
+  { "id": "COAL-01", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "—", "severity": "error", "guidance": "No em dashes. Use a period, comma, colon or parentheses." },
+  { "id": "COAL-02", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "–", "severity": "error", "guidance": "No en dashes." },
+  { "id": "COAL-03", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "load-bearing", "severity": "error", "guidance": "The owner bans this phrase." },
+  { "id": "COAL-04", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "load bearing", "severity": "error", "guidance": "The owner bans this phrase." },
+  { "id": "COAL-05", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "delve", "severity": "warning", "guidance": "Humanizer: stock AI verb." },
+  { "id": "COAL-06", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "tapestry", "severity": "warning", "guidance": "Humanizer: stock AI noun." },
+  { "id": "COAL-07", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "it's not just", "severity": "warning", "guidance": "Humanizer: stock contrast frame." },
+  { "id": "COAL-08", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "not just", "severity": "warning", "guidance": "Humanizer: stock contrast frame. Check it." },
+  { "id": "COAL-09", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "testament to", "severity": "warning", "guidance": "Humanizer: stock phrase." },
+  { "id": "COAL-10", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "in the air", "severity": "warning", "guidance": "Owner, 2026-10-30: say a flight's length as '8-hour flight', never 'hours in the air'." },
+  { "id": "COAL-11", "domains": ["interface"], "patterns": ["card", "action-preview", "arrangement-status"], "check": "forbidden-phrase", "value": "who asks", "severity": "error", "guidance": "Owner, 2026-10-30: label-and-value rows are not copy. Write a sentence." },
+  { "id": "COAL-12", "domains": ["interface", "narrative"], "check": "forbidden-phrase", "value": "the catch", "severity": "warning", "guidance": "Owner, 2026-10-30: label-and-value rows are not copy. Write a sentence." }
+ ]
+}

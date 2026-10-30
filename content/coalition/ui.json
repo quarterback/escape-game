@@ -3,7 +3,7 @@
  "entries": [
   {
    "id": "name.inspector",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "Inspector Sosā"
   },
   {
@@ -282,7 +282,7 @@
   },
   {
    "id": "phone.sibling_role",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "{rel}, arranging the aircraft",
    "args": [
     "rel"
@@ -477,42 +477,42 @@
   },
   {
    "id": "route.role_aircraft",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "arranging the aircraft"
   },
   {
    "id": "route.role_visa",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "asking for your visa"
   },
   {
    "id": "who.unknown",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Unknown"
   },
   {
    "id": "who.cut",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Cut off"
   },
   {
    "id": "who.talked",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Talked"
   },
   {
    "id": "who.clean",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Clean"
   },
   {
    "id": "who.doubted",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Doubted"
   },
   {
    "id": "who.trusted",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "Trusted"
   },
   {
@@ -875,7 +875,7 @@
   {
    "id": "sosa.title",
    "pattern": "P10",
-   "text": "{hours} h passed. Now {time}",
+   "text": "{hours} hours passed. It is now {time}",
    "args": [
     "hours",
     "time"
@@ -958,7 +958,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "News waiting: {title}",
+   "text": "{title}. Read it under News.",
    "args": [
     "title"
    ]
@@ -1210,7 +1210,7 @@
   },
   {
    "id": "log.person_role",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "{name}: {role}.",
    "args": [
     "name",
@@ -1792,22 +1792,26 @@
   {
    "id": "sim.line.the_minister_has_other_guests",
    "pattern": "P07",
-   "text": "\"The minister has other guests this weekend.\""
+   "text": "\"The minister has other guests this weekend.\"",
+   "speaker": "ally"
   },
   {
    "id": "sim.line.the_ministry_has_not_called",
    "pattern": "P07",
-   "text": "\"The ministry has not called back. I will try again if you ask.\""
+   "text": "\"The ministry has not called back. I will try again if you ask.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.line.nothing_yet_they_want_more",
    "pattern": "P07",
-   "text": "\"Nothing yet. They want more time.\""
+   "text": "\"Nothing yet. They want more time.\"",
+   "speaker": "sibling"
   },
   {
    "id": "sim.line.the_crew_will_not_confirm",
    "pattern": "P07",
-   "text": "\"The crew will not confirm without a destination. Decide.\""
+   "text": "\"The crew will not confirm without a destination. Decide.\"",
+   "speaker": "sibling"
   },
   {
    "id": "sim.end.your_immunity_is_gone_a",
@@ -1826,17 +1830,20 @@
   {
    "id": "sim.line.think_about_it_i_will",
    "pattern": "P07",
-   "text": "\"Think about it. I will call again.\""
+   "text": "\"Think about it. I will call again.\"",
+   "speaker": "enemy"
   },
   {
    "id": "sim.line.then_you_will_cross_like",
    "pattern": "P07",
-   "text": "\"Then you will cross like anyone else.\""
+   "text": "\"Then you will cross like anyone else.\"",
+   "speaker": "official"
   },
   {
    "id": "sim.line.thank_you_my_people_will",
    "pattern": "P07",
-   "text": "\"Thank you. My people will be at the post.\""
+   "text": "\"Thank you. My people will be at the post.\"",
+   "speaker": "official"
   },
   {
    "id": "sim.say.the_sedan_rolls_past_the",
@@ -1846,17 +1853,20 @@
   {
    "id": "sim.line.then_we_have_nothing_to",
    "pattern": "P07",
-   "text": "\"Then we have nothing to discuss. Good luck with the pilot.\""
+   "text": "\"Then we have nothing to discuss. Good luck with the pilot.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.line.a_week_i_am_not",
    "pattern": "P07",
-   "text": "\"A week. I am not a patient man, but I am a curious one.\""
+   "text": "\"A week. I am not a patient man, but I am a curious one.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.line.good_the_ministry_will_hear",
    "pattern": "P07",
-   "text": "\"Good. The ministry will hear from me in the morning.\""
+   "text": "\"Good. The ministry will hear from me in the morning.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.say.they_go_to_the_house",
@@ -1871,12 +1881,14 @@
   {
    "id": "sim.line.the_operator_just_had_a",
    "pattern": "P07",
-   "text": "\"The operator just had a call from the minister's office. We are good.\""
+   "text": "\"The operator just had a call from the minister's office. We are good.\"",
+   "speaker": "pilot"
   },
   {
    "id": "sim.line.the_crew_is_happy_the",
    "pattern": "P07",
-   "text": "\"The crew is happy. The apron saw you pay them.\""
+   "text": "\"The crew is happy. The apron saw you pay them.\"",
+   "speaker": "pilot"
   },
   {
    "id": "sim.say.gianluka_does_not_answer_again",
@@ -1886,17 +1898,20 @@
   {
    "id": "sim.line.thank_you_sosa_s_people",
    "pattern": "P07",
-   "text": "\"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here.\""
+   "text": "\"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here.\"",
+   "speaker": "aide"
   },
   {
    "id": "sim.line.her_uncle_banks_with_me",
    "pattern": "P07",
-   "text": "\"Her uncle banks with me. She will answer within the hour. That is two things now.\""
+   "text": "\"Her uncle banks with me. She will answer within the hour. That is two things now.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.line.i_could_not_decide_for",
    "pattern": "P07",
-   "text": "\"I could not decide for you. Six hours lost.\""
+   "text": "\"I could not decide for you. Six hours lost.\"",
+   "speaker": "sibling"
   },
   {
    "id": "sim.line.then_call_salek_soon_the",
@@ -1904,7 +1919,8 @@
    "text": "\"Then call {sponsor} soon. The crew will not wait on us forever.\"",
    "args": [
     "sponsor"
-   ]
+   ],
+   "speaker": "sibling"
   },
   {
    "id": "sim.why.pick_one_of_the_answers",
@@ -1919,22 +1935,26 @@
   {
    "id": "sim.line.ten_hours_and_you_understand",
    "pattern": "P07",
-   "text": "\"Ten hours, and you understand what I asked.\""
+   "text": "\"Ten hours, and you understand what I asked.\"",
+   "speaker": "ally"
   },
   {
    "id": "sim.line.i_have_a_name_in",
    "pattern": "P07",
-   "text": "\"I have a name in Baca. Give me six hours.\""
+   "text": "\"I have a name in Baca. Give me six hours.\"",
+   "speaker": "ally"
   },
   {
    "id": "sim.line.i_will_see_what_the",
    "pattern": "P07",
-   "text": "\"I will see what the minister can spare. Call it a courtesy.\""
+   "text": "\"I will see what the minister can spare. Call it a courtesy.\"",
+   "speaker": "official"
   },
   {
    "id": "sim.line.leave_it_with_me_six",
    "pattern": "P07",
-   "text": "\"Leave it with me. Six hours.\""
+   "text": "\"Leave it with me. Six hours.\"",
+   "speaker": "sibling"
   },
   {
    "id": "sim.why.nothing_to_call_about",
@@ -2240,7 +2260,8 @@
   {
    "id": "sim.line.your_ministry_threatened_the_operator",
    "pattern": "P07",
-   "text": "\"Your ministry threatened the operator’s license. He wants Esmeraldan backing or a crew bonus.\""
+   "text": "\"Your ministry threatened the operator’s license. He wants Esmeraldan backing or a crew bonus.\"",
+   "speaker": "pilot"
   },
   {
    "id": "sim.effect.nothing_changes",
@@ -2265,7 +2286,8 @@
   {
    "id": "sim.line.inspector_sosa_come_back_for",
    "pattern": "P07",
-   "text": "\"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and your brother's name goes on the warrant too.\""
+   "text": "\"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and your brother's name goes on the warrant too.\"",
+   "speaker": "enemy"
   },
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
@@ -2290,7 +2312,8 @@
   {
    "id": "sim.line.before_my_people_meet_you",
    "pattern": "P07",
-   "text": "\"Before my people meet you: you will say, on the record, that Esmeralda receives you as a guest. Not a government.\""
+   "text": "\"Before my people meet you: you will say, on the record, that Esmeralda receives you as a guest. Not a government.\"",
+   "speaker": "official"
   },
   {
    "id": "sim.opt.put_him_off",
@@ -2310,7 +2333,8 @@
   {
    "id": "sim.line.the_party_meets_tonight_send",
    "pattern": "P07",
-   "text": "\"The party meets tonight. Send your endorsement before midnight. You gave your word.\""
+   "text": "\"The party meets tonight. Send your endorsement before midnight. You gave your word.\"",
+   "speaker": "aide"
   },
   {
    "id": "sim.opt.send_nando_past_the_gate",
@@ -2330,7 +2354,8 @@
   {
    "id": "sim.line.two_men_in_a_car",
    "pattern": "P07",
-   "text": "\"Two men in a car at the yard gate, asking about a woman. Or a man. Midnight or never.\""
+   "text": "\"Two men in a car at the yard gate, asking about a woman. Or a man. Midnight or never.\"",
+   "speaker": "holt"
   },
   {
    "id": "sim.effect.nothing_moves_until_you_call",
@@ -2361,12 +2386,13 @@
    "text": "\"Vélez is not answering. I can try again, or ask {sponsor} to reach her uncle.\"",
    "args": [
     "sponsor"
-   ]
+   ],
+   "speaker": "sibling"
   },
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "Lose {sponsor} and the line to the ministry. The visa will not come. You can still fly without it.",
+   "text": "You lose {sponsor} and the line to the ministry. No visa will come. You can still fly without one.",
    "args": [
     "sponsor"
    ]
@@ -2407,7 +2433,8 @@
   {
    "id": "sim.line.radi_port_venla_we_hear",
    "pattern": "P07",
-   "text": "\"Rādiô Portô Venla. We hear you are on a yacht off the coast. Can you confirm?\""
+   "text": "\"Rādiô Portô Venla. We hear you are on a yacht off the coast. Can you confirm?\"",
+   "speaker": "press"
   },
   {
    "id": "sim.opt.let_decide",
@@ -2436,7 +2463,8 @@
   {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"Jet found. It will be at Susana. The crew needs the destination confirmed. Do I give them the city, or wait for the visa?\""
+   "text": "\"Jet found. It will be at Susana. The crew needs the destination confirmed. Do I give them the city, or wait for the visa?\"",
+   "speaker": "sibling"
   },
   {
    "id": "sim.day.wednesday",
@@ -2690,37 +2718,43 @@
    "id": "gov.line.the_sergeant_is_off_shift",
    "pattern": "P07",
    "text": "\"The sergeant is off shift. Nobody has read it.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "desk"
   },
   {
    "id": "gov.line.the_post_confirms_the_sergeant",
    "pattern": "P07",
    "text": "\"The post confirms. The sergeant has her name on the desk.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "desk"
   },
   {
    "id": "gov.line.legal_wants_the_file_first",
    "pattern": "P07",
    "text": "\"Legal wants the file first. Not today.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "aviation"
   },
   {
    "id": "gov.line.the_review_is_open_say",
    "pattern": "P07",
    "text": "\"The review is open. Say the word and the operator hears about his licence.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "aviation"
   },
   {
    "id": "gov.line.baca_says_it_is_a",
    "pattern": "P07",
    "text": "\"Baca says it is a judicial matter. Ask again with more.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "embassy"
   },
   {
    "id": "gov.line.esmeralda_will_hold_her_if",
    "pattern": "P07",
    "text": "\"Esmeralda will hold her if she appears. The interior ministry gave us a name to call.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "embassy"
   },
   {
    "id": "gov.report.where_she_is",
@@ -2837,19 +2871,22 @@
    "id": "gov.line.the_post_will_confirm_when",
    "pattern": "P07",
    "text": "\"The post will confirm when the sergeant reads it. Four hours.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "desk"
   },
   {
    "id": "gov.line.we_can_open_a_review",
    "pattern": "P07",
    "text": "\"We can open a review on Sunday. Six hours to get it on paper.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "aviation"
   },
   {
    "id": "gov.line.the_interior_ministry_will_consider",
    "pattern": "P07",
    "text": "\"The interior ministry will consider it. Ten hours, and they will want to know why.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "embassy"
   },
   {
    "id": "gov.why.nothing_to_ask",
@@ -2861,13 +2898,15 @@
    "id": "gov.line.then_i_will_tell_them",
    "pattern": "P07",
    "text": "\"Then I will tell them she has fled the country. Find her before the papers find you.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.line.six_hours_then_i_want",
    "pattern": "P07",
    "text": "\"Six hours. Then I want a town and a street.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.inquiry.the_minister_names_on_the",
@@ -2885,13 +2924,15 @@
    "args": [
     "place"
    ],
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.line.good_sosa_has_the_address",
    "pattern": "P07",
    "text": "\"Good. Sosā has the address. Do not lose her.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.why.deal_with_the_news_first",
@@ -3003,7 +3044,7 @@
   },
   {
    "id": "gov.name.interior_minister",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "Interior minister",
    "role": "gov"
   },
@@ -3238,7 +3279,8 @@
    "id": "gov.line.you_asked_for_time_the",
    "pattern": "P07",
    "text": "\"You asked for time. The time is up. Where is she?\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.report.where_she_goes_after_release",
@@ -3438,49 +3480,49 @@
   },
   {
    "id": "gov.name.radi_port_venla",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "Rādiô Portô Venla",
    "role": "gov"
   },
   {
    "id": "gov.name.inspector_sosa",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "Inspector Sosā",
    "role": "gov"
   },
   {
    "id": "gov.name.the_aviation_desk",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The aviation desk",
    "role": "gov"
   },
   {
    "id": "gov.name.the_embassy_in_baca",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The embassy in Baca",
    "role": "gov"
   },
   {
    "id": "gov.name.the_railway_contact",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The railway contact",
    "role": "gov"
   },
   {
    "id": "gov.name.the_santa_laura_desk",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The Santa Laura desk",
    "role": "gov"
   },
   {
    "id": "gov.name.the_watch_team",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The watch team",
    "role": "gov"
   },
   {
    "id": "gov.name.the_minister",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "The minister",
    "role": "gov"
   },
@@ -3500,7 +3542,8 @@
    "id": "gov.line.where_is_she_i_want",
    "pattern": "P07",
    "text": "\"Where is she? I want a location before the evening news.\"",
-   "role": "gov"
+   "role": "gov",
+   "speaker": "minister"
   },
   {
    "id": "gov.report.someone_is_home",
@@ -3585,7 +3628,7 @@
   },
   {
    "id": "render.person",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "{name}, {role}",
    "args": [
     "name",
@@ -3594,7 +3637,7 @@
   },
   {
    "id": "render.person_status",
-   "pattern": "P07",
+   "pattern": "P05",
    "text": "{name}, {role} · {status}",
    "args": [
     "name",
@@ -3604,7 +3647,7 @@
   },
   {
    "id": "render.you",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "{name}, you",
    "args": [
     "name"
@@ -3612,7 +3655,7 @@
   },
   {
    "id": "render.search_team",
-   "pattern": "P07",
+   "pattern": "P02",
    "text": "Your search team"
   },
   {
@@ -3704,7 +3747,8 @@
    "text": "\"I told them {city}. Do not make me a liar.\"",
    "args": [
     "city"
-   ]
+   ],
+   "speaker": "sibling"
   },
   {
    "id": "sim.line.city_i_will_tell_the",
@@ -3712,12 +3756,13 @@
    "text": "\"{city}. I will tell the operator.\"",
    "args": [
     "city"
-   ]
+   ],
+   "speaker": "sibling"
   },
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "Ask {sponsor} to seek {name}’s visa. The terms apply.",
+   "text": "Ask {sponsor} to seek {name}’s visa. You accept the terms by calling.",
    "args": [
     "name",
     "sponsor"
@@ -3734,7 +3779,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "Needs a {need}+ roll to confirm the destination; failure delays work six hours.",
+   "text": "Needs a {need}+ roll to confirm the destination. A miss delays the work six hours.",
    "args": [
     "need"
    ]
@@ -3750,12 +3795,13 @@
   {
    "id": "sim.line.they_are_still_considering",
    "pattern": "P07",
-   "text": "\"The ministry says they are still considering. These things take time, they tell me.\""
+   "text": "\"The ministry says they are still considering. These things take time, they tell me.\"",
+   "speaker": "sponsor"
   },
   {
    "id": "sim.ledger.promised",
    "pattern": "P05",
-   "text": "Promised: {what}. Due {due}.",
+   "text": "Promised {what} by {due}.",
    "args": [
     "what",
     "due"
@@ -3764,7 +3810,7 @@
   {
    "id": "sim.ledger.delivered",
    "pattern": "P05",
-   "text": "Delivered: {what}.",
+   "text": "Delivered {what}.",
    "args": [
     "what"
    ]
@@ -3772,7 +3818,7 @@
   {
    "id": "sim.ledger.nothing_yet",
    "pattern": "P05",
-   "text": "Did not deliver {what}. Will try again if asked.",
+   "text": "Nothing on {what} yet. Will try again if asked.",
    "args": [
     "what"
    ]
@@ -3780,12 +3826,12 @@
   {
    "id": "sim.ledger.still_considering",
    "pattern": "P05",
-   "text": "The ministry is \"still considering\". No visa."
+   "text": "The ministry is still considering. No visa yet."
   },
   {
    "id": "sim.ledger.post_was_bought",
    "pattern": "P05",
-   "text": "The {post} had taken Valdória’s money. Twelve hours lost.",
+   "text": "The {post} had taken Valdória’s money. You lost twelve hours.",
    "args": [
     "post"
    ]
@@ -3814,12 +3860,12 @@
   {
    "id": "map.title",
    "pattern": "P02",
-   "text": "Where do you go?"
+   "text": "Choose where you go"
   },
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda gives you safe passage to its airfield at Susana. It is too close to home to stay. Choose where the jet flies."
+   "text": "Esmeralda gives you safe passage to its airfield at Susana. You cannot stay there. Choose where the jet flies. None of the three has said yes."
   },
   {
    "id": "map.here",
@@ -3842,7 +3888,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "None of the three has said yes. The visa comes once the run starts, or it does not. Changing your mind later costs the hours already spent."
+   "text": "The visa comes once the run starts, or it does not. Changing your mind later costs the hours you have already spent."
   },
   {
    "id": "gov.debrief.taken_on_landing",
@@ -3858,32 +3904,41 @@
   {
    "id": "sim.effect.requires_sponsor_help",
    "pattern": "P08",
-   "text": "Requires {sponsor}’s help. Confirms reception; you owe another favor.",
+   "text": "Needs {sponsor}’s help. Confirms reception. You owe another favor.",
    "args": [
     "sponsor"
    ]
   },
   {
-   "id": "map.who_asks",
-   "pattern": "P01",
-   "text": "Who asks"
-  },
-  {
-   "id": "map.the_catch",
-   "pattern": "P01",
-   "text": "The catch"
-  },
-  {
-   "id": "map.not_yet",
-   "pattern": "P01",
-   "text": "Has not said yes"
-  },
-  {
    "id": "map.hours",
    "pattern": "P01",
-   "text": "{h} h",
+   "text": "{h}-hour flight",
    "args": [
     "h"
+   ]
+  },
+  {
+   "id": "sum.exposure_round_here",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} this round. Sosā is looking where you are.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_round",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} this round.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_round_fell",
+   "pattern": "P10",
+   "text": "Exposure fell by {n} this round.",
+   "args": [
+    "n"
    ]
   }
  ]

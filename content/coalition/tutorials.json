@@ -312,7 +312,7 @@
      "id": "post_rail",
      "kind": "act",
      "title": "Cross at the rail post",
-     "body": "Select **Cross at the Paso Huhūi rail post**. Your second passport goes on the desk. Read how the ban and your cards change the roll, then commit.",
+     "body": "Select **Cross at the Paso Huhūi post**. Your second passport goes on the desk. Read how the ban and your cards change the roll, then commit.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
@@ -329,7 +329,7 @@
     {
      "id": "airfield",
      "kind": "read",
-     "title": "Susana. The rest is yours.",
+     "title": "Susana, and the rest is yours",
      "body": "You crossed. Esmeralda lets you fly from Susana and nothing more. Now fuel the jet and get the visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
      "goal": "Play the airfield alone",
      "highlight": [

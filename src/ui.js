@@ -363,7 +363,11 @@ const UI = (() => {
   function sosaCard(card) {
     card.className = 'sosa';
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
-    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
+    // one exposure line for the whole round, with the reason, instead of one per batch of hours
+    let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
+    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? (s.belief === s.pos ? 'sum.exposure_round_here' : 'sum.exposure_round') : 'sum.exposure_round_fell', { n: Math.abs(exp) }) });
+    else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
+    const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T('sosa.title', { hours: roundSum.hours, time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
@@ -394,7 +398,7 @@ const UI = (() => {
       }
     }
     if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T('sum.exposure', { signed: (expMine > 0 ? '+' : '') + expMine }) });
-    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', t: T(expTheirs > 0 ? 'sum.exposure_rose' : 'sum.exposure_fell', { n: Math.abs(expTheirs) }) });
+    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.exposure_rose' : 'sum.exposure_fell', { n: Math.abs(expTheirs) }) });
     return r;
   }
 
@@ -536,8 +540,8 @@ const UI = (() => {
     for (const k in Data.DESTS) {
       const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : '');
       b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: d.hours }))}</span></span>`
-        + `<dl><dt>${esc(T('map.who_asks'))}</dt><dd>${esc(d.sponsor.asks)}</dd><dt>${esc(T('map.the_catch'))}</dt><dd>${esc(d.sponsor.catch)}</dd></dl>`
-        + `<span class="dfoot"><span class="pill">${esc(T('map.not_yet'))}</span><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
+        + `<p>${esc(d.sponsor.asks)}</p>`
+        + `<span class="dfoot"><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
       b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b);
     }
   }
