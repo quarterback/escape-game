@@ -68,8 +68,7 @@ The owner selected these faces after reporting that the game was hard to read:
 
 - Little Grandad Fat: the Coalition title only.
 - GC North Sans SemiBold: section, level and tutorial headings.
-- Overbit Shadow Bold: the clock on the scene. Overbit Shadow: the hours left and the inquiry's next move. Both approved by the owner in the design pass.
-- Overbit Regular: compact numeric action details only. Never use any Overbit face for headings, instructions or dialogue.
+- Overbit Shadow Bold: the big clock on the scene and the interstitial clock, and nothing else. Owner, October 30, 2026, from a phone screenshot: the pixel faces are unreadable at small sizes, so the hours left, the inquiry's next move, odds and hour chips and the exposure number are all set in GC North Sans. Never use any Overbit face below the clock size, and never for headings, instructions or dialogue.
 - GC North Sans Regular: dialogue, instructions, buttons, cards and status text.
 - GC North Sans SemiBold: emphasis. Use Arial/sans-serif as the fallback for
   macrons missing from GC North Sans; preserve the spelling of names.

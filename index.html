@@ -116,7 +116,7 @@ License: 	The WebFont(s) listed in this document must follow the YouWorkForThem
    Past 1000px the same parts spread into the desktop arrangement. Palette from the design pass. */
 :root{
   --font-display:'Little Grandad Fat',Impact,sans-serif;--font-title:'GCNorthSans-SemiBold',Arial,sans-serif;--font-body:'GCNorthSans-Regular',Arial,sans-serif;
-  --font-label:'GCNorthSans-SemiBold',Arial,sans-serif;--font-strong:'GCNorthSans-SemiBold',Arial,sans-serif;--font-mono:'Overbit-Regular',monospace;
+  --font-label:'GCNorthSans-SemiBold',Arial,sans-serif;--font-strong:'GCNorthSans-SemiBold',Arial,sans-serif;--font-mono:'GCNorthSans-SemiBold',Arial,sans-serif;
   --font-clock:'Overbit-ShadowBold','Overbit-Regular',monospace;--font-shadow:'Overbit-Shadow','Overbit-Regular',monospace;
   --bg:#150F2E;--s1:#1C1540;--s2:#221A4A;--s3:#2A2157;--s4:#3A2D6E;--ink:#F6F1FF;--mute:#B9B0D9;--soft:#D8D2EE;--line:#4A4080;--line2:#5A4F99;
   --gold:#FFC93C;--coral:#FF4D6D;--coral2:#FF7A90;--pink:#FF9DAE;--mint:#2EE6B5;--orange:#FF9F43;--lav:#C9A4F5;--sky:#7FB2E5;--mag:#E85DF0;--commit:#3BD15E;
@@ -132,7 +132,7 @@ button:hover:not(:disabled){border-color:var(--line2);background:rgba(255,255,25
 button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 button.primary{font-family:var(--font-title);color:#06120A;background:var(--commit);border:0;box-shadow:0 0 0 5px rgba(59,209,94,.2)}button.primary:hover:not(:disabled){background:#4ADB6A}
 .pill{border-radius:999px}.ghost{border-color:var(--line)}
-.mono{font-family:var(--font-mono)}.num{font-family:var(--font-shadow)}.gold{color:var(--gold)}.coral{color:var(--coral2)}.orange{color:var(--orange)}
+.mono{font-family:var(--font-mono)}.num{font-family:var(--font-label)}.gold{color:var(--gold)}.coral{color:var(--coral2)}.orange{color:var(--orange)}
 .small{font-size:14px;color:var(--mute);line-height:1.5}
 h1,h2,h3{font-family:var(--font-title);font-weight:400;margin:0}
 h2{font-size:25px;line-height:1.2}h3{font-size:18px;line-height:1.3}
@@ -316,7 +316,7 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   #top{display:flex}
   #world{height:auto;aspect-ratio:320/150;max-height:680px}
   #world .shade.top{height:34%;background:linear-gradient(180deg,rgba(21,15,46,.9) 0%,rgba(21,15,46,0) 100%)}
-  #clockbox{top:24px;left:32px;gap:8px}#clockbox .clock{font-size:56px}#clockbox .left{font:400 22px/1.2 var(--font-shadow)}#clockbox .left .num{font-size:22px}
+  #clockbox{top:24px;left:32px;gap:8px}#clockbox .clock{font-size:56px}#clockbox .left{font:400 20px/1.2 var(--font-body)}#clockbox .left .num{font-size:22px}
   #goalbox{display:flex}
   #sosa{top:24px;right:32px;align-items:stretch;gap:8px;width:270px;max-width:none;padding:14px 16px;border-radius:14px}
   #sosa .name{font-size:16px}#sosa .where{display:block}#sosa .row2{display:flex;justify-content:space-between;align-items:baseline}#sosa .row2 .num{font-size:20px}

@@ -121,3 +121,7 @@ Three faults, all on the phone. The clock box's second line was set not to wrap,
 ## Addendum, same day: the clock on a phone
 
 Owner: the Sosā panel covered the clock. On a phone the clock is now 22 px instead of 28, both boxes have tighter padding, the clock takes at most 56% of the width and the Sosā panel at most 44%, so they cannot meet; the Sosā panel's text is 13 px. Measured at 390 px: the clock box ends at 201 and the Sosā panel starts at 239. Desktop sizes are unchanged (the 1000 px rule still sets the 56 px clock). The contrast check could not run here: its npm packages are not installed in this sandbox, before and after the change. Colours did not move.
+
+## Addendum, same day: the pixel face at small sizes
+
+Owner, from a phone: "The pixel font isn't readable here." Overbit was on the big clock, where it reads, and also on every small number: "58 h", "in 1 h", "Certain · 1 h", "2 h", the exposure count. Those were the `--font-mono` token (Overbit Regular) and the `.num` class (Overbit Shadow). Both now resolve to GC North Sans; Overbit Shadow Bold stays on the scene clock and the interstitial clock only. No markup changed. AGENTS.md carries the rule.
