@@ -11,6 +11,8 @@ FONTS = [
     ('GCNorthSans-Regular', 'gc-north-sans-regular.woff2', '400', 'font/woff2', 'woff2', 'gc-north-sans-regular.license.css'),
     ('GCNorthSans-SemiBold', 'gc-north-sans-semi-bold.woff2', '400', 'font/woff2', 'woff2', 'gc-north-sans-semi-bold.license.css'),
     ('Overbit-Regular', 'overbit-regular.woff2', '400', 'font/woff2', 'woff2', 'overbit-regular.license.css'),
+    ('Overbit-Shadow', 'overbit-shadow.woff2', '400', 'font/woff2', 'woff2', 'overbit-shadow.license.css'),
+    ('Overbit-ShadowBold', 'overbit-shadow-bold.woff2', '400', 'font/woff2', 'woff2', 'overbit-shadow-bold.license.css'),
 ]
 css_fonts = []
 for fam, fn, weight, mime, fmt, license_file in FONTS:
@@ -19,10 +21,30 @@ for fam, fn, weight, mime, fmt, license_file in FONTS:
     b64 = base64.b64encode((root / 'fonts' / fn).read_bytes()).decode()
     css_fonts.append(f"@font-face{{font-family:'{fam}';src:url(data:{mime};base64,{b64}) format('{fmt}');font-weight:{weight};font-style:normal;font-display:swap}}")
 shell = shell.replace('/*__FONTS__*/', '\n'.join(css_fonts))
-parts = {'CSS': src / 'style.css', 'P5': root / 'vendor' / 'p5.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
+parts = {'CSS': src / 'style.css', 'P5': root / 'vendor' / 'p5.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
 for k, p in parts.items():
     txt = p.read_text()
     assert '</script' not in txt.lower(), k
     shell = shell.replace('/*__%s__*/' % k, txt)
 out.write_text(shell)
-print(out, len(shell))
+# PWA: a manifest and a service worker beside index.html. The cache name carries a build stamp,
+# so each build replaces the previous cache; old caches are deleted on activate.
+import hashlib, json, time
+stamp = hashlib.sha1(shell.encode()).hexdigest()[:10]
+manifest = {'name': 'Coalition', 'short_name': 'Coalition', 'start_url': './', 'scope': './', 'display': 'standalone', 'orientation': 'portrait',
+            'background_color': '#150F2E', 'theme_color': '#150F2E', 'description': 'An offline escape game set in the Nelôxia universe.',
+            'icons': [{'src': 'icons/icon-192.png', 'sizes': '192x192', 'type': 'image/png'}, {'src': 'icons/icon-512.png', 'sizes': '512x512', 'type': 'image/png'}, {'src': 'icons/icon-maskable-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'maskable'}]}
+(out.parent / 'manifest.webmanifest').write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n')
+sw = '''// Coalition service worker, build %s. Cache first; navigations answer with the cached page.
+const CACHE = 'coalition-%s';
+const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
+self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); });
+self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener('message', (e) => { if (e.data === 'skip') self.skipWaiting(); });
+self.addEventListener('fetch', (e) => {
+  if (e.request.mode === 'navigate') { e.respondWith(caches.match('index.html').then(r => r || fetch(e.request))); return; }
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+});
+''' % (stamp, stamp)
+(out.parent / 'sw.js').write_text(sw)
+print(out, len(shell), 'build', stamp)

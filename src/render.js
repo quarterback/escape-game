@@ -6,7 +6,8 @@
    ============================================================ */
 'use strict';
 const Render = (() => {
-  const W = 320, H = 112, SCALE = 3, GROUND = 92;
+  // The buffer is 320 wide and 150 tall; every scene draws relative to GROUND, so the extra height is sky.
+  const W = 320, H = 150, SCALE = 3, GROUND = H - 20;
   let pg, p, hotspots = [], hover = null, hooks = {};
   const view = { s: null, queue: [], current: null, t: 0, flashes: {}, floats: [], shake: 0, ring: 0, die: null, fade: 0, sceneAlpha: 1, enemyPulse: 0, over: null };
   function setState(s) { view.s = s; }
@@ -59,9 +60,10 @@ const Render = (() => {
       g.fill('#4a4a52'); g.rect(228, GROUND - 30, 30, 30); g.fill('#ffd27a'); g.rect(236, GROUND - 24, 8, 6); // post
       for (let i = 0; i < 20; i += 4) { g.fill(i % 8 ? '#d9d9d9' : '#c83a3a'); g.rect(258 + i, GROUND - 15, 4, 2); } g.fill('#555'); g.rect(256, GROUND - 16, 2, 16);
       g.fill('#2c2a33'); g.rect(0, GROUND, W, H - GROUND); g.fill('#e8d8a0'); for (let x = 0; x < W; x += 14) g.rect(x, GROUND + 8, 7, 1);
-      g.fill('#3b2f3f'); g.rect(10, GROUND - 40, 60, 40); g.fill('#ffd27a'); g.rect(20, GROUND - 30, 8, 8); g.fill('#cfd0dd'); g.rect(30, GROUND - 38, 28, 4); // registry on the square
+      g.fill('#3b2f3f'); g.rect(10, GROUND - 40, 60, 40); g.fill('#ffd27a'); g.rect(20, GROUND - 30, 8, 8); g.fill('#cfd0dd'); g.rect(30, GROUND - 38, 28, 4); // the town hall on the square
       car(g, 150, GROUND, '#c8c84a'); car(g, 60, GROUND, '#6a2d2d');
-      people(g, s, [['registry', 40, '#5f8a4a', '#2f4a22'], ['nando', 84, '#8a6a3a', '#4a3a1a']]);
+      people(g, s, [['nando', 84, '#8a6a3a', '#4a3a1a']]);
+      person(g, 40, GROUND, '#5f8a4a', '#2f4a22'); // a clerk on the steps
       person(g, 270, GROUND, '#3b5d8f', '#1b2a45', '#d8a070');
     },
     colonia(g, s, t, night) {
@@ -125,7 +127,6 @@ const Render = (() => {
     // Route and arrangement text lives in HTML so it does not shrink with the scene.
     p.textFont('GCNorthSans-Regular'); p.noStroke();
     // phone
-    if (s.inbox.length) { const k = 0.5 + 0.5 * Math.sin(t / 200); p.fill(`rgba(255,210,74,${0.6 + 0.4 * k})`); p.rect(p.width - 44, p.height - 24, 20, 14, 3); p.fill('#111'); p.textAlign(p.CENTER, p.CENTER); p.textSize(14); p.text(s.inbox.length, p.width - 34, p.height - 17); }
     if (hover && !busy()) { p.textSize(16); const w = Math.min(p.width - 24, p.textWidth(hover.label) + 20); const tx = Math.min(p.width - w - 12, Math.max(12, hover.x + hover.w / 2 - w / 2)); p.fill('rgba(12,12,20,0.96)'); p.rect(tx, hover.y - 40, w, 30, 3); p.fill('#fff'); p.textAlign(p.LEFT, p.CENTER); p.text(hover.label, tx + 10, hover.y - 25); }
 
     p.textSize(16); p.textAlign(p.CENTER, p.BOTTOM);
@@ -133,7 +134,7 @@ const Render = (() => {
     if (view.die) { const d = view.die, cx = p.width / 2, cy = p.height / 2 - 20, k = Math.min(1, d.t * 3); const face = k < 1 ? 1 + Math.floor(Math.random() * 6) : d.die; p.fill(k < 1 ? '#eee' : d.won ? '#5cd65c' : '#ff6a6a'); p.rect(cx - 22, cy - 22, 44, 44, 6); p.fill('#111'); p.textSize(26); p.textAlign(p.CENTER, p.CENTER); p.text(face, cx, cy); p.textSize(16); p.fill('#eee'); p.text(`needs ${d.need}`, cx, cy + 36); }
     if (view.enemyPulse > 0) { p.fill(`rgba(220,40,40,${0.18 * view.enemyPulse})`); p.rect(0, 0, p.width, p.height); }
     if (view.fade > 0) { p.fill(`rgba(8,8,14,${0.9 * view.fade})`); p.rect(0, 0, p.width, p.height); }
-    if (view.over) { p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height); p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a'); p.text(view.over.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins', p.width / 2, p.height / 2 - 14); p.textSize(12); p.fill('#eee'); p.text('', p.width / 2, p.height / 2 + 14); }
+    if (view.over) { p.fill('rgba(21,15,46,0.72)'); p.rect(0, 0, p.width, p.height); p.textAlign(p.CENTER, p.CENTER); p.textSize(30); p.fill(view.over.win ? '#FFC93C' : '#FF7A90'); p.text(view.over.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins', p.width / 2, p.height / 2); }
   }
   function hitTest(mx, my) { let best = null; for (const h of hotspots) if (mx >= h.x && mx <= h.x + h.w && my >= h.y && my <= h.y + h.h) best = h; return best; }
   let last = 0;
@@ -150,8 +151,30 @@ const Render = (() => {
     };
     pp.mousePressed = () => { const h = hitTest(pp.mouseX, pp.mouseY); if (h && hooks.onPick) hooks.onPick(h.id); };
   };
+  // The runway family photo for the start screen and the debrief: six people, luggage, the jet, the pilot at the stairs.
+  function runwayStill() {
+    if (!pg) return null; const g = pg, G = GROUND; g.noStroke();
+    sky(g, 0, false, [44, 30, 88], [255, 168, 104]);
+    g.fill('#ffd27a'); g.ellipse(232, G - 26, 26, 26); g.fill('rgba(255,210,122,0.18)'); g.ellipse(232, G - 26, 60, 60);
+    g.fill('#3a2f66'); g.rect(0, G - 20, W, 20); g.fill('#5a4a8a'); for (let x = 0; x < W; x += 11) g.rect(x, G - 14 + (x % 4), 6, 1);
+    g.fill('#4a4458'); g.rect(12, G - 62, 14, 62); g.fill('#6a6478'); g.rect(6, G - 68, 26, 10); g.fill('#ffd27a'); g.rect(10, G - 66, 18, 6);
+    ground(g, '#34323e', '#403e4a'); g.fill('#ffd27a'); for (let x = 0; x < W; x += 22) g.rect(x, G + 18, 11, 2); g.fill('#ffcf6a'); for (let x = 4; x < W; x += 16) g.rect(x, G + 3, 1, 1);
+    const jx = 146;
+    g.fill('#ecebf4'); g.rect(jx, G - 18, 82, 12); g.triangle(jx + 82, G - 18, jx + 82, G - 6, jx + 98, G - 12); g.rect(jx + 6, G - 32, 7, 14); g.triangle(jx + 6, G - 32, jx + 13, G - 32, jx + 13, G - 38);
+    g.fill('#2b3450'); g.rect(jx + 24, G - 15, 42, 3); g.fill('#9ad'); for (let i = 0; i < 6; i++) g.rect(jx + 26 + i * 7, G - 14, 3, 2);
+    g.fill('#555'); g.rect(jx + 34, G - 10, 16, 5); g.fill('#111'); g.rect(jx + 14, G - 5, 4, 5); g.rect(jx + 60, G - 5, 4, 5); g.fill('#2a2833'); g.rect(jx + 70, G - 6, 3, 6);
+    g.fill('#b8b8c4'); for (let i = 0; i < 6; i++) g.rect(jx + 64 + i * 2, G - 6 + i, 3, 1);
+    const KID = ['.HHH.', '.SSS.', '.SSS.', 'CCCCC', 'C.C.C', '.CCC.', '.L.L.', '.B.B.'];
+    const kid = (x, coat, hair, skin) => px(g, x - 2, G - 8, KID, { H: hair, S: skin, C: coat, L: '#2a2430', B: '#111' });
+    g.fill('rgba(0,0,0,0.25)'); g.rect(62, G, 80, 2);
+    person(g, 72, G, '#2b3450', '#1b1b22', '#d8a070'); kid(82, '#2ea88a', '#2a1a14', '#c89060'); person(g, 92, G, '#8a2d3d', '#2a1a14', '#e0b48c');
+    person(g, 102, G, '#4a5a3a', '#3a2a1a', '#c89060'); kid(111, '#e0a030', '#2a1a14', '#e0b48c'); person(g, 121, G, '#7a4ea8', '#dddde4', '#d8a070');
+    g.fill('#8a6a3a'); g.rect(129, G - 5, 6, 5); g.fill('#6a4a2a'); g.rect(131, G - 6, 2, 1); g.fill('#3a5a8a'); g.rect(60, G - 4, 5, 4);
+    person(g, 220, G, '#2b3450', '#1b2a45', '#d8a070');
+    return g.canvas.toDataURL('image/png');
+  }
   // A still of one level with no HUD, as a data URL, for the title screen. Null until p5 has set up.
   function still(s) { if (!pg) return null; const g = pg; g.noStroke(); SCENES[Data.LEVELS[s.pos].scene](g, s, 4000, Sim.isNight(s)); player(g, s, 4000); return g.canvas.toDataURL('image/png'); }
   function start(hk) { Object.assign(hooks, hk); new p5(sketch); }
-  return { start, still, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, still, runwayStill, setState, enqueue, busy, float, dice, travel, enemy, ring, pause, gameOver, view, SCALE, W, H };
 })();

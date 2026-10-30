@@ -17,8 +17,8 @@ function play(seed, who) {
     // push arrangements that are not pending and not complete, before trying the border or the airfield
     const calls = A.calls.filter(c => c.ok);
     const lvl = s.pos;
-    if (calls.length && (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3 && s.arr.document.stage < 2) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2)))) {
-      const order = ['permission', 'aircraft', 'reception', 'document'];
+    if (calls.length && (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2)))) {
+      const order = ['permission', 'aircraft', 'reception'];
       calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); Sim.commit(s, calls[0].id); continue;
     }
     // best approach: highest odds among ok ones, certain first; never the impossible
@@ -44,5 +44,5 @@ for (const who of ['woman', 'man']) {
   const lh = {}; rows.forEach(r => Object.entries(r.lvlHours).forEach(([k, v]) => lh[k] = (lh[k] || 0) + v));
   console.log('       mean hours per level:', Object.entries(lh).sort().map(([k, v]) => `${Data.LEVELS[k].short} ${(v / N).toFixed(1)}`).join(' · '));
 }
-const a = JSON.stringify(Object.assign({}, Sim.newRun(5, 'man'), { _rng: null })), b = JSON.stringify(Object.assign({}, Sim.newRun(5, 'man'), { _rng: null }));
+const a = Sim.serialize(Sim.newRun(5, 'man')), b = Sim.serialize(Sim.newRun(5, 'man'));
 console.log('deterministic:', a === b);

@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Coalition</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,/*__FAVICON__*/">
-<meta name="description" content="You lost the presidency on Saturday. Cross the border into Esmeralda and leave its airspace before the inquiry finds you. A single-file, offline escape game set in the Nelôxia universe.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#150F2E">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta, before the inquiry finds you. An offline escape game set in the Nelôxia universe.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Coalition">
 <meta property="og:title" content="Coalition">
@@ -26,60 +31,96 @@
 </style>
 </head>
 <body>
-<header>
-  <h1>Coalition<small>Get out of Valdória. Keep your allies working.</small></h1>
-  <div class="stat"><b>Clock</b><span class="v" id="clock"></span><span class="small" id="left"></span></div>
-  <div class="stat"><b>Where</b><span id="where"></span></div>
-  <div class="stat"><b>They think</b><span id="belief"></span></div>
-  <div class="stat"><b>Exposure</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
-  <div class="stat"><button id="startscreen">Start screen</button><button id="demo">Guided run</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
+<div id="frame">
+<header id="top">
+  <div class="wordmark">Coalition</div>
+  <span class="whoami" id="whoami"></span>
+  <nav class="menu" aria-label="Game">
+    <button id="demo">Guided run</button>
+    <button id="startscreen">Start screen</button>
+    <button id="help">Help</button>
+    <button id="install" hidden>Install</button>
+    <button id="mute" aria-label="Sound on" title="Sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
+  </nav>
 </header>
-<main>
-  <div id="world"><nav id="route-map" aria-label="Escape route"><ol id="route-stops"></ol></nav><div id="scene" aria-label="Pixel-art scene of the current level"></div></div>
-  <aside id="side">
-    <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
-    <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
-    <div id="dialogue" aria-live="polite"></div>
-  </aside>
-</main>
-<div class="lower">
-  <section class="panel" id="here-panel">
-    <h2>Here</h2>
+
+<div id="world">
+  <div id="scene" aria-label="Pixel-art scene of the current level"></div>
+  <div class="shade top" aria-hidden="true"></div>
+  <div class="shade bottom" aria-hidden="true"></div>
+  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span class="num" id="left"></span> left. <span id="leftverb">Out by</span> <span class="mono gold" id="deadline"></span></span></div>
+  <div id="goalbox"><span class="lbl">Goal</span><span class="txt"><span id="goaltxt">Leave Esmeraldan airspace by</span> <span class="mono gold" id="deadline2"></span></span></div>
+  <div id="sosa">
+    <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">Sosā, looking here</span></span>
+    <span class="where" id="sosa-where"></span>
+    <span class="row2"><span id="sosa-nextl">Next move</span> <span class="num coral" id="sosa-next"></span></span>
+    <span class="row2 exp">Exposure <span><span class="mono orange" id="heatnum"></span> of 10</span></span>
+    <span class="bar" id="heat"></span>
+    <span class="row2 arrive">At 10 they arrive.</span>
+  </div>
+  <div id="expline"><span id="expl"><span id="expl-l">Exposure</span> <b id="expl-b"></b></span><span class="bar" id="heat2"></span><span class="mono orange" id="heatnum2"></span></div>
+  <div id="lvlhead"><h1 id="lvlname"></h1><p id="lvlobj"></p></div>
+</div>
+
+<main id="panels">
+  <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
+  <section class="tab" id="tab-here" data-tab="here">
+    <span class="grab" aria-hidden="true"></span>
+    <div id="lvlhead2"><h1 id="lvlname2"></h1><p id="lvlobj2"></p></div>
+    <div class="h2row"><h2>Here</h2><button id="wait" class="pill">Wait one hour</button></div>
     <div id="approaches"></div>
-    <div id="inspect" class="empty"></div>
-    <div class="row" style="margin-top:8px"><button id="wait">Wait one hour</button></div>
+    <details id="logbox"><summary>What happened</summary><div id="dialogue" aria-live="polite"></div></details>
   </section>
-  <section class="panel" id="phone-panel">
-    <h2>The phone</h2>
-    <div id="inbox"></div>
-    <h3>Arrangements</h3>
-    <ul id="arrangements"></ul>
-    <div id="calls"></div>
-  </section>
-  <section class="panel" id="people-panel">
-    <h2>Your cards</h2>
+
+  <section class="tab" id="tab-hand" data-tab="hand">
+    <h2>Your hand</h2>
     <div id="hand"></div>
-    <h3>People and promises</h3>
-    <ul id="people"></ul>
-    <h3>The inquiry</h3>
-    <ul id="enemy"></ul>
+    <h3 class="menu2-h">Game</h3>
+    <div class="row" id="menu2"><button data-act="demo">Guided run</button><button data-act="startscreen">Start screen</button><button data-act="help">Help</button><button data-act="install" hidden>Install</button><button data-act="mute">Sound: on</button></div>
+  </section>
+
+  <aside class="tab" id="tab-phone" data-tab="phone">
+    <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>The phone</h2><span class="chip lav" id="waiting"></span></div>
+    <div id="inbox"></div>
+    <h3>Calls</h3>
+    <div id="calls"></div>
     <div id="helpbox" hidden>
       <p>Choose an approach under <b>Here</b>, read its chances, then commit. Use <b>The phone</b> to arrange help while you travel. Calls can fail; check when a reply is due.</p>
-      <p>Cards improve your chances or unlock an approach. Party influence stops working in Esmeralda. Some people accept money; others refuse.</p>
+      <p>Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse.</p>
       <p>At exposure 10, you are caught. Leave Esmeraldan airspace within 72 hours to win.</p>
+      <p id="ioshint" hidden>To install on an iPhone: tap Share, then Add to Home Screen.</p>
     </div>
+  </aside>
+
+  <section class="tab" id="tab-route" data-tab="route">
+    <div class="h2row"><h2>The route</h2><span class="legend"><span><i class="sw inhand"></i>In hand</span><span><i class="sw promised"></i>Promised, not delivered</span><span><i class="sw notyet"></i>Not started</span></span></div>
+    <div id="board"></div>
+    <ol id="rail"></ol>
   </section>
+</main>
+
+<nav id="tabs" aria-label="Panels">
+  <button data-tab="here" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Here</button>
+  <button data-tab="phone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>Phone<span class="badge" id="tab-badge" hidden></span></button>
+  <button data-tab="route"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="M6 7v4a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4"></path></svg>Route</button>
+  <button data-tab="hand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="11" height="15" rx="2"></rect><path d="M9 3h10a2 2 0 0 1 2 2v12"></path></svg>Hand</button>
+</nav>
 </div>
-<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div>
+
+<div id="update" hidden><span>New version ready.</span><button id="reload">Reload</button></div>
+
+<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div></div>
+
 <div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
+
 <div id="start" hidden>
+  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><span class="kicker mono">Sat 14:00, Valdória</span><h2>Coalition</h2><p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p></div></div>
   <div class="startbox">
-    <h2>Coalition</h2>
-    <p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p>
+    <button id="continue" class="pill ghost" hidden>Continue your run</button>
     <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
-    <h3 id="start-free">Choose your character</h3>
+    <h3 id="start-free">Or choose your character</h3>
     <div id="start-chars"></div>
-    <p class="small">Runs offline. No account needed.</p>
+    <p class="small byline">A Nelosphere universe by <a href="https://ronbronson.dev">Ron Bronson</a></p>
   </div>
 </div>
 <script>
@@ -93,6 +134,9 @@
 </script>
 <script>
 /*__TUTORIAL__*/
+</script>
+<script>
+/*__GOV__*/
 </script>
 <script>
 /*__AUDIO__*/

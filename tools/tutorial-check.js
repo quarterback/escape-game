@@ -14,14 +14,13 @@ const actions = {
   3:  () => must(Sim.commit(s, msgId(), 'name_atlanta'), 'name Atlanta'),
   4:  () => must(Sim.commit(s, 'call:aircraft'), 'call aircraft'),
   6:  () => must(Sim.commit(s, 'decoy'), 'decoy'),
-  8:  () => must(Sim.commit(s, msgId(), 'sign_person'), 'sign in person'),
-  10: () => must(Sim.commit(s, 'call:permission'), 'call permission'),
-  11: () => must(Sim.commit(s, 'second_driver'), 'second driver'),
-  13: () => must(Sim.commit(s, 'help_host'), 'help host'),
-  15: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
-  16: () => must(Sim.commit(s, 'crate'), 'Holt'),
-  17: () => must(Sim.commit(s, 'board'), 'board'),
-  19: () => must(Sim.commit(s, 'civil_doc'), 'civil record'),
+  9:  () => must(Sim.commit(s, 'call:permission'), 'call permission'),
+  10: () => must(Sim.commit(s, 'second_driver'), 'second driver'),
+  12: () => must(Sim.commit(s, 'help_host'), 'help host'),
+  14: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
+  15: () => must(Sim.commit(s, 'crate'), 'Holt'),
+  16: () => must(Sim.commit(s, 'board'), 'board'),
+  18: () => must(Sim.commit(s, 'show_passport'), 'second passport'),
 };
 Tutorial.start();
 Tutorial.STEPS.forEach((st, i) => {
@@ -33,4 +32,4 @@ Tutorial.STEPS.forEach((st, i) => {
   console.log(`${String(i + 1).padStart(2)} act    ${st.title}   [${Sim.clockText(s.hour)}, level ${s.pos}, exposure ${s.exposure}] ${rolls}`);
 });
 if (s._dice.length || s._enemy.length) console.log(`note: ${s._dice.length} dice and ${s._enemy.length} enemy actions unused`);
-console.log('end:', Sim.clockText(s.hour), 'level', s.pos, 'aircraft', s.arr.aircraft.stage, 'document', s.arr.document.stage, 'permission', s.arr.permission.stage, 'reception', s.arr.reception.stage, 'exposure', s.exposure, 'over', !!s.over);
+console.log('end:', Sim.clockText(s.hour), 'level', s.pos, 'aircraft', s.arr.aircraft.stage, 'permission', s.arr.permission.stage, 'reception', s.arr.reception.stage, 'exposure', s.exposure, 'over', !!s.over);

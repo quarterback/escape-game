@@ -37,13 +37,10 @@ const Tutorial = (() => {
       ['#approaches'], { approaches: ['decoy'] }, (s) => s.pos === 1),
     info('The die',
       `<p>Cards lower the roll you need. They stay in your hand unless used or withdrawn.</p><p>You reached Santa Laura. The inquiry still watches the house.</p>`, ['#scene']),
-    act('A second document',
-      `<p>Mārtā can issue a civil record the restriction does not name.</p><p>Choose <b>Go in person, one hour</b>. The record will take eight hours.</p>`,
-      ['#inbox'], { options: ['sign_person'] }, (s) => s.arr.document.stage >= 1),
     info('The inquiry acts',
-      `<p>Sosā sent the restriction to every post. Border rolls are now one point harder unless you have a delay-report card.</p><p>The inquiry acts every four hours.</p>`, ['#enemy']),
+      `<p>Sosā sent the travel ban to every post. Border rolls are now one point harder unless you hold a delay card.</p><p>The inquiry acts every three hours.</p>`, ['#enemy']),
     act('Engage the sponsor',
-      `<p><b>Call Salek about permission</b>. He can ask Atlanta to receive you.</p><p>Read his terms before committing. Calling accepts them.</p>`,
+      `<p><b>Call Salek about your visa</b>. He can ask Atlanta to let you in.</p><p>Read his terms before committing. Calling accepts them.</p>`,
       ['#calls'], { calls: ['permission'] }, (s) => s.jobs.some(j => j.arr === 'permission') || s.arr.permission.stage >= 1),
     act('Pay someone who takes money',
       `<p>Nando’s cousin accepts money. Choose <b>Hire a driver and plain car</b>.</p>`,
@@ -65,12 +62,12 @@ const Tutorial = (() => {
       `<p>Holt's crate is in your hand. It works in one place: this yard, tonight. <b>Board the midnight freight</b>. The card makes the roll certain, and it is spent when the train leaves.</p>`,
       ['#approaches'], { approaches: ['board'] }, (s) => s.pos === 4),
     info('The border',
-      `<p>Mārtā’s civil record is ready. The border has Sosā’s order, but Gianlūka’s card helps.</p><p>You can cross now or wait for reception to be arranged.</p>`, ['#approaches', '#hand']),
-    act('Present the civil record',
-      `<p>Select <b>Present the Nelôxian civil record</b>. Read how the order and your cards affect the roll, then commit.</p>`,
-      ['#approaches'], { approaches: ['civil_doc'] }, (s) => s.pos === 5),
+      `<p>Your second passport counts from here on. The border has Sosā’s ban, but Gianlūka’s card still helps on this side of the line.</p><p>You can cross now or wait for Vélez’s people.</p>`, ['#approaches', '#hand']),
+    act('Show your second passport',
+      `<p>Select <b>Show your second passport</b>. Read how the ban and your cards change the roll, then commit.</p>`,
+      ['#approaches'], { approaches: ['show_passport'] }, (s) => s.pos === 5),
     info('Susana airfield. The rest is yours.',
-      `<p>You crossed. Now fuel the jet and arrange Atlanta’s permission. Your party card has no influence here.</p><p>Call Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.</p><p>Press <b>Finish</b> to continue. Rolls and inquiry moves are no longer scripted.</p>`, ['#arrangements', '#hand']),
+      `<p>You crossed. Now fuel the jet and get Atlanta’s visa. Your party card has no influence here.</p><p>Call Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.</p><p>Press <b>Finish</b> to continue. Rolls and inquiry moves are no longer scripted.</p>`, ['#arrangements', '#hand']),
   ];
 
   let i = -1;
@@ -87,7 +84,8 @@ const Tutorial = (() => {
   function allowsWait() { return allow().wait; }
   // called after each resolved action: advance past any done act-step
   function sync(s) { let moved = false; while (active() && !step().allow.next && step().done(s)) { i += 1; moved = true; } return moved; }
+  function forward() { if (active()) i += 1; }
   function next() { if (active() && step().allow.next) { if (isLast()) stop(); else i += 1; } }
-  return { SEED, WHO, DICE, ENEMY, STEPS, start, stop, active, step, index, isLast, allow, allowsApproach, allowsCall, allowsOption, allowsWait, sync, next };
+  return { SEED, WHO, DICE, ENEMY, STEPS, start, stop, active, step, index, isLast, allow, allowsApproach, allowsCall, allowsOption, allowsWait, sync, next, forward };
 })();
 if (typeof module !== 'undefined') module.exports = Tutorial;

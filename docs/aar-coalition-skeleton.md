@@ -277,3 +277,45 @@ and a tap on your sibling's phone, and exposure now drifts every two hours while
 right place. The guided run still replays, with one scripted inquiry move added for the new cadence.
 Harness: the dumb policy wins 62 percent, down from 65; all nine card tags are used. Balance is
 left to the design pass by owner instruction.
+
+## Addendum: the design pass, implemented
+
+Source: the owner's design canvas and `docs/design-pass-handoff.md`, with
+`docs/government-character-plan.md`. Owner correction recorded here: the government
+character is an addition to build, not a proposal to weigh. It is in the game.
+
+Story. The second passport has always existed and sits in the starting hand; the civil
+record, Mārtā and the Document arrangement are gone, the border approach is "Show your
+second passport", Santa Laura's clean exit is your sibling's driver once the charter is
+booked. Real terms: travel ban, entry visa for Atlanta, "Esmeralda expects you". The
+guided run lost its document step and still replays.
+
+Layout. Phone first: a 360px scene header with the clock in Overbit Shadow Bold, the hours
+left in Overbit Shadow, the Sosā chip and the exposure line; one panel on screen with a
+tab bar (Here, Phone, Route, Hand) and a badge for waiting messages; the coach sits above
+the tabs so it survives a tab switch. Past 1000px the header returns, the scene runs full
+width, Here and the hand sit left, the phone right, and the Route becomes the blueprint
+board: who acts here, needed to leave (in hand, promised, not started), where your cards
+count, the inquiry. Approaches show a die face with the pips of the roll they need. Cards
+are coloured by tag and say where they count. The start screen is the runway family photo
+drawn by the renderer; the escape debrief opens on it. The scene buffer grew from 112 to 150
+rows with no new art.
+
+The government side (`src/gov.js`). The candidate is played by the harness policy on a
+hidden run with the automatic inquiry switched off. The player sees reports with "proves"
+and "does not prove", some late, one false (the decoy), sends orders that run the inquiry's
+actions by hand with a die and a named actor, and requests that take hours (the Esmeraldan
+hold, the operator's licence, confirming the ban reached the post). Across the line nothing
+can be ordered until Esmeralda agrees. The debrief tables where she was against where you
+looked, names the misleading report, who delivered, and the minister's reaction from your
+choices. A sixty-run smoke test splits 29 captures, 30 escapes, 1 timeout. The character's
+name is the owner's to set; the title stands in.
+
+PWA. Manifest, service worker with a build stamp, icons from the austral, `_headers` for
+Cloudflare, install button on `beforeinstallprompt`, an iPhone hint in Help, and a saved
+run (the die's state lives on the run, so a resumed run rolls what it would have rolled).
+
+Checked in Chromium at 390 and 1440 wide: the tutorial clicks through all twenty steps,
+each act step exposing exactly one action; a reload offers Continue and resumes at the same
+hour; a government run gives orders and shows reports; zero page errors; zero network
+requests. Not done: Lighthouse and airplane-mode checks need the game served over HTTPS.

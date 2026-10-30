@@ -56,3 +56,7 @@ kits. Their original headers are stored in the matching `*.license.css` files
 and emitted unaltered beside the embedded font-face rules.
 
 The earlier faces remain stored here, but the build only embeds active faces.
+
+## Overbit Shadow and Overbit Shadow Bold (Lettertype Studio, via YouWorkForThem)
+
+Two more styles of the owner's Overbit kit, used for the clock (Shadow Bold) and the hours left (Shadow). Their licence headers are `fonts/overbit-shadow.license.css` and `fonts/overbit-shadow-bold.license.css`, emitted by the build beside the `@font-face` rules.

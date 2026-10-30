@@ -7,7 +7,8 @@
 'use strict';
 const Sim = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
-  function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
+  function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
   const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
@@ -19,18 +20,18 @@ const Sim = (() => {
   function newRun(seed, who, opts) {
     opts = opts || {};
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
-    const rng = mulberry32(seed >>> 0);
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
-      arr: {}, people: {}, hand: ['decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
+      arr: {}, people: {}, hand: ['passport', 'decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
       nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
     };
+    s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
     s._dice = opts.dice ? opts.dice.slice() : null;
     s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
     for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
-    s._rng = rng;
+    s._rngState = seed >>> 0; attachRng(s);
     const events = [];
     arrive(s, events, true);
     s._boot = events;
@@ -45,7 +46,7 @@ const Sim = (() => {
   }
   const level = (s) => D.LEVELS[s.pos];
   const ch = (s) => D.CHARACTERS[s.who];
-  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
+  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
 
   // ---- messages (the phone) ---------------------------------
   function msg(s, events, from, text, options) {
@@ -62,13 +63,6 @@ const Sim = (() => {
         { id: 'name_atlanta', label: 'Name Atlanta now', hours: 0, effect: 'Crew booking can proceed. Atlanta has not granted permission yet.' },
         { id: 'wait_sponsor', label: 'Wait until Salek answers', hours: 0, effect: 'Crew booking waits until Salek is engaged.' },
         { id: 'delegate_sibling', label: `Let ${ch(s).sibling.short} decide`, hours: 0, effect: `Needs a ${D.PEOPLE.sibling.reliability}+ roll to name Atlanta; failure delays work six hours.` },
-      ]);
-    }
-    if (s.pos === 1) {
-      msg(s, events, 'registry', `"I can issue your civil record. Sign in person, or have Gianlūka ask."`, [
-        { id: 'sign_person', label: 'Go in person, one hour', hours: 1, effect: 'Request the record at the main-square registry. Due in eight hours.' },
-        { id: 'aide_asks', label: 'Have Gianlūka ask her', hours: 0, effect: 'Owe Gianlūka a favor. The record takes twelve hours.' },
-        { id: 'skip_doc', label: 'Skip it', hours: 0, effect: 'Keep only your restricted passport.' },
       ]);
     }
     if (s.pos === 1) {
@@ -176,13 +170,11 @@ const Sim = (() => {
     add('reception', A.reception.stage < 2 ? 'sibling' : 'official',
       [A.reception.stage === 2 && s.pos < 3 ? 'Call from Salta to request officials at the border.' : null].filter(Boolean),
       'Arrange reception through your sibling, then Vélez.');
-    add('document', 'registry', [A.document.stage === 0 ? 'Answer Mārtā’s message in Santa Laura first.' : null].filter(Boolean),
-      'Ask Mārtā to finish your civil record.');
     add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? 'Contact Salek before reaching Susana.' : null].filter(Boolean),
       'Ask Salek to seek Atlanta’s permission. His terms apply.');
     return out;
   }
-  const jobHours = (k) => ({ aircraft: 6, reception: 6, document: 8, permission: 10 })[k];
+  const jobHours = (k) => ({ aircraft: 6, reception: 6, permission: 10 })[k];
   function inboxList(s) {
     return s.inbox.map(m => ({ kind: 'message', id: 'msg:' + m.id, msgId: m.id, from: m.from, name: `${personName(s, m.from)}: ${m.text}`, ok: true, hours: 0,
       options: m.options.map(o => Object.assign({}, o, { ok: optionOk(s, o), why: optionWhy(s, o) })) }));
@@ -190,7 +182,6 @@ const Sim = (() => {
   function optionWhy(s, o) {
     if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return "You do not have Salek's line yet. Call him about permission first.";
     if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return "You do not have Vélez's card.";
-    if (o.id === 'aide_asks' && !hasTag(s, 'influence')) return 'Gianlūka is not taking your calls.';
     if (o.id === 'send_decoy_yard' && !heldTag(s, 'decoy')) return 'Nando and the spare cars are gone.';
     if (o.id === 'via_sponsor' && s.people.sponsor.turned) return 'Salek is not taking your calls.';
     return '';
@@ -236,8 +227,7 @@ const Sim = (() => {
     const def = D.ARRANGEMENTS[k]; to = Math.max(0, Math.min(def.stages.length - 1, to));
     if (to === s.arr[k].stage) return; s.arr[k].stage = to;
     events.push(ev('stage', { arr: k, stage: to, label: def.stages[to] }));
-    const line = (D.STAGE_LINES[k] || [])[to]; if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : k === 'document' ? 'registry' : 'sponsor', line);
-    if (k === 'document' && to === 2) gain(s, 'civil_record', events);
+    const line = (D.STAGE_LINES[k] || [])[to]; if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : 'sponsor', line);
     if (k === 'reception' && to >= 2) gain(s, 'intro_vel', events);
     if (k === 'permission' && to === 1) gain(s, 'sponsor_line', events);
   }
@@ -255,7 +245,7 @@ const Sim = (() => {
     const due = s.hour + 1 + jobHours(k);
     s.jobs.push({ arr: k, ally: c.ally, target: s.arr[k].stage + 1, due });
     events.push(ev('job', { arr: k, ally: c.ally, due, dueText: clockText(due) }));
-    say(events, c.ally, k === 'aircraft' ? `"Leave it with me. Six hours."` : k === 'reception' ? (c.ally === 'official' ? `"I will see what the minister can spare. Call it a courtesy."` : `"I have a name in Baca. Give me six hours."`) : k === 'document' ? `"Eight hours. The stamp is the slow part."` : `"Ten hours, and you understand what I asked."`);
+    say(events, c.ally, k === 'aircraft' ? `"Leave it with me. Six hours."` : k === 'reception' ? (c.ally === 'official' ? `"I will see what the minister can spare. Call it a courtesy."` : `"I have a name in Baca. Give me six hours."`) : `"Ten hours, and you understand what I asked."`);
     pass(s, 1, events); return finish(s, events);
   }
   function answer(s, id, optionId, events) {
@@ -267,9 +257,6 @@ const Sim = (() => {
       case 'name_atlanta': s.flags.destination = true; stage(s, 'aircraft', 1, events); say(events, 'sibling', `"Atlanta. I will tell the operator."`); break;
       case 'wait_sponsor': stage(s, 'aircraft', 1, events); say(events, 'sibling', `"Then call Salek soon. The crew will not wait on us forever."`); break;
       case 'delegate_sibling': stage(s, 'aircraft', 1, events); { const d = roll(s); const good = d >= D.PEOPLE.sibling.reliability; events.push(ev('roll', { die: d, need: D.PEOPLE.sibling.reliability, won: good, who: 'sibling' })); if (good) { s.flags.destination = true; say(events, 'sibling', `"I told them Atlanta. Do not make me a liar."`); } else { s.jobs.push({ arr: 'aircraft', ally: 'sibling', target: 1, due: s.hour + 6, stall: true }); say(events, 'sibling', `"I could not decide for you. Six hours lost."`); } } break;
-      case 'sign_person': stage(s, 'document', 1, events); s.jobs.push({ arr: 'document', ally: 'registry', target: 2, due: s.hour + 8 }); say(events, 'registry', `"Sign here, and here. Come back for it, or send someone with your face."`); break;
-      case 'aide_asks': stage(s, 'document', 1, events); s.jobs.push({ arr: 'document', ally: 'registry', target: 2, due: s.hour + 12 }); if (!s.commitments.some(c => c.to === 'aide')) { s.commitments.push({ to: 'aide', text: D.PEOPLE.aide.terms, kept: null }); events.push(ev('commit', { to: 'aide', text: D.PEOPLE.aide.terms })); } say(events, 'registry', `"Your chief of staff has a way of asking. Twelve hours."`); break;
-      case 'skip_doc': say(events, 'narrator', 'You keep driving. The passport in your pocket is the one on the order.'); break;
       case 'keep_calling': s.jobs.push({ arr: 'reception', ally: 'sibling', target: 2, due: s.hour + 6 }); break;
       case 'via_sponsor': stage(s, 'reception', 2, events); lose(s, 'sponsor_line', events); s.used.push('sponsor_line'); say(events, 'sponsor', `"Her uncle banks with me. She will answer within the hour. That is two things now."`); break;
       case 'wait_velez': break;
@@ -300,7 +287,7 @@ const Sim = (() => {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
-      if (s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
+      if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
       if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive in ${level(s).short} at ${clockText(s.hour)}. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
       else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
     }
@@ -312,13 +299,14 @@ const Sim = (() => {
     const d = roll(s), good = d >= rel;
     events.push(ev('roll', { die: d, need: rel, won: good, who: j.ally }));
     if (good) { if (j.arr === 'aircraft' && j.target === 2 && !s.flags.destination && s.arr.permission.stage < 1) { say(events, 'sibling', `"The crew will not confirm without a destination. Decide."`); return; } stage(s, j.arr, j.target, events); if (j.arr === 'permission' && j.target === 1) s.flags.destination = true; }
-    else say(events, j.ally, j.ally === 'sibling' ? `"Nothing yet. They want more time."` : j.ally === 'sponsor' ? `"The ministry has not called back. I will try again if you ask."` : j.ally === 'official' ? `"The minister has other guests this weekend."` : `"The stamp is not ready."`);
+    else say(events, j.ally, j.ally === 'sibling' ? `"Nothing yet. They want more time."` : j.ally === 'sponsor' ? `"The ministry has not called back. I will try again if you ask."` : `"The minister has other guests this weekend."`);
   }
-  function enemyTurn(s, events) {
+  function enemyTurn(s, events, forced) {
     const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
     const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
     for (const a of cands) { r -= a.w; if (r <= 0) { pick = a; break; } }
     if (s._enemy && s._enemy.length) { const want = s._enemy.shift(); pick = cands.find(a => a.id === want) || pick; }
+    if (forced) { pick = D.ENEMY_ACTIONS.find(a => a.id === forced); if (!pick) return null; }
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
@@ -332,8 +320,15 @@ const Sim = (() => {
       case 'watch_sibling': { text = pick.text(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief }));
+    return text;
   }
+  // The government side: run one named inquiry action now, and pass time without the automatic inquiry.
+  function enemyAct(s, id, events) { if (id === 'roadblock' || id === 'check_belief') s.lastEnemy = s.hour; return enemyTurn(s, events, id); }
+  function passHours(s, hours, events) { pass(s, hours, events); }
   function finish(s, events) { return { ok: true, events }; }
+  // Save and resume: everything but the rng closure and the boot events is plain data.
+  function serialize(s) { const o = Object.assign({}, s); delete o._rng; delete o._boot; return JSON.stringify(o); }
+  function restore(json) { const s = JSON.parse(json); s._boot = []; return attachRng(s); }
   // The ending names what the run cost. Built from the state, so every run reads differently.
   function epilogue(s, win) {
     const out = [], first = (id) => personName(s, id).split(' ')[0];
@@ -353,6 +348,6 @@ const Sim = (() => {
     return out.join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;

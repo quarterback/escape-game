@@ -8,7 +8,13 @@ a jet bound for Atlanta before the inquiry finds you. You have 72 hours.
 
 Open `index.html` in a browser. Nothing is fetched at runtime. p5.js 1.9.4 and
 the fonts are embedded, and all sound, the theme included, is synthesized with
-Web Audio.
+Web Audio. Served over HTTPS it installs to a phone's home screen and runs
+offline after the first visit (`manifest.webmanifest`, `sw.js`, `icons/`); a run
+is saved after every move and can be continued from the start screen.
+
+Two sides. As the defeated candidate you escape. As the minister's aide you run
+the inquiry: you see reports that arrive late and prove less than they say, you
+send orders and requests, and you never see her real position until the debrief.
 
 The confirmed design is in [docs/game-direction.md](docs/game-direction.md).
 This build is the skeleton of that design: every level exists and is thin.
@@ -64,14 +70,16 @@ words people say. Esmeralda is the second Nelosphere state in South America
 | `src/data.js` | Characters, people, arrangements, cards, levels, enemy actions |
 | `src/sim.js` | Simulation: all game truth, no DOM, no rendering. Node-loadable |
 | `src/tutorial.js` | The guided first run: fixed seed, scripted die and inquiry, 20 steps, what each step allows |
-| `src/render.js` | p5 pixel-art scenes, route HUD, animation queue, title still |
-| `src/ui.js` | HTML panels, inspection, dialogue, title and start screens, coach box |
+| `src/gov.js` | The government side: a hidden candidate played by the harness policy, reports, orders, requests, the debrief |
+| `src/render.js` | p5 pixel-art scenes on a 320 by 150 buffer, animation queue, the title and runway stills |
+| `src/ui.js` | Phone-first layout: scene header, Here, Phone, Route (the blueprint board), Hand, coach, saved runs, both roles |
 | `src/audio.js` | Web Audio sound effects and the theme |
 | `src/style.css`, `src/shell.html` | Styles, page shell, Open Graph and Twitter card tags |
 | `fonts/` | The owner's licensed webfonts and `LICENSES.md` |
 | `og/card.png` | The 1200 by 630 link preview image |
 | `vendor/p5.min.js` | Pinned p5.js 1.9.4 |
-| `tools/build.py` | Inlines everything into `index.html` |
+| `tools/build.py` | Inlines everything into `index.html`; writes the manifest and the service worker |
+| `_headers`, `icons/` | Cloudflare cache rules for the worker and the app icons |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing |
 | `tools/tutorial-check.js` | Replays the guided run against the sim; run after changing `data.js`, `sim.js` or `tutorial.js` |
 | `docs/` | Game direction and the Agent Action Records |
