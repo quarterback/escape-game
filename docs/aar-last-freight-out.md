@@ -66,16 +66,16 @@ for the same run is `docs/aar-last-freight-out-first-build.md`.
 
 - **Route**: Attic, Market Square, Checkpoint, Rail Yard, Freight
   Platform, in that order. Walking a leg costs one half-hour. Two legs are gated by
-  arrangements (Passage past Sgt. Osric; the Yard via stamped papers or Teo's
-  goodwill). Boarding needs a Berth from Brakeman Holt. Four arrangements,
+  arrangements (Passage past Sgt. Osric Vane; the Yard via stamped papers or Teo's
+  goodwill). Boarding needs a Berth from Holt the brakeman. Four arrangements,
   each with at least two routes to it, so a hand rarely has one right answer.
 - **Deck** (17 cards, hand of 4): Bribe ×2, Commission Papers ×2, Distraction
-  ×2, Sweet Talk ×2, Pick Lock ×2, Sell Maps ×2, Lay Low ×2, Call in a Favour
+  ×2, Sweet talk ×2, Pick Lock ×2, Sell Maps ×2, Lay Low ×2, Call in a Favor
   ×2, Hire Courier ×1. Each card is defined by an `applications(state)`
   function that lists every person/object/place it can touch, whether that
   application is currently legal, why not if not, and a preview of what would
   happen. Most applications require being at the target's station; the
-  courier and the favour cards deliberately do not.
+  courier and the favor cards deliberately do not.
 - **Pending work is state**: `jobs` on the sim (forgery,
   distraction, Pip's errand, lock-picking) tick down each half-hour and emit
   events on completion. The scene reads them: Dagny gets a busy bubble with
@@ -94,7 +94,7 @@ for the same run is `docs/aar-last-freight-out-first-build.md`.
   ask questions each half-hour; at 8 you are taken. Midnight ends the night.
 - **Hand swap**: waiting with a card selected discards it and draws. See
   "Dead hands" below for why this exists.
-- **Audio**: all synthesised (`src/audio.js`): clicks, selects, confirm, deny,
+- **Audio**: all synthesized (`src/audio.js`): clicks, selects, confirm, deny,
   coin, heat up/down, footsteps as filtered noise, a work tap, the patrol
   drone, an arranged arpeggio, the whistle, win and lose phrases. Muteable.
 
@@ -105,7 +105,7 @@ for the same run is `docs/aar-last-freight-out-first-build.md`.
 | hybrid-baseball `aar-capspace-bankroll.md` | One wallet; personas with realistic, different starting stakes; career records as "you vs yourself" | `Sim.PERSONAS` (Cartographer 5c/2f/0h, Smuggler's Niece 8c/1f/1h, Minor Official 2c/4f/0h); `localStorage` records: escapes/nights, streak, earliest boarding, coolest escape, richest escape |
 | hybrid-baseball `aar-auction-shape-and-sellback.md` | Money doesn't roll over; prices steepen at the top | Bribe price = 3 + 1 per bribe already paid (`cardCost`), shown live on the card and in the inspection panel |
 | tennis-team-manager CLAUDE.md | Steep cost curve, tier floors, "measure before retuning", calibration scripts that call the shipped functions | `tools/calibrate.js` runs the real `Sim` under a fixed mediocre policy and reports win rate, loss causes, boarding time, heat, coin left, per persona; determinism check at the end |
-| hybrid-baseball joker cooldown AAR | A once-per-cycle power | Considered for the Favour cards; **not built** (see below) |
+| hybrid-baseball joker cooldown AAR | A once-per-cycle power | Considered for the Favor cards; **not built** (see below) |
 
 ---
 
@@ -133,14 +133,14 @@ stayed at midnight.
 
 | Persona | Start | Win % | Losses | Boards at | Heat at end |
 | --- | --- | --- | --- | --- | --- |
-| The Cartographer | 5 coin, 2 favours, heat 0 | 52.8 | 236 clock | 22:00 | 1.09 |
-| The Smuggler's Niece | 8 coin, 1 favour, heat 1 | 48.4 | 250 clock, 8 heat | 21:30 | 1.97 |
-| The Minor Official | 2 coin, 4 favours, heat 0 | 36.2 | 315 clock, 4 heat | 22:30 | 2.25 |
+| The Cartographer | 5 coin, 2 favors, heat 0 | 52.8 | 236 clock | 10 p.m. | 1.09 |
+| The Smuggler's Niece | 8 coin, 1 favor, heat 1 | 48.4 | 250 clock, 8 heat | 9:30 p.m. | 1.97 |
+| The Minor Official | 2 coin, 4 favors, heat 0 | 36.2 | 315 clock, 4 heat | 10:30 p.m. | 2.25 |
 
-The Niece was first written as 9 coin / **0 favours** / heat 2 and measured
+The Niece was first written as 9 coin / **0 favors** / heat 2 and measured
 **10.6%**. Sweeping her purse:
 
-| coin / favour / heat | Win % |
+| coin / favor / heat | Win % |
 | --- | --- |
 | 9 / 0 / 2 | 10.6 |
 | 9 / 0 / 1 | 11.5 |
@@ -148,10 +148,10 @@ The Niece was first written as 9 coin / **0 favours** / heat 2 and measured
 | 8 / 1 / 1 | 48.8 |
 | 10 / 1 / 1 | 56.5 |
 
-Coin barely moves her; one favour moves her 37 points. Four of the seventeen
-cards (Sweet Talk ×2, Call in a Favour ×2) cost a favour and there is no way
-to buy one, so at zero favours a quarter of every draw is dead and each dead
-card costs a half-hour to swap. Favours are a second currency with no
+Coin barely moves her; one favor moves her 37 points. Four of the seventeen
+cards (Sweet talk ×2, Call in a Favor ×2) cost a favor and there is no way
+to buy one, so at zero favors a quarter of every draw is dead and each dead
+card costs a half-hour to swap. Favors are a second currency with no
 exchange rate, which is the thing to know before adding any persona or card
 that touches them. Settled at 8 / 1 / 1.
 
@@ -212,13 +212,13 @@ records panel rendered.
 
 ## Not built, and why
 
-- **Joker-style cooldown on Favour cards.** Two copies in a 17-card deck
+- **Joker-style cooldown on Favor cards.** Two copies in a 17-card deck
   with a draw-on-play hand already rate-limit them; a cooldown on top would
-  be a second limiter on the same thing. If favours ever become purchasable,
+  be a second limiter on the same thing. If favors ever become purchasable,
   revisit.
-- **Buying favours with coin.** Would fix the zero-favour persona by removing
+- **Buying favors with coin.** Would fix the zero-favor persona by removing
   the constraint that makes the two currencies different. Chose to tune the
-  persona instead and keep favours scarce.
+  persona instead and keep favors scarce.
 - **A sellback / refund.** Cards have no resale value and coin spent is
   gone; the inflation curve is the pressure. Fine for a seven-hour night.
 - **p5 for the UI.** Everything textual stayed in HTML per the brief; the
@@ -242,3 +242,40 @@ records panel rendered.
   canvas target pick, commit, walk, wait-and-swap to game over, records.
   No errors, no network.
 - `tools/build.py` asserts no `</script` inside any inlined part.
+
+## Addendum: the humanizer and AP style pass
+
+The owner asked for the whole tool, UI and script to be run against two
+rulebooks: blader's humanizer skill (the 26 signs of AI writing) and the
+newsroom-style skill from jamditis/claude-skills-journalism, which enforces
+AP style. Both SKILL.md files were fetched and read; neither runs as a
+program, so the pass was done by hand against their rules, string by string.
+
+What changed in the game:
+
+- The clock is AP time. "5 p.m.", "9:30 p.m.", "noon" and "midnight" replace
+  "17:00", "21:30" and "00:00" everywhere, including the calibration harness.
+- Numbers one through nine are spelled out in prose ("three half-hours"),
+  while stat lines keep figures ("Heat +1", "3 coin", "30 minutes"), which AP
+  allows for tabular data and money.
+- Occupational descriptions are lowercase. Dagny the forger, Mira the clerk,
+  Teo the yardman and Holt the brakeman replace the capitalized nameplates.
+  The sergeant gained a surname, Sgt. Osric Vane, because AP puts an
+  abbreviated title before a full name on first reference.
+- Headlines and card names are sentence case: "Commission papers", "Sell
+  maps", "You made the freight". The masthead is uppercase through CSS, not
+  in the text.
+- American spelling, since AP is an American stylebook: favor, synthesized,
+  recognizable.
+- The Oxford comma is gone from running text. "Over" for quantities and
+  "approximately" did not occur.
+- Arrows and em dashes in labels and comments were replaced with words or
+  colons; the "Walk on" button lost its glyph.
+- Exclamation points in dialogue were cut to none. The lines still read as
+  shouts from their words.
+- One humanizer hit in UI copy: "quietly rethink one of your options" used a
+  stock word and said less than "trade one card for another".
+
+What was left alone, on purpose: character dialogue keeps contractions,
+fragments and voice (the humanizer exempts fiction); code identifiers such
+as `favor` were already American; the engineering tables keep figures.

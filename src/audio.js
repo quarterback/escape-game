@@ -1,5 +1,5 @@
 /* ============================================================
-   Web Audio synth — no samples, no network.
+   Web Audio synth. No samples, no network.
    ============================================================ */
 'use strict';
 const Sfx = (() => {

@@ -1,15 +1,15 @@
 /* ============================================================
    UI: HTML hand / targets / inspection / dialogue / controls.
-   Flow: pick card → applications revealed (scene + list) →
-   inspect one → Commit → Sim resolves → events animated.
+   Flow: pick a card, see its applications in the scene and the list,
+   inspect one, commit. The sim resolves, then the events are animated.
    ============================================================ */
 'use strict';
 const UI = (() => {
   let s = null, selCard = null, selTarget = null, seed = 1, persona = 'cartographer';
   const $ = (id) => document.getElementById(id);
   const SPEAKER = {
-    you: ['Ines', '#e08a92'], forger: ['Dagny', '#b48ad8'], lookout: ['Pip', '#f0a060'], guard: ['Sgt. Osric', '#8ab0e0'],
-    clerk: ['Mira', '#9ad080'], teo: ['Teo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Patrol', '#ff6a6a'], sys: ['—', '#9a9aaa'],
+    you: ['Ines', '#e08a92'], forger: ['Dagny', '#b48ad8'], lookout: ['Pip', '#f0a060'], guard: ['Osric', '#8ab0e0'],
+    clerk: ['Mira', '#9ad080'], teo: ['Teo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Patrol', '#ff6a6a'], sys: ['', '#9a9aaa'],
   };
 
   function log(who, text, cls) {
@@ -30,14 +30,14 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `Verlane, ${Sim.clockText(0)}. The midnight freight is the last way out before the border closes. Tonight you are <b>${P0.name}</b>: ${P0.blurb} Seven hours.`, 'sys');
-    log('you', 'Papers, a way past the barrier, a way across the yard, and a crate with my name on it. In that order, or any order that works.');
+    log('sys', `Verlane, ${Sim.clockText(0)}. The midnight freight is the last way out before the border closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('you', 'Papers, a way past the barrier, a way across the yard and a crate with my name on it. In that order, or any order that works.');
     renderAll();
   }
 
   // ---- rendering --------------------------------------------
   function renderAll() { renderStatus(); renderHand(); renderTargets(); renderControls(); renderNeeds(); renderOver(); syncHighlight(); }
-  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name} — ${Sim.PERSONAS[k].coin} coin, ${Sim.PERSONAS[k].favor} favours, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
+  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name}: ${Sim.PERSONAS[k].coin} coin, ${Sim.PERSONAS[k].favor} ${Sim.PERSONAS[k].favor === 1 ? 'favor' : 'favors'}, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
 
   function renderStatus() {
     $('coin').textContent = s.coin; $('favor').textContent = s.favor;
@@ -57,7 +57,7 @@ const UI = (() => {
     const apps = Sim.applications(s, c.type); const anyOk = apps.some(a => a.ok);
     if (!anyOk) el.classList.add('dead');
     el.innerHTML = `<span class="cname">${d.name}</span>
-      <span class="ccost">${Sim.costText(cost)}${c.type === 'bribe' && s.bribes ? ' (price has risen)' : ''} · ${d.time ? d.time * 30 + ' min' : 'no time'}</span>
+      <span class="ccost">${Sim.costText(cost)}${c.type === 'bribe' && s.bribes ? ' (price has risen)' : ''} · ${d.time ? d.time * 30 + ' minutes' : 'no time'}</span>
       <span class="cflavor">${d.flavor}</span>
       <span class="ctargets">${apps.filter(a => a.ok).length} of ${apps.length} uses available</span>`;
     el.onclick = () => { Sfx.unlock(); if (selCard === c.uid) { selCard = null; selTarget = null; Sfx.click(); } else { selCard = c.uid; selTarget = null; Sfx.select(); } renderAll(); };
@@ -66,7 +66,7 @@ const UI = (() => {
   function renderHand() {
     const h = $('hand'); h.innerHTML = '';
     for (const c of s.hand) h.appendChild(cardEl(c));
-    $('deckinfo').textContent = `${s.deck.length} in deck · ${s.discard.length} discarded`;
+    $('deckinfo').textContent = `${s.deck.length} in the deck, ${s.discard.length} discarded`;
   }
 
   function currentApps() {
@@ -81,11 +81,11 @@ const UI = (() => {
   function renderTargets() {
     const box = $('targets'), cur = currentApps();
     if (!cur) {
-      box.innerHTML = `<p class="hint">Select a card to see who and what it can affect. Highlighted figures in the scene are the same list.</p>`;
+      box.innerHTML = `<p class="hint">Select a card to see who and what it can affect. The highlighted figures in the scene are the same list.</p>`;
       $('inspect').classList.add('empty'); $('inspect').innerHTML = ''; return;
     }
     const { card, def, apps } = cur;
-    box.innerHTML = `<h3>${def.name} <small>can affect…</small></h3>`;
+    box.innerHTML = `<h3>${def.name} <small>can affect</small></h3>`;
     const ul = document.createElement('ul');
     for (const a of apps) {
       const li = document.createElement('li'); li.className = (a.ok ? 'ok' : 'no') + (selTarget === a.id ? ' sel' : '') + ' k-' + a.kind;
@@ -98,9 +98,9 @@ const UI = (() => {
     const ins = $('inspect'); const a = apps.find(x => x.id === selTarget);
     if (!a) { ins.classList.add('empty'); ins.innerHTML = `<p class="hint">Pick a target in the list or in the scene to inspect what would happen.</p>`; return; }
     ins.classList.remove('empty');
-    ins.innerHTML = `<h3>${def.name} → ${a.label}</h3>
+    ins.innerHTML = `<h3>${def.name} on ${a.label}</h3>
       <ul class="preview">${a.preview.map(x => `<li>${x}</li>`).join('')}</ul>
-      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ', no time'}.${card.type === 'bribe' ? ' Every bribe raises the next one\'s price by ' + Sim.BRIBE_STEP + ' coin.' : ''}</p>
+      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ' and no time'}.${card.type === 'bribe' ? ' Every bribe raises the price of the next one by ' + Sim.BRIBE_STEP + ' coin.' : ''}</p>
       ${a.ok ? '' : `<p class="blocked">${a.why}</p>`}
       <div class="row"><button id="commit" class="primary" ${a.ok && !s.over ? '' : 'disabled'}>Commit</button><button id="cancel">Cancel</button></div>`;
     $('commit').onclick = commit; $('cancel').onclick = () => { selCard = selTarget = null; Sfx.click(); renderAll(); };
@@ -119,20 +119,20 @@ const UI = (() => {
     for (const j of s.jobs) {
       const li = document.createElement('li');
       const name = { forge: 'Dagny inking your papers', distract: 'Osric distracted', lookout: 'Pip causing trouble', picklock: j.who === 'gate' ? 'You, picking the side gate' : 'You, preparing a crate' }[j.type];
-      li.innerHTML = `<b>${name}</b> <span>${j.remaining * 30} min left</span>`; pend.appendChild(li);
+      li.innerHTML = `<b>${name}</b> <span>${j.remaining * 30} minutes left</span>`; pend.appendChild(li);
     }
   }
 
   function renderControls() {
     const over = !!s.over, busy = Render.busy();
     const back = Sim.canMove(s, -1), fwd = Sim.canMove(s, 1);
-    $('back').disabled = over || !back.ok; $('back').title = back.ok ? `Walk back to ${Sim.STATIONS[back.to].name} (30 min)` : back.why;
+    $('back').disabled = over || !back.ok; $('back').title = back.ok ? `Walk back to ${Sim.STATIONS[back.to].name}, 30 minutes` : back.why;
     $('fwd').disabled = over || !fwd.ok;
-    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to ${Sim.STATIONS[fwd.to].short} ▶` : 'Walk on ▶';
-    $('fwd').title = fwd.ok ? `Walk to ${Sim.STATIONS[fwd.to].name} (30 min)` : (fwd.why || '');
+    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to the ${fwd.to === 1 ? 'market' : Sim.STATIONS[fwd.to].short.toLowerCase()}` : 'Walk on';
+    $('fwd').title = fwd.ok ? `Walk to ${Sim.STATIONS[fwd.to].name}, 30 minutes` : (fwd.why || '');
     $('fwdwhy').textContent = (!fwd.ok && fwd.why && fwd.to != null) ? fwd.why : '';
     $('wait').disabled = over;
-    $('wait').textContent = selCard ? 'Wait 30 min & swap the selected card' : 'Wait 30 min';
+    $('wait').textContent = selCard ? 'Wait 30 minutes and swap the selected card' : 'Wait 30 minutes';
     const b = Sim.canBoard(s); $('board').disabled = over || !b.ok; $('board').title = b.ok ? 'Climb into the crate' : b.why;
     $('board').classList.toggle('ready', b.ok && !over);
     document.body.classList.toggle('busy', busy);
@@ -153,9 +153,9 @@ const UI = (() => {
   }
   function renderRecords() {
     const r = loadRecords(); const el = $('records');
-    if (!r.nights) { el.textContent = 'No nights played yet in this browser.'; return; }
-    el.innerHTML = `${r.escapes}/${r.nights} escapes · streak ${r.streak} (best ${r.bestStreak})` +
-      (r.earliest != null ? ` · earliest out ${Sim.clockText(r.earliest)} · coolest escape heat ${r.coolest} · richest ${r.richest} coin` : '');
+    if (!r.nights) { el.textContent = 'No nights played in this browser yet.'; return; }
+    el.innerHTML = `${r.escapes} of ${r.nights} nights escaped. Streak ${r.streak}, best ${r.bestStreak}.` +
+      (r.earliest != null ? ` Earliest out ${Sim.clockText(r.earliest)}. Coolest escape at heat ${r.coolest}. Richest escape with ${r.richest} coin.` : '');
   }
   function renderOver() {
     const o = $('over');
@@ -163,7 +163,7 @@ const UI = (() => {
     recordNight(); renderRecords();
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
     $('overtitle').textContent = s.over.win ? 'Out of Verlane' : 'Caught';
-    $('overtext').textContent = s.over.reason + ` (${s.tick * 30} minutes used, heat ${s.heat}, seed ${seed}.)`;
+    $('overtext').textContent = s.over.reason + ` You used ${s.tick * 30} minutes and ended at heat ${s.heat}. Seed ${seed}.`;
   }
 
   // ---- actions ----------------------------------------------
@@ -183,22 +183,22 @@ const UI = (() => {
     Sfx.unlock();
     const swap = selCard; const r = Sim.wait(s, swap);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    log('sys', swap ? 'You wait half an hour and quietly rethink one of your options.' : 'You wait half an hour.', 'sys act');
+    log('sys', swap ? 'You wait half an hour and trade one card for another.' : 'You wait half an hour.', 'sys act');
     selCard = selTarget = null; animate(r.events); renderAll();
   }
   function doBoard() { Sfx.unlock(); const r = Sim.board(s); if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; } animate(r.events); renderAll(); }
 
-  // ---- events → animation, sound, dialogue -------------------
+  // ---- events to animation, sound and dialogue ----------------
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'walk': Render.walk(e.from, e.to); break;
         case 'coin': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' coin', '#ffd24a'); Render.enqueue({ dur: 10, start() { Sfx.coin(e.delta > 0); } }); break;
-        case 'favor': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' favour', '#b48ad8'); break;
+        case 'favor': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' favor', '#b48ad8'); break;
         case 'heat': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' heat', e.delta > 0 ? '#ff6a6a' : '#7ad0ff'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'state': Render.flash(e.id); if (e.group === 'people') Render.enqueue({ dur: 10, start() { Sfx.work(); } }); break;
-        case 'arranged': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); Render.float(targetFor(e.id), { papers: 'PAPERS READY', passage: 'PASSAGE OPEN', yard: 'YARD OPEN', berth: 'BERTH HELD', crate: 'CRATE READY' }[e.id], '#5cd65c'); break;
+        case 'arranged': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); Render.float(targetFor(e.id), { papers: 'Papers ready', passage: 'Passage open', yard: 'Yard open', berth: 'Berth held', crate: 'Crate ready' }[e.id], '#5cd65c'); break;
         case 'courier': Render.courier('forger'); break;
         case 'run': Render.pipRun(e.to); break;
         case 'tick': Render.enqueue({ dur: 120, start() { Sfx.tick(); } }); break;
@@ -206,7 +206,7 @@ const UI = (() => {
         case 'board': Render.enqueue({ dur: 300, start() { Sfx.whistle(); } }); break;
         case 'over': Render.gameOver(e); Render.enqueue({ dur: 10, start() { e.win ? Sfx.win() : Sfx.lose(); } }); break;
         case 'draw': Render.enqueue({ dur: 10, start() { Sfx.click(); } }); break;
-        case 'price': Render.float('self', `bribes now ${e.bribe} coin`, '#ffb060'); break;
+        case 'price': Render.float('self', `bribes now cost ${e.bribe} coin`, '#ffb060'); break;
       }
     }
     if (events.some(x => x.type === 'state' && x.id === 'lookout' && x.to === 'idle')) Render.pipRun(1);

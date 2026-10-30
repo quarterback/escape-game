@@ -3,7 +3,7 @@
 html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 body.busy #commit,body.busy #back,body.busy #fwd,body.busy #wait,body.busy #board{opacity:.55;pointer-events:none}
 header{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
-header h1{font:700 18px/1 "Courier New",monospace;letter-spacing:.08em;margin:0;color:var(--gold)}
+header h1{font:700 18px/1 "Courier New",monospace;letter-spacing:.08em;margin:0;color:var(--gold);text-transform:uppercase}
 header h1 small{display:block;font:400 11px/1.4 system-ui;letter-spacing:0;color:var(--mute);margin-top:4px}
 .stat{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
 .stat b{color:var(--mute);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em}

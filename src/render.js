@@ -184,7 +184,7 @@ const Render = (() => {
     else { g.fill('#8a6a3a'); g.rect(kx - 6, GROUND - 12, 12, 2); }
   }
   function indicator(g, x, y, kind, t, pips) {
-    // speech-bubble style marker above a head
+    // a speech-bubble marker above a head
     g.fill('#f4f1e8'); g.rect(x - 3, y - 8, 7, 6); g.rect(x - 1, y - 2, 2, 1);
     if (kind === 'busy') { g.fill('#5b3a8a'); g.rect(x - 1 + (Math.floor(t / 150) % 2), y - 6, 2, 2); }
     if (kind === '!') { g.fill('#d23a3a'); g.rect(x, y - 7, 1, 3); g.rect(x, y - 3, 1, 1); }
@@ -210,7 +210,7 @@ const Render = (() => {
     if (P.guard.state === 'alert') { g.fill('#555'); g.rect(e.x + 4, GROUND - 14, 1, 12); }
     if (P.guard.state === 'distracted') indicator(g, e.x, GROUND - 14, '?', t, rem('distract'));
     if (P.guard.state === 'bribed') indicator(g, e.x, GROUND - 14, 'coin', t);
-    // clerk (in window) — only drawn when window open or as silhouette
+    // the clerk is drawn in her window when it is open, else as a silhouette
     e = entityPos('clerk');
     if (P.clerk.state === 'open') { px(g, e.x - 2, GROUND - 24, ['.HHH.', 'HHHHH', '.SSS.', 'CCCCC'], { H: P.clerk.hat, S: '#e0b48c', C: P.clerk.coat }); indicator(g, e.x + 1, GROUND - 28, 'ok', t); }
     else { g.fill('#333'); g.rect(e.x - 1, GROUND - 22, 3, 5); }
@@ -224,7 +224,7 @@ const Render = (() => {
     if (P.brakeman.state === 'agreed') indicator(g, e.x, GROUND - 14, 'ok', t);
     // courier
     if (view.courier) small(g, Math.round(view.courier.x), GROUND, '#3a6a9a', '#223');
-    // player — Ines
+    // the player, Ines
     const walk = view.walking && Math.floor(view.stepPhase) % 2 === 0;
     person(g, Math.round(view.playerX) + 2, GROUND, '#8a2f3a', '#3a2418', { scarf: '#d94f5c', walk });
     if (s.objects.papers.state === 'stamped' && !view.walking) { g.fill('#efe6cc'); g.rect(Math.round(view.playerX) + 6, GROUND - 7, 2, 3); }
@@ -267,7 +267,7 @@ const Render = (() => {
       }
       p.noStroke();
       p.fill(i === s.pos ? '#ffd24a' : (i < s.pos ? '#5cd65c' : '#9a9aaa')); p.ellipse(x, y, i === s.pos ? 10 : 7);
-      p.fill('#cfd0dd'); p.textSize(10); p.textAlign(p.CENTER, p.TOP); p.text(Sim.STATIONS[i].short.toUpperCase(), x, y + 7);
+      p.fill('#cfd0dd'); p.textSize(10); p.textAlign(p.CENTER, p.TOP); p.text(Sim.STATIONS[i].short, x, y + 7);
     }
     // arrangement badges (bottom-left)
     const A = Sim.arrangements(s); let bx = 8;
@@ -296,8 +296,8 @@ const Render = (() => {
     if (view.over) {
       p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height);
       p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a');
-      p.text(view.over.win ? 'YOU MADE THE FREIGHT' : 'CAUGHT IN VERLANE', p.width / 2, p.height / 2 - 14);
-      p.textSize(12); p.fill('#eee'); p.text('see the panel below to read what happened', p.width / 2, p.height / 2 + 14);
+      p.text(view.over.win ? 'You made the freight' : 'Caught in Verlane', p.width / 2, p.height / 2 - 14);
+      p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened', p.width / 2, p.height / 2 + 14);
     }
   }
 
@@ -305,10 +305,10 @@ const Render = (() => {
   function rebuildHotspots(s) {
     hotspots = [];
     const add = (id, label) => { const r = hotRect(id); hotspots.push({ id, label, x: r.x * SCALE, y: r.y * SCALE, w: r.w * SCALE, h: r.h * SCALE }); };
-    for (const id in s.people) add(id, `${s.people[id].name} — ${Sim.STATE_LABEL[id][s.people[id].state]}`);
-    for (const id in s.objects) add(id, `${s.objects[id].name} — ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
+    for (const id in s.people) add(id, `${s.people[id].name}: ${Sim.STATE_LABEL[id][s.people[id].state]}`);
+    for (const id in s.objects) add(id, `${s.objects[id].name}: ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
     add('attic', 'Your hideout');
-    add('self', 'Ines (you)');
+    add('self', 'Ines, that is you');
   }
   function hitTest(mx, my) {
     // selected-card targets take priority, then everything else; last drawn wins

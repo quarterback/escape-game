@@ -49,7 +49,7 @@ Changes to the other four repos. Any runtime dependency. A pull request. Anythin
 5. Wrote the p5 renderer (320×112 pixel buffer scaled ×3, HUD at native resolution, hotspots for canvas clicks, an animation queue that only reads sim state), the HTML/CSS UI, and a Web Audio synth. Built one `index.html` with everything inlined.
 6. Loaded it in headless Chromium: no errors, no non-file requests.
 7. Read the two mid-turn messages. Searched all five repos for "closedtab" and "capbuffet"; neither string exists anywhere. Read hybrid-baseball's capspace AARs and the tennis repo's calibration conventions. Added three starting personas, bribe price inflation, localStorage career records and `tools/calibrate.js`.
-8. The harness showed the Niece persona at 10.6%. Swept her purse and found that one favour, not more coin, was the lever (11% at zero favours, 49% at one). Set her at 8 coin, 1 favour, heat 1.
+8. The harness showed the Niece persona at 10.6%. Swept her purse and found that one favor, not more coin, was the lever (11% at zero favors, 49% at one). Set her at 8 coin, 1 favor, heat 1.
 9. Re-tested in Chromium including a click on a highlighted figure in the canvas. Wrote the engineering AAR by hand in the hybrid-baseball format, stating that no `closedtab` skill existed. Committed and pushed.
 10. On the npm link: installed `closedtab@0.5.0`, read its guide and template, and wrote this record in its form. On the humanizer link: fetched its SKILL.md and edited the prose of both documents against its patterns.
 
@@ -137,7 +137,7 @@ When an instruction names a tool, skill or package the agent cannot find locally
 
 **What to keep doing:**
 
-Keeping the sim pure and loadable from Node, so a calibration harness can measure a change before it ships. Measuring before tuning: the dead-hand finding and the favour finding both came from the harness and both would have been guessed wrong by feel. Testing the built artifact in a real browser with a network monitor.
+Keeping the sim pure and loadable from Node, so a calibration harness can measure a change before it ships. Measuring before tuning: the dead-hand finding and the favor finding both came from the harness and both would have been guessed wrong by feel. Testing the built artifact in a real browser with a network monitor.
 
 **What belongs with a human rather than an agent:**
 

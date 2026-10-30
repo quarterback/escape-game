@@ -10,7 +10,7 @@
 html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 body.busy #commit,body.busy #back,body.busy #fwd,body.busy #wait,body.busy #board{opacity:.55;pointer-events:none}
 header{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
-header h1{font:700 18px/1 "Courier New",monospace;letter-spacing:.08em;margin:0;color:var(--gold)}
+header h1{font:700 18px/1 "Courier New",monospace;letter-spacing:.08em;margin:0;color:var(--gold);text-transform:uppercase}
 header h1 small{display:block;font:400 11px/1.4 system-ui;letter-spacing:0;color:var(--mute);margin-top:4px}
 .stat{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
 .stat b{color:var(--mute);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
@@ -69,10 +69,10 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
 </head>
 <body>
 <header>
-  <h1>LAST FREIGHT OUT<small>Escape Verlane before the midnight freight leaves.</small></h1>
-  <div class="stat"><b>Clock</b><span class="v" id="clock">17:00</span><span class="bar" id="timeline"></span></div>
+  <h1>Last Freight Out<small>Escape Verlane before the midnight freight leaves.</small></h1>
+  <div class="stat"><b>Clock</b><span class="v" id="clock">5 p.m.</span><span class="bar" id="timeline"></span></div>
   <div class="stat"><b>Coin</b><span class="v" id="coin">0</span></div>
-  <div class="stat"><b>Favours</b><span class="v" id="favor">0</span></div>
+  <div class="stat"><b>Favors</b><span class="v" id="favor">0</span></div>
   <div class="stat"><b>Heat</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
 </header>
@@ -85,9 +85,9 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
     <h2>Your hand <small id="deckinfo"></small></h2>
     <div id="hand"></div>
     <div id="helpbox" hidden>
-      <p><b>How it works.</b> Pick a card. Every person, object or place it can affect lights up in the scene and in the list. Inspect one, then <b>Commit</b>; the action resolves at once and you watch the consequences play out.</p>
-      <p>Walking between stations takes 30 minutes. Sgt. Osric blocks the barrier until you have <b>Passage</b>; the yard needs stamped <b>Papers</b> or Teo's goodwill; the freight needs a <b>Berth</b> from Brakeman Holt. Heat climbs when people notice you; at 8 the patrol takes you. <b>Wait</b> with a card selected to swap it.</p>
-      <p>Keys: 1–4 pick a card · ← → walk · Enter commit · Esc cancel.</p>
+      <p>Pick a card. Every person, object or place it can affect lights up in the scene and in the list. Inspect one, then commit. The action resolves at once and you watch the consequences play out.</p>
+      <p>Walking between stations takes 30 minutes. Sgt. Osric Vane blocks the barrier until you have passage. The yard needs stamped papers or Teo's goodwill. The freight needs a berth from Holt the brakeman. Heat climbs when people notice you, and at 8 the patrol takes you. Wait with a card selected to swap it.</p>
+      <p>Keys: 1 to 4 pick a card, the arrow keys walk, Enter commits, Esc cancels.</p>
     </div>
   </section>
   <section class="panel">
@@ -96,10 +96,10 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
     <div id="inspect" class="empty"></div>
   </section>
   <section class="panel" id="controls">
-    <h2>Move &amp; time</h2>
-    <div class="row"><button id="back">◀ Walk back</button><button id="fwd">Walk on ▶</button></div>
+    <h2>Move and time</h2>
+    <div class="row"><button id="back">Walk back</button><button id="fwd">Walk on</button></div>
     <p id="fwdwhy"></p>
-    <div class="row"><button id="wait">Wait 30 min</button><button id="board" class="primary">Board the freight</button></div>
+    <div class="row"><button id="wait">Wait 30 minutes</button><button id="board" class="primary">Board the freight</button></div>
     <h2>Still to arrange</h2>
     <ul id="needs"></ul>
     <h2>In progress</h2>
@@ -110,7 +110,7 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
     <h2>Your record</h2>
     <p class="small" id="records"></p>
     <div class="row" style="margin-top:8px"><button id="mute">Sound: on</button><button id="help">Help</button></div>
-    <p class="small">Runs entirely offline: p5.js 1.9.4 is embedded; sound is synthesised with Web Audio.</p>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded and the sound is synthesized with Web Audio.</p>
   </section>
 </div>
 <div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Another night</button></div></div>
@@ -120,7 +120,7 @@ input#seed{width:110px;font:inherit;background:#0d0d16;color:var(--ink);border:1
 </script>
 <script>
 /* ============================================================
-   LAST FREIGHT OUT — simulation (no DOM, no p5, no audio)
+   Last Freight Out: simulation (no DOM, no p5, no audio)
    The Sim owns all game truth. It returns EVENT lists that the
    renderer may animate and the UI may narrate; nothing here waits
    on an animation.
@@ -136,25 +136,25 @@ const Sim = (() => {
     };
   }
 
-  const TICKS_TOTAL = 14;          // half-hours from 17:00 to the midnight freight
+  const TICKS_TOTAL = 14;          // half-hours from 5 p.m. to the midnight freight
   const HEAT_LIMIT = 8;
   const HAND_SIZE = 4;
 
   const STATIONS = [
-    { id: 'attic',      name: 'The Attic',        short: 'Attic' },
+    { id: 'attic',      name: 'The attic',        short: 'Attic' },
     { id: 'market',     name: 'Market Square',    short: 'Market' },
-    { id: 'checkpoint', name: 'The Checkpoint',   short: 'Checkpoint' },
-    { id: 'yard',       name: 'Rail Yard',        short: 'Yard' },
-    { id: 'platform',   name: 'Freight Platform', short: 'Platform' },
+    { id: 'checkpoint', name: 'The checkpoint',   short: 'Checkpoint' },
+    { id: 'yard',       name: 'Rail yard',        short: 'Yard' },
+    { id: 'platform',   name: 'Freight platform', short: 'Platform' },
   ];
 
   const PEOPLE = {
-    forger:   { name: 'Dagny the Forger', station: 1, state: 'idle',    coat: '#7a4ea8', hat: '#2b1d3a' },
-    lookout:  { name: 'Pip the Lookout',  station: 1, state: 'idle',    coat: '#c96a2a', hat: '#5a2d0c', small: true },
-    guard:    { name: 'Sgt. Osric',       station: 2, state: 'alert',   coat: '#3b5d8f', hat: '#1b2a45' },
-    clerk:    { name: 'Clerk Mira',       station: 3, state: 'closed',  coat: '#5f8a4a', hat: '#2f4a22' },
-    teo:      { name: 'Yardman Teo',      station: 3, state: 'hostile', coat: '#8a6a3a', hat: '#4a3a1a' },
-    brakeman: { name: 'Brakeman Holt',    station: 4, state: 'wary',    coat: '#444c5a', hat: '#222630' },
+    forger:   { name: 'Dagny the forger', station: 1, state: 'idle',    coat: '#7a4ea8', hat: '#2b1d3a' },
+    lookout:  { name: 'Pip the lookout',  station: 1, state: 'idle',    coat: '#c96a2a', hat: '#5a2d0c', small: true },
+    guard:    { name: 'Sgt. Osric Vane',  station: 2, state: 'alert',   coat: '#3b5d8f', hat: '#1b2a45' },
+    clerk:    { name: 'Mira the clerk',   station: 3, state: 'closed',  coat: '#5f8a4a', hat: '#2f4a22' },
+    teo:      { name: 'Teo the yardman',  station: 3, state: 'hostile', coat: '#8a6a3a', hat: '#4a3a1a' },
+    brakeman: { name: 'Holt the brakeman', station: 4, state: 'wary',    coat: '#444c5a', hat: '#222630' },
   };
   const OBJECTS = {
     papers: { name: 'Transit papers', station: 1, state: 'blank' },
@@ -183,28 +183,28 @@ const Sim = (() => {
   const CARD_DEFS = {
     bribe:    { name: 'Bribe',             cost: { coin: 3 },  time: 1, kind: 'people',
                 flavor: 'Coin changes minds. Changing the wrong one raises heat.' },
-    forgery:  { name: 'Commission Papers', cost: { coin: 2 },  time: 1, kind: 'service',
+    forgery:  { name: 'Commission papers', cost: { coin: 2 },  time: 1, kind: 'service',
                 flavor: 'Dagny needs three half-hours and a quiet bench.' },
     distract: { name: 'Distraction',       cost: {},           time: 1, kind: 'people',
                 flavor: 'A dropped crate, a shout, a fire in a bin.' },
-    talk:     { name: 'Sweet Talk',        cost: { favor: 1 }, time: 1, kind: 'people',
-                flavor: 'Spend a favour owed. Some doors open for a friend.' },
-    picklock: { name: 'Pick Lock',         cost: {},           time: 2, kind: 'objects',
+    talk:     { name: 'Sweet talk',        cost: { favor: 1 }, time: 1, kind: 'people',
+                flavor: 'Spend a favor owed. Some doors open for a friend.' },
+    picklock: { name: 'Pick lock',         cost: {},           time: 2, kind: 'objects',
                 flavor: 'Slow, and someone may notice.' },
-    sellmaps: { name: 'Sell Maps',         cost: {},           time: 1, kind: 'objects',
-                flavor: 'Your own maps. Recognisable, and worth coin.' },
-    laylow:   { name: 'Lay Low',           cost: {},           time: 1, kind: 'places',
+    sellmaps: { name: 'Sell maps',         cost: {},           time: 1, kind: 'objects',
+                flavor: 'Your own maps. Recognizable, and worth coin.' },
+    laylow:   { name: 'Lay low',           cost: {},           time: 1, kind: 'places',
                 flavor: 'Let the street forget your face.' },
-    favor:    { name: 'Call in a Favour',  cost: { favor: 1 }, time: 0, kind: 'people',
+    favor:    { name: 'Call in a favor',  cost: { favor: 1 }, time: 0, kind: 'people',
                 flavor: 'No time spent. Someone owes you.' },
-    courier:  { name: 'Hire Courier',      cost: { coin: 2 },  time: 1, kind: 'service',
+    courier:  { name: 'Hire courier',      cost: { coin: 2 },  time: 1, kind: 'service',
                 flavor: 'Reach the forger without walking to her.' },
   };
   // Who you are tonight decides the shape of your purse (one wallet, three ways to start).
   const PERSONAS = {
-    cartographer: { name: 'The Cartographer', coin: 5, favor: 2, heat: 0, blurb: 'Known hand, modest purse, a few people who owe you.' },
-    niece:        { name: "The Smuggler's Niece", coin: 8, favor: 1, heat: 1, blurb: 'Plenty of coin, one person who owes you, and the patrol already knows your face.' },
-    official:     { name: 'The Minor Official', coin: 2, favor: 4, heat: 0, blurb: 'Almost no coin, but half the town owes you a favour.' },
+    cartographer: { name: 'The cartographer', coin: 5, favor: 2, heat: 0, blurb: 'A known hand and a modest purse. A few people owe you.' },
+    niece:        { name: "The smuggler's niece", coin: 8, favor: 1, heat: 1, blurb: 'Plenty of coin and one person who owes you. The patrol already knows your face.' },
+    official:     { name: 'The minor official', coin: 2, favor: 4, heat: 0, blurb: 'Almost no coin, but half the town owes you a favor.' },
   };
   const BRIBE_BASE = 3, BRIBE_STEP = 1; // every bribe paid raises the next price: the town learns what you'll pay
 
@@ -254,18 +254,22 @@ const Sim = (() => {
       papers:  { name: 'Papers',  done: s.objects.papers.state === 'stamped',
                  how: 'Commission Dagny (in person or by courier) and wait for the ink.' },
       passage: { name: 'Passage', done: g === 'bribed' || g === 'distracted' || s.objects.gate.state === 'unlocked',
-                 how: 'Bribe or distract Sgt. Osric, or pick the side gate.' },
+                 how: 'Bribe or distract Osric, or pick the side gate.' },
       yard:    { name: 'Yard',    done: s.objects.papers.state === 'stamped' || s.people.teo.state === 'friendly',
-                 how: 'Stamped papers satisfy Clerk Mira; or make a friend of Teo.' },
+                 how: 'Stamped papers satisfy Mira, or make a friend of Teo.' },
       berth:   { name: 'Berth',   done: s.people.brakeman.state === 'agreed',
-                 how: 'Holt listens to Teo\'s friends (bribe) or to those who prepared a crate (sweet talk).' },
+                 how: 'Holt takes coin from Teo\'s friends, or listens to anyone who prepared a crate.' },
     };
   }
 
+  // AP style: figures with a.m./p.m., no ":00", and the words noon and midnight.
   function clockText(tick) {
     const minutes = 17 * 60 + tick * 30;
     const h = Math.floor(minutes / 60) % 24, m = minutes % 60;
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    if (h === 0 && m === 0) return 'midnight';
+    if (h === 12 && m === 0) return 'noon';
+    const h12 = h % 12 === 0 ? 12 : h % 12, ap = h < 12 ? 'a.m.' : 'p.m.';
+    return m === 0 ? `${h12} ${ap}` : `${h12}:${String(m).padStart(2, '0')} ${ap}`;
   }
 
   function canMove(s, dir) {
@@ -273,14 +277,14 @@ const Sim = (() => {
     if (to < 0 || to >= STATIONS.length) return { ok: false, why: 'Nothing that way.' };
     if (dir < 0) return { ok: true, to };
     const a = arrangements(s);
-    if (to === 3 && !a.passage.done) return { ok: false, to, why: 'Sgt. Osric blocks the barrier. ' + a.passage.how };
-    if (to === 4 && !a.yard.done)    return { ok: false, to, why: 'Clerk Mira wants papers and Teo wants you gone. ' + a.yard.how };
+    if (to === 3 && !a.passage.done) return { ok: false, to, why: 'Osric blocks the barrier. ' + a.passage.how };
+    if (to === 4 && !a.yard.done)    return { ok: false, to, why: 'Mira wants papers and Teo wants you gone. ' + a.yard.how };
     return { ok: true, to };
   }
 
   function canBoard(s) {
     if (s.pos !== 4) return { ok: false, why: 'You are not on the platform.' };
-    if (!arrangements(s).berth.done) return { ok: false, why: 'No berth. Brakeman Holt has not agreed to hide you.' };
+    if (!arrangements(s).berth.done) return { ok: false, why: 'No berth. Holt has not agreed to hide you.' };
     return { ok: true };
   }
 
@@ -309,7 +313,7 @@ const Sim = (() => {
           ['Osric looks the other way for the night.', 'Heat +1 (he talks when drunk).', 'Passage arranged.']);
         push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the clerk'),
           P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mira opens her window.', 'She will stamp papers Dagny finishes: forgery completes 1 half-hour sooner.']);
+          ['Mira opens her window.', 'She will stamp whatever Dagny finishes. Forgery completes one half-hour sooner.']);
         push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Teo'),
           P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.']),
           ['Teo pockets it and shrugs.', 'He will walk you past the clerk.', 'Yard arranged.']);
@@ -322,27 +326,27 @@ const Sim = (() => {
         push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Dagny'),
           P.forger.state === 'busy' ? [false, 'She is already working on your papers.'] :
           O.papers.state === 'stamped' ? [false, 'Your papers are done.'] : [true]),
-          ['Dagny starts inking.', `Ready in 3 half-hours (2 if Mira's window is open).`, 'Papers → forging.']);
+          ['Dagny starts inking.', `Ready in three half-hours, or two if Mira's window is open.`, 'Papers: forging begins.']);
         break;
       case 'courier':
         push('forger', 'person', P.forger.name + ' (by courier)',
           P.forger.state === 'busy' ? [false, 'She is already working on your papers.'] :
           O.papers.state === 'stamped' ? [false, 'Your papers are done.'] : [true],
-          ['A boy runs the commission to Dagny.', 'Works from any station.', 'Ready in 3 half-hours (2 if Mira is open).']);
+          ['A boy runs the commission to Dagny.', 'Works from any station.', 'Ready in three half-hours, or two if Mira is open.']);
         break;
       case 'distract':
         push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the sergeant'),
           P.guard.state === 'alert' ? [true] : [false, 'He is already not looking.']),
-          ['You kick over a brazier. Osric runs to it.', 'Distracted for 2 half-hours.', 'Risk: heat +1.']);
+          ['You kick over a brazier. Osric runs to it.', 'Distracted for two half-hours.', 'Risk: heat +1.']);
         push('lookout', 'person', P.lookout.name, both(near(s, P.lookout, 'Pip'),
-          P.lookout.state === 'idle' ? (P.guard.state === 'alert' ? [true] : [false, 'No need; Osric is not looking.'])
+          P.lookout.state === 'idle' ? (P.guard.state === 'alert' ? [true] : [false, 'No need. Osric is not looking.'])
                                      : [false, 'Pip is already out.']),
-          ['Pip runs ahead and starts a fight by the barrier.', 'Osric distracted for 3 half-hours.', 'No heat on you.']);
+          ['Pip runs ahead and starts a fight by the barrier.', 'Osric distracted for three half-hours.', 'No heat on you.']);
         break;
       case 'talk':
         push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the clerk'),
           P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mira remembers your mother. Window opens.', 'Forgery completes 1 half-hour sooner.']);
+          ['Mira remembers your mother. Window opens.', 'Forgery completes one half-hour sooner.']);
         push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Teo'),
           P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.']),
           ['Teo grumbles, then grins.', 'Yard arranged.']);
@@ -352,15 +356,15 @@ const Sim = (() => {
           ['Holt nods at the crate you prepared.', 'Berth arranged.']);
         push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Dagny'),
           P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.']),
-          ['Dagny hurries for a friend.', 'Forgery 1 half-hour sooner.']);
+          ['Dagny hurries for a friend.', 'Forgery one half-hour sooner.']);
         break;
       case 'picklock':
         push('gate', 'object', O.gate.name, both(near(s, O.gate, 'the gate'),
           O.gate.state === 'locked' ? [true] : [false, 'Already unlocked.']),
-          ['The side gate opens. Takes 2 half-hours.', 'Heat +2 (a lantern passes).', 'Passage arranged.']);
+          ['The side gate opens. Takes two half-hours.', 'Heat +2 (a lantern passes).', 'Passage arranged.']);
         push('crate', 'object', O.crate.name, both(near(s, O.crate, 'the crate'),
           O.crate.state === 'sealed' ? [true] : [false, 'Already prepared.']),
-          ['You loosen a lid and stuff straw. Takes 2 half-hours.', 'Heat +1.', 'Holt will then listen to sweet talk.']);
+          ['You loosen a lid and stuff straw. Takes two half-hours.', 'Heat +1.', 'Holt will then listen to sweet talk.']);
         break;
       case 'sellmaps':
         push('stall', 'object', O.stall.name, both(near(s, O.stall, 'the stall'),
@@ -376,13 +380,13 @@ const Sim = (() => {
       case 'favor':
         push('forger', 'person', P.forger.name,
           P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.'],
-          ['Dagny calls in her apprentice. No time spent.', 'Forgery 2 half-hours sooner.']);
+          ['Dagny calls in her apprentice. No time spent.', 'Forgery two half-hours sooner.']);
         push('teo', 'person', P.teo.name,
           P.teo.state === 'hostile' ? [true] : [false, 'Teo is already your friend.'],
           ['A word from the right person. No time spent.', 'Teo becomes friendly.', 'Yard arranged.']);
         push('guard', 'person', P.guard.name,
           P.guard.state === 'distracted' ? [true] : [false, 'Only useful while Osric is distracted.'],
-          ['The commotion is kept going. No time spent.', 'Distraction +2 half-hours.']);
+          ['A coin keeps the commotion going. No time spent.', 'Distraction lasts two half-hours longer.']);
         break;
     }
     return out;
@@ -397,7 +401,7 @@ const Sim = (() => {
   function costText(cost) {
     const parts = [];
     if (cost.coin) parts.push(`${cost.coin} coin`);
-    if (cost.favor) parts.push(`${cost.favor} favour`);
+    if (cost.favor) parts.push(`${cost.favor} favor`);
     return parts.length ? parts.join(', ') : 'nothing';
   }
 
@@ -489,7 +493,7 @@ const Sim = (() => {
         if (targetId === 'guard') {
           distractGuard(s, 2, events);
           if (s._rng() < 0.5) heat(s, 1, events, 'someone saw you kick the brazier');
-          say(events, 'guard', '"Oi! Who did that? Someone get sand!"');
+          say(events, 'guard', '"Oi. Who did that? Someone get sand."');
         } else {
           setState(s, 'people', 'lookout', 'running', events);
           s.jobs.push({ type: 'lookout', remaining: 3, who: 'lookout' });
@@ -520,7 +524,7 @@ const Sim = (() => {
         say(events, 'you', targetId === 'attic' ? 'Half an hour under the eaves, listening to boots.' : 'You study a shop window until the patrol passes.');
         break;
       case 'favor':
-        if (targetId === 'forger') { hurryForgery(s, 2, events); say(events, 'forger', '"Apprentice! Earn your keep."'); }
+        if (targetId === 'forger') { hurryForgery(s, 2, events); say(events, 'forger', '"Apprentice. Earn your keep."'); }
         if (targetId === 'teo')    { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"If Old Benn vouches for you, fine."'); }
         if (targetId === 'guard')  { const j = job(s, 'distract'); if (j) { j.remaining += 2; events.push(ev('job', { type: 'distract', remaining: j.remaining })); } say(events, 'you', 'A coin to a boy keeps the brazier burning.'); }
         break;
@@ -597,7 +601,7 @@ const Sim = (() => {
     if (s.heat >= 3 && s._rng() < (s.heat - 2) * 0.12) {
       heat(s, 1, events, 'a patrol asks questions on your street');
       events.push(ev('patrol', { station: s.pos }));
-      say(events, 'patrol', s.heat >= HEAT_LIMIT ? '"That\'s her. The cartographer. Take her."' : '"Papers? ...Move along. For now."');
+      say(events, 'patrol', s.heat >= HEAT_LIMIT ? '"That\'s her. The cartographer. Take her."' : '"Papers? Move along. For now."');
     }
     if (s.heat >= HEAT_LIMIT) {
       s.over = { win: false, reason: 'Too many people were talking about you. The patrol finds you at ' + clockText(s.tick) + '.' };
@@ -605,7 +609,7 @@ const Sim = (() => {
       return;
     }
     if (s.tick >= TICKS_TOTAL) {
-      s.over = { win: false, reason: 'Midnight. You hear the freight pull out from ' + STATIONS[s.pos].name + '. It does not come back.' };
+      s.over = { win: false, reason: 'Midnight. You hear the freight pull out from ' + STATIONS[s.pos].name.toLowerCase().replace('market square', 'Market Square') + ' without you.' };
       events.push(ev('over', s.over));
     }
   }
@@ -620,7 +624,7 @@ if (typeof module !== 'undefined') module.exports = Sim;
 </script>
 <script>
 /* ============================================================
-   Web Audio synth — no samples, no network.
+   Web Audio synth. No samples, no network.
    ============================================================ */
 'use strict';
 const Sfx = (() => {
@@ -864,7 +868,7 @@ const Render = (() => {
     else { g.fill('#8a6a3a'); g.rect(kx - 6, GROUND - 12, 12, 2); }
   }
   function indicator(g, x, y, kind, t, pips) {
-    // speech-bubble style marker above a head
+    // a speech-bubble marker above a head
     g.fill('#f4f1e8'); g.rect(x - 3, y - 8, 7, 6); g.rect(x - 1, y - 2, 2, 1);
     if (kind === 'busy') { g.fill('#5b3a8a'); g.rect(x - 1 + (Math.floor(t / 150) % 2), y - 6, 2, 2); }
     if (kind === '!') { g.fill('#d23a3a'); g.rect(x, y - 7, 1, 3); g.rect(x, y - 3, 1, 1); }
@@ -890,7 +894,7 @@ const Render = (() => {
     if (P.guard.state === 'alert') { g.fill('#555'); g.rect(e.x + 4, GROUND - 14, 1, 12); }
     if (P.guard.state === 'distracted') indicator(g, e.x, GROUND - 14, '?', t, rem('distract'));
     if (P.guard.state === 'bribed') indicator(g, e.x, GROUND - 14, 'coin', t);
-    // clerk (in window) — only drawn when window open or as silhouette
+    // the clerk is drawn in her window when it is open, else as a silhouette
     e = entityPos('clerk');
     if (P.clerk.state === 'open') { px(g, e.x - 2, GROUND - 24, ['.HHH.', 'HHHHH', '.SSS.', 'CCCCC'], { H: P.clerk.hat, S: '#e0b48c', C: P.clerk.coat }); indicator(g, e.x + 1, GROUND - 28, 'ok', t); }
     else { g.fill('#333'); g.rect(e.x - 1, GROUND - 22, 3, 5); }
@@ -904,7 +908,7 @@ const Render = (() => {
     if (P.brakeman.state === 'agreed') indicator(g, e.x, GROUND - 14, 'ok', t);
     // courier
     if (view.courier) small(g, Math.round(view.courier.x), GROUND, '#3a6a9a', '#223');
-    // player — Ines
+    // the player, Ines
     const walk = view.walking && Math.floor(view.stepPhase) % 2 === 0;
     person(g, Math.round(view.playerX) + 2, GROUND, '#8a2f3a', '#3a2418', { scarf: '#d94f5c', walk });
     if (s.objects.papers.state === 'stamped' && !view.walking) { g.fill('#efe6cc'); g.rect(Math.round(view.playerX) + 6, GROUND - 7, 2, 3); }
@@ -947,7 +951,7 @@ const Render = (() => {
       }
       p.noStroke();
       p.fill(i === s.pos ? '#ffd24a' : (i < s.pos ? '#5cd65c' : '#9a9aaa')); p.ellipse(x, y, i === s.pos ? 10 : 7);
-      p.fill('#cfd0dd'); p.textSize(10); p.textAlign(p.CENTER, p.TOP); p.text(Sim.STATIONS[i].short.toUpperCase(), x, y + 7);
+      p.fill('#cfd0dd'); p.textSize(10); p.textAlign(p.CENTER, p.TOP); p.text(Sim.STATIONS[i].short, x, y + 7);
     }
     // arrangement badges (bottom-left)
     const A = Sim.arrangements(s); let bx = 8;
@@ -976,8 +980,8 @@ const Render = (() => {
     if (view.over) {
       p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height);
       p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a');
-      p.text(view.over.win ? 'YOU MADE THE FREIGHT' : 'CAUGHT IN VERLANE', p.width / 2, p.height / 2 - 14);
-      p.textSize(12); p.fill('#eee'); p.text('see the panel below to read what happened', p.width / 2, p.height / 2 + 14);
+      p.text(view.over.win ? 'You made the freight' : 'Caught in Verlane', p.width / 2, p.height / 2 - 14);
+      p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened', p.width / 2, p.height / 2 + 14);
     }
   }
 
@@ -985,10 +989,10 @@ const Render = (() => {
   function rebuildHotspots(s) {
     hotspots = [];
     const add = (id, label) => { const r = hotRect(id); hotspots.push({ id, label, x: r.x * SCALE, y: r.y * SCALE, w: r.w * SCALE, h: r.h * SCALE }); };
-    for (const id in s.people) add(id, `${s.people[id].name} — ${Sim.STATE_LABEL[id][s.people[id].state]}`);
-    for (const id in s.objects) add(id, `${s.objects[id].name} — ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
+    for (const id in s.people) add(id, `${s.people[id].name}: ${Sim.STATE_LABEL[id][s.people[id].state]}`);
+    for (const id in s.objects) add(id, `${s.objects[id].name}: ${Sim.STATE_LABEL[id][s.objects[id].state]}`);
     add('attic', 'Your hideout');
-    add('self', 'Ines (you)');
+    add('self', 'Ines, that is you');
   }
   function hitTest(mx, my) {
     // selected-card targets take priority, then everything else; last drawn wins
@@ -1045,16 +1049,16 @@ const Render = (() => {
 <script>
 /* ============================================================
    UI: HTML hand / targets / inspection / dialogue / controls.
-   Flow: pick card → applications revealed (scene + list) →
-   inspect one → Commit → Sim resolves → events animated.
+   Flow: pick a card, see its applications in the scene and the list,
+   inspect one, commit. The sim resolves, then the events are animated.
    ============================================================ */
 'use strict';
 const UI = (() => {
   let s = null, selCard = null, selTarget = null, seed = 1, persona = 'cartographer';
   const $ = (id) => document.getElementById(id);
   const SPEAKER = {
-    you: ['Ines', '#e08a92'], forger: ['Dagny', '#b48ad8'], lookout: ['Pip', '#f0a060'], guard: ['Sgt. Osric', '#8ab0e0'],
-    clerk: ['Mira', '#9ad080'], teo: ['Teo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Patrol', '#ff6a6a'], sys: ['—', '#9a9aaa'],
+    you: ['Ines', '#e08a92'], forger: ['Dagny', '#b48ad8'], lookout: ['Pip', '#f0a060'], guard: ['Osric', '#8ab0e0'],
+    clerk: ['Mira', '#9ad080'], teo: ['Teo', '#d0b080'], brakeman: ['Holt', '#a0a8b8'], patrol: ['Patrol', '#ff6a6a'], sys: ['', '#9a9aaa'],
   };
 
   function log(who, text, cls) {
@@ -1075,14 +1079,14 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `Verlane, ${Sim.clockText(0)}. The midnight freight is the last way out before the border closes. Tonight you are <b>${P0.name}</b>: ${P0.blurb} Seven hours.`, 'sys');
-    log('you', 'Papers, a way past the barrier, a way across the yard, and a crate with my name on it. In that order, or any order that works.');
+    log('sys', `Verlane, ${Sim.clockText(0)}. The midnight freight is the last way out before the border closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('you', 'Papers, a way past the barrier, a way across the yard and a crate with my name on it. In that order, or any order that works.');
     renderAll();
   }
 
   // ---- rendering --------------------------------------------
   function renderAll() { renderStatus(); renderHand(); renderTargets(); renderControls(); renderNeeds(); renderOver(); syncHighlight(); }
-  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name} — ${Sim.PERSONAS[k].coin} coin, ${Sim.PERSONAS[k].favor} favours, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
+  function renderPersonas() { const sel = $('persona'); sel.innerHTML = ''; for (const k in Sim.PERSONAS) { const o = document.createElement('option'); o.value = k; o.textContent = `${Sim.PERSONAS[k].name}: ${Sim.PERSONAS[k].coin} coin, ${Sim.PERSONAS[k].favor} ${Sim.PERSONAS[k].favor === 1 ? 'favor' : 'favors'}, heat ${Sim.PERSONAS[k].heat}`; sel.appendChild(o); } }
 
   function renderStatus() {
     $('coin').textContent = s.coin; $('favor').textContent = s.favor;
@@ -1102,7 +1106,7 @@ const UI = (() => {
     const apps = Sim.applications(s, c.type); const anyOk = apps.some(a => a.ok);
     if (!anyOk) el.classList.add('dead');
     el.innerHTML = `<span class="cname">${d.name}</span>
-      <span class="ccost">${Sim.costText(cost)}${c.type === 'bribe' && s.bribes ? ' (price has risen)' : ''} · ${d.time ? d.time * 30 + ' min' : 'no time'}</span>
+      <span class="ccost">${Sim.costText(cost)}${c.type === 'bribe' && s.bribes ? ' (price has risen)' : ''} · ${d.time ? d.time * 30 + ' minutes' : 'no time'}</span>
       <span class="cflavor">${d.flavor}</span>
       <span class="ctargets">${apps.filter(a => a.ok).length} of ${apps.length} uses available</span>`;
     el.onclick = () => { Sfx.unlock(); if (selCard === c.uid) { selCard = null; selTarget = null; Sfx.click(); } else { selCard = c.uid; selTarget = null; Sfx.select(); } renderAll(); };
@@ -1111,7 +1115,7 @@ const UI = (() => {
   function renderHand() {
     const h = $('hand'); h.innerHTML = '';
     for (const c of s.hand) h.appendChild(cardEl(c));
-    $('deckinfo').textContent = `${s.deck.length} in deck · ${s.discard.length} discarded`;
+    $('deckinfo').textContent = `${s.deck.length} in the deck, ${s.discard.length} discarded`;
   }
 
   function currentApps() {
@@ -1126,11 +1130,11 @@ const UI = (() => {
   function renderTargets() {
     const box = $('targets'), cur = currentApps();
     if (!cur) {
-      box.innerHTML = `<p class="hint">Select a card to see who and what it can affect. Highlighted figures in the scene are the same list.</p>`;
+      box.innerHTML = `<p class="hint">Select a card to see who and what it can affect. The highlighted figures in the scene are the same list.</p>`;
       $('inspect').classList.add('empty'); $('inspect').innerHTML = ''; return;
     }
     const { card, def, apps } = cur;
-    box.innerHTML = `<h3>${def.name} <small>can affect…</small></h3>`;
+    box.innerHTML = `<h3>${def.name} <small>can affect</small></h3>`;
     const ul = document.createElement('ul');
     for (const a of apps) {
       const li = document.createElement('li'); li.className = (a.ok ? 'ok' : 'no') + (selTarget === a.id ? ' sel' : '') + ' k-' + a.kind;
@@ -1143,9 +1147,9 @@ const UI = (() => {
     const ins = $('inspect'); const a = apps.find(x => x.id === selTarget);
     if (!a) { ins.classList.add('empty'); ins.innerHTML = `<p class="hint">Pick a target in the list or in the scene to inspect what would happen.</p>`; return; }
     ins.classList.remove('empty');
-    ins.innerHTML = `<h3>${def.name} → ${a.label}</h3>
+    ins.innerHTML = `<h3>${def.name} on ${a.label}</h3>
       <ul class="preview">${a.preview.map(x => `<li>${x}</li>`).join('')}</ul>
-      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ', no time'}.${card.type === 'bribe' ? ' Every bribe raises the next one\'s price by ' + Sim.BRIBE_STEP + ' coin.' : ''}</p>
+      <p class="cost">Costs ${Sim.costText(Sim.cardCost(s, card.type))}${def.time ? ` and ${def.time * 30} minutes` : ' and no time'}.${card.type === 'bribe' ? ' Every bribe raises the price of the next one by ' + Sim.BRIBE_STEP + ' coin.' : ''}</p>
       ${a.ok ? '' : `<p class="blocked">${a.why}</p>`}
       <div class="row"><button id="commit" class="primary" ${a.ok && !s.over ? '' : 'disabled'}>Commit</button><button id="cancel">Cancel</button></div>`;
     $('commit').onclick = commit; $('cancel').onclick = () => { selCard = selTarget = null; Sfx.click(); renderAll(); };
@@ -1164,20 +1168,20 @@ const UI = (() => {
     for (const j of s.jobs) {
       const li = document.createElement('li');
       const name = { forge: 'Dagny inking your papers', distract: 'Osric distracted', lookout: 'Pip causing trouble', picklock: j.who === 'gate' ? 'You, picking the side gate' : 'You, preparing a crate' }[j.type];
-      li.innerHTML = `<b>${name}</b> <span>${j.remaining * 30} min left</span>`; pend.appendChild(li);
+      li.innerHTML = `<b>${name}</b> <span>${j.remaining * 30} minutes left</span>`; pend.appendChild(li);
     }
   }
 
   function renderControls() {
     const over = !!s.over, busy = Render.busy();
     const back = Sim.canMove(s, -1), fwd = Sim.canMove(s, 1);
-    $('back').disabled = over || !back.ok; $('back').title = back.ok ? `Walk back to ${Sim.STATIONS[back.to].name} (30 min)` : back.why;
+    $('back').disabled = over || !back.ok; $('back').title = back.ok ? `Walk back to ${Sim.STATIONS[back.to].name}, 30 minutes` : back.why;
     $('fwd').disabled = over || !fwd.ok;
-    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to ${Sim.STATIONS[fwd.to].short} ▶` : 'Walk on ▶';
-    $('fwd').title = fwd.ok ? `Walk to ${Sim.STATIONS[fwd.to].name} (30 min)` : (fwd.why || '');
+    $('fwd').textContent = fwd.to != null && fwd.to < Sim.STATIONS.length ? `Walk on to the ${fwd.to === 1 ? 'market' : Sim.STATIONS[fwd.to].short.toLowerCase()}` : 'Walk on';
+    $('fwd').title = fwd.ok ? `Walk to ${Sim.STATIONS[fwd.to].name}, 30 minutes` : (fwd.why || '');
     $('fwdwhy').textContent = (!fwd.ok && fwd.why && fwd.to != null) ? fwd.why : '';
     $('wait').disabled = over;
-    $('wait').textContent = selCard ? 'Wait 30 min & swap the selected card' : 'Wait 30 min';
+    $('wait').textContent = selCard ? 'Wait 30 minutes and swap the selected card' : 'Wait 30 minutes';
     const b = Sim.canBoard(s); $('board').disabled = over || !b.ok; $('board').title = b.ok ? 'Climb into the crate' : b.why;
     $('board').classList.toggle('ready', b.ok && !over);
     document.body.classList.toggle('busy', busy);
@@ -1198,9 +1202,9 @@ const UI = (() => {
   }
   function renderRecords() {
     const r = loadRecords(); const el = $('records');
-    if (!r.nights) { el.textContent = 'No nights played yet in this browser.'; return; }
-    el.innerHTML = `${r.escapes}/${r.nights} escapes · streak ${r.streak} (best ${r.bestStreak})` +
-      (r.earliest != null ? ` · earliest out ${Sim.clockText(r.earliest)} · coolest escape heat ${r.coolest} · richest ${r.richest} coin` : '');
+    if (!r.nights) { el.textContent = 'No nights played in this browser yet.'; return; }
+    el.innerHTML = `${r.escapes} of ${r.nights} nights escaped. Streak ${r.streak}, best ${r.bestStreak}.` +
+      (r.earliest != null ? ` Earliest out ${Sim.clockText(r.earliest)}. Coolest escape at heat ${r.coolest}. Richest escape with ${r.richest} coin.` : '');
   }
   function renderOver() {
     const o = $('over');
@@ -1208,7 +1212,7 @@ const UI = (() => {
     recordNight(); renderRecords();
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
     $('overtitle').textContent = s.over.win ? 'Out of Verlane' : 'Caught';
-    $('overtext').textContent = s.over.reason + ` (${s.tick * 30} minutes used, heat ${s.heat}, seed ${seed}.)`;
+    $('overtext').textContent = s.over.reason + ` You used ${s.tick * 30} minutes and ended at heat ${s.heat}. Seed ${seed}.`;
   }
 
   // ---- actions ----------------------------------------------
@@ -1228,22 +1232,22 @@ const UI = (() => {
     Sfx.unlock();
     const swap = selCard; const r = Sim.wait(s, swap);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    log('sys', swap ? 'You wait half an hour and quietly rethink one of your options.' : 'You wait half an hour.', 'sys act');
+    log('sys', swap ? 'You wait half an hour and trade one card for another.' : 'You wait half an hour.', 'sys act');
     selCard = selTarget = null; animate(r.events); renderAll();
   }
   function doBoard() { Sfx.unlock(); const r = Sim.board(s); if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; } animate(r.events); renderAll(); }
 
-  // ---- events → animation, sound, dialogue -------------------
+  // ---- events to animation, sound and dialogue ----------------
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'walk': Render.walk(e.from, e.to); break;
         case 'coin': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' coin', '#ffd24a'); Render.enqueue({ dur: 10, start() { Sfx.coin(e.delta > 0); } }); break;
-        case 'favor': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' favour', '#b48ad8'); break;
+        case 'favor': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' favor', '#b48ad8'); break;
         case 'heat': Render.float('self', (e.delta > 0 ? '+' : '') + e.delta + ' heat', e.delta > 0 ? '#ff6a6a' : '#7ad0ff'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'state': Render.flash(e.id); if (e.group === 'people') Render.enqueue({ dur: 10, start() { Sfx.work(); } }); break;
-        case 'arranged': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); Render.float(targetFor(e.id), { papers: 'PAPERS READY', passage: 'PASSAGE OPEN', yard: 'YARD OPEN', berth: 'BERTH HELD', crate: 'CRATE READY' }[e.id], '#5cd65c'); break;
+        case 'arranged': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); Render.float(targetFor(e.id), { papers: 'Papers ready', passage: 'Passage open', yard: 'Yard open', berth: 'Berth held', crate: 'Crate ready' }[e.id], '#5cd65c'); break;
         case 'courier': Render.courier('forger'); break;
         case 'run': Render.pipRun(e.to); break;
         case 'tick': Render.enqueue({ dur: 120, start() { Sfx.tick(); } }); break;
@@ -1251,7 +1255,7 @@ const UI = (() => {
         case 'board': Render.enqueue({ dur: 300, start() { Sfx.whistle(); } }); break;
         case 'over': Render.gameOver(e); Render.enqueue({ dur: 10, start() { e.win ? Sfx.win() : Sfx.lose(); } }); break;
         case 'draw': Render.enqueue({ dur: 10, start() { Sfx.click(); } }); break;
-        case 'price': Render.float('self', `bribes now ${e.bribe} coin`, '#ffb060'); break;
+        case 'price': Render.float('self', `bribes now cost ${e.bribe} coin`, '#ffb060'); break;
       }
     }
     if (events.some(x => x.type === 'state' && x.id === 'lookout' && x.to === 'idle')) Render.pipRun(1);

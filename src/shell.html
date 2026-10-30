@@ -10,10 +10,10 @@
 </head>
 <body>
 <header>
-  <h1>LAST FREIGHT OUT<small>Escape Verlane before the midnight freight leaves.</small></h1>
-  <div class="stat"><b>Clock</b><span class="v" id="clock">17:00</span><span class="bar" id="timeline"></span></div>
+  <h1>Last Freight Out<small>Escape Verlane before the midnight freight leaves.</small></h1>
+  <div class="stat"><b>Clock</b><span class="v" id="clock">5 p.m.</span><span class="bar" id="timeline"></span></div>
   <div class="stat"><b>Coin</b><span class="v" id="coin">0</span></div>
-  <div class="stat"><b>Favours</b><span class="v" id="favor">0</span></div>
+  <div class="stat"><b>Favors</b><span class="v" id="favor">0</span></div>
   <div class="stat"><b>Heat</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
 </header>
@@ -26,9 +26,9 @@
     <h2>Your hand <small id="deckinfo"></small></h2>
     <div id="hand"></div>
     <div id="helpbox" hidden>
-      <p><b>How it works.</b> Pick a card. Every person, object or place it can affect lights up in the scene and in the list. Inspect one, then <b>Commit</b>; the action resolves at once and you watch the consequences play out.</p>
-      <p>Walking between stations takes 30 minutes. Sgt. Osric blocks the barrier until you have <b>Passage</b>; the yard needs stamped <b>Papers</b> or Teo's goodwill; the freight needs a <b>Berth</b> from Brakeman Holt. Heat climbs when people notice you; at 8 the patrol takes you. <b>Wait</b> with a card selected to swap it.</p>
-      <p>Keys: 1–4 pick a card · ← → walk · Enter commit · Esc cancel.</p>
+      <p>Pick a card. Every person, object or place it can affect lights up in the scene and in the list. Inspect one, then commit. The action resolves at once and you watch the consequences play out.</p>
+      <p>Walking between stations takes 30 minutes. Sgt. Osric Vane blocks the barrier until you have passage. The yard needs stamped papers or Teo's goodwill. The freight needs a berth from Holt the brakeman. Heat climbs when people notice you, and at 8 the patrol takes you. Wait with a card selected to swap it.</p>
+      <p>Keys: 1 to 4 pick a card, the arrow keys walk, Enter commits, Esc cancels.</p>
     </div>
   </section>
   <section class="panel">
@@ -37,10 +37,10 @@
     <div id="inspect" class="empty"></div>
   </section>
   <section class="panel" id="controls">
-    <h2>Move &amp; time</h2>
-    <div class="row"><button id="back">◀ Walk back</button><button id="fwd">Walk on ▶</button></div>
+    <h2>Move and time</h2>
+    <div class="row"><button id="back">Walk back</button><button id="fwd">Walk on</button></div>
     <p id="fwdwhy"></p>
-    <div class="row"><button id="wait">Wait 30 min</button><button id="board" class="primary">Board the freight</button></div>
+    <div class="row"><button id="wait">Wait 30 minutes</button><button id="board" class="primary">Board the freight</button></div>
     <h2>Still to arrange</h2>
     <ul id="needs"></ul>
     <h2>In progress</h2>
@@ -51,7 +51,7 @@
     <h2>Your record</h2>
     <p class="small" id="records"></p>
     <div class="row" style="margin-top:8px"><button id="mute">Sound: on</button><button id="help">Help</button></div>
-    <p class="small">Runs entirely offline: p5.js 1.9.4 is embedded; sound is synthesised with Web Audio.</p>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded and the sound is synthesized with Web Audio.</p>
   </section>
 </div>
 <div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Another night</button></div></div>
