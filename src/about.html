@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Coalition</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,/*__FAVICON__*/">
+<meta name="theme-color" content="#150F2E">
+<meta name="description" content="{{c:about.lede}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Coalition">
+<meta property="og:title" content="Coalition">
+<meta property="og:description" content="{{c:about.lede}}">
+<meta property="og:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Coalition">
+<meta name="twitter:description" content="{{c:about.lede}}">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
+<style>
+/*__FONTS__*/
+:root{--bg:#150F2E;--s3:#2A2157;--ink:#F6F1FF;--mute:#B9B0D9;--soft:#D8D2EE;--gold:#FFC93C;--commit:#3BD15E;--font-display:'Little Grandad Fat',Georgia,serif;--font-title:'GCNorthSans-SemiBold',Arial,sans-serif;--font-body:'GCNorthSans-Regular',Arial,sans-serif}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.55 var(--font-body);-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}
+.wrap{max-width:720px;margin:0 auto;padding:40px 16px 64px}
+h1{margin:0;font:400 clamp(56px,12vw,112px)/.9 var(--font-display);color:var(--gold);letter-spacing:.02em;text-shadow:0 4px 0 #7A4E0E}
+.lede{margin:14px 0 24px;font-size:21px;line-height:1.5;color:var(--soft)}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 36px;border-radius:999px;background:var(--commit);color:#06120A;font:400 20px/1 var(--font-title);letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.cta:hover{filter:brightness(1.08)}
+h2{margin:40px 0 10px;font:400 26px/1.2 var(--font-title);color:var(--ink)}
+p{margin:0 0 14px}
+figure{margin:28px 0;display:grid;gap:12px}
+figure img{width:100%;max-width:390px;border-radius:14px;display:block;image-rendering:pixelated;background:var(--s3)}
+figcaption{font-size:15px;color:var(--mute)}
+.stills{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:32px 0}
+.foot{margin-top:48px;padding-top:20px;border-top:1px solid #4A4080;font-size:15px;color:var(--mute)}
+@media(min-width:1000px){.wrap{padding-top:64px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>{{c:title.word}}</h1>
+  <p class="lede">{{c:about.lede}}</p>
+  <p>{{c:about.p1}}</p>
+  <p>{{c:about.p2}}</p>
+  <p>{{c:about.p3}}</p>
+  <p><a class="cta" href="./">{{c:about.play}}</a></p>
+
+  <div class="stills">
+    <figure><img src="media/still-title.png" width="390" height="844" alt="{{c:about.still_title}}" loading="lazy"><figcaption>{{c:about.still_title}}</figcaption></figure>
+    <figure><img src="media/still-here.png" width="390" height="844" alt="{{c:about.still_here}}" loading="lazy"><figcaption>{{c:about.still_here}}</figcaption></figure>
+    <figure><img src="media/still-route.png" width="390" height="844" alt="{{c:about.still_route}}" loading="lazy"><figcaption>{{c:about.still_route}}</figcaption></figure>
+  </div>
+
+  <h2>{{c:about.road_h}}</h2>
+  <p>{{c:about.p4}}</p>
+  <p>{{c:about.p5}}</p>
+  <p>{{c:about.p6}}</p>
+
+  <h2>{{c:about.gov_h}}</h2>
+  <p>{{c:about.p7}}</p>
+
+  <h2>{{c:about.start_h}}</h2>
+  <p>{{c:about.p8}}</p>
+  <p style="margin-top:32px"><a class="cta" href="./">{{c:about.play}}</a></p>
+  <p class="foot">{{c:about.world}}<br>{{c:start.byline}} <a href="https://ronbronson.dev/">{{c:start.author}}</a></p>
+</main>
+</body>
+</html>

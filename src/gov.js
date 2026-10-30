@@ -151,6 +151,11 @@ const Gov = (() => {
 
   // ---- commit --------------------------------------------------------------------------------
   function commit(g, id, optionId) {
+    const r = _commit(g, id, optionId);
+    if (r.ok) (g.actions = g.actions || []).push(optionId === undefined ? [id] : [id, optionId]);
+    return r;
+  }
+  function _commit(g, id, optionId) {
     if (g.over || g.c.over) return { ok: false, why: T('sim.why.the_run_is_over') };
     const events = [], c = g.c;
     const before = { pos: c.pos, belief: g.belief };

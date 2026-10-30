@@ -328,3 +328,9 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 @media(min-width:1000px){#map-choices{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* the ledger: what each ally promised and what came back */
 .ledger{display:block;font-size:13px;color:var(--mute);line-height:1.4;margin-top:2px}.ledger .h{font-family:var(--font-mono);color:var(--gold)}
+
+#replaybadge{position:fixed;top:calc(8px + var(--sat));left:50%;transform:translateX(-50%);z-index:30;padding:4px 12px;border-radius:999px;background:var(--gold);color:#150F2E;font:400 13px/1.4 var(--font-label);letter-spacing:.04em;text-transform:uppercase}#replaybadge[hidden]{display:none}
+body.attract #title{background:transparent}
+body.attract .title-shade{background:linear-gradient(180deg,rgba(21,15,46,.35) 0%,rgba(21,15,46,.6) 40%,rgba(21,15,46,.9) 100%)}
+.title-about{margin:18px 0 0;font-size:16px}.title-about a{color:var(--soft);text-shadow:0 2px 8px #000}
+body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdrop-filter:blur(3px)}
