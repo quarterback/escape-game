@@ -21,9 +21,10 @@ for fam, fn, weight, mime, fmt, license_file in FONTS:
     b64 = base64.b64encode((root / 'fonts' / fn).read_bytes()).decode()
     css_fonts.append(f"@font-face{{font-family:'{fam}';src:url(data:{mime};base64,{b64}) format('{fmt}');font-weight:{weight};font-style:normal;font-display:swap}}")
 shell = shell.replace('/*__FONTS__*/', '\n'.join(css_fonts))
-parts = {'CSS': src / 'style.css', 'P5': root / 'vendor' / 'p5.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
+parts = {'CSS': src / 'style.css', 'PIXI': root / 'vendor' / 'pixi.min.js', 'DATA': src / 'data.js', 'SIM': src / 'sim.js', 'TUTORIAL': src / 'tutorial.js', 'GOV': src / 'gov.js', 'AUDIO': src / 'audio.js', 'RENDER': src / 'render.js', 'UI': src / 'ui.js'}
 for k, p in parts.items():
     txt = p.read_text()
+    if k == 'PIXI': txt = re.sub(r'\n//# sourceMappingURL=\S+\s*$', '\n', txt)
     assert '</script' not in txt.lower(), k
     shell = shell.replace('/*__%s__*/' % k, txt)
 out.write_text(shell)

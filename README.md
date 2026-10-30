@@ -6,7 +6,7 @@ presidency of Valdória on Saturday. By noon a court barred you from leaving.
 Cross the border at the Huhūi passes into Esmeralda and leave its airspace in
 a jet bound for Atlanta before the inquiry finds you. You have 72 hours.
 
-Open `index.html` in a browser. Nothing is fetched at runtime. p5.js 1.9.4 and
+Open `index.html` in a browser. Nothing is fetched at runtime. PixiJS 8.21.0 and
 the fonts are embedded, and all sound, the theme included, is synthesized with
 Web Audio. Served over HTTPS it installs to a phone's home screen and runs
 offline after the first visit (`manifest.webmanifest`, `sw.js`, `icons/`); a run
@@ -71,13 +71,13 @@ words people say. Esmeralda is the second Nelosphere state in South America
 | `src/sim.js` | Simulation: all game truth, no DOM, no rendering. Node-loadable |
 | `src/tutorial.js` | The guided first run: fixed seed, scripted die and inquiry, 20 steps, what each step allows |
 | `src/gov.js` | The government side: a hidden candidate played by the harness policy, reports, orders, requests, the debrief |
-| `src/render.js` | p5 pixel-art scenes on a 320 by 150 buffer, animation queue, the title and runway stills |
+| `src/render.js` | PixiJS renderer: pixel-art scenes on a 320 by 150 buffer shown at 3x, people as sprites, lights, weather, hour grading, dice and labels; a 2D canvas fallback; the title and runway stills |
 | `src/ui.js` | Phone-first layout: scene header, Here, Phone, Route (the blueprint board), Hand, coach, saved runs, both roles |
 | `src/audio.js` | Web Audio sound effects and the theme |
 | `src/style.css`, `src/shell.html` | Styles, page shell, Open Graph and Twitter card tags |
 | `fonts/` | The owner's licensed webfonts and `LICENSES.md` |
 | `og/card.png` | The 1200 by 630 link preview image |
-| `vendor/p5.min.js` | Pinned p5.js 1.9.4 |
+| `vendor/pixi.min.js` | Pinned PixiJS 8.21.0 (MIT, `vendor/pixi.LICENSE`) |
 | `tools/build.py` | Inlines everything into `index.html`; writes the manifest and the service worker |
 | `_headers`, `icons/` | Cloudflare cache rules for the worker and the app icons |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing |

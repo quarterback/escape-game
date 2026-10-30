@@ -242,3 +242,6 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   .whobtn{flex-direction:column;align-items:flex-start;gap:8px;padding:22px;background:rgba(42,33,87,.94);border-radius:18px}.whobtn .avatar{width:48px;height:48px;font-size:18px}.whobtn .n b{font-size:24px}.whobtn .n span{font-size:15px}.whobtn .n .blurb{display:block}
   #start-demo .primary{min-height:60px;font-size:20px;padding:0 36px}
 }
+
+/* Overlays on the scene are read-only; let the pointer reach the people in the scene. */
+#clockbox,#goalbox,#sosa,#expline,#lvlhead{pointer-events:none}

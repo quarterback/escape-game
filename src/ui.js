@@ -40,7 +40,7 @@ const UI = (() => {
     who = r.who; enemyLog = r.log || []; sel = null; Sfx.theme(false);
     if (r.gov) { gov = Gov.restore(r.gov); s = gov.c; Tutorial.stop(); }
     else { gov = null; s = Sim.restore(r.s); if (r.tut >= 0) { Tutorial.start(); while (Tutorial.index() < r.tut) Tutorial.forward(); } else Tutorial.stop(); }
-    Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
+    Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = (r.lines || []).join(''); $('start').hidden = true; document.body.classList.toggle('gov', !!gov);
     setTab('here'); renderAll(); return true;
   }
@@ -60,7 +60,7 @@ const UI = (() => {
   function newGovRun() {
     markSeen(); Tutorial.stop(); who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false);
     gov = Gov.newRun((Math.random() * 1e9) >>> 0); s = gov.c; document.body.classList.add('gov');
-    Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
+    Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
     log('sys', `${Sim.clockText(0)}. You are ${Data.GOV.name}, ${Data.GOV.title}. ${Data.CHARACTERS[gov.target].name} lost on Saturday and the court has barred her from leaving. The minister wants a location.`, 'sys');
     animate(gov._boot); renderAll(); saveRun();
