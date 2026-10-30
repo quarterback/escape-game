@@ -3426,7 +3426,7 @@ const Sim = (() => {
       flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
       nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial,
       // the deeper game: one dispatch or hold waits at a time; holds climb a ladder; the passport deadline is Monday noon.
-      event: null, seenEvents: [], hold: 0, holds: 0, deadline: DEADLINE, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
+      event: null, seenEvents: [], hold: 0, holds: 0, lastHoldAt: -99, deadline: DEADLINE, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
     };
     s.exposure = ch.exposure || 1;
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
@@ -3632,7 +3632,9 @@ const Sim = (() => {
   function climbHold(s, events) {
     if (s.tutorial || s.over) return;
     let r = s.hold + 1; if (s.flags.cancelled && s.hold === 0) r = 2; // after Monday noon the first hold is a station, not a roadside
-    s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos;
+    // Jurisdiction: across the line a Valdórian court holds nobody. Esmeralda questions you only once Sosā has asked it to, and never climbs past that.
+    if (s.pos >= ESMERALDA_FROM) { if (!s.flags.asked) return; r = 1; }
+    s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos; s.lastHoldAt = s.hour;
     s.event = { kind: 'hold', rung: s.hold };
     events.push(ev('hold', { rung: s.hold, title: D.HOLDS[s.hold].title, text: fill(s, D.HOLDS[s.hold].text) }));
   }
@@ -3819,9 +3821,12 @@ const Sim = (() => {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: T('sim.inquiry.monday_noon_your_own_passport'), belief: s.belief })); }
-      if (s.belief === s.pos && s.hour % (s._manual ? 4 : 2) === 0) heat(s, 1, events);
+      // exposure drifts while they look in the right place; Salta's wait for the midnight freight drifts at half rate
+      if (s.belief === s.pos && s.hour % (s._manual || level(s).id === 'salta' ? 4 : 2) === 0) heat(s, 1, events);
+      // the hold ladder decays: twelve quiet hours drop a rung, so Saturday's questioning is not Monday's house arrest
+      if (s.hold > 0 && !s.event && s.hour - s.lastHoldAt >= 12) { s.hold -= 1; s.lastHoldAt = s.hour; }
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
-      if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 6; climbHold(s, events); } }
+      if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 4; climbHold(s, events); } }
       if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: T('sim.end.your_immunity_is_gone_a', { time: clockText(s.hour), epilogue: epilogue(s, false) }) }; events.push(ev('over', s.over)); }
       if (!s.over && !s.event && s.hour >= s.nextEventAt) { s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events); }
     }
@@ -3845,7 +3850,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += T('sim.inquiry.they_find_you'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += T('sim.inquiry.they_are_close'); } else text += T('sim.inquiry.nobody_there_has_seen_you'); break; }
+      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 7) { text += T('sim.inquiry.they_find_you'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += T('sim.inquiry.they_are_close'); } else text += T('sim.inquiry.nobody_there_has_seen_you'); break; }
       case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += T('sim.inquiry.the_last_call_came_from'); } else text += T('sim.inquiry.nothing_new'); break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + T('sim.inquiry.the_operator_withdraws_the_crew'); } else text = pick.text(); break;
