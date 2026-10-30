@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Last Freight Out</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<header>
+  <h1>Last Freight Out<small>Out of Valdória before the midnight frēt to Esmeralda leaves.</small></h1>
+  <div class="stat"><b>Clock</b><span class="v" id="clock">17:00</span><span class="bar" id="timeline"></span></div>
+  <div class="stat"><b>Coin</b><span class="v" id="coin">0</span></div>
+  <div class="stat"><b>Favors</b><span class="v" id="favor">0</span></div>
+  <div class="stat"><b>Heat</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
+  <div class="stat"><b>Where</b><span id="where"></span></div>
+</header>
+<main>
+  <div id="scene" aria-label="Pixel-art scene of the route through a Salta rail town"></div>
+  <aside id="dialogue" aria-live="polite"></aside>
+</main>
+<div class="lower">
+  <section class="panel">
+    <h2>Your hand <small id="deckinfo"></small></h2>
+    <div id="hand"></div>
+    <div id="helpbox" hidden>
+      <p>Pick a card. Every person, object or place it can affect lights up in the scene and in the list. Inspect one, then commit. The action resolves at once and you watch the consequences play out.</p>
+      <p>Walking between stations takes 30 minutes. Gaspār, the customs guard, blocks the barrier until you have passage. The jārd needs a stamped pāsportô or Theo's goodwill. The frēt needs a berth from Holt the brakeman. Heat climbs when people notice you, and at 8 the bailiffs take you. Wait with a card selected to swap it.</p>
+      <p>Keys: 1 to 4 pick a card, the arrow keys walk, Enter commits, Esc cancels.</p>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Applications <small>what this card can touch</small></h2>
+    <div id="targets"></div>
+    <div id="inspect" class="empty"></div>
+  </section>
+  <section class="panel" id="controls">
+    <h2>Move and time</h2>
+    <div class="row"><button id="back">Walk back</button><button id="fwd">Walk on</button></div>
+    <p id="fwdwhy"></p>
+    <div class="row"><button id="wait">Wait 30 minutes</button><button id="board" class="primary">Board the freight</button></div>
+    <h2>Still to arrange</h2>
+    <ul id="needs"></ul>
+    <h2>In progress</h2>
+    <ul id="pending"></ul>
+    <h2>Game</h2>
+    <div class="row"><select id="persona" aria-label="who you are tonight"></select></div>
+    <div class="row" style="margin-top:8px"><input id="seed" type="number" min="1" aria-label="seed"><button id="newgame">New game (seed)</button><button id="reroll">Random night</button></div>
+    <h2>Your record</h2>
+    <p class="small" id="records"></p>
+    <div class="row" style="margin-top:8px"><button id="mute">Sound: on</button><button id="help">Help</button></div>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded and the sound is synthesized with Web Audio.</p>
+  </section>
+</div>
+<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Another night</button></div></div>
+<script>
+/*__P5__*/
+</script>
+<script>
+/*__SIM__*/
+</script>
+<script>
+/*__AUDIO__*/
+</script>
+<script>
+/*__RENDER__*/
+</script>
+<script>
+/*__UI__*/
+</script>
+</body>
+</html>
