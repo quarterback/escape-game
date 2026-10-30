@@ -206,7 +206,7 @@ const Sim = (() => {
   function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Lie low one hour', ok: !s.over && !s.event, hours: 1 } }; }
 
   // ---- dispatches and holds: the News phase --------------------
-  const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, level(s).short);
+  const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, s.pos === 0 ? 'the residence' : s.pos === 4 ? 'the line' : level(s).short);
   function drawEvent(s, events) {
     if (s.event || s.tutorial || s.over) return;
     const L = level(s);

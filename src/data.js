@@ -363,11 +363,11 @@ const Data = (() => {
   ];
   // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
   const HOLDS = {
-    1: { title: 'Stopped and questioned', text: 'A patrol stops you in {here}. An officer wants to know where you are going.', choices: [
+    1: { title: 'Stopped and questioned', text: 'A patrol stops you at {here}. An officer wants to know where you are going.', choices: [
       { id: 'calm', label: 'Answer calmly', fx: { roll: { need: 3, face: 1, win: { hours: 1, say: 'He writes down a name that is not yours.' }, lose: { hours: 3, lose: 'random', exposure: 1, say: 'Three hours on a bench. They keep something of yours.' } } } },
       { id: 'lawyer', label: "Call the party's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer arrives shouting. They let you go.' } },
       { id: 'bribe', label: 'Pay the officer', fx: { hours: 1, exposure: 2, say: 'The money disappears. So does the report, maybe.' } } ] },
-    2: { title: 'Held at the station', text: 'They take you to the station in {here}. Your phone goes in a plastic bag.', choices: [
+    2: { title: 'Held at the station', text: 'They take you to the nearest station. Your phone goes in a plastic bag.', choices: [
       { id: 'wait_lawyer', label: 'Wait for a lawyer', fx: { hours: 8, lose: 'best', say: 'Eight hours. They keep what they found on you.' } },
       { id: 'embassy', label: '{sib} calls an embassy', fx: { roll: { need: 4, win: { hours: 4, say: 'A diplomat calls the station chief. You are released.' }, lose: { hours: 10, lose: 'best', say: 'Nobody important answers until morning.' } } } },
       { id: 'walk_out', label: 'Walk out at shift change', fx: { roll: { need: 5, win: { hours: 1, exposure: 3, say: 'Nobody stops a person walking like they belong.' }, lose: { hold: 1 } } } } ] },

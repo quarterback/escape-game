@@ -87,6 +87,6 @@ The design is recorded in `docs/deeper-stops.md`.
 
 ## Open
 
-- Real character sprites and layered backgrounds are in progress on a separate branch and will be merged after review.
+- Real character sprites and layered backgrounds are merged from the art thread (`src/art.js`, four layers per scene, sprites with breathing and walk frames, `Render.detain`). A hold now shows officers walking up to the player before the hold card.
 - The government side still uses the old flow.
 - Not yet tested on a physical phone.
