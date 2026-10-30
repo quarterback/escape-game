@@ -20,7 +20,8 @@ const actions = {
   13: () => must(Sim.commit(s, 'help_host'), 'help host'),
   15: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
   16: () => must(Sim.commit(s, 'crate'), 'Holt'),
-  18: () => must(Sim.commit(s, 'civil_doc'), 'civil record'),
+  17: () => must(Sim.commit(s, 'board'), 'board'),
+  19: () => must(Sim.commit(s, 'civil_doc'), 'civil record'),
 };
 Tutorial.start();
 Tutorial.STEPS.forEach((st, i) => {

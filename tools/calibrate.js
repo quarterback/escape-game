@@ -9,7 +9,7 @@ const Sim = require(path.join(__dirname, '..', 'src', 'sim.js'));
 const N = parseInt(process.argv[2], 10) || 300;
 const PREF = { name_atlanta: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0 };
 function play(seed, who) {
-  const s = Sim.newRun(seed, who); let guard = 0; const used = [];
+  const s = Sim.newRun(seed, who); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 400) {
     const A = Sim.actions(s);
     // answer messages first, preferring the committed options above
@@ -22,12 +22,15 @@ function play(seed, who) {
       calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); Sim.commit(s, calls[0].id); continue;
     }
     // best approach: highest odds among ok ones, certain first; never the impossible
-    const apps = A.approaches.filter(a => a.ok && a.need <= 6).sort((a, b) => a.need - b.need);
-    if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { used.push(`${s.pos}:${apps[0].id}`); Sim.commit(s, apps[0].id); continue; }
+    // never repeat an approach whose only product is a card already in hand (the harness used to pay Holt five times)
+    const L = Data.LEVELS[s.pos];
+    const apps = A.approaches.filter(a => a.ok && a.need <= 6).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => a.need - b.need);
+    if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { used.push(`${s.pos}:${apps[0].id}`); (apps[0].bonusFrom || []).forEach(t => cards[t] = (cards[t] || 0) + 1); Sim.commit(s, apps[0].id); if (s.pos !== lastPos) { lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour); lastPos = s.pos; lastHour = s.hour; } continue; }
     Sim.commit(s, 'wait');
   }
   if (!s.over) throw new Error('stuck seed ' + seed);
-  return { win: s.over.win, reason: s.over.reason.includes('arrive') ? 'intercepted' : s.over.win ? 'win' : 'clock', hour: s.hour, exposure: s.exposure, used, arr: Object.fromEntries(Object.entries(s.arr).map(([k, v]) => [k, v.stage])) };
+  lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour);
+  return { cards, lvlHours, win: s.over.win, reason: s.over.reason.includes('arrive') ? 'intercepted' : s.over.win ? 'win' : 'clock', hour: s.hour, exposure: s.exposure, used, arr: Object.fromEntries(Object.entries(s.arr).map(([k, v]) => [k, v.stage])) };
 }
 for (const who of ['woman', 'man']) {
   const rows = []; for (let i = 1; i <= N; i++) rows.push(play(i, who));
@@ -36,6 +39,10 @@ for (const who of ['woman', 'man']) {
   const carried = {}; wins.forEach(r => r.used.forEach(u => carried[u] = (carried[u] || 0) + 1));
   console.log(`${who.padEnd(6)} win ${(100 * wins.length / N).toFixed(1).padStart(5)}%  losses ${JSON.stringify(causes).padEnd(34)} hours ${mean('hour', wins)}  exposure ${mean('exposure', rows)}`);
   console.log('       approaches in wins:', Object.entries(carried).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · '));
+  const cu = {}; rows.forEach(r => Object.entries(r.cards).forEach(([k, v]) => cu[k] = (cu[k] || 0) + v));
+  console.log('       card bonuses used per run:', Object.entries(cu).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(v / N).toFixed(2)}`).join(' · '));
+  const lh = {}; rows.forEach(r => Object.entries(r.lvlHours).forEach(([k, v]) => lh[k] = (lh[k] || 0) + v));
+  console.log('       mean hours per level:', Object.entries(lh).sort().map(([k, v]) => `${Data.LEVELS[k].short} ${(v / N).toFixed(1)}`).join(' · '));
 }
 const a = JSON.stringify(Object.assign({}, Sim.newRun(5, 'man'), { _rng: null })), b = JSON.stringify(Object.assign({}, Sim.newRun(5, 'man'), { _rng: null }));
 console.log('deterministic:', a === b);

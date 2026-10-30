@@ -239,3 +239,25 @@ Two faults found by the browser pass, both in the UI: the Wait button stayed liv
 steps because its state was set only once an inspection was open, and the coach's Finish button
 sat under the lower panels because the side column is capped at the scene's height. The coach's
 buttons now sit above a scrolling body.
+
+## Addendum: cards as local authority, exits that wait on the phone
+
+The owner's intent, from the origin report (`docs/coalition-origin-and-concept-report.pdf`): the
+player is the one escaping; the unit of play is the handoff, one person's promise becoming
+something another person can act on; authority is distributed and uneven, so power that works in
+one place means nothing in the next. This addendum records that intent for future agents. It does
+not revisit earlier documents.
+
+What changed, measured with `tools/calibrate.js`: every card now has a `reach`, the levels where it
+counts, shown on the card face as "counts here" or "not recognized here" with a plain line saying
+what it works on. The party card stops at the line; Vélez's card starts there; Salek's banking line
+works everywhere. Two dead passage cards are now the only way onto the freight, which boards at
+night. Salek's line calms a nervous pilot. The informant tells you which border guard is on duty.
+Leaving the colônia for the border waits on someone in Baca having your name; leaving Santa Laura
+cleanly waits on the registry request. The inquiry acts every three hours. Before: four of nine
+card tags were never used in a win. After: all nine appear, 0.3 to 2.3 uses a run. The harness now
+reports card use and hours per level. The guided run gained a boarding step and still replays.
+
+Still open, and handed to the design pass: the dumb policy wins 65 percent, the clock is not felt
+on screen, and the owner reports not knowing what they are up against. Those are presentation
+problems first: the clock, the goal and the inquiry need to be on the scene, not in side panels.

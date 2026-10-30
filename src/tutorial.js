@@ -9,9 +9,9 @@
 const Tutorial = (() => {
   const SEED = 11, WHO = 'woman';
   // Die results in the order the sim will ask for them along the scripted path.
-  const DICE = [5, 4, 5, 3, 6, 5];
+  const DICE = [5, 4, 5, 5, 6, 5, 5, 6, 5, 5, 6, 5];
   // Inquiry actions at hours 4, 8 and 12. After the demo releases, the inquiry rolls as usual.
-  const ENEMY = ['circulate', 'press_story', 'check_belief'];
+  const ENEMY = ['circulate', 'press_story', 'check_belief', 'press_story', 'check_belief', 'press_story', 'check_belief', 'press_story'];
 
   const NONE = { approaches: [], calls: [], options: [], wait: false, next: false };
   const info = (title, html, highlight) => ({ title, html, highlight: highlight || [], allow: Object.assign({}, NONE, { next: true }), done: () => false });
@@ -60,7 +60,10 @@ const Tutorial = (() => {
       ['#calls'], { calls: ['reception'] }, (s) => s.jobs.some(j => j.arr === 'reception') || s.arr.reception.stage >= 1),
     act('Onto the freight',
       `<p>Choose <b>Pay Holt for a crate</b>. Your truck card improves the roll.</p><p>The yardmaster will take your money and report you.</p>`,
-      ['#approaches'], { approaches: ['crate'] }, (s) => s.pos === 4),
+      ['#approaches'], { approaches: ['crate'] }, (s) => s.hand.includes('crate')),
+    act('Board at midnight',
+      `<p>Holt's crate is in your hand. It works in one place: this yard, tonight. <b>Board the midnight freight</b>. The card makes the roll certain, and it is spent when the train leaves.</p>`,
+      ['#approaches'], { approaches: ['board'] }, (s) => s.pos === 4),
     info('The border',
       `<p>Mārtā’s civil record is ready. The border has Sosā’s order, but Gianlūka’s card helps.</p><p>You can cross now or wait for reception to be arranged.</p>`, ['#approaches', '#hand']),
     act('Present the civil record',

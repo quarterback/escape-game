@@ -60,7 +60,7 @@ const UI = (() => {
     const allowed = kind === 'call' ? Tutorial.allowsCall(a.id.replace(/^call:/, '')) : Tutorial.allowsApproach(a.id);
     const b = document.createElement('button'); b.className = 'act ' + kind + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.pay ? ' pay' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    b.innerHTML = `<span class="nm">${a.name}</span><span class="meta">${a.hours ? a.hours + ' h' : 'no time'}${a.odds ? ' · ' + a.odds : ''}</span>${a.ok ? '' : `<span class="why">${a.why}</span>`}`;
+    b.innerHTML = `<span class="nm">${a.name}</span><span class="meta">${a.hours ? a.hours + ' h' : 'no time'}${a.odds ? ' · ' + a.odds : ''}${a.bonus && a.bonus.length ? ' · ' + a.bonus.map(u => `${u.tag} +${u.bonus}`).join(' ') : ''}</span>${a.ok ? '' : `<span class="why">${a.why}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -88,7 +88,7 @@ const UI = (() => {
   }
   function renderHand() {
     const h = $('hand'); h.innerHTML = s.hand.length ? '' : '<p class="hint">No cards yet.</p>';
-    for (const id of s.hand) { const c = Data.CARDS[id]; const d = document.createElement('div'); d.className = 'card'; d.innerHTML = `<span class="cn">${c.name}</span><span class="tag">${c.tag}</span><br><span class="from">from ${c.from === 'self' ? 'you' : Sim.personName(s, c.from)}${c.tag === 'influence' && s.pos >= Sim.ESMERALDA_FROM ? ' · not recognized here' : ''}</span><p>${c.text}</p>`; h.appendChild(d); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; const here = Sim.reaches(s, id); const d = document.createElement('div'); d.className = 'card' + (here ? '' : ' far'); d.innerHTML = `<span class="cn">${c.name}</span><span class="tag">${c.tag}</span><br><span class="from">from ${Sim.personName(s, c.from)} · ${here ? 'counts here' : 'not recognized here'}</span><p>${c.text}</p><p class="works"><b>Works on:</b> ${c.works}</p>`; h.appendChild(d); }
   }
   function renderPeople() {
     const ul = $('people'); ul.innerHTML = '';

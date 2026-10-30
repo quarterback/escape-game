@@ -122,3 +122,5 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 /* Overbit is limited to compact numeric displays, never headings or reading text. */
 .stat .v,.act .meta{font-family:var(--font-mono)}
 section.panel h2,section.panel h3{text-transform:none;letter-spacing:0}
+
+.card.far{opacity:.55;border-top-color:#555}.card .works{color:var(--mute)}

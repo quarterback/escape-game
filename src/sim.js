@@ -9,7 +9,8 @@ const Sim = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
   function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
-  const EXITS = { residence: null, road: null, colonia: null, salta: ['crate', 'foreman', 'buy_seat'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
+  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
+  const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
@@ -94,19 +95,18 @@ const Sim = (() => {
   }
 
   // ---- what you can do right now ------------------------------
+  // A card counts only inside its reach. Authority is local: the party stops at the line, Vélez starts there.
+  const reaches = (s, id) => { const c = D.CARDS[id]; return !!c && c.reach.includes(level(s).id); };
   function mods(s, L) {
     const out = {};
-    for (const id of s.hand) {
-      const c = D.CARDS[id]; if (!c) continue;
-      if (c.tag === 'influence' && s.pos >= ESMERALDA_FROM) continue; // the party means nothing in Esmeralda
-      out[c.tag] = (out[c.tag] || 0) + 1;
-    }
+    for (const id of s.hand) { if (!reaches(s, id)) continue; const c = D.CARDS[id]; out[c.tag] = (out[c.tag] || 0) + 1; }
     return out;
   }
-  function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && !(tag === 'influence' && s.pos >= ESMERALDA_FROM)); }
+  function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && reaches(s, id)); }
+  const heldTag = (s, tag) => s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag);
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
   function needText(s, n) {
-    if (n.card) return hasTag(s, n.card) ? null : (n.card === 'influence' && s.pos >= ESMERALDA_FROM ? 'Your party card is not recognized here.' : `Requires a ${n.card} card.`);
+    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? `Your ${n.card} card is not recognized here.` : `Needs a ${n.card} card.`);
     if (n.night) return isNight(s) ? null : `Available at night. Current time: ${clockText(s.hour).split(' ')[1]}. Shift change: 22:00.`;
     if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Requires ${D.ARRANGEMENTS[n.arr].name}: "${D.ARRANGEMENTS[n.arr].stages[n.stage]}". Now: "${D.ARRANGEMENTS[n.arr].stages[a.stage]}".`; }
     return null;
@@ -116,14 +116,14 @@ const Sim = (() => {
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
       let bonus = 0; const used = [];
-      for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push(tag); }
+      for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
       let dc = a.dc;
-      if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1;
+      if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1; // the sheet is on the desk unless Gianlūka's contact held it
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
       const need = Math.max(1, dc - bonus);
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
-        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, bonusFrom: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed with your current help.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Helped by: ' + used.join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
+        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
+        preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed with your current help.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
     }
     return out;
   }
@@ -156,7 +156,7 @@ const Sim = (() => {
       options: m.options.map(o => Object.assign({}, o, { ok: optionOk(s, o), why: optionWhy(s, o) })) }));
   }
   function optionWhy(s, o) {
-    if (o.id === 'via_sponsor' && s.arr.permission.stage < 1) return 'Salek is not engaged yet.';
+    if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return "You do not have Salek's line yet. Call him about permission first.";
     if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return "You do not have Vélez's card.";
     if (o.id === 'aide_asks' && !hasTag(s, 'influence')) return 'Gianlūka is not taking your calls.';
     return '';
@@ -237,7 +237,7 @@ const Sim = (() => {
       case 'aide_asks': stage(s, 'document', 1, events); s.jobs.push({ arr: 'document', ally: 'registry', target: 2, due: s.hour + 12 }); if (!s.commitments.some(c => c.to === 'aide')) { s.commitments.push({ to: 'aide', text: D.PEOPLE.aide.terms, kept: null }); events.push(ev('commit', { to: 'aide', text: D.PEOPLE.aide.terms })); } say(events, 'registry', `"Your chief of staff has a way of asking. Twelve hours."`); break;
       case 'skip_doc': say(events, 'narrator', 'You keep driving. The passport in your pocket is the one on the order.'); break;
       case 'keep_calling': s.jobs.push({ arr: 'reception', ally: 'sibling', target: 2, due: s.hour + 6 }); break;
-      case 'via_sponsor': stage(s, 'reception', 2, events); say(events, 'sponsor', `"Her uncle banks with me. She will answer within the hour. That is two things now."`); break;
+      case 'via_sponsor': stage(s, 'reception', 2, events); lose(s, 'sponsor_line', events); s.used.push('sponsor_line'); say(events, 'sponsor', `"Her uncle banks with me. She will answer within the hour. That is two things now."`); break;
       case 'wait_velez': break;
       case 'keep_word': { const c = s.commitments.find(x => x.to === 'aide'); c.kept = true; s.people.aide.trust = 3; gain(s, 'informant', events); say(events, 'aide', `"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here."`); s.belief = 1; events.push(ev('belief', { belief: 1 })); } break;
       case 'break_word': { const c = s.commitments.find(x => x.to === 'aide'); c.kept = false; s.people.aide.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === 'aide') lose(s, id, events); s.belief = s.pos; heat(s, 2, events); say(events, 'narrator', 'Gianlūka does not answer again. By the afternoon the inquiry has a town and a street.'); } break;
@@ -254,7 +254,7 @@ const Sim = (() => {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.belief === s.pos && s.hour % 3 === 0) heat(s, 1, events);
-      if (s.hour - s.lastEnemy >= 4) { s.lastEnemy = s.hour; enemyTurn(s, events); }
+      if (s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
       if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive at ${level(s).name} at ${clockText(s.hour)}. They found your location.` }; events.push(ev('over', s.over)); }
       else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out. Esmeralda has closed its airfields to your flight.` }; events.push(ev('over', s.over)); }
     }
@@ -287,6 +287,6 @@ const Sim = (() => {
   }
   function finish(s, events) { return { ok: true, events }; }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, newRun, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, reaches, newRun, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
