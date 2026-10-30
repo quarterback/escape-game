@@ -93,3 +93,7 @@ The owner's written spec and the two mockups on the Coalition redesign canvas ar
 | Zaryanova | 0% | 0% | 50 / 61 |
 
 Content check clean, six contract tests pass, both tutorial replays pass.
+
+## Addendum, same day: Susana, not Esperanza
+
+Owner correction: Esmeralda is a kels remap of Ecuador and the departure strip is its port, Susana; the Meridian States were the wrong country. Every Esperanza string is Susana again, the `PLACES` record is `susana` on Ecuador's Pacific coast, and Portô Venla sits on Valdória's own coast to the south. The canvas mockups carry the same map.

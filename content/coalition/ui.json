@@ -1625,7 +1625,7 @@
   {
    "id": "start.blurb",
    "pattern": "P08",
-   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda, reach the jet your family has booked at Esperanza, and land somewhere that will have you."
+   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda, reach the jet your family has booked at Susana, and land somewhere that will have you."
   },
   {
    "id": "start.continue_plain",
@@ -1812,7 +1812,7 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, and the Meridian States have closed the strip to you. {epilogue}",
+   "text": "{time}. Your immunity is gone, and Esmeralda has closed the airfield to you. {epilogue}",
    "args": [
     "time",
     "epilogue"
@@ -2071,7 +2071,7 @@
   {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "Contact {sponsor} before reaching Esperanza.",
+   "text": "Contact {sponsor} before reaching Susana.",
    "args": [
     "sponsor"
    ]
@@ -2436,7 +2436,7 @@
   {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"Jet found. It will be at Esperanza. The crew needs the destination confirmed. Do I give them the city, or wait for the visa?\""
+   "text": "\"Jet found. It will be at Susana. The crew needs the destination confirmed. Do I give them the city, or wait for the visa?\""
   },
   {
    "id": "sim.day.wednesday",
@@ -3052,7 +3052,7 @@
   {
    "id": "gov.scene.susana_airfield",
    "pattern": "P08",
-   "text": "Esperanza airstrip",
+   "text": "Susana airfield",
    "role": "gov"
   },
   {
@@ -3295,7 +3295,7 @@
   {
    "id": "gov.report.a_charter_to_layuna_is",
    "pattern": "P06",
-   "text": "A charter to {city} is booked out of Esperanza.",
+   "text": "A charter to {city} is booked out of Susana.",
    "role": "gov",
    "args": [
     "city"
@@ -3310,7 +3310,7 @@
   {
    "id": "gov.report.a_charter_at_susana_is",
    "pattern": "P06",
-   "text": "A charter at Esperanza is filing for {city}.",
+   "text": "A charter at Susana is filing for {city}.",
    "role": "gov",
    "args": [
     "city"
@@ -3819,7 +3819,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "The Meridians give you safe passage to the strip at Esperanza. It is too close to home to stay. Choose where the jet flies."
+   "text": "Esmeralda gives you safe passage to its airfield at Susana. It is too close to home to stay. Choose where the jet flies."
   },
   {
    "id": "map.here",
@@ -3829,7 +3829,7 @@
   {
    "id": "map.via",
    "pattern": "P08",
-   "text": "Esperanza. Safe passage to fly out, not to stay."
+   "text": "Susana. Safe passage to fly out, not to stay."
   },
   {
    "id": "map.choose",
@@ -3847,7 +3847,7 @@
   {
    "id": "gov.debrief.taken_on_landing",
    "pattern": "P14",
-   "text": "The jet left Esperanza at {time} and landed at {city}. {name} had never agreed to take her. She was held at the airport and handed back.",
+   "text": "The jet left Susana at {time} and landed at {city}. {name} had never agreed to take her. She was held at the airport and handed back.",
    "args": [
     "time",
     "city",

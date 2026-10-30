@@ -521,11 +521,11 @@ const UI = (() => {
     const svg = $('worldmap'); let h = '';
     for (let x = 0; x <= 1000; x += 125) h += `<line class="grid" x1="${x}" y1="0" x2="${x}" y2="500"/>`; for (let y = 0; y <= 500; y += 125) h += `<line class="grid" x1="0" y1="${y}" x2="1000" y2="${y}"/>`;
     for (const poly of MAP_LAND) h += `<polygon class="land" points="${poly.map(([lo, la]) => proj(lo, la).map(v => v.toFixed(1)).join(',')).join(' ')}"/>`;
-    const V = proj(Data.PLACES.valdoria.lon, Data.PLACES.valdoria.lat), E = proj(Data.PLACES.esperanza.lon, Data.PLACES.esperanza.lat);
+    const V = proj(Data.PLACES.valdoria.lon, Data.PLACES.valdoria.lat), E = proj(Data.PLACES.susana.lon, Data.PLACES.susana.lat);
     h += `<path class="route drive" d="M${V[0]},${V[1]} Q${(V[0] + E[0]) / 2},${Math.min(V[1], E[1]) - 30} ${E[0]},${E[1]}"/>`;
     for (const k in Data.DESTS) { const d = Data.DESTS[k]; const P = proj(d.lon, d.lat); const mx = (E[0] + P[0]) / 2, my = Math.min(E[1], P[1]) - 90; h += `<path class="route" d="M${E[0]},${E[1]} Q${mx},${my} ${P[0]},${P[1]}"/>`; }
     h += `<circle class="pt here" cx="${V[0]}" cy="${V[1]}" r="7"/><text class="lbl" x="${V[0] - 10}" y="${V[1] + 28}">${esc(Data.PLACES.valdoria.name)}</text><text class="lbl sub" x="${V[0] - 10}" y="${V[1] + 44}">${esc(T('map.here'))}</text>`;
-    h += `<circle class="pt via" cx="${E[0]}" cy="${E[1]}" r="6"/><text class="lbl" x="${E[0] + 10}" y="${E[1] - 8}">${esc(Data.PLACES.esperanza.name)}</text>`;
+    h += `<circle class="pt via" cx="${E[0]}" cy="${E[1]}" r="6"/><text class="lbl" x="${E[0] + 10}" y="${E[1] - 8}">${esc(Data.PLACES.susana.name)}</text>`;
     for (const k in Data.DESTS) { const d = Data.DESTS[k]; const P = proj(d.lon, d.lat); h += `<circle class="pt pick${sel === k ? ' on' : ''}" data-dest="${k}" cx="${P[0]}" cy="${P[1]}" r="9"/><text class="lbl" x="${P[0] + 14}" y="${P[1] - 6}">${esc(d.city)}</text><text class="lbl sub" x="${P[0] + 14}" y="${P[1] + 10}">${esc(d.name)}</text>`; }
     svg.innerHTML = h;
     svg.querySelectorAll('.pt.pick').forEach(c => c.onclick = () => drawChoices(c.dataset.dest));

@@ -183,14 +183,14 @@ const Data = (() => {
       ],
       received: { id: 'received', name: "Walk to the people waiting for you", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
       bought: { say: 'The sergeant takes your passport, walks into the hut, and does not come back. Through the window you can see him on the telephone. Twelve hours later a Valdórian liaison arrives to "assist". By then it is too late to matter which side of the line you are on.' } },
-    { id: 'airfield', name: 'Esperanza airstrip, the Meridian States', short: 'Esperanza', scene: 'airfield',
+    { id: 'airfield', name: 'Susana airfield, Esmeralda', short: 'Susana', scene: 'airfield',
       objective: "Safe passage to fly, not to stay. Fuel the jet, get the visa and take off.",
-      arrive: "Esperanza. A charter strip on the coast, Meridian flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
+      arrive: "Susana. The charter apron behind the port, Esmeraldan flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
       final: true,
       approaches: [
         { id: 'depart', with: 'pilot', name: 'Board and depart', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 4 }, { arr: 'permission', stage: 2 }],
           mods: { introduction: 1, document: 1 }, text: "The jet is ready and the visa is on the manifest. You still need the tower to clear departure.",
-          success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Meridian airspace." },
+          success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Esmeraldan airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you on the apron for two hours while a request from Valdória is read, and reread.' } },
         { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
           mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave before the visa is issued. Your sponsor’s name helps; the party’s does not. Where you land decides what happens next.",
@@ -216,7 +216,7 @@ const Data = (() => {
     { id: 'circulate',    w: 3, once: true, text: () => 'Sosā sends the travel ban to every provincial post and the Huhūi border.' },
     { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Susana charter operator that its Valdórian licence is under review.' },
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
-    { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda and the Meridian States, through its embassies, to hold you if you appear.' },
+    { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda, through its embassy in Baca, to hold you if you appear.' },
     { id: 'press_story',  w: 2, text: () => 'The ministry briefs the papers that you have already left the country.' },
     { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
     { id: 'trace',        w: 3, after: 4, text: () => 'The ministry traces your recent calls.' },
@@ -225,7 +225,7 @@ const Data = (() => {
 
   // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Gannibal); Almatau is a
   // working name for Tarun's capital, which the canon leaves open. accepts: whether the country will take you.
-  // The player never sees accepts; the only tell is whether the visa ever arrives. Esperanza is where you fly from.
+  // The player never sees accepts; the only tell is whether the visa ever arrives. Susana, in Esmeralda, is where you fly from.
   const DESTS = {
     atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad with ministries on his phone; an old client of the family',
@@ -249,7 +249,7 @@ const Data = (() => {
                             kept: 'Your statement runs in Gannibal with the names in it.', broke: 'Vosk tells the ministry you do not keep terms.' },
                  landing: 'You land at Gannibal after nineteen hours in the air. Officers wait on the apron. Zaryanova never agreed to receive you, and a charter is not an invitation. You are held at the airport until Valdória sends for you.' },
   };
-  const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -79.9, lat: -2.2 }, esperanza: { name: 'Esperanza', city: 'the Meridian States', lon: -52.3, lat: 4.9 } };
+  const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Susana', city: 'Esmeralda', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
   const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',

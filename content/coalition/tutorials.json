@@ -329,8 +329,8 @@
     {
      "id": "airfield",
      "kind": "read",
-     "title": "Esperanza. The rest is yours.",
-     "body": "You crossed. The Meridians let you fly from Esperanza and nothing more. Now fuel the jet and get the visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
+     "title": "Susana. The rest is yours.",
+     "body": "You crossed. Esmeralda lets you fly from Susana and nothing more. Now fuel the jet and get the visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
      "goal": "Play the airfield alone",
      "highlight": [
       "#board",
