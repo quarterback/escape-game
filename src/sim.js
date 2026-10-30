@@ -57,38 +57,38 @@ const Sim = (() => {
     say(events, 'narrator', L.arrive);
     // scripted arrivals: what the phone brings at each level
     if (s.pos === 0 && first) {
-      msg(s, events, 'sibling', `"I have a jet in Susana. Twelve seats. The operator will not confirm a crew until I give a destination. Atlanta, or do we wait for Salek?"`, [
-        { id: 'name_atlanta', label: 'Name Atlanta now', hours: 0, effect: 'The operator can confirm a crew. If Atlanta says no later, the pilot flies to a closed door.' },
-        { id: 'wait_sponsor', label: 'Wait until Salek answers', hours: 0, effect: 'The crew stays unconfirmed until Permission reaches "sponsor engaged".' },
-        { id: 'delegate_sibling', label: `Let ${ch(s).sibling.short} decide`, hours: 0, effect: `${ch(s).sibling.short} rolls against reliability ${D.PEOPLE.sibling.reliability}. A good roll names Atlanta and starts the crew; a bad one stalls both for six hours.` },
+      msg(s, events, 'sibling', `"Jet found in Susana. The crew needs a destination. Atlanta, or wait for Salek?"`, [
+        { id: 'name_atlanta', label: 'Name Atlanta now', hours: 0, effect: 'Crew booking can proceed. Atlanta has not granted permission yet.' },
+        { id: 'wait_sponsor', label: 'Wait until Salek answers', hours: 0, effect: 'Crew booking waits until Salek is engaged.' },
+        { id: 'delegate_sibling', label: `Let ${ch(s).sibling.short} decide`, hours: 0, effect: `Needs a ${D.PEOPLE.sibling.reliability}+ roll to name Atlanta; failure delays work six hours.` },
       ]);
     }
     if (s.pos === 1) {
-      msg(s, events, 'registry', `"Mārtā Kovalskā, civil registry. I can issue your Nelôxian record, but you sign it in person, or someone with weight asks me to skip that."`, [
-        { id: 'sign_person', label: 'Go in person, one hour', hours: 1, effect: 'Document moves to "civil record requested". Ready in eight hours. The registry is on the main square.' },
-        { id: 'aide_asks', label: 'Have Gianlūka ask her', hours: 0, effect: 'No time spent. You owe Gianlūka more. Mārtā resents it and the record may be slower.' },
-        { id: 'skip_doc', label: 'Skip it', hours: 0, effect: 'You arrive at the line with the passport the court told you to surrender.' },
+      msg(s, events, 'registry', `"I can issue your civil record. Sign in person, or have Gianlūka ask."`, [
+        { id: 'sign_person', label: 'Go in person, one hour', hours: 1, effect: 'Request the record at the main-square registry. Due in eight hours.' },
+        { id: 'aide_asks', label: 'Have Gianlūka ask her', hours: 0, effect: 'Owe Gianlūka a favor. The record takes twelve hours.' },
+        { id: 'skip_doc', label: 'Skip it', hours: 0, effect: 'Keep only your restricted passport.' },
       ]);
     }
     if (s.pos === 2 && s.arr.reception.stage === 1) {
-      msg(s, events, 'sibling', `"Vélez is not answering. Her office says the minister is at a wedding in Baca. I can keep calling, or Salek knows her uncle."`, [
-        { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: 'Reception rolls against the sibling\'s reliability over the next six hours.' },
-        { id: 'via_sponsor', label: 'Ask Salek to reach the uncle', hours: 0, effect: 'Needs Permission at "sponsor engaged". Nearly certain, and you now owe Salek twice.' },
+      msg(s, events, 'sibling', `"Vélez is not answering. I can try again, or ask Salek to reach her uncle."`, [
+        { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: 'Try again in six hours. Your sibling must pass a reliability roll.' },
+        { id: 'via_sponsor', label: 'Ask Salek to reach the uncle', hours: 0, effect: 'Requires Salek’s help. Confirms reception; you owe him another favor.' },
         { id: 'wait_velez', label: 'Wait', hours: 0, effect: 'Nothing moves until you call her yourself.' },
       ]);
     }
     if (s.pos === 3) {
       const c = s.commitments.find(x => x.to === 'aide' && x.kept === null);
-      if (c) msg(s, events, 'aide', `"The executive meets tonight. I need your statement naming me acting leader before midnight, or the people who got you out of the house start wondering why."`, [
-        { id: 'keep_word', label: 'Send the statement', hours: 1, effect: 'Gianlūka is yours for the rest of the run. His friend in the inquiry starts telling you where Sosā is looking.' },
-        { id: 'break_word', label: 'Put him off', hours: 0, effect: 'He stops answering. Within hours the inquiry knows exactly where you are. His cards leave your hand.' },
+      if (c) msg(s, events, 'aide', `"The party meets tonight. Send your endorsement before midnight. You gave your word."`, [
+        { id: 'keep_word', label: 'Send the statement', hours: 1, effect: 'Keep Gianlūka’s support and gain his informant’s help.' },
+        { id: 'break_word', label: 'Put him off', hours: 0, effect: 'Lose Gianlūka’s cards. He reveals your location; exposure rises.' },
       ]);
     }
     if (s.pos === 5 && s.flags.leaned) {
-      msg(s, events, 'pilot', `"The operator had a call from your ministry about his licence. He wants a word from someone in Esmeralda that this flight is wanted, or a bonus for the crew that makes the licence not matter."`, [
-        { id: 'crew_bonus', label: 'Pay the crew bonus', hours: 1, effect: 'Pilots take money. The aircraft returns to "waiting on the apron".' },
-        { id: 'velez_word', label: 'Have Vélez call the operator', hours: 0, effect: 'Needs her card in hand. Costs nothing and no one learns your face.' },
-        { id: 'ignore_pilot', label: 'Ignore it', hours: 0, effect: 'The aircraft stays one stage short.' },
+      msg(s, events, 'pilot', `"Your ministry threatened the operator’s license. He wants Esmeraldan backing or a crew bonus."`, [
+        { id: 'crew_bonus', label: 'Pay the crew bonus', hours: 1, effect: 'Restores the aircraft to ready. Exposure rises.' },
+        { id: 'velez_word', label: 'Have Vélez call the operator', hours: 0, effect: 'Requires Vélez’s card. Restores the aircraft without raising exposure.' },
+        { id: 'ignore_pilot', label: 'Ignore it', hours: 0, effect: 'Aircraft preparations stay on hold.' },
       ]);
     }
   }
@@ -106,9 +106,9 @@ const Sim = (() => {
   function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && !(tag === 'influence' && s.pos >= ESMERALDA_FROM)); }
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
   function needText(s, n) {
-    if (n.card) return hasTag(s, n.card) ? null : (n.card === 'influence' && s.pos >= ESMERALDA_FROM ? 'Your party card is not recognized here.' : `Needs a card that gives ${n.card}.`);
-    if (n.night) return isNight(s) ? null : `Needs night. It is ${clockText(s.hour).split(' ')[1]}; the shift changes at 22:00.`;
-    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs ${D.ARRANGEMENTS[n.arr].name} at "${D.ARRANGEMENTS[n.arr].stages[n.stage]}" (now "${D.ARRANGEMENTS[n.arr].stages[a.stage]}").`; }
+    if (n.card) return hasTag(s, n.card) ? null : (n.card === 'influence' && s.pos >= ESMERALDA_FROM ? 'Your party card is not recognized here.' : `Requires a ${n.card} card.`);
+    if (n.night) return isNight(s) ? null : `Available at night. Current time: ${clockText(s.hour).split(' ')[1]}. Shift change: 22:00.`;
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Requires ${D.ARRANGEMENTS[n.arr].name}: "${D.ARRANGEMENTS[n.arr].stages[n.stage]}". Now: "${D.ARRANGEMENTS[n.arr].stages[a.stage]}".`; }
     return null;
   }
   function approachList(s) {
@@ -123,7 +123,7 @@ const Sim = (() => {
       const need = Math.max(1, dc - bonus);
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, bonusFrom: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed. The person does not take what you have.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Helped by: ' + used.join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
+        preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed with your current help.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Helped by: ' + used.join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
     }
     return out;
   }
@@ -137,17 +137,17 @@ const Sim = (() => {
       const p = pending(k);
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: `${def.name}: ${personName(s, ally)} is on it`, ok: false, why: `Resolves at ${clockText(p.due)}.`, hours: 0, preview: [text] }); return; }
       out.push({ kind: 'call', id: 'call:' + k, name: `Call ${personName(s, ally)} about ${def.name.toLowerCase()}`, ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
-        preview: [text, `Next stage: "${def.stages[a.stage + 1]}". ${personName(s, ally)} delivers on a roll of ${D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0)} or more in ${jobHours(k)} hours.`] });
+        preview: [text, `Next: ${def.stages[a.stage + 1]}. Reply in ${jobHours(k)} hours. ${personName(s, ally)} needs a roll of ${D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0)} or more before trust bonuses.`] });
     };
-    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? 'The operator needs a destination first (answer the message, or engage Salek).' : null, s.people.sibling.turned ? 'Not answering.' : null].filter(Boolean),
-      'Your sibling finds, crews, fuels and positions the jet. Each stage is a separate promise.');
+    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? 'Name a destination or engage Salek first.' : null, s.people.sibling.turned ? 'Not answering.' : null].filter(Boolean),
+      'Arrange the next stage: charter, crew, fuel or positioning.');
     add('reception', A.reception.stage < 2 ? 'sibling' : 'official',
-      [A.reception.stage === 2 && s.pos < 3 ? 'Vélez will send people to the line when you are a day away. Call again from Salta.' : null].filter(Boolean),
-      'Who meets you across the line. Your sibling finds the name; Vélez decides what Esmeralda does with it.');
-    add('document', 'registry', [A.document.stage === 0 ? 'Mārtā needs you at the registry in Santa Laura (answer her message there).' : null].filter(Boolean),
-      'The Nelôxian civil record. A clerk issues it; nobody more powerful can.');
-    add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? 'Too late to begin this from an apron.' : null].filter(Boolean),
-      'Atlanta. Salek opens the door on his terms; the ministry in Lāyūna says yes or no.');
+      [A.reception.stage === 2 && s.pos < 3 ? 'Call from Salta to request officials at the border.' : null].filter(Boolean),
+      'Arrange reception through your sibling, then Vélez.');
+    add('document', 'registry', [A.document.stage === 0 ? 'Answer Mārtā’s message in Santa Laura first.' : null].filter(Boolean),
+      'Ask Mārtā to finish your civil record.');
+    add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? 'Contact Salek before reaching Susana.' : null].filter(Boolean),
+      'Ask Salek to seek Atlanta’s permission. His terms apply.');
     return out;
   }
   const jobHours = (k) => ({ aircraft: 6, reception: 6, document: 8, permission: 10 })[k];
@@ -180,7 +180,7 @@ const Sim = (() => {
     const won = view.need > 6 ? false : die >= view.need;
     events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
     apply(s, won ? a.success : a.fail, events, a);
-    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} You are out of Valdória, out of Esmeralda, and the inquiry has nothing left to hold.` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} You escaped.` }; events.push(ev('over', s.over)); return { ok: true, events }; }
     pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
     if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
     return finish(s, events);
@@ -255,8 +255,8 @@ const Sim = (() => {
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.belief === s.pos && s.hour % 3 === 0) heat(s, 1, events);
       if (s.hour - s.lastEnemy >= 4) { s.lastEnemy = s.hour; enemyTurn(s, events); }
-      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive at ${level(s).name} at ${clockText(s.hour)}. Too many people knew where you were, and one of them said so.` }; events.push(ev('over', s.over)); }
-      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. The restriction became a warrant at dawn and Esmeralda closed its airfields to the aircraft. The run is over.` }; events.push(ev('over', s.over)); }
+      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive at ${level(s).name} at ${clockText(s.hour)}. They found your location.` }; events.push(ev('over', s.over)); }
+      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. An arrest warrant is out. Esmeralda has closed its airfields to your flight.` }; events.push(ev('over', s.over)); }
     }
   }
   function resolveJob(s, j, events) {
@@ -278,7 +278,7 @@ const Sim = (() => {
     switch (pick.id) {
       case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
-      case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator pulls the crew back until someone reassures him.'; } else text = pick.text(); break;
+      case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
       case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.`; } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }

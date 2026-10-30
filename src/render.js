@@ -117,7 +117,7 @@ const Render = (() => {
     const x = PLAYER_X[Data.LEVELS[s.pos].scene] || 100;
     person(g, x, GROUND, s.who === 'woman' ? '#8a2f3a' : '#2b3450', s.who === 'woman' ? '#3a2418' : '#111');
     g.fill('#ffd24a'); g.rect(x - 1, GROUND - 16 + Math.round(Math.sin(t / 300)), 3, 2);
-    hotspots.push({ id: 'self', x: (x - 4) * SCALE, y: (GROUND - 13) * SCALE, w: 9 * SCALE, h: 14 * SCALE, label: `${Data.CHARACTERS[s.who].name}, that is you` });
+    hotspots.push({ id: 'self', x: (x - 4) * SCALE, y: (GROUND - 13) * SCALE, w: 9 * SCALE, h: 14 * SCALE, label: `${Data.CHARACTERS[s.who].name}, you` });
   }
 
   // ---- HUD ------------------------------------------------------
@@ -151,7 +151,7 @@ const Render = (() => {
     if (view.die) { const d = view.die, cx = p.width / 2, cy = p.height / 2 - 20, k = Math.min(1, d.t * 3); const face = k < 1 ? 1 + Math.floor(Math.random() * 6) : d.die; p.fill(k < 1 ? '#eee' : d.won ? '#5cd65c' : '#ff6a6a'); p.rect(cx - 22, cy - 22, 44, 44, 6); p.fill('#111'); p.textSize(26); p.textAlign(p.CENTER, p.CENTER); p.text(face, cx, cy); p.textSize(11); p.fill('#eee'); p.text(`needs ${d.need}`, cx, cy + 36); }
     if (view.enemyPulse > 0) { p.fill(`rgba(220,40,40,${0.18 * view.enemyPulse})`); p.rect(0, 0, p.width, p.height); }
     if (view.fade > 0) { p.fill(`rgba(8,8,14,${0.9 * view.fade})`); p.rect(0, 0, p.width, p.height); }
-    if (view.over) { p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height); p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a'); p.text(view.over.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins', p.width / 2, p.height / 2 - 14); p.textSize(12); p.fill('#eee'); p.text('The panel below says what happened', p.width / 2, p.height / 2 + 14); }
+    if (view.over) { p.fill('rgba(8,8,14,0.72)'); p.rect(0, 0, p.width, p.height); p.textAlign(p.CENTER, p.CENTER); p.textSize(26); p.fill(view.over.win ? '#ffd24a' : '#ff6a6a'); p.text(view.over.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins', p.width / 2, p.height / 2 - 14); p.textSize(12); p.fill('#eee'); p.text('', p.width / 2, p.height / 2 + 14); }
   }
   function hitTest(mx, my) { let best = null; for (const h of hotspots) if (mx >= h.x && mx <= h.x + h.w && my >= h.y && my <= h.y + h.h) best = h; return best; }
   let last = 0;

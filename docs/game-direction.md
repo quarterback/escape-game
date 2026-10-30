@@ -1,9 +1,9 @@
 # COALITION: confirmed game direction
 
 **Confirmed by the owner:** October 29, 2026  
-**Status:** Design direction for future development. The shipped Last Freight Out prototype does not yet implement this structure.
+**Status:** Owner-confirmed direction for Coalition. The active build has six playable stages; its content and balance are still being tested.
 
-Read this document before changing gameplay, progression, narrative, cards, or the interface. Earlier build reports describe the prototype and its history; they do not override the direction recorded here. Proposed details below remain proposals unless the owner selects them.
+Read this document before changing gameplay, progression, narrative, cards, or the interface. Historical build reports do not override this direction. Proposed details below remain proposals unless the owner selects them.
 
 ## The game in one paragraph
 
@@ -83,15 +83,12 @@ At the border, documents, exposure, contacts, and earlier commitments should mat
 
 These examples do not establish probabilities, dice counts, or failure rules.
 
-## What the current prototype misses
+## Active game scope
 
-Last Freight Out currently provides one panoramic town, five stops on a fixed route, a shuffled action deck, and an immediate win on boarding a freight train.
-
-It offers alternative ways to unlock local obstacles. It does not yet provide the confirmed journey through distinct levels, continuing arrangements across locations, or the border-to-aircraft ending.
-
-The town could be considered as material for a future level. Its debt premise, protagonist, train ending, seven-hour clock, escalating bribe prices, heat rules, and precise card economy are prototype choices, not requirements for the new structure.
-
-The visual redesign was paused while this direction was clarified. Styling should support the revised game rather than reinforce the prototype's structure.
+Develop Coalition from this direction and the active sources in `src/`.
+The owner excludes archived games from all current design and implementation work.
+Do not connect the active game to archived mechanics, story, copy or presentation.
+See the root `AGENTS.md` for the required boundary.
 
 ## Fiction and source evidence
 
@@ -118,7 +115,5 @@ Do not add repeated document inspection, clerk quotas, or a help-versus-block ca
 - [Blueprint and checkpoint discussion](https://github.com/quarterback/docs/blob/main/coalition-blueprint-and-checkpoint-concept-report.md)
 - [Reference research and proposal status](https://github.com/quarterback/docs/blob/main/aar-coalition-game-mechanics-research.md)
 - [Source article](https://www.wsj.com/world/americas/how-bolsonaro-fled-brazil-decoys-a-private-jet-and-a-friend-in-the-white-house-a752b829)
-- [Prototype engineering report](aar-last-freight-out.md)
-- [Prototype agent action record](aar-last-freight-out-first-build.md)
 
 **Authorship:** The owner supplied and confirmed the direction in the October 29 conversation. This document records that clarification. Examples explain it; they do not settle unselected mechanics.

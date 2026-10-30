@@ -47,6 +47,11 @@ the header.
 
 ## Copy rule
 
+Read [AGENTS.md](AGENTS.md) before making changes. Game copy follows
+[Humanizer](https://github.com/blader/humanizer) and
+[Digital.gov plain-language guidance](https://digital.gov/guides/plain-language).
+Keep instructions short and preserve the conditions and consequences of each choice.
+
 Game text is English. Verdenese and Nelôxi appear only in names and in a few
 words people say. Esmeralda is the second Nelosphere state in South America
 (capital Baca, largest city Susana), owner canon of 2026-10-30.
@@ -69,7 +74,6 @@ words people say. Esmeralda is the second Nelosphere state in South America
 | `tools/build.py` | Inlines everything into `index.html` |
 | `tools/calibrate.js` | Policy harness: win rate, loss causes and timing |
 | `tools/tutorial-check.js` | Replays the guided run against the sim; run after changing `data.js`, `sim.js` or `tutorial.js` |
-| `legacy/last-freight-out/` | The earlier prototype, kept for reference |
 | `docs/` | Game direction and the Agent Action Records |
 
 Rebuild after editing `src/`:

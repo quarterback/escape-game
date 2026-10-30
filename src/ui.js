@@ -76,14 +76,14 @@ const UI = (() => {
     for (const c of A.calls) calls.appendChild(actBtn(c, 'call'));
   }
   function renderHand() {
-    const h = $('hand'); h.innerHTML = s.hand.length ? '' : '<p class="hint">Nobody has given you anything you can use yet.</p>';
+    const h = $('hand'); h.innerHTML = s.hand.length ? '' : '<p class="hint">No cards yet.</p>';
     for (const id of s.hand) { const c = Data.CARDS[id]; const d = document.createElement('div'); d.className = 'card'; d.innerHTML = `<span class="cn">${c.name}</span><span class="tag">${c.tag}</span><br><span class="from">from ${c.from === 'self' ? 'you' : Sim.personName(s, c.from)}${c.tag === 'influence' && s.pos >= Sim.ESMERALDA_FROM ? ' · not recognized here' : ''}</span><p>${c.text}</p>`; h.appendChild(d); }
   }
   function renderPeople() {
     const ul = $('people'); ul.innerHTML = '';
     for (const k in Data.PEOPLE) { const pr = s.people[k]; const li = document.createElement('li'); li.className = pr.turned ? 'turned' : pr.trust >= 2 ? 'trust' : ''; const cm = s.commitments.find(c => c.to === k); li.innerHTML = `<b>${Sim.personName(s, k)}</b>, ${Data.PEOPLE[k].role}${pr.turned ? '. Has talked to the inquiry.' : pr.trust >= 2 ? '. Trusts you.' : ''}${cm ? `<span class="terms">Your word: ${cm.text}${cm.kept === false ? ' (broken)' : cm.kept === true ? ' (kept)' : ' (due)'}</span>` : ''}`; ul.appendChild(li); }
   }
-  function renderEnemy() { const ul = $('enemy'); ul.innerHTML = enemyLog.length ? '' : '<li>Nothing yet. Sosā is reading the file.</li>'; for (const t of enemyLog.slice(-6).reverse()) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); } }
+  function renderEnemy() { const ul = $('enemy'); ul.innerHTML = enemyLog.length ? '' : '<li>No inquiry moves yet.</li>'; for (const t of enemyLog.slice(-6).reverse()) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); } }
   function renderOver() { const o = $('over'); if (!s.over) { o.hidden = true; return; } o.hidden = false; o.className = s.over.win ? 'win' : 'lose'; $('overtitle').textContent = s.over.win ? 'Out' : 'Caught'; $('overtext').textContent = s.over.reason + ` ${s.hour} hours, exposure ${s.exposure}.`; }
 
   function doCommit(id, opt) {
@@ -98,16 +98,16 @@ const UI = (() => {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', `You try: ${e.name}.`, 'sys'); } }); break;
-        case 'roll': if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', `The die shows ${e.die}; it needed ${e.need}${e.bonus && e.bonus.length ? ` (lowered by ${e.bonus.join(', ')})` : ''}. ${e.won ? 'It holds.' : 'It fails.'}`, 'roll'); } }); }
+        case 'roll': if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', `Rolled ${e.die}; needed ${e.need}${e.bonus && e.bonus.length ? ` (lowered by ${e.bonus.join(', ')})` : ''}. ${e.won ? 'Success.' : 'Failed.'}`, 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', `${e.pressed ? Data.ENEMY.name + ' presses ' : ''}${Sim.personName(s, e.who)}${e.pressed ? '' : ' rolls'}: ${e.die} against ${e.need}. ${e.won ? (e.pressed ? 'Holds.' : 'Delivered.') : (e.pressed ? 'Breaks.' : 'Not yet.')}`, 'roll'); } }); break;
         case 'exposure': Render.float(Render.W * Render.SCALE / 2, 120, (e.delta > 0 ? '+' : '') + e.delta + ' exposure', e.delta > 0 ? '#ff6a6a' : '#7ad0ff'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); log('sys', `${Sim.personName(s, e.from)} gives you: ${e.name}.`, 'sys'); } }); break;
-        case 'cardlost': Render.enqueue({ dur: 10, start() { log('sys', `Gone from your hand: ${e.name}.`, 'sys'); } }); break;
+        case 'cardlost': Render.enqueue({ dur: 10, start() { log('sys', `Card lost: ${e.name}.`, 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', `You now owe ${Sim.personName(s, e.to)}: ${e.text}`, 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
-        case 'job': Render.enqueue({ dur: 10, start() { log('sys', `${Sim.personName(s, e.ally)} is on it. Expect word by ${e.dueText}.`, 'sys'); } }); break;
-        case 'message': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log('sys', `A message from ${Sim.personName(s, e.from)}. See the phone.`, 'sys'); } }); break;
+        case 'job': Render.enqueue({ dur: 10, start() { log('sys', `${Sim.personName(s, e.ally)} will reply by ${e.dueText}.`, 'sys'); } }); break;
+        case 'message': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log('sys', `Message from ${Sim.personName(s, e.from)}.`, 'sys'); } }); break;
         case 'answered': Render.enqueue({ dur: 10, start() { log('sys', `You answer: ${e.label}.`, 'sys'); } }); break;
         case 'enemy': Render.enemy(); Render.enqueue({ dur: 10, start() { Sfx.patrol(); enemyLog.push(e.text); log('enemy', e.text, 'enemy'); } }); break;
         case 'travel': Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
@@ -121,9 +121,9 @@ const UI = (() => {
   function showStart() {
     const box = $('start-chars'); box.innerHTML = '';
     const first = !seen();
-    $('start-demo-note').textContent = (first ? 'First time here? Start with this. ' : '') + 'Ten minutes. A coach walks you to the border, then the airfield is yours. You play as ' + Data.CHARACTERS[Tutorial.WHO].name + '.';
+    $('start-demo-note').textContent = (first ? 'New here? ' : '') + 'Learn the route to the border as ' + Data.CHARACTERS[Tutorial.WHO].name + '. Finish at the airfield on your own.';
     $('start-tutorial').className = first ? 'primary' : '';
-    $('start-free').textContent = first ? 'Or skip it. Start a real run.' : 'Start a real run';
+    $('start-free').textContent = first ? 'Or choose your character' : 'Choose your character';
     for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; const b = document.createElement('button'); b.className = 'who'; b.innerHTML = `<b>${c.name}</b><span>${c.title}; ${c.sibling.rel} ${c.sibling.short} is abroad</span><p>${c.blurb}</p>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
     $('start').hidden = false;
   }
@@ -136,7 +136,7 @@ const UI = (() => {
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; newRun(null, true); };
     $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
     $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); renderAll(); };
-    $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); log('sys', 'The coach steps back. The run continues live from here.', 'sys'); renderAll(); };
+    $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); log('sys', 'Tutorial ended. Continue on your own.', 'sys'); renderAll(); };
     $('mute').onclick = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').textContent = Sfx.isMuted() ? 'Sound: off' : 'Sound: on'; };
     $('help').onclick = () => { $('helpbox').hidden = !$('helpbox').hidden; };
     setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);

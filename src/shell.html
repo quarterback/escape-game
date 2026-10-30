@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Coalition">
 <meta property="og:title" content="Coalition">
-<meta property="og:description" content="Seventy-two hours to the border, and everyone who can help you is somewhere else. An offline escape game set in the Nelôxia universe.">
+<meta property="og:description" content="Seventy-two hours to escape. Your allies are on the phone. An offline escape game set in the Nelôxia universe.">
 <meta property="og:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://github.com/quarterback/escape-game">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Coalition">
-<meta name="twitter:description" content="Seventy-two hours to the border, and everyone who can help you is somewhere else. An offline escape game set in the Nelôxia universe.">
+<meta name="twitter:description" content="Seventy-two hours to escape. Your allies are on the phone. An offline escape game set in the Nelôxia universe.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
 <meta name="twitter:image:alt" content="The title Coalition over a pixel-art border post at night.">
 <style>
@@ -26,7 +26,7 @@
 </head>
 <body>
 <header>
-  <h1>Coalition<small>Get out of Valdória. Keep the people helping you working together.</small></h1>
+  <h1>Coalition<small>Get out of Valdória. Keep your allies working.</small></h1>
   <div class="stat"><b>Clock</b><span class="v" id="clock"></span><span class="small" id="left"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
   <div class="stat"><b>They think</b><span id="belief"></span></div>
@@ -37,48 +37,48 @@
   <div id="scene" aria-label="Pixel-art scene of the current level"></div>
   <aside id="side">
     <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
-    <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Do what the coach says. Everything else is off.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
+    <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-do" class="small">Choose the highlighted action.</span><button id="coach-leave">Leave</button></div><div id="coach-body"></div></div>
     <div id="dialogue" aria-live="polite"></div>
   </aside>
 </main>
 <div class="lower">
   <section class="panel" id="here-panel">
-    <h2>Here <small>the local problem</small></h2>
+    <h2>Here</h2>
     <div id="approaches"></div>
     <div id="inspect" class="empty"></div>
     <div class="row" style="margin-top:8px"><button id="wait">Wait one hour</button></div>
   </section>
   <section class="panel" id="phone-panel">
-    <h2>The phone <small>what continues elsewhere</small></h2>
+    <h2>The phone</h2>
     <div id="inbox"></div>
     <h3>Arrangements</h3>
     <ul id="arrangements"></ul>
     <div id="calls"></div>
   </section>
   <section class="panel" id="people-panel">
-    <h2>Help in hand <small>cards</small></h2>
+    <h2>Your cards</h2>
     <div id="hand"></div>
     <h3>People and promises</h3>
     <ul id="people"></ul>
-    <h3>What the inquiry has done</h3>
+    <h3>The inquiry</h3>
     <ul id="enemy"></ul>
     <div id="helpbox" hidden>
-      <p><b>Here</b> is the problem in front of you. Pick an approach to move on. <b>The phone</b> is what your allies are doing elsewhere. Call them to start an arrangement. Each ally rolls a die to deliver, and a promise is not an arrangement until they do.</p>
-      <p><b>Cards</b> are help someone gave you. They lower the die an approach needs. Some approaches need a card. The party card means nothing in Esmeralda. Money works on some people and not on others.</p>
-      <p><b>Exposure</b> is how sure the inquiry is about where you are. At 10 they arrive. You have 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
+      <p>Choose an approach under <b>Here</b>, read its chances, then commit. Use <b>The phone</b> to arrange help while you travel. Calls can fail; check when a reply is due.</p>
+      <p>Cards improve your chances or unlock an approach. Party influence stops working in Esmeralda. Some people accept money; others refuse.</p>
+      <p>At exposure 10, you are caught. Leave Esmeraldan airspace within 72 hours to win.</p>
     </div>
   </section>
 </div>
-<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Change who you are</button></div></div>
-<div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to the border, and everyone who can help you is somewhere else.</p><button id="title-start">Start</button><p class="title-foot">A game in the Nelôxia universe. Runs offline. Sound on.</p></div></div>
+<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Choose character</button></div></div>
+<div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
 <div id="start" hidden>
   <div class="startbox">
     <h2>Coalition</h2>
-    <p id="start-blurb">You lost the presidency of Valdória on Saturday. By noon a court had barred you from leaving. You need a jet, a country that will receive you, a second document and a driver. Each one is a different person. Cross the border into Esmeralda and leave its airspace for Atlanta before the inquiry finds you.</p>
-    <div id="start-demo"><button id="start-tutorial" class="primary">Play the guided first run</button><span class="small" id="start-demo-note"></span></div>
-    <h3 id="start-free">Or start a real run</h3>
+    <p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p>
+    <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
+    <h3 id="start-free">Choose your character</h3>
     <div id="start-chars"></div>
-    <p class="small">Runs offline. p5.js 1.9.4 is embedded. Sound is synthesized with Web Audio. Levels, people and the destination are prototype choices (docs/game-direction.md).</p>
+    <p class="small">Runs offline. No account needed.</p>
   </div>
 </div>
 <script>
