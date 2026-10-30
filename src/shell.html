@@ -3,123 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Last Freight Out</title>
+<title>Coalition</title>
 <style>
 /*__CSS__*/
 </style>
 </head>
 <body>
 <header>
-  <h1>Last Freight Out<small>Get out of Valdória on the midnight freight to Esmeralda.</small></h1>
-  <div class="stat"><b>Clock</b><span class="v" id="clock">17:00</span><span class="bar" id="timeline"></span><span class="small" id="timeleft"></span></div>
-  <div class="stat"><b>Coin</b><span class="v" id="coin">0</span><span class="small">australs</span></div>
-  <div class="stat"><b>Favors</b><span class="v" id="favor">0</span></div>
-  <div class="stat"><b>Heat</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
+  <h1>Coalition<small>Get out of Valdória. Keep the people who are getting you out working together.</small></h1>
+  <div class="stat"><b>Clock</b><span class="v" id="clock"></span><span class="small" id="left"></span></div>
   <div class="stat"><b>Where</b><span id="where"></span></div>
-  <div class="stat right"><button id="tutorial" class="ghost">Practice night</button><button id="startscreen" class="ghost">Start screen</button></div>
+  <div class="stat"><b>They think</b><span id="belief"></span></div>
+  <div class="stat"><b>Exposure</b><span class="bar" id="heat"></span><span class="small" id="heatnum"></span></div>
+  <div class="stat"><button id="startscreen">Who you are</button><button id="help">Help</button><button id="mute">Sound: on</button></div>
 </header>
 <main>
-  <div id="scene" aria-label="Pixel-art scene of the route through a Salta rail town"></div>
+  <div id="scene" aria-label="Pixel-art scene of the current level"></div>
   <aside id="side">
-  <div id="coach" hidden>
-    <p class="small" id="coach-step"></p>
-    <h3 id="coach-title"></h3>
-    <div id="coach-body"></div>
-    <div class="row"><button id="coach-next" class="primary">Next</button><span id="coach-wait" class="small" hidden>Do the step above to continue.</span><button id="coach-skip" class="ghost">Leave the practice night</button></div>
-  </div>
-  <div id="dialogue" aria-live="polite"></div>
+    <div id="objective"><b id="lvlname"></b><p id="lvlobj"></p></div>
+    <div id="dialogue" aria-live="polite"></div>
   </aside>
 </main>
 <div class="lower">
-  <section class="panel" id="hand-panel">
-    <h2>Your hand <small id="deckinfo"></small></h2>
-    <div id="hand"></div>
-  </section>
-  <section class="panel" id="targets-panel">
-    <h2>Targets <small>who or what the selected card can affect</small></h2>
-    <div id="targets"></div>
+  <section class="panel" id="here-panel">
+    <h2>Here <small>the local problem</small></h2>
+    <div id="approaches"></div>
     <div id="inspect" class="empty"></div>
+    <div class="row" style="margin-top:8px"><button id="wait">Wait one hour</button></div>
   </section>
-  <section class="panel" id="controls">
-    <h2>Move and time</h2>
-    <div class="row"><button id="back">Walk back</button><button id="fwd">Walk on</button></div>
-    <p id="fwdwhy" class="why"></p>
-    <div class="row"><button id="wait">Wait 30 minutes</button><button id="board" class="primary">Board the freight</button></div>
-    <p id="boardwhy" class="why"></p>
-    <div id="needs-panel">
-      <h2>What you still need <small>hover a line for what it means</small></h2>
-      <ul id="needs"></ul>
-    </div>
-    <div id="pending-panel">
-      <h2>In progress</h2>
-      <ul id="pending"></ul>
-    </div>
-    <div id="nightctl">
-    <h2>New night</h2>
-    <div class="row"><select id="persona" aria-label="who you are tonight"></select></div>
-    <div class="row" style="margin-top:8px"><input id="seed" type="number" min="1" aria-label="seed"><button id="newgame">Replay this seed</button><button id="reroll">Random night</button></div>
-    <h2>Your record</h2>
-    <p class="small" id="records"></p>
-    <div class="row" style="margin-top:8px"><button id="mute">Sound: on</button><button id="help">How to play</button></div>
+  <section class="panel" id="phone-panel">
+    <h2>The phone <small>what continues elsewhere</small></h2>
+    <div id="inbox"></div>
+    <h3>Arrangements</h3>
+    <ul id="arrangements"></ul>
+    <div id="calls"></div>
+  </section>
+  <section class="panel" id="people-panel">
+    <h2>Help in hand <small>cards</small></h2>
+    <div id="hand"></div>
+    <h3>People and promises</h3>
+    <ul id="people"></ul>
+    <h3>What the inquiry has done</h3>
+    <ul id="enemy"></ul>
     <div id="helpbox" hidden>
-      <h3>The situation</h3>
-      <p>You are Inēs Biankī, a chart-maker in a rail town in Salta, Valdória. You owe money you cannot pay and the bailiffs have your name. The midnight freight to Esmeralda is the last train before the line closes. Be hidden on it when it leaves and you win. It is 17:00; you have seven hours, in half-hour steps.</p>
-      <h3>What you need before you can board</h3>
-      <p><b>Papers</b>: a forged passport with a crossing stamp. Hire Lūçīā at the market (Commission papers, or Hire courier from anywhere). She takes three half-hours, two if Mārtā's window is open.<br>
-      <b>Passage</b>: a way past Gaspār, the customs guard. Bribe him, distract him yourself, send Pipô from the market, or pick the side gate.<br>
-      <b>Yard</b>: a way across the rail yard. Your stamped papers get you past Mārtā's window, or make a friend of Theo the foreman (bribe, Sweet talk or a favor).<br>
-      <b>Berth</b>: a hiding place on the train. Holt the brakeman takes a bribe once Theo is your friend, or listens to Sweet talk if you prepared a crate yourself with Pick lock.</p>
-      <h3>How a turn works</h3>
-      <p>Pick a card in your hand. Everyone and everything it can affect lights up in the picture and in the Targets list. Gray entries say why not. Click a target, read the inspection (what happens, what it costs, how long it takes), then press Commit. Most cards need you to be standing in the same place as the target. Call in a favor and Hire courier work from anywhere.</p>
-      <p>Walking between places takes 30 minutes. Pending work (a forgery, a distraction, a lock) keeps running while you do other things. It shows under In progress and as a bubble over the person's head. Waiting with a card selected throws that card away and draws a new one.</p>
-      <h3>Money, favors, heat</h3>
-      <p>Australs pay for bribes and hired work; every bribe you pay raises the price of the next by 1. People in town owe you favors. Two cards spend them and nothing earns them back. Heat is how much the town is talking about you. From heat 3 the bailiffs may stop you each half-hour. At heat 8 they take you. Lay low brings it down.</p>
-      <h3>Keys</h3>
-      <p>1 to 4 pick a card, arrow keys walk, Enter commits, Esc cancels.</p>
+      <p>Each level is the situation in front of you plus everything your allies and enemies are doing elsewhere. The approaches under Here move you on; the phone carries the arrangements that must be ready when you arrive. A promise is not a confirmed arrangement until the person delivers, and each of them rolls a die to deliver.</p>
+      <p>Cards are specific help someone gave you. They are not spent by themselves; they lower the die an approach needs, and some approaches cannot be tried without one. The party card means nothing in Esmeralda. Paying works on people who take money and fails on people who do not.</p>
+      <p>Exposure is how sure the inquiry is about where you are. It climbs while they are looking in the right place and when someone talks. At 10 they arrive. The run ends at 72 hours. You win when the jet leaves Esmeraldan airspace.</p>
     </div>
-    </div>
-    <p class="small">Runs offline. The page carries its own copy of p5.js 1.9.4 and makes its own sound with Web Audio.</p>
   </section>
 </div>
-
-<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Another night, same character</button><button id="changewho">Change who you are</button></div></div>
-
-
-<div id="start" hidden>
-  <div class="start-card">
-    <h1>Last Freight Out</h1>
-    <p class="lede">You are Inēs Biankī, a chart-maker in a rail town in Salta, Valdória. You owe money you cannot pay, and your name is in the bailiffs' ledger. Tonight at midnight the last freight train before the line closes leaves over the mountains for Esmeralda. If you are hidden on it when it pulls out, the debt stays behind.</p>
-    <div class="start-cols">
-      <div>
-        <h2>How a night works</h2>
-        <p>You have seven hours, in half-hour steps. Walking from place to place, playing most cards and waiting each cost half an hour.</p>
-        <p>Your hand holds four cards: bribes, forgeries, distractions, favors, a lock pick, your own maps to sell. Play a card on a person, object or place to change something in town. The game shows you exactly what will happen before you commit.</p>
-        <p>Before you can board you need four things. Forged <b>papers</b>. <b>Passage</b> past the customs guard. A way across the rail <b>yard</b>. A <b>berth</b> from the brakeman. Each has more than one way to get it.</p>
-        <p>Heat is how much the town is talking about you. At heat 8 the bailiffs catch you. At midnight the train leaves without you.</p>
-      </div>
-      <div>
-        <h2>Who are you tonight?</h2>
-        <p class="small">Same town, same train, different purse. This decides how you will have to play.</p>
-        <div id="start-personas"></div>
-      </div>
-    </div>
-    <p id="start-first" class="first" hidden>First time here? Play the practice night. It is a guided run on a fixed deck that walks you through every part of the game in about five minutes.</p>
-    <div class="row start-actions">
-      <button id="start-tut">Play the practice night</button>
-      <button id="start-play">Start a real night</button>
-      <button id="start-close" class="ghost">Back to the board</button>
-    </div>
+<div id="over" hidden><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="again" class="primary">Run it again</button><button id="changewho">Change who you are</button></div></div>
+<div id="start">
+  <div class="startbox">
+    <h2>Coalition</h2>
+    <p id="start-blurb">You lost the presidency of Valdória by four points on Saturday. By noon a court had restricted your departure and asked for your passports. A jet can be found, a country can be asked to receive you, a second document can be issued, a driver can be hired. Each of those is a different person, and none of them can do the others' work. Reach the border at the Huhūi passes, cross into Esmeralda, and leave its airspace in an aircraft bound for Atlanta before the inquiry finds you.</p>
+    <div id="start-chars"></div>
+    <p class="small">Runs offline. p5.js 1.9.4 is embedded; sound is synthesized with Web Audio. The sequence of levels, the people and the destination are prototype choices (docs/game-direction.md).</p>
   </div>
 </div>
-
 <script>
 /*__P5__*/
 </script>
 <script>
-/*__SIM__*/
+/*__DATA__*/
 </script>
 <script>
-/*__TUTORIAL__*/
+/*__SIM__*/
 </script>
 <script>
 /*__AUDIO__*/

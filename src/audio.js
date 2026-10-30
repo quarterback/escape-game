@@ -50,6 +50,9 @@ const Sfx = (() => {
     patrol()  { tone(110, 0.4, 'sawtooth', 0.6, 0, 20); tone(165, 0.4, 'sawtooth', 0.4, 0.05, 20); },
     arranged(){ [523, 659, 784].forEach((f, i) => tone(f, 0.12, 'triangle', 0.6, i * 0.07)); },
     whistle() { tone(900, 0.5, 'sine', 0.5, 0, 60); tone(1350, 0.5, 'sine', 0.3, 0.02, 60); },
+    ring()    { tone(1200, 0.08, 'sine', 0.4); tone(1500, 0.08, 'sine', 0.4, 0.1); tone(1200, 0.08, 'sine', 0.3, 0.25); tone(1500, 0.08, 'sine', 0.3, 0.35); },
+    dice()    { noise(0.05, 0.3); noise(0.04, 0.25, 0.07); tone(900, 0.04, 'square', 0.3, 0.14); },
+    jet()     { noise(1.6, 0.5); tone(90, 1.6, 'sawtooth', 0.5, 0, 400); },
     win()     { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 0.18, 'square', 0.5, i * 0.12)); },
     lose()    { [330, 311, 294, 220].forEach((f, i) => tone(f, 0.35, 'sawtooth', 0.5, i * 0.22)); },
   };

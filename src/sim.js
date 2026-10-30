@@ -1,522 +1,286 @@
 /* ============================================================
-   Last Freight Out: simulation (no DOM, no p5, no audio)
-   Setting: a rail town in Salta, Valdória, on the edge of the Pearl (quarterback/kels: world/valdoria-lore.md, verdenese/).
-   The Sim owns all game truth. It returns EVENT lists that the
-   renderer may animate and the UI may narrate; nothing here waits
-   on an animation.
-   Copy rule: game text is English. Verdenese appears only in names
-   (people, places, the austral) and in a few words people say.
+   COALITION simulation. Pure: no DOM, no p5, no audio. Node-loadable.
+   Owns all truth; returns event lists the UI narrates and animates.
+   Depth comes from people: who controls what, what they need first,
+   what they have confirmed, and what an earlier promise now costs.
    ============================================================ */
 'use strict';
 const Sim = (() => {
-  function mulberry32(a) {
-    return function () {
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
+  const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
+  function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
+  const EXITS = { residence: null, road: null, colonia: null, salta: ['crate', 'foreman', 'buy_seat'], border: null, airfield: ['depart', 'depart_nopermit'] }; // null = every success exits
+  const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
+  const clone = (o) => JSON.parse(JSON.stringify(o));
 
-  const TICKS_TOTAL = 14;          // half-hours from 17:00 to the midnight freight (the Nelôxi standard is a 24-hour clock)
-  const HEAT_LIMIT = 8;
-  const HAND_SIZE = 4;
-
-  const STATIONS = [
-    { id: 'attic',      name: 'The attic over the shed',  short: 'Attic' },
-    { id: 'market',     name: 'The market',               short: 'Market' },
-    { id: 'checkpoint', name: 'The customs post',         short: 'Customs' },
-    { id: 'yard',       name: 'The rail yard',            short: 'Yard' },
-    { id: 'platform',   name: 'The freight platform',     short: 'Platform' },
-  ];
-
-  const PEOPLE = {
-    forger:   { name: 'Lūçīā Ferrārô, forger',          role: 'forger',        station: 1, state: 'idle',    coat: '#7a4ea8', hat: '#2b1d3a' },
-    lookout:  { name: 'Pipô Rosī, lookout',             role: 'lookout',       station: 1, state: 'idle',    coat: '#c96a2a', hat: '#5a2d0c', small: true },
-    guard:    { name: 'Gaspār Moralēs, customs guard',  role: 'customs guard', station: 2, state: 'alert',   coat: '#3b5d8f', hat: '#1b2a45' },
-    clerk:    { name: 'Mārtā Kovalskā, registry clerk', role: 'registry clerk', station: 3, state: 'closed', coat: '#5f8a4a', hat: '#2f4a22' },
-    teo:      { name: 'Theo Bascom, yard foreman',      role: 'yard foreman',  station: 3, state: 'hostile', coat: '#8a6a3a', hat: '#4a3a1a' },
-    brakeman: { name: 'Holt Greer, brakeman',           role: 'brakeman',      station: 4, state: 'wary',    coat: '#444c5a', hat: '#222630' },
-  };
-  const OBJECTS = {
-    papers: { name: 'Passport with a crossing stamp', station: 1, state: 'blank' },
-    stall:  { name: 'Your market stall of charts',    station: 1, state: 'stocked' },
-    gate:   { name: 'Side gate',                      station: 2, state: 'locked' },
-    crate:  { name: 'Boxcar crate',                   station: 4, state: 'sealed' },
-  };
-  const PLACES = {
-    attic: { name: 'Your hideout', station: 0 },
-  };
-
-  const STATE_LABEL = {
-    forger:   { idle: 'idle, warming her sealing wax', busy: 'inking your passport' },
-    lookout:  { idle: 'kicking stones', running: 'off making trouble' },
-    guard:    { alert: 'on the customs barrier', bribed: 'looking the other way', distracted: 'dealing with a commotion' },
-    clerk:    { closed: 'window shut', open: 'window open' },
-    teo:      { hostile: 'wants you off his yard', friendly: 'will walk you through' },
-    brakeman: { wary: 'not taking passengers', agreed: 'holding a crate for you' },
-    papers:   { blank: 'no crossing stamp', inking: 'being forged', stamped: 'sealed in wax and ready' },
-    stall:    { stocked: 'your charts still on it', sold: 'sold out' },
-    gate:     { locked: 'locked', unlocked: 'unlocked' },
-    crate:    { sealed: 'sealed', prepared: 'lid loosened, straw inside' },
-  };
-
-  // ---- deck -------------------------------------------------
-  // kind says what sort of thing the card is played on: people, objects, places, or a service you order.
-  const CARD_DEFS = {
-    bribe:    { name: 'Bribe',             cost: { coin: 3 },  time: 1, kind: 'people',
-                flavor: 'Pay someone to help you. The price goes up each time you do it, because word gets around.' },
-    forgery:  { name: 'Commission papers', cost: { coin: 2 },  time: 1, kind: 'service',
-                flavor: 'Hire Lūçīā to forge your passport. She needs an hour and a half of ink and wax.' },
-    distract: { name: 'Distraction',       cost: {},           time: 1, kind: 'people',
-                flavor: 'Make a scene so the guard looks away for a while.' },
-    talk:     { name: 'Sweet talk',        cost: { favor: 1 }, time: 1, kind: 'people',
-                flavor: 'Spend a favor someone owes you. Some doors open for an old friend.' },
-    picklock: { name: 'Pick lock',         cost: {},           time: 2, kind: 'objects',
-                flavor: 'Open a gate or a crate yourself. Slow, and someone may notice.' },
-    sellmaps: { name: 'Sell maps',         cost: {},           time: 1, kind: 'objects',
-                flavor: 'Sell your own charts for cash. Everyone at the market knows the hand that drew them.' },
-    laylow:   { name: 'Lay low',           cost: {},           time: 1, kind: 'places',
-                flavor: 'Hide for half an hour so people stop talking about you.' },
-    favor:    { name: 'Call in a favor',  cost: { favor: 1 }, time: 0, kind: 'people',
-                flavor: 'Spend a favor to speed something up. Takes no time, and works from anywhere.' },
-    courier:  { name: 'Hire courier',      cost: { coin: 2 },  time: 1, kind: 'service',
-                flavor: 'Pay a kid from the market to carry your order to Lūçīā, so you do not have to walk there.' },
-  };
-  // Who you are tonight decides the shape of your purse (one wallet, three ways to start).
-  const PERSONAS = {
-    cartographer: { name: 'The chart-maker', coin: 5, favor: 2, heat: 0,
-                    blurb: 'A balanced start. Some money, some favors, nobody watching you yet.',
-                    how: 'You can afford one bribe or a forgery, and two favor cards. Mix money and friends. Best start for learning the game.' },
-    niece:        { name: "The toll-taker's niece", coin: 8, favor: 1, heat: 1,
-                    blurb: 'Plenty of money, one favor, and the bailiffs already know your face.',
-                    how: 'You can bribe your way through, but each bribe costs more than the last and adds heat, and you start at heat 1. Sell maps less, lay low more.' },
-    official:     { name: 'The settlement clerk', coin: 2, favor: 4, heat: 0,
-                    how: 'Two australs will not buy a single bribe. Lean on Sweet talk, Call in a favor, Pipô and the courier-free forgery. You will probably have to sell your maps.',
-                    blurb: 'Almost no money, but half the settlement owes you a favor.' },
-  };
-  const BRIBE_BASE = 3, BRIBE_STEP = 1; // every bribe paid raises the next price: the town learns what you'll pay
-
-  const DECK_LIST = ['bribe','bribe','forgery','forgery','distract','distract','talk','talk',
-                     'picklock','picklock','sellmaps','sellmaps','laylow','laylow','favor','favor','courier'];
-
-  function clone(o) { return JSON.parse(JSON.stringify(o)); }
-
-  // opts.deck: a fixed card order instead of a shuffle (cards are drawn from the END). Used by the tutorial.
-  function newGame(seed, persona, opts) {
-    opts = opts || {};
-    const P0 = PERSONAS[persona] || PERSONAS.cartographer;
+  function newRun(seed, who) {
+    const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const rng = mulberry32(seed >>> 0);
-    let deck;
-    if (opts.deck) deck = opts.deck.slice();
-    else {
-      deck = DECK_LIST.slice();
-      for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
-    }
     const s = {
-      seed, tick: 0, over: null, // over: {win:bool, reason}
-      persona: PERSONAS[persona] ? persona : 'cartographer',
-      tutorial: !!opts.tutorial,
-      coin: P0.coin, favor: P0.favor, heat: P0.heat,
-      bribes: 0,
-      pos: 0,
-      people: clone(PEOPLE), objects: clone(OBJECTS), places: clone(PLACES),
-      jobs: [],   // pending work: {type, remaining, who}
-      deck, discard: [], hand: [],
-      nextCardUid: 1,
-      rngState: seed >>> 0,
-      log: [],
+      seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
+      arr: {}, people: {}, hand: ['decoy_cars', 'aide_word'], used: [], commitments: [], inbox: [], jobs: [],
+      flags: { destination: false, restriction: false, asked: false, leaned: false, enemyDone: {} },
+      nextMsg: 1, lastEnemy: 0, visited: [0],
     };
+    for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
+    for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false };
     s._rng = rng;
-    for (let i = 0; i < HAND_SIZE; i++) draw(s);
+    const events = [];
+    arrive(s, events, true);
+    s._boot = events;
     return s;
   }
+  const ev = (type, data) => Object.assign({ type }, data);
+  const say = (events, who, text) => { if (text) events.push(ev('say', { who, text })); };
+  const roll = (s) => 1 + Math.floor(s._rng() * 6);
+  function clockText(h) {
+    const t = START_HOUR + h, day = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'][Math.floor(t / 24)];
+    return `${day} ${String(t % 24).padStart(2, '0')}:00`;
+  }
+  const level = (s) => D.LEVELS[s.pos];
+  const ch = (s) => D.CHARACTERS[s.who];
+  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
 
-  function draw(s) {
-    if (!s.deck.length) {
-      if (!s.discard.length) return null;
-      s.deck = s.discard; s.discard = [];
-      for (let i = s.deck.length - 1; i > 0; i--) { const j = Math.floor(s._rng() * (i + 1)); [s.deck[i], s.deck[j]] = [s.deck[j], s.deck[i]]; }
+  // ---- messages (the phone) ---------------------------------
+  function msg(s, events, from, text, options) {
+    const m = { id: s.nextMsg++, from, text, options };
+    s.inbox.push(m); events.push(ev('message', { id: m.id, from, text }));
+  }
+  function arrive(s, events, first) {
+    const L = level(s);
+    events.push(ev('arrive', { level: s.pos }));
+    say(events, 'narrator', L.arrive);
+    // scripted arrivals: what the phone brings at each level
+    if (s.pos === 0 && first) {
+      msg(s, events, 'sibling', `"I have a jet in Susana. Twelve seats. The operator will not confirm a crew until I give a destination. Atlanta, or do we wait for Salek?"`, [
+        { id: 'name_atlanta', label: 'Name Atlanta now', hours: 0, effect: 'The operator can confirm a crew. If Atlanta says no later, the pilot flies to a closed door.' },
+        { id: 'wait_sponsor', label: 'Wait until Salek answers', hours: 0, effect: 'The crew stays unconfirmed until Permission reaches "sponsor engaged".' },
+        { id: 'delegate_sibling', label: `Let ${ch(s).sibling.short} decide`, hours: 0, effect: `${ch(s).sibling.short} rolls against reliability ${D.PEOPLE.sibling.reliability}. A good roll names Atlanta and starts the crew; a bad one stalls both for six hours.` },
+      ]);
     }
-    const card = { uid: s.nextCardUid++, type: s.deck.pop() };
-    s.hand.push(card);
-    return card;
+    if (s.pos === 1) {
+      msg(s, events, 'registry', `"Mārtā Kovalskā, civil registry. I can issue your Nelôxian record, but you sign it in person, or someone with weight asks me to skip that."`, [
+        { id: 'sign_person', label: 'Go in person, one hour', hours: 1, effect: 'Document moves to "civil record requested". Ready in eight hours. The registry is on the main square.' },
+        { id: 'aide_asks', label: 'Have Gianlūka ask her', hours: 0, effect: 'No time spent. You owe Gianlūka more. Mārtā resents it and the record may be slower.' },
+        { id: 'skip_doc', label: 'Skip it', hours: 0, effect: 'You arrive at the line with the passport the court told you to surrender.' },
+      ]);
+    }
+    if (s.pos === 2 && s.arr.reception.stage === 1) {
+      msg(s, events, 'sibling', `"Vélez is not answering. Her office says the minister is at a wedding in Baca. I can keep calling, or Salek knows her uncle."`, [
+        { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: 'Reception rolls against the sibling\'s reliability over the next six hours.' },
+        { id: 'via_sponsor', label: 'Ask Salek to reach the uncle', hours: 0, effect: 'Needs Permission at "sponsor engaged". Nearly certain, and you now owe Salek twice.' },
+        { id: 'wait_velez', label: 'Wait', hours: 0, effect: 'Nothing moves until you call her yourself.' },
+      ]);
+    }
+    if (s.pos === 3) {
+      const c = s.commitments.find(x => x.to === 'aide' && x.kept === null);
+      if (c) msg(s, events, 'aide', `"The executive meets tonight. I need your statement naming me acting leader before midnight, or the people who got you out of the house start wondering why."`, [
+        { id: 'keep_word', label: 'Send the statement', hours: 1, effect: 'Gianlūka is yours for the rest of the run. His friend in the inquiry starts telling you where Sosā is looking.' },
+        { id: 'break_word', label: 'Put him off', hours: 0, effect: 'He stops answering. Within hours the inquiry knows exactly where you are. His cards leave your hand.' },
+      ]);
+    }
+    if (s.pos === 5 && s.flags.leaned) {
+      msg(s, events, 'pilot', `"The operator had a call from your ministry about his licence. He wants a word from someone in Esmeralda that this flight is wanted, or a bonus for the crew that makes the licence not matter."`, [
+        { id: 'crew_bonus', label: 'Pay the crew bonus', hours: 1, effect: 'Pilots take money. The aircraft returns to "waiting on the apron".' },
+        { id: 'velez_word', label: 'Have Vélez call the operator', hours: 0, effect: 'Needs her card in hand. Costs nothing and no one learns your face.' },
+        { id: 'ignore_pilot', label: 'Ignore it', hours: 0, effect: 'The aircraft stays one stage short.' },
+      ]);
+    }
   }
 
-  // ---- derived -------------------------------------------------
-  // The four things you need before you can board. Each has at least two ways to get it.
-  function arrangements(s) {
-    const g = s.people.guard.state;
-    return {
-      papers:  { name: 'Papers',  done: s.objects.papers.state === 'stamped',
-                 what: 'A forged passport with a crossing stamp. Mārtā at the registry window will not let you into the yard without it, unless Theo walks you through.',
-                 how: 'Play Commission papers on Lūçīā at the market (or Hire courier from anywhere), then wait for her to finish.' },
-      passage: { name: 'Passage', done: g === 'bribed' || g === 'distracted' || s.objects.gate.state === 'unlocked' || s.pos >= 3, behind: s.pos >= 3,
-                 what: 'A way past Gaspār, the customs guard. He blocks the road from the customs post to the yard.',
-                 how: 'Bribe Gaspār, distract him (yourself, or send Pipô from the market), or pick the side gate.' },
-      yard:    { name: 'Yard',    done: s.objects.papers.state === 'stamped' || s.people.teo.state === 'friendly' || s.pos >= 4, behind: s.pos >= 4,
-                 what: 'A way across the rail yard to the platform. Mārtā checks passports at the window; Theo the foreman runs the yard.',
-                 how: 'Have your stamped passport ready, or make a friend of Theo with a bribe, Sweet talk or a favor.' },
-      berth:   { name: 'Berth',   done: s.people.brakeman.state === 'agreed',
-                 what: 'A hiding place on the train. Holt the brakeman decides who rides in his boxcar.',
-                 how: 'Once Theo is your friend, Holt will take a bribe. Or prepare a crate yourself with Pick lock, then Sweet talk him.' },
-    };
-  }
-
-  // The Nelôxi standard is the plain 24-hour number (coursebook, "Clock time"), so the
-  // diegetic clock keeps it; midnight is the word, as both the lore and AP have it.
-  function clockText(tick) {
-    const minutes = 17 * 60 + tick * 30;
-    const h = Math.floor(minutes / 60) % 24, m = minutes % 60;
-    if (h === 0 && m === 0) return 'midnight';
-    return `${h}:${String(m).padStart(2, '0')}`;
-  }
-
-  function canMove(s, dir) {
-    const to = s.pos + dir;
-    if (to < 0 || to >= STATIONS.length) return { ok: false, why: 'Nothing that way.' };
-    if (dir < 0) return { ok: true, to };
-    const a = arrangements(s);
-    if (to === 3 && !a.passage.done) return { ok: false, to, why: 'Gaspār blocks the customs barrier. You need Passage first: ' + a.passage.how };
-    if (to === 4 && !a.yard.done)    return { ok: false, to, why: 'Mārtā wants to see a stamped passport and Theo wants you off his yard. You need the Yard arranged: ' + a.yard.how };
-    return { ok: true, to };
-  }
-
-  function canBoard(s) {
-    if (s.pos !== 4) return { ok: false, why: 'You have to be on the freight platform to board.' };
-    if (!arrangements(s).berth.done) return { ok: false, why: 'No berth yet. Holt has not agreed to hide you.' };
-    return { ok: true };
-  }
-
-  // ---- card applications -------------------------------------
-  // Returns [{id, kind, label, ok, why, preview:[...], target}]
-  function here(s, ent) { return ent.station === s.pos; }
-  function app(id, kind, label, ok, why, preview) { return { id, kind, label, ok, why: ok ? '' : why, preview }; }
-  function near(s, ent, name) { return here(s, ent) ? [true, ''] : [false, `You have to be at ${STATIONS[ent.station].name.toLowerCase()} to reach ${name}.`]; }
-
-  function applications(s, type) {
-    const P = s.people, O = s.objects, def = CARD_DEFS[type], cost = cardCost(s, type);
-    const out = [];
-    const afford = (!cost.coin || s.coin >= cost.coin) && (!cost.favor || s.favor >= cost.favor);
-    const costWhy = !afford ? `You cannot pay ${costText(cost)}.` : '';
-    const push = (id, kind, label, okReason, preview) => {
-      let [ok, why] = okReason;
-      if (ok && !afford) { ok = false; why = costWhy; }
-      out.push(app(id, kind, label, ok, why, preview));
-    };
-    const both = (a, b) => a[0] ? b : a;
-
-    switch (type) {
-      case 'bribe':
-        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the customs guard'),
-          P.guard.state === 'alert' ? [true] : [false, 'He is already not looking.']),
-          ['Gaspār looks the other way for the rest of the night.', 'Heat +1 (he talks over his wine).', 'Passage arranged.']);
-        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the registry clerk'),
-          P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mārtā opens her window.', 'She will stamp whatever Lūçīā finishes, so the forgery is ready one half-hour sooner.']);
-        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Theo'),
-          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your friend.']),
-          ['Theo pockets it and shrugs.', 'He will walk you past the registry window.', 'Yard arranged.']);
-        push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
-          P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
-          P.teo.state === 'friendly' ? [true] : [false, 'Holt only takes money from Theo\'s friends. Make Theo your friend first.']),
-          ['Holt holds a crate for you on the midnight freight to Susana, in Esmeralda.', 'Berth arranged.']);
-        break;
-      case 'forgery':
-        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
-          P.forger.state === 'busy' ? [false, 'She is already working on your passport.'] :
-          O.papers.state === 'stamped' ? [false, 'Your passport is done.'] : [true]),
-          ['Lūçīā starts inking.', 'Ready in three half-hours, or two if Mārtā\'s window is open.', 'Shows up under In progress until it is done.']);
-        break;
-      case 'courier':
-        push('forger', 'person', P.forger.name + ' (by courier)',
-          P.forger.state === 'busy' ? [false, 'She is already working on your passport.'] :
-          O.papers.state === 'stamped' ? [false, 'Your passport is done.'] : [true],
-          ['A kid from the market carries the order to Lūçīā.', 'Works from any station.', 'Ready in three half-hours, or two if Mārtā\'s window is open.']);
-        break;
-      case 'distract':
-        push('guard', 'person', P.guard.name, both(near(s, P.guard, 'the customs guard'),
-          P.guard.state === 'alert' ? [true] : [false, 'He is already not looking.']),
-          ['You kick over the coal brazier. Gaspār runs to it.', 'Distracted for two half-hours.', 'Risk: heat +1 if someone sees you.']);
-        push('lookout', 'person', P.lookout.name, both(near(s, P.lookout, 'Pipô'),
-          P.lookout.state === 'idle' ? (P.guard.state === 'alert' ? [true] : [false, 'No need. Gaspār is not looking.'])
-                                     : [false, 'Pipô is already out.']),
-          ['Pipô runs ahead to the customs post and starts a fight by the barrier.', 'Gaspār distracted for three half-hours.', 'No heat on you.']);
-        break;
-      case 'talk':
-        push('clerk', 'person', P.clerk.name, both(near(s, P.clerk, 'the registry clerk'),
-          P.clerk.state === 'closed' ? [true] : [false, 'Her window is already open.']),
-          ['Mārtā remembers your mother. Window opens.', 'Forgery ready one half-hour sooner.']);
-        push('teo', 'person', P.teo.name, both(near(s, P.teo, 'Theo'),
-          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your friend.']),
-          ['Theo grumbles, then grins.', 'Yard arranged.']);
-        push('brakeman', 'person', P.brakeman.name, both(near(s, P.brakeman, 'Holt'),
-          P.brakeman.state === 'agreed' ? [false, 'Holt has already agreed.'] :
-          O.crate.state === 'prepared' ? [true] : [false, 'Holt wants to see a crate already prepared. Use Pick lock on the crate first.']),
-          ['Holt nods at the crate you prepared.', 'Berth arranged.']);
-        push('forger', 'person', P.forger.name, both(near(s, P.forger, 'Lūçīā'),
-          P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.']),
-          ['Lūçīā hurries for a friend.', 'Forgery ready one half-hour sooner.']);
-        break;
-      case 'picklock':
-        push('gate', 'object', O.gate.name, both(near(s, O.gate, 'the gate'),
-          O.gate.state === 'locked' ? [true] : [false, 'Already unlocked.']),
-          ['The side gate opens. Takes two half-hours.', 'Heat +2 (a lantern passes while you work).', 'Passage arranged.']);
-        push('crate', 'object', O.crate.name, both(near(s, O.crate, 'the crate'),
-          O.crate.state === 'sealed' ? [true] : [false, 'Already prepared.']),
-          ['You loosen a lid and stuff straw inside. Takes two half-hours.', 'Heat +1.', 'Holt will then listen to Sweet talk.']);
-        break;
-      case 'sellmaps':
-        push('stall', 'object', O.stall.name, both(near(s, O.stall, 'your stall'),
-          O.stall.state === 'stocked' ? [true] : [false, 'Sold out.']),
-          ['Australs +4.', 'Heat +1 (your charts are known).']);
-        break;
-      case 'laylow':
-        push('attic', 'place', s.places.attic.name, near(s, s.places.attic, 'the attic'),
-          ['Half an hour in the dark.', 'Heat −3.']);
-        push('self', 'place', 'Right here, in a doorway', [true],
-          ['Half an hour with your collar up.', 'Heat −1.']);
-        break;
-      case 'favor':
-        push('forger', 'person', P.forger.name,
-          P.forger.state === 'busy' ? [true] : [false, 'She is not working for you right now.'],
-          ['Lūçīā calls in her apprentice. No time spent.', 'Forgery ready two half-hours sooner.']);
-        push('teo', 'person', P.teo.name,
-          P.teo.state === 'hostile' ? [true] : [false, 'Theo is already your friend.'],
-          ['A word from the right person. No time spent.', 'Theo becomes your friend.', 'Yard arranged.']);
-        push('guard', 'person', P.guard.name,
-          P.guard.state === 'distracted' ? [true] : [false, 'Only useful while Gaspār is distracted.'],
-          ['A coin keeps the commotion going. No time spent.', 'Distraction lasts two half-hours longer.']);
-        break;
+  // ---- what you can do right now ------------------------------
+  function mods(s, L) {
+    const out = {};
+    for (const id of s.hand) {
+      const c = D.CARDS[id]; if (!c) continue;
+      if (c.tag === 'influence' && s.pos >= ESMERALDA_FROM) continue; // the party means nothing in Esmeralda
+      out[c.tag] = (out[c.tag] || 0) + 1;
     }
     return out;
   }
+  function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && !(tag === 'influence' && s.pos >= ESMERALDA_FROM)); }
+  function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
+  function needText(s, n) {
+    if (n.card) return hasTag(s, n.card) ? null : (n.card === 'influence' && s.pos >= ESMERALDA_FROM ? 'Your party card is not recognized here.' : `Needs a card that gives ${n.card}.`);
+    if (n.night) return isNight(s) ? null : `Needs night. It is ${clockText(s.hour).split(' ')[1]}; the shift changes at 22:00.`;
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs ${D.ARRANGEMENTS[n.arr].name} at "${D.ARRANGEMENTS[n.arr].stages[n.stage]}" (now "${D.ARRANGEMENTS[n.arr].stages[a.stage]}").`; }
+    return null;
+  }
+  function approachList(s) {
+    const L = level(s), m = mods(s, L), out = [];
+    for (const a of L.approaches) {
+      const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
+      let bonus = 0; const used = [];
+      for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push(tag); }
+      let dc = a.dc;
+      if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1;
+      if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
+      const need = Math.max(1, dc - bonus);
+      out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text,
+        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, bonusFrom: used, pay: !!a.pay,
+        preview: [a.text, need <= 1 ? 'Succeeds without a roll.' : need > 6 ? 'Cannot succeed. The person does not take what you have.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Helped by: ' + used.join(', ') + '.' : ''}`, `Takes ${a.hours} hour${a.hours === 1 ? '' : 's'}.`] });
+    }
+    return out;
+  }
+  // phone calls that push a continuing arrangement one stage, by the ally who controls it
+  function callList(s) {
+    const out = [], A = s.arr;
+    const pending = (k) => s.jobs.find(j => j.arr === k);
+    const add = (k, ally, whys, text) => {
+      const a = A[k], def = D.ARRANGEMENTS[k];
+      if (a.stage >= def.stages.length - 1) return;
+      const p = pending(k);
+      if (p) { out.push({ kind: 'call', id: 'call:' + k, name: `${def.name}: ${personName(s, ally)} is on it`, ok: false, why: `Resolves at ${clockText(p.due)}.`, hours: 0, preview: [text] }); return; }
+      out.push({ kind: 'call', id: 'call:' + k, name: `Call ${personName(s, ally)} about ${def.name.toLowerCase()}`, ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
+        preview: [text, `Next stage: "${def.stages[a.stage + 1]}". ${personName(s, ally)} delivers on a roll of ${D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0)} or more in ${jobHours(k)} hours.`] });
+    };
+    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? 'The operator needs a destination first (answer the message, or engage Salek).' : null, s.people.sibling.turned ? 'Not answering.' : null].filter(Boolean),
+      'Your sibling finds, crews, fuels and positions the jet. Each stage is a separate promise.');
+    add('reception', A.reception.stage < 2 ? 'sibling' : 'official',
+      [A.reception.stage === 2 && s.pos < 3 ? 'Vélez will send people to the line when you are a day away. Call again from Salta.' : null].filter(Boolean),
+      'Who meets you across the line. Your sibling finds the name; Vélez decides what Esmeralda does with it.');
+    add('document', 'registry', [A.document.stage === 0 ? 'Mārtā needs you at the registry in Santa Laura (answer her message there).' : null].filter(Boolean),
+      'The Nelôxian civil record. A clerk issues it; nobody more powerful can.');
+    add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? 'Too late to begin this from an apron.' : null].filter(Boolean),
+      'Atlanta. Salek opens the door on his terms; the ministry in Lāyūna says yes or no.');
+    return out;
+  }
+  const jobHours = (k) => ({ aircraft: 6, reception: 6, document: 8, permission: 10 })[k];
+  function inboxList(s) {
+    return s.inbox.map(m => ({ kind: 'message', id: 'msg:' + m.id, msgId: m.id, from: m.from, name: `${personName(s, m.from)}: ${m.text}`, ok: true, hours: 0,
+      options: m.options.map(o => Object.assign({}, o, { ok: optionOk(s, o), why: optionWhy(s, o) })) }));
+  }
+  function optionWhy(s, o) {
+    if (o.id === 'via_sponsor' && s.arr.permission.stage < 1) return 'Salek is not engaged yet.';
+    if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return "You do not have Vélez's card.";
+    if (o.id === 'aide_asks' && !hasTag(s, 'influence')) return 'Gianlūka is not taking your calls.';
+    return '';
+  }
+  const optionOk = (s, o) => !optionWhy(s, o);
+  function actions(s) { return { approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: 'Wait one hour', ok: !s.over, hours: 1 } }; }
 
-  // The live price of a card in this state (bribes inflate; everything else is the printed cost).
-  function cardCost(s, type) {
-    const c = Object.assign({}, CARD_DEFS[type].cost);
-    if (type === 'bribe') c.coin = BRIBE_BASE + BRIBE_STEP * s.bribes;
-    return c;
+  // ---- commit ----------------------------------------------------
+  function commit(s, actionId, optionId) {
+    if (s.over) return { ok: false, why: 'The run is over.' };
+    const events = [];
+    if (actionId === 'wait') { pass(s, 1, events); return finish(s, events); }
+    if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
+    if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
+    const a = level(s).approaches.find(x => x.id === actionId);
+    if (!a) return { ok: false, why: 'Not something you can do here.' };
+    const view = approachList(s).find(x => x.id === actionId);
+    if (!view.ok) return { ok: false, why: view.why };
+    events.push(ev('attempt', { id: a.id, name: a.name }));
+    const die = view.need <= 1 ? 6 : roll(s);
+    const won = view.need > 6 ? false : die >= view.need;
+    events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
+    apply(s, won ? a.success : a.fail, events, a);
+    if (won && a.success.win) { s.over = { win: true, reason: `${a.success.say} You are out of Valdória, out of Esmeralda, and the inquiry has nothing left to hold.` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+    pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
+    if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
+    return finish(s, events);
   }
-  function costText(cost) {
-    const parts = [];
-    if (cost.coin) parts.push(`${cost.coin} ${cost.coin === 1 ? 'austral' : 'australs'}`);
-    if (cost.favor) parts.push(`${cost.favor} favor`);
-    return parts.length ? parts.join(', ') : 'nothing';
+  function apply(s, fx, events, a) {
+    if (!fx) return;
+    say(events, 'narrator', fx.say);
+    if (fx.exposure) heat(s, fx.exposure, events);
+    if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.card) gain(s, fx.card, events);
+    if (fx.trust) { s.people[fx.trust].trust += 1; events.push(ev('trust', { who: fx.trust, trust: s.people[fx.trust].trust })); }
+    if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
+    if (fx.advance) for (const k of fx.advance) stage(s, k, s.arr[k].stage + 1, events);
+  }
+  function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || s.used.includes(id)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
+  function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }
+  function heat(s, d, events) { s.exposure = Math.max(0, Math.min(EXPOSURE_LIMIT, s.exposure + d)); events.push(ev('exposure', { delta: d, exposure: s.exposure })); }
+  function stage(s, k, to, events) {
+    const def = D.ARRANGEMENTS[k]; to = Math.max(0, Math.min(def.stages.length - 1, to));
+    if (to === s.arr[k].stage) return; s.arr[k].stage = to;
+    events.push(ev('stage', { arr: k, stage: to, label: def.stages[to] }));
+    const line = (D.STAGE_LINES[k] || [])[to]; if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : k === 'document' ? 'registry' : 'sponsor', line);
+    if (k === 'document' && to === 2) gain(s, 'civil_record', events);
+    if (k === 'reception' && to >= 2) gain(s, 'intro_vel', events);
+    if (k === 'permission' && to === 1) gain(s, 'sponsor_line', events);
+  }
+  function advanceLevel(s, events) {
+    if (s.pos >= D.LEVELS.length - 1) return;
+    s.pos += 1; s.visited.push(s.pos); events.push(ev('travel', { to: s.pos }));
+    for (const id of s.hand.slice()) { const c = D.CARDS[id]; if (c && c.tag === 'passage') { lose(s, id, events); s.used.push(id); } }
+    arrive(s, events, false);
+  }
+  function call(s, k, events) {
+    const c = callList(s).find(x => x.id === 'call:' + k);
+    if (!c || !c.ok) return { ok: false, why: c ? c.why : 'Nothing to call about.' };
+    if (k === 'permission' && s.arr.permission.stage === 0 && !s.commitments.some(x => x.to === 'sponsor')) { s.commitments.push({ to: 'sponsor', text: D.PEOPLE.sponsor.terms, kept: true }); events.push(ev('commit', { to: 'sponsor', text: D.PEOPLE.sponsor.terms })); }
+    if (k === 'reception' && s.arr.reception.stage === 1 && !s.commitments.some(x => x.to === 'official')) { s.commitments.push({ to: 'official', text: D.PEOPLE.official.terms, kept: true }); events.push(ev('commit', { to: 'official', text: D.PEOPLE.official.terms })); }
+    const due = s.hour + 1 + jobHours(k);
+    s.jobs.push({ arr: k, ally: c.ally, target: s.arr[k].stage + 1, due });
+    events.push(ev('job', { arr: k, ally: c.ally, due, dueText: clockText(due) }));
+    say(events, c.ally, k === 'aircraft' ? `"Leave it with me. Six hours."` : k === 'reception' ? (c.ally === 'official' ? `"I will see what the minister can spare. Call it a courtesy."` : `"I have a name in Baca. Give me six hours."`) : k === 'document' ? `"Eight hours. The stamp is the slow part."` : `"Ten hours, and you understand what I asked."`);
+    pass(s, 1, events); return finish(s, events);
+  }
+  function answer(s, id, optionId, events) {
+    const i = s.inbox.findIndex(m => m.id === id); if (i < 0) return { ok: false, why: 'That message is gone.' };
+    const m = s.inbox[i], o = m.options.find(x => x.id === optionId); if (!o) return { ok: false, why: 'Pick one of the answers.' };
+    if (!optionOk(s, o)) return { ok: false, why: optionWhy(s, o) };
+    s.inbox.splice(i, 1); events.push(ev('answered', { id, option: o.id, label: o.label }));
+    switch (o.id) {
+      case 'name_atlanta': s.flags.destination = true; stage(s, 'aircraft', 1, events); say(events, 'sibling', `"Atlanta. I will tell the operator."`); break;
+      case 'wait_sponsor': stage(s, 'aircraft', 1, events); say(events, 'sibling', `"Then call Salek soon. The crew will not wait on us forever."`); break;
+      case 'delegate_sibling': stage(s, 'aircraft', 1, events); { const d = roll(s); const good = d >= D.PEOPLE.sibling.reliability; events.push(ev('roll', { die: d, need: D.PEOPLE.sibling.reliability, won: good, who: 'sibling' })); if (good) { s.flags.destination = true; say(events, 'sibling', `"I told them Atlanta. Do not make me a liar."`); } else { s.jobs.push({ arr: 'aircraft', ally: 'sibling', target: 1, due: s.hour + 6, stall: true }); say(events, 'sibling', `"I could not decide for you. Six hours lost."`); } } break;
+      case 'sign_person': stage(s, 'document', 1, events); s.jobs.push({ arr: 'document', ally: 'registry', target: 2, due: s.hour + 8 }); say(events, 'registry', `"Sign here, and here. Come back for it, or send someone with your face."`); break;
+      case 'aide_asks': stage(s, 'document', 1, events); s.jobs.push({ arr: 'document', ally: 'registry', target: 2, due: s.hour + 12 }); if (!s.commitments.some(c => c.to === 'aide')) { s.commitments.push({ to: 'aide', text: D.PEOPLE.aide.terms, kept: null }); events.push(ev('commit', { to: 'aide', text: D.PEOPLE.aide.terms })); } say(events, 'registry', `"Your chief of staff has a way of asking. Twelve hours."`); break;
+      case 'skip_doc': say(events, 'narrator', 'You keep driving. The passport in your pocket is the one on the order.'); break;
+      case 'keep_calling': s.jobs.push({ arr: 'reception', ally: 'sibling', target: 2, due: s.hour + 6 }); break;
+      case 'via_sponsor': stage(s, 'reception', 2, events); say(events, 'sponsor', `"Her uncle banks with me. She will answer within the hour. That is two things now."`); break;
+      case 'wait_velez': break;
+      case 'keep_word': { const c = s.commitments.find(x => x.to === 'aide'); c.kept = true; s.people.aide.trust = 3; gain(s, 'informant', events); say(events, 'aide', `"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here."`); s.belief = 1; events.push(ev('belief', { belief: 1 })); } break;
+      case 'break_word': { const c = s.commitments.find(x => x.to === 'aide'); c.kept = false; s.people.aide.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === 'aide') lose(s, id, events); s.belief = s.pos; heat(s, 2, events); say(events, 'narrator', 'Gianlūka does not answer again. By the afternoon the inquiry has a town and a street.'); } break;
+      case 'crew_bonus': stage(s, 'aircraft', 4, events); heat(s, 1, events); say(events, 'pilot', `"The crew is happy. The apron saw you pay them."`); break;
+      case 'velez_word': stage(s, 'aircraft', 4, events); say(events, 'pilot', `"The operator just had a call from the minister's office. We are good."`); break;
+      case 'ignore_pilot': break;
+    }
+    pass(s, o.hours || 0, events); return finish(s, events);
   }
 
-  // ---- resolution ----------------------------------------------
-  function ev(type, data) { return Object.assign({ type }, data); }
-  function say(events, who, text) { events.push(ev('say', { who, text })); }
-
-  function setState(s, group, id, state, events) {
-    const ent = s[group][id];
-    const from = ent.state; ent.state = state;
-    events.push(ev('state', { group, id, from, to: state }));
+  // ---- time: jobs resolve, the enemy acts, exposure drifts ------
+  function pass(s, hours, events) {
+    for (let i = 0; i < hours && !s.over; i++) {
+      s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
+      for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
+      if (s.belief === s.pos && s.hour % 3 === 0) heat(s, 1, events);
+      if (s.hour - s.lastEnemy >= 4) { s.lastEnemy = s.hour; enemyTurn(s, events); }
+      if (s.exposure >= EXPOSURE_LIMIT) { s.over = { win: false, reason: `${D.ENEMY.name}'s people arrive at ${level(s).name} at ${clockText(s.hour)}. Too many people knew where you were, and one of them said so.` }; events.push(ev('over', s.over)); }
+      else if (s.hour >= HOURS_TOTAL) { s.over = { win: false, reason: `${clockText(s.hour)}. The restriction became a warrant at dawn and Esmeralda closed its airfields to the aircraft. The run is over.` }; events.push(ev('over', s.over)); }
+    }
   }
-  function heat(s, d, events, why) {
-    if (!d) return;
-    s.heat = Math.max(0, s.heat + d);
-    events.push(ev('heat', { delta: d, heat: s.heat, why }));
-  }
-  function coin(s, d, events) { s.coin += d; events.push(ev('coin', { delta: d, coin: s.coin })); }
-  function favor(s, d, events) { s.favor += d; events.push(ev('favor', { delta: d, favor: s.favor })); }
-
-  function forgeryTime(s) { return s.people.clerk.state === 'open' ? 2 : 3; }
-  function job(s, type) { return s.jobs.find(j => j.type === type); }
-
-  function startForgery(s, events, viaCourier) {
-    setState(s, 'people', 'forger', 'busy', events);
-    setState(s, 'objects', 'papers', 'inking', events);
-    const t = forgeryTime(s);
-    s.jobs.push({ type: 'forge', remaining: t, who: 'forger' });
-    events.push(ev('job', { type: 'forge', remaining: t }));
-    say(events, 'forger', viaCourier ? `"Tell her ${t === 2 ? 'an hour' : 'an hour and a half'}. And tell her I don't do rush, niñô."`
-                                    : `"${t === 2 ? 'An hour' : 'An hour and a half'}. Don't stand over my wax."`);
-  }
-  function hurryForgery(s, n, events) {
-    const j = job(s, 'forge'); if (!j) return;
-    j.remaining = Math.max(0, j.remaining - n);
-    events.push(ev('job', { type: 'forge', remaining: j.remaining }));
-    if (j.remaining === 0) finishJob(s, j, events);
-  }
-  function distractGuard(s, n, events) {
-    setState(s, 'people', 'guard', 'distracted', events);
-    s.jobs = s.jobs.filter(j => j.type !== 'distract');
-    s.jobs.push({ type: 'distract', remaining: n, who: 'guard' });
-    events.push(ev('job', { type: 'distract', remaining: n }));
-  }
-  function finishJob(s, j, events) {
+  function resolveJob(s, j, events) {
     s.jobs = s.jobs.filter(x => x !== j);
-    if (j.type === 'forge') {
-      setState(s, 'people', 'forger', 'idle', events);
-      setState(s, 'objects', 'papers', 'stamped', events);
-      events.push(ev('arranged', { id: 'papers' }));
-      say(events, 'forger', '"Done. Wax is set. Go."');
-    } else if (j.type === 'distract') {
-      if (s.people.guard.state === 'distracted') setState(s, 'people', 'guard', 'alert', events);
-      say(events, 'guard', '"Right. Back to the barrier."');
-    } else if (j.type === 'lookout') {
-      setState(s, 'people', 'lookout', 'idle', events);
-    } else if (j.type === 'picklock') {
-      setState(s, 'objects', j.who, j.who === 'gate' ? 'unlocked' : 'prepared', events);
-      events.push(ev('arranged', { id: j.who === 'gate' ? 'passage' : 'crate' }));
-      say(events, 'you', j.who === 'gate' ? 'The lock gives. The gate swings an inch.' : 'The lid lifts. Straw inside, room for one.');
-    }
-    events.push(ev('jobdone', { type: j.type }));
+    if (j.stall) return;
+    const rel = D.PEOPLE[j.ally].reliability + (s.people[j.ally].turned ? 6 : 0) - (s.people[j.ally].trust >= 2 ? 1 : 0);
+    const d = roll(s), good = d >= rel;
+    events.push(ev('roll', { die: d, need: rel, won: good, who: j.ally }));
+    if (good) { if (j.arr === 'aircraft' && j.target === 2 && !s.flags.destination && s.arr.permission.stage < 1) { say(events, 'sibling', `"The crew will not confirm without a destination. Decide."`); return; } stage(s, j.arr, j.target, events); if (j.arr === 'permission' && j.target === 1) s.flags.destination = true; }
+    else say(events, j.ally, j.ally === 'sibling' ? `"Nothing yet. They want more time."` : j.ally === 'sponsor' ? `"The ministry has not called back. I will try again if you ask."` : j.ally === 'official' ? `"The minister has other guests this weekend."` : `"The stamp is not ready."`);
   }
-
-  function play(s, cardUid, targetId) {
-    if (s.over) return { ok: false, why: 'The night is over.' };
-    const card = s.hand.find(c => c.uid === cardUid);
-    if (!card) return { ok: false, why: 'That card is not in your hand.' };
-    const a = applications(s, card.type).find(x => x.id === targetId);
-    if (!a) return { ok: false, why: 'That is not something this card can affect.' };
-    if (!a.ok) return { ok: false, why: a.why };
-    const def = CARD_DEFS[card.type], cost = cardCost(s, card.type);
-    const events = [];
-    events.push(ev('play', { card: card.type, target: targetId }));
-    if (cost.coin) coin(s, -cost.coin, events);
-    if (cost.favor) favor(s, -cost.favor, events);
-    if (card.type === 'bribe') { s.bribes += 1; events.push(ev('price', { bribe: cardCost(s, 'bribe').coin })); }
-
-    switch (card.type) {
-      case 'bribe':
-        if (targetId === 'guard') { setState(s, 'people', 'guard', 'bribed', events); heat(s, 1, events, 'Gaspār will talk'); events.push(ev('arranged', { id: 'passage' })); say(events, 'guard', '"Three australs says I never saw you. Dālē, go on before I remember."'); }
-        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"Window\'s open. Bring me something worth a stamp."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
-        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Walk behind me and don\'t look at the window."'); }
-        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"Third boxcar, crate with the chalk mark. Midnight. Susana by the weekend, Baca if you keep riding. I don\'t wait."'); }
-        break;
-      case 'forgery': startForgery(s, events, false); break;
-      case 'courier': events.push(ev('courier', {})); startForgery(s, events, true); break;
-      case 'distract':
-        if (targetId === 'guard') {
-          distractGuard(s, 2, events);
-          if (s._rng() < 0.5) heat(s, 1, events, 'someone saw you kick the brazier');
-          say(events, 'guard', '"Who did that? Someone get sand on it."');
-        } else {
-          setState(s, 'people', 'lookout', 'running', events);
-          s.jobs.push({ type: 'lookout', remaining: 3, who: 'lookout' });
-          events.push(ev('run', { who: 'lookout', to: 2 }));
-          distractGuard(s, 3, events);
-          say(events, 'lookout', '"Give me a minute and watch him run. Trankīlô."');
-        }
-        events.push(ev('arranged', { id: 'passage' }));
-        break;
-      case 'talk':
-        if (targetId === 'clerk') { setState(s, 'people', 'clerk', 'open', events); say(events, 'clerk', '"You have her eyes. Dālē. Window\'s open."'); if (job(s, 'forge')) hurryForgery(s, 1, events); }
-        if (targetId === 'teo')   { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"Dālē. Stay close and keep your mouth shut."'); }
-        if (targetId === 'brakeman') { setState(s, 'people', 'brakeman', 'agreed', events); events.push(ev('arranged', { id: 'berth' })); say(events, 'brakeman', '"You did the work. I\'ll do the rest."'); }
-        if (targetId === 'forger') { hurryForgery(s, 1, events); say(events, 'forger', '"For you, niñô. Only for you."'); }
-        break;
-      case 'picklock':
-        s.jobs.push({ type: 'picklock', remaining: 2, who: targetId });
-        events.push(ev('job', { type: 'picklock', remaining: 2, who: targetId }));
-        heat(s, targetId === 'gate' ? 2 : 1, events, 'a lantern passes while you work');
-        say(events, 'you', targetId === 'gate' ? 'You kneel at the gate with a bent nail.' : 'You find a pry bar and a quiet crate.');
-        break;
-      case 'sellmaps':
-        setState(s, 'objects', 'stall', 'sold', events); coin(s, 4, events); heat(s, 1, events, 'your maps are recognized');
-        say(events, 'you', 'A market trader buys the lot without haggling. He knows whose hand drew them.');
-        break;
-      case 'laylow':
-        heat(s, targetId === 'attic' ? -3 : -1, events, 'the street forgets you');
-        say(events, 'you', targetId === 'attic' ? 'Half an hour under the eaves, listening to boots in the shed below.' : 'You study a shop window until the bailiffs pass.');
-        break;
-      case 'favor':
-        if (targetId === 'forger') { hurryForgery(s, 2, events); say(events, 'forger', '"Apprentice. Earn your keep."'); }
-        if (targetId === 'teo')    { setState(s, 'people', 'teo', 'friendly', events); events.push(ev('arranged', { id: 'yard' })); say(events, 'teo', '"If old Nonô vouches for you, dālē."'); }
-        if (targetId === 'guard')  { const j = job(s, 'distract'); if (j) { j.remaining += 2; events.push(ev('job', { type: 'distract', remaining: j.remaining })); } say(events, 'you', 'A few coins to a kid keeps the brazier burning.'); }
-        break;
+  function enemyTurn(s, events) {
+    const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
+    const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
+    for (const a of cands) { r -= a.w; if (r <= 0) { pick = a; break; } }
+    if (pick.once) s.flags.enemyDone[pick.id] = true;
+    let text = '';
+    switch (pick.id) {
+      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'circulate': s.flags.restriction = true; text = pick.text(); break;
+      case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator pulls the crew back until someone reassures him.'; } else text = pick.text(); break;
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = `${D.ENEMY.name} reviews the passenger lists at Portô Venla airport. Nothing.`; break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += ` ${personName(s, who).split(' ')[0]} says nothing useful.`; else { s.people[who].turned = true; s.belief = s.pos; heat(s, 2, events); text += ` ${personName(s, who).split(' ')[0]} tells them where you were last seen.`; } break; }
+      case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
+      case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }
     }
-
-    s.hand = s.hand.filter(c => c !== card);
-    s.discard.push(card.type);
-    const drawn = draw(s);
-    if (drawn) events.push(ev('draw', { card: drawn.type }));
-
-    for (let i = 0; i < def.time; i++) advance(s, events);
-    return { ok: true, events };
+    events.push(ev('enemy', { id: pick.id, text, belief: s.belief }));
   }
+  function finish(s, events) { return { ok: true, events }; }
 
-  function move(s, dir) {
-    if (s.over) return { ok: false, why: 'The night is over.' };
-    const c = canMove(s, dir);
-    if (!c.ok) return c;
-    const events = [];
-    const from = s.pos; s.pos = c.to;
-    events.push(ev('walk', { from, to: c.to }));
-    if (c.to === 3 && dir > 0) {
-      const g = s.people.guard.state;
-      say(events, 'you', g === 'bribed' ? 'Gaspār studies the sky as you pass.' :
-                         g === 'distracted' ? 'You slip past while Gaspār shouts at the smoke.' :
-                         'You ease through the side gate.');
-    }
-    if (c.to === 4 && dir > 0) {
-      say(events, 'you', s.people.teo.state === 'friendly' ? 'Theo walks you past the window, talking loudly about the switches.' :
-                                                            'Mārtā glances at the stamp and waves you on.');
-    }
-    advance(s, events);
-    return { ok: true, events };
-  }
-
-  // Wait half an hour. Optionally swap one card from the hand for a fresh draw.
-  function wait(s, swapUid) {
-    if (s.over) return { ok: false, why: 'The night is over.' };
-    const events = [ev('wait', {})];
-    if (swapUid != null) {
-      const card = s.hand.find(c => c.uid === swapUid);
-      if (!card) return { ok: false, why: 'That card is not in your hand.' };
-      s.hand = s.hand.filter(c => c !== card);
-      s.discard.push(card.type);
-      events.push(ev('swap', { card: card.type }));
-      const drawn = draw(s);
-      if (drawn) events.push(ev('draw', { card: drawn.type }));
-    }
-    advance(s, events);
-    return { ok: true, events };
-  }
-
-  function board(s) {
-    if (s.over) return { ok: false, why: 'The night is over.' };
-    const c = canBoard(s); if (!c.ok) return c;
-    const events = [ev('board', {})];
-    s.over = { win: true, reason: `You climb into the chalk-marked crate at ${clockText(s.tick)}. The midnight freight pulls out over the passes for Susana with you in it, and the debt stays behind in Valdória.` };
-    events.push(ev('over', s.over));
-    return { ok: true, events };
-  }
-
-  // one half-hour passes
-  function advance(s, events) {
-    if (s.over) return;
-    s.tick += 1;
-    events.push(ev('tick', { tick: s.tick, clock: clockText(s.tick) }));
-    // pending work
-    for (const j of s.jobs.slice()) {
-      j.remaining -= 1;
-      events.push(ev('job', { type: j.type, remaining: j.remaining, who: j.who }));
-      if (j.remaining <= 0) finishJob(s, j, events);
-    }
-    // patrol pressure
-    if (s.heat >= 3 && s._rng() < (s.heat - 2) * 0.12) {
-      heat(s, 1, events, 'the bailiffs ask questions on your street');
-      events.push(ev('patrol', { station: s.pos }));
-      say(events, 'patrol', s.heat >= HEAT_LIMIT ? '"That\'s her. The chart-maker from the ledger. Take her."' : '"Passport? Move along. For now."');
-    }
-    if (s.heat >= HEAT_LIMIT) {
-      s.over = { win: false, reason: 'Too many people were talking about you. The bailiffs find you at ' + clockText(s.tick) + ' and walk you back to the ledger.' };
-      events.push(ev('over', s.over));
-      return;
-    }
-    if (s.tick >= TICKS_TOTAL) {
-      s.over = { win: false, reason: 'Midnight. You hear the freight pull out from ' + STATIONS[s.pos].name.replace(/^The /, 'the ') + ' without you.' };
-      events.push(ev('over', s.over));
-    }
-  }
-
-  return {
-    TICKS_TOTAL, HEAT_LIMIT, HAND_SIZE, STATIONS, CARD_DEFS, STATE_LABEL, PERSONAS, BRIBE_BASE, BRIBE_STEP, DECK_LIST,
-    newGame, applications, play, move, wait, board, canMove, canBoard, arrangements, clockText, costText, cardCost,
-  };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, newRun, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
