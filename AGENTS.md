@@ -17,6 +17,16 @@ archived work. Historical AARs are records, not design requirements. Do not use
 `docs/aar-last-freight-out*.md` or `docs/aar-narrative-architecture.md` for current
 work. Earlier-build references in other AARs confer no authority to reuse them.
 
+## Difficulty is the owner's, and it stays hard
+
+Owner, October 30, 2026: "no, games should be harder. You should be able to do
+something boneheaded or ill advised and have your run end before it starts."
+Exposure drifting from 0 to 4 in the first five hours at the residence, the
+bought border post, the hold ladder and a wrong destination ending on the apron
+are all working as intended. Do not soften a rule because a harness win rate or
+a first-round screenshot looks harsh. A balance change needs the owner's words
+and a calibration before and after; see `docs/aar-hold-ladder-balance.md`.
+
 ## Preserve the copy decisions
 
 Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,

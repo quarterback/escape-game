@@ -125,3 +125,7 @@ Owner: the Sosā panel covered the clock. On a phone the clock is now 22 px inst
 ## Addendum, same day: the pixel face at small sizes
 
 Owner, from a phone: "The pixel font isn't readable here." Overbit was on the big clock, where it reads, and also on every small number: "58 h", "in 1 h", "Certain · 1 h", "2 h", the exposure count. Those were the `--font-mono` token (Overbit Regular) and the `.num` class (Overbit Shadow). Both now resolve to GC North Sans; Overbit Shadow Bold stays on the scene clock and the interstitial clock only. No markup changed. AGENTS.md carries the rule.
+
+## Addendum, same day: the drift stays
+
+I flagged round one's exposure (0 to 4 in five hours at the residence) as a balance call. Owner: "no, games should be harder. You should be able to do something boneheaded or ill advised and have your run end before it starts." Nothing changed in the rules. The instruction is in AGENTS.md so it outlives this record.
