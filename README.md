@@ -56,4 +56,5 @@ Measure the economy before retuning a number:
 node tools/calibrate.js 500
 ```
 
-Design notes and measurements: `docs/aar-last-freight-out.md`.
+Design notes and measurements: `docs/aar-last-freight-out.md`. The closedtab
+Agent Action Record for the build: `docs/aar-last-freight-out-first-build.md`.

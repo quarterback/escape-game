@@ -1,4 +1,4 @@
-# After-Action Report — Last Freight Out (first build)
+# After-Action Report: Last Freight Out (first build)
 
 **Date completed:** 2026-10-30
 **Branch:** `claude/vigilant-noether-rmcm7h`
@@ -11,7 +11,7 @@
 The repo was empty. The brief was a set of constraints, not a game: p5.js for
 pixel-art scenes and route presentation, HTML/CSS for dialogue, cards,
 descriptions and controls, a pinned embedded library, zero runtime network,
-card → reveal applications → inspect → commit → resolve first then animate,
+card, reveal applications, inspect, commit, resolve first and animate after,
 pending work shown in the scene, simulation state independent of rendering,
 native Web Audio.
 
@@ -53,10 +53,10 @@ Then, mid-turn:
 
 > you'll need to generate an aar using closedtab skill at the end
 
-No skill named `closedtab` exists in this session, and the string appears in
-none of the five repos, so this AAR is written by hand in the house format
-(the hybrid-baseball `docs/aar-*.md` shape). If `closedtab` is a skill that
-lives elsewhere, this document is the input it should be run over.
+`closedtab` is an npm package, not a session skill; the agent did not find it
+until the owner sent the link. This document is the engineering write-up in
+the hybrid-baseball `docs/aar-*.md` shape. The closedtab Agent Action Record
+for the same run is `docs/aar-last-freight-out-first-build.md`.
 
 ---
 
@@ -64,8 +64,8 @@ lives elsewhere, this document is the input it should be run over.
 
 ### The game
 
-- **Route**: Attic → Market Square → Checkpoint → Rail Yard → Freight
-  Platform. Walking a leg costs one half-hour. Two legs are gated by
+- **Route**: Attic, Market Square, Checkpoint, Rail Yard, Freight
+  Platform, in that order. Walking a leg costs one half-hour. Two legs are gated by
   arrangements (Passage past Sgt. Osric; the Yard via stamped papers or Teo's
   goodwill). Boarding needs a Berth from Brakeman Holt. Four arrangements,
   each with at least two routes to it, so a hand rarely has one right answer.
@@ -76,7 +76,7 @@ lives elsewhere, this document is the input it should be run over.
   application is currently legal, why not if not, and a preview of what would
   happen. Most applications require being at the target's station; the
   courier and the favour cards deliberately do not.
-- **Pending work is state, not animation**: `jobs` on the sim (forgery,
+- **Pending work is state**: `jobs` on the sim (forgery,
   distraction, Pip's errand, lock-picking) tick down each half-hour and emit
   events on completion. The scene reads them: Dagny gets a busy bubble with
   remaining-time pips, Osric a "?" bubble beside a burning brazier, the gate
@@ -84,9 +84,9 @@ lives elsewhere, this document is the input it should be run over.
   Teo's signal lamp turns green, Holt raises his lantern. The route bar at the
   top of the canvas shows gated legs as red bars and opened legs in green;
   arrangement badges sit bottom-left.
-- **Flow**: pick card → targets highlighted in scene and listed → pick target
-  (list or canvas click) → inspection panel with preview, cost, time, blocker
-  → Commit. `Sim.play()` mutates and returns events; only then does the UI
+- **Flow**: pick a card; its targets light up in the scene and in the list;
+  pick a target (list or canvas click); read the inspection panel with
+  preview, cost, time and blocker; Commit. `Sim.play()` mutates and returns events; only then does the UI
   push walk/flash/float/patrol items onto the renderer's queue. Inputs that
   change state are disabled while the queue drains (sub-second).
 - **Pressure**: heat rises when people notice you (bribes, lock-picking,
@@ -114,7 +114,7 @@ lives elsewhere, this document is the input it should be run over.
 All from `node tools/calibrate.js 500`: seeds 1–500, one deliberately
 mediocre policy (plays any card that advances an unmet arrangement, else
 walks forward, else waits and swaps a dead card). The numbers describe the
-economy under that policy; they are not targets.
+economy under that policy and are not targets.
 
 ### Dead hands were the real difficulty, not the clock
 
@@ -126,7 +126,7 @@ too: a human with Lay Low, Lay Low, Pick Lock and Sweet Talk at the platform
 with no crate prepared is simply stuck.
 
 Fix: `Sim.wait(swapUid)`. Waiting with a card selected discards it and draws.
-Same policy, same 14-tick night: **130 → 264 wins (26% → 53%)**. The clock
+Same policy, same 14-tick night: **130 to 264 wins (26% to 53%)**. The clock
 stayed at midnight.
 
 ### Personas
@@ -166,8 +166,8 @@ Under the policy, bribes per night average 0.66 (Cartographer) to 0.74
 (Niece), so the second bribe at 4 coin is reached in roughly a third of
 nights and a third bribe almost never. The curve mostly bites the human who
 would otherwise bribe Osric, Mira and Holt in a row with the Niece's purse
-(3 + 4 + 5 = 12 > 8). That is the intended shape: coin solves one problem
-cleanly and gets worse at solving the next.
+(3 + 4 + 5 = 12 > 8). Coin solves one problem cleanly and gets worse at solving the next, which
+is the shape wanted.
 
 ### Determinism
 
@@ -179,8 +179,8 @@ back into state.
 ### Browser checks
 
 Headless Chromium against the built `index.html`: zero page errors, zero
-console errors, **zero non-`file:` network requests**; card select → canvas
-click on Dagny → commit produced the inking job, shown in the scene as her
+console errors, **zero non-`file:` network requests**; selecting a card, clicking
+Dagny on the canvas and committing produced the inking job, shown in the scene as her
 busy bubble with two time pips and in the panel as "60 min left" (a 90-minute
 commission minus the half-hour the card itself took); game-over overlay and
 records panel rendered.
@@ -224,7 +224,7 @@ records panel rendered.
 - **p5 for the UI.** Everything textual stayed in HTML per the brief; the
   canvas has no buttons.
 
-## Known rough edges
+## Known rough edges and risks carried forward
 
 - The policy in `tools/calibrate.js` is deliberately dumb. Its 36–53% is a
   floor for a reasoning player, not an estimate of human win rate. Do not
@@ -237,7 +237,7 @@ records panel rendered.
 
 ## Validation
 
-- `node tools/calibrate.js 500` — table above, `deterministic: true`.
+- `node tools/calibrate.js 500`: table above, `deterministic: true`.
 - Playwright (Chromium) runs: load, new game by seed, keyboard card select,
   canvas target pick, commit, walk, wait-and-swap to game over, records.
   No errors, no network.
