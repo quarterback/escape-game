@@ -13,7 +13,7 @@ C01 to C15) come from that document.
 | `coalition/markers.json` | Wording for effect markers. The rules choose the marker and its values; this file chooses the words. Both sides share it |
 | `coalition/tutorials.json` | Both guided runs (P13): seed, scripted dice, steps, what each step allows and a declarative completion condition |
 | `coalition/glossary.json` | Approved terms and prohibited aliases (C05) |
-| `coalition/credits.json` | The credits screen: who made the game, the tech stack, type, sources and licenses |
+| `coalition/credits.json` | The credits screen: who made the game, the tech stack, type, writing guidance, licenses and the closing line |
 | `coalition/facts.json` | Facts that event conditions may test, in the pbbg-content-schema fact shape |
 | `policy.json` | Prohibited phrases, allowed markup, length budgets and technical-string exceptions |
 | `schema/` | JSON Schemas for each file, plus the shape of the rule records in `src/data.js` |
