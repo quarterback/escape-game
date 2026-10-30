@@ -1,5 +1,13 @@
 # Last Freight Out
 
+## Development direction: read first
+
+The [confirmed COALITION game direction](docs/game-direction.md) governs future gameplay, narrative, progression, and interface work.
+
+The intended game follows an escaping person through several distinct levels, coordinating allies and arrangements while enemies interfere. There is one border crossing near the end, followed by a final aircraft escape; victory requires leaving the relevant airspace. Preparation continues while the player travels, and earlier commitments change later options.
+
+The playable Last Freight Out build described below is an earlier prototype. It does not yet implement that structure. Its fixed town route, train ending, and exact economy are not requirements for the developing game. The direction document separates confirmed decisions from examples and open mechanics.
+
 A single-file, offline card-and-route escape game set in the Nelôxia universe
 (quarterback/kels). You are Inēs Biankī, a chart-maker in a rail town in Salta,
 Valdória, on the edge of the Pearl. Your name is in the bailiffs' ledger for a
