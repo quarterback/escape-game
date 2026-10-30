@@ -1,5 +1,8 @@
 # Coalition copy edit
 
+Read [the full Agent Action Record](aar-coalition-copy.md) for the owner's
+instructions, editorial decisions, verification limits and required follow-up.
+
 ## Scope
 
 Shortened the briefing, tutorial, action descriptions, messages and status text.

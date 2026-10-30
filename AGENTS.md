@@ -17,6 +17,18 @@ archived work. Historical AARs are records, not design requirements. Do not use
 `docs/aar-last-freight-out*.md` or `docs/aar-narrative-architecture.md` for current
 work. Earlier-build references in other AARs confer no authority to reuse them.
 
+## Preserve the copy decisions
+
+Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,
+instructions, tutorial text or the start screen. It records the owner's
+Humanizer and plain-language requirements, the verification results and the
+remaining browser check.
+
+Do not restore deleted explanations, technical notes on player screens or
+archive links as routine cleanup. Make a copy change to resolve a specific
+player need while preserving the requirements and consequences. Keep the
+archive exclusion unless the owner explicitly changes that instruction.
+
 ## Edit player text
 
 Use [Humanizer](https://github.com/blader/humanizer/blob/main/SKILL.md) when writing
