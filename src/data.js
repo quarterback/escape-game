@@ -9,13 +9,13 @@ const Data = (() => {
   const CHARACTERS = {
     woman: { id: 'woman', name: 'Teresā Albukerkē', short: 'Teresā', title: 'the defeated candidate', pronoun: 'she',
              sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
-             blurb: "Former interior minister. Wealthy, well connected and defeated by four points.",
+             blurb: "A friend inside the inquiry warns her when the police move. Border guards know her face.",
              // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
              hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], exposure: 1, faceKnown: true,
              edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
     man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
              sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
-             blurb: "Former senator and shipping heir. Defeated by four points and watched since the count.",
+             blurb: "The family barges can carry him down the river. Police have watched his house since the count.",
              // Matēu has the family barges, but he has been watched since the count.
              hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], exposure: 3, faceKnown: false,
              edge: 'Your family barges on the river', flaw: 'Watched since the count' },
@@ -225,8 +225,8 @@ const Data = (() => {
   ];
 
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
-  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'senior aide, the winning party', pronoun: 'she',
-                blurb: 'Stop the escape. Prevent the departure and bring the candidate to the hearing. Your ministry does not command every desk, and none across the line.' };
+  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',
+                blurb: "Stop the candidate's flight before Tuesday afternoon. Your orders stop at the border." };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
     watch:     { name: 'The watch team', tag: 'watch', from: 'Inspector Sosā', reach: ['residence', 'road'], works: 'The residence and the road out of the capital.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
@@ -247,6 +247,75 @@ const Data = (() => {
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'A public claim. It can calm the minister and send your own offices after the wrong lead.' },
     { id: 'rail_ask', name: () => 'Ask the Salta yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He tells you who asked about the midnight freight.', where: [3], fail: 'He wants to see who else is asking first.' },
     { id: 'lean', name: () => "Review the charter operator's licence", hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'The operator withdraws the crew until she reassures him. It pauses the booking; it does not find her.', after: 12 },
+  ];
+
+  // ---- Government dispatches: the Reports phase on Sofīā's side. Invented, like the candidate's.
+  // at: stop indexes where the search must be looking (null = anywhere). after: earliest hour. needs: a government card id.
+  // fx: hours, lead (a true report of where she is now; delay in hours), false (a report that points elsewhere),
+  // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the
+  // search), press (her exposure up), warn (her side learns something: her exposure down), stall (her bookings slip,
+  // hours), crossing (the line is closed for n hours), ban (the ban is confirmed at the post), unban (the post loses it),
+  // holdup (the Esmeraldan request moves forward), dc (orders easier or harder: [delta, hours]), minister (+1 pleased,
+  // -1 angry), sooner (the minister's deadline moves up, hours), roll {need, win, lose}, say.
+  const GOV_EVENTS = [
+    { id: 'tipster', title: 'A caller wants money', text: 'A man says he drove her this morning. He wants cash before he says where.', choices: [
+      { id: 'pay', label: 'Pay him', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He names the road and the car. It checks out.' }, lose: { false: true, say: 'He names a town. He has never been there.' } } } },
+      { id: 'trace', label: 'Trace the call instead', needs: 'registry', fx: { hours: 2, lead: 3, say: 'The registry finds the number. The number finds the car.' } },
+      { id: 'hang_up', label: 'Hang up', fx: {} } ] },
+    { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}. It runs in the morning edition.', choices: [
+      { id: 'confirm', label: 'Confirm it on the record', fx: { minister: 1, warn: 1, say: 'The minister likes the headline. So does she.' } },
+      { id: 'deny', label: 'Deny it', fx: { minister: -1, say: 'The minister reads your denial in his own paper.' } },
+      { id: 'spin', label: 'Tell the paper she has already crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
+    { id: 'judge', after: 4, title: 'The duty judge wants a hearing', text: 'He will not sign the order for the border post until a hearing tomorrow.', choices: [
+      { id: 'wait_judge', label: 'Wait for the hearing', fx: { unban: true, say: 'The post keeps the old list for one more night.' } },
+      { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Santa Laura signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
+      { id: 'around', label: 'Have the minister call the post', fx: { ban: true, minister: -1, warn: 1, say: 'The post confirms. Her lawyers call it irregular on the radio.' } } ] },
+    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Santa Laura, in Salta and on the coast road, all in the same hour.', choices: [
+      { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols, three empty rooms. The desk is stretched thin.' } },
+      { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
+      { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
+    { id: 'sosa_alone', title: 'Sosā wants to drive out himself', text: 'He wants to take two officers to {there} tonight without telling the desk.', choices: [
+      { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'Sosā takes the unmarked car.' } },
+      { id: 'keep_him', label: 'Keep him on the desk', fx: { dc: [-1, 6], say: 'He sulks, then works the phones harder than anyone.' } } ] },
+    { id: 'driver', after: 6, title: 'One of her drivers calls', text: 'A driver from her convoy wants a promise that he will not be charged.', choices: [
+      { id: 'immunity', label: 'Promise him', fx: { minister: -1, lead: 3, say: 'He talks for an hour. The minister did not want promises made.' } },
+      { id: 'bargain', label: 'Bargain', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He settles for a lawyer and a lift home.' }, lose: { warn: 1, say: 'He hangs up and calls her instead.' } } } },
+      { id: 'refuse_driver', label: 'Refuse', fx: {} } ] },
+    { id: 'strike', after: 8, title: 'The rail union walks out', text: 'Salta yard workers strike at midnight. The freight may not run.', choices: [
+      { id: 'let_strike', label: 'Let the strike stand', fx: { stall: 4, minister: -1, say: 'Nothing leaves Salta. The minister hates strikes.' } },
+      { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } } ] },
+    { id: 'photo', title: 'A paper has a photo', text: 'Rādiô Portô Venla has a blurred photo of her at a petrol station. They want to run it.', choices: [
+      { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The station has a sign. The sign has a town on it.' } },
+      { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } } ] },
+    { id: 'dinner', after: 6, title: 'Dinner at the Esmeraldan embassy', text: 'The ambassador invites you tonight. Three hours, and he likes to talk.', choices: [
+      { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: 'Somewhere after the fish he writes a name on a card.' } },
+      { id: 'deputy', label: 'Send your deputy', fx: { roll: { need: 5, win: { holdup: true, say: 'Your deputy is a better guest than you.' }, lose: { say: 'The ambassador talks about horses all night.' } } } },
+      { id: 'decline', label: 'Decline', fx: {} } ] },
+    { id: 'storm', after: 10, title: 'Snow at the Huhūi passes', text: 'The road service is closing the passes for the night.', choices: [
+      { id: 'hold_post', label: 'Keep your patrol at the post', fx: { hours: 1, crossing: 5, say: 'Your patrol sleeps in the guardhouse and searches every car that tries.' } },
+      { id: 'pull_back', label: 'Pull the patrol back', fx: { dc: [-1, 4], say: 'The patrol comes home warm and in a better mood.' } } ] },
+    { id: 'rival', title: 'A rival aide wants your file', text: 'Another aide tells the minister he can find her faster. He wants your reports.', choices: [
+      { id: 'share', label: 'Share the file', fx: { minister: 1, warn: 1, say: 'He leaks half of it by dinner.' } },
+      { id: 'refuse_rival', label: 'Refuse', fx: { sooner: 2, say: 'The minister wants your answer two hours sooner.' } },
+      { id: 'doctor', label: 'Share a doctored file', fx: { hours: 1, roll: { need: 3, win: { minister: 1, say: 'He chases a lead you made up.' }, lose: { minister: -1, say: 'He spots the fake and shows the minister.' } } } } ] },
+    { id: 'bribe', after: 4, title: 'Her family asks your price', text: 'A lawyer for her family asks what it would take to look away for one day.', choices: [
+      { id: 'report_it', label: 'Report the offer', fx: { press: 1, minister: 1, say: 'A bribery file opens. Her lawyers stop answering their phones.' } },
+      { id: 'play_along', label: 'Pretend to accept', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'The lawyer tells you where to send the money.' }, lose: { warn: 2, say: 'The lawyer knows a trap when he hears one.' } } } },
+      { id: 'hang_up_bribe', label: 'Hang up', fx: {} } ] },
+    { id: 'sergeant', after: 14, title: 'The sergeant is her cousin', text: "The desk says tonight's sergeant at the border post is married to her cousin.", choices: [
+      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift. He reads every name.' } },
+      { id: 'watch_him', label: 'Watch him', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'He makes a call from the guardhouse. You hear every word.' }, lose: { unban: true, say: 'He notices the watcher and loses the list.' } } } },
+      { id: 'leave_him', label: 'Leave it', fx: { unban: true } } ] },
+    { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch one road all night. The general wants a signature.', choices: [
+      { id: 'sign', label: 'Sign for it', fx: { dc: [-1, 8], minister: -1, say: 'The drone goes up. The minister reads about it in the morning.' } },
+      { id: 'no_drone', label: 'Decline', fx: {} } ] },
+    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at six, promising she will be found by Monday.', choices: [
+      { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
+      { id: 'send_sosa', label: 'Send Sosā instead', fx: { dc: [1, 4], say: 'Sosā hates cameras. He takes it out on the desk.' } },
+      { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } } ] },
+    { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says a number tied to her family pinged a tower an hour ago.', choices: [
+      { id: 'tower_now', label: 'Demand the tower now', fx: { hours: 2, roll: { need: 4, win: { lead: 0, say: 'The carrier sends the tower and a map.' }, lose: { warn: 1, say: 'The carrier tells its lawyers, who tell hers.' } } } },
+      { id: 'paperwork', label: 'File the paperwork', fx: { lead: 6, say: 'The answer will come through the proper channel.' } } ] },
   ];
 
   // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
@@ -381,6 +450,6 @@ const Data = (() => {
     (n) => `${n} asked twice which car you will take.`,
     (n) => `${n} paid off a debt this morning. In cash.`,
   ];
-  return { EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS };
+  return { EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

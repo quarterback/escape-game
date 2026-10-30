@@ -219,7 +219,7 @@ body.busy .act,body.busy #wait,body.busy .opt,body.busy .call{opacity:.55;pointe
 .opt .l{display:flex;justify-content:space-between;gap:8px;font-size:16px}.opt small{font-size:14px;line-height:1.4;color:var(--mute)}
 .opt:hover:not(:disabled){border-color:var(--gold)}.opt.off{opacity:.3;pointer-events:none}
 .call{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 2px;min-height:48px;background:transparent;color:var(--ink);border:0;border-radius:8px;font:400 16px/1.4 var(--font-body)}
-.call svg{flex:none}.call .t{flex:1}.call .hrs{font-family:var(--font-mono);color:var(--gold)}.call.no{color:var(--mute);cursor:not-allowed}.call.no .hrs{color:var(--orange);font-size:14px}
+.call svg{flex:none}.call .t{flex:1}.call .hrs{font-family:var(--font-mono);color:var(--gold)}.call.no{color:var(--mute);cursor:not-allowed}.call.no .hrs{color:var(--orange);font-size:14px}.call .why{flex:0 1 46%;font-size:15px;line-height:1.35;color:var(--orange)}
 .call.sel{box-shadow:0 0 0 2px var(--gold)}.call.off{opacity:.3;pointer-events:none}
 .callbox{padding:12px 14px;background:var(--s3);border-radius:14px;display:flex;flex-direction:column;gap:10px}.callbox .preview{margin:0;padding-left:18px;font-size:15px;color:var(--soft)}
 #helpbox{font-size:15px;color:var(--soft);padding:12px 14px;background:var(--s1);border-radius:14px}#helpbox p{margin:6px 0}
@@ -283,16 +283,16 @@ body.coaching .tab{top:calc(var(--coachh,0px) + 16px)}
 
 #start{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--bg);overflow-y:auto}#start[hidden]{display:none}
 #start .art{position:relative;flex:none;height:min(440px,52dvh);background:#2C1E58 center 100%/cover no-repeat;image-rendering:pixelated}
-.art-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,15,46,.45) 0%,rgba(21,15,46,0) 40%,rgba(21,15,46,0) 80%,rgba(21,15,46,1) 100%)}
+.art-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,15,46,.85) 0%,rgba(21,15,46,.6) 38%,rgba(21,15,46,0) 56%,rgba(21,15,46,0) 80%,rgba(21,15,46,1) 100%)}
 .art-text{position:absolute;top:calc(28px + var(--sat));left:20px;right:20px;display:flex;flex-direction:column;gap:6px}
 .art-text .kicker{font-size:16px;color:#FFE0B8}.art-text h2{font:400 clamp(56px,16vw,112px)/.95 var(--font-display);color:var(--gold);letter-spacing:.02em;text-shadow:0 4px 0 #7A4E0E}
 .art-text p{margin:8px 0 0;font-size:17px;line-height:1.5;max-width:760px;text-shadow:0 2px 10px rgba(21,15,46,.7)}
 .startbox{display:flex;flex-direction:column;gap:12px;padding:0 16px calc(20px + var(--sab));max-width:1440px;width:100%;margin:0 auto}
-#start-demo{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}#start-demo .primary{min-height:56px;font-size:18px;padding:0 28px}#start-demo .small{flex:1 1 220px;color:var(--soft)}
+#start-demo{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}#start-demo .primary{min-height:56px;font-size:18px;padding:0 28px}#start-demo .small{flex:1 1 220px;font-size:16px;line-height:1.45;color:var(--ink)}
 #start-free{font-size:16px;color:var(--mute);margin-top:4px}
-#start-chars{display:grid;grid-template-columns:1fr;gap:10px}
+#start-chars{display:grid;grid-template-columns:1fr;gap:10px}#start-chars .whobtn .n .blurb{color:var(--ink)}
 .whobtn{display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;background:var(--s3);border:0;border-radius:14px;min-height:60px}
-.whobtn .avatar{width:40px;height:40px}.whobtn .n{display:flex;flex-direction:column;line-height:1.3}.whobtn .n b{font-size:17px}.whobtn .n span{font-size:14px}.whobtn .n .blurb{display:none;color:var(--soft);font-size:16px;line-height:1.5;margin-top:4px}
+.whobtn .avatar{width:40px;height:40px}.whobtn .n{display:flex;flex-direction:column;line-height:1.3}.whobtn .n b{font-size:17px}.whobtn .n span{font-size:15px}.whobtn .n .blurb{display:block;color:var(--ink);font-size:16px;line-height:1.45;margin-top:4px}
 .whobtn.w1 .avatar{background:var(--gold);color:#2A1A00}.whobtn.w1 .n span{color:var(--gold)}.whobtn.w2 .avatar{background:var(--lav);color:#24103F}.whobtn.w2 .n span{color:var(--lav)}
 .byline{margin:auto 0 0}
 
@@ -322,7 +322,8 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   #sosa .name{font-size:16px}#sosa .where{display:block}#sosa .row2{display:flex;justify-content:space-between;align-items:baseline}#sosa .row2 .num{font-size:20px}
   #sosa .exp,#sosa .arrive{display:flex}#sosa .bar{display:flex}#sosa .bar i{height:10px}
   #expline{display:none}
-  #lvlhead{display:flex}#lvlhead2{display:none}
+  #lvlhead{display:none}#lvlhead2,#lvlhead2[hidden]{display:block!important}#lvlhead2 h1{font-size:34px}#lvlhead2 p{font-size:20px;margin-top:6px}
+  #world .shade.bottom{height:22%}
   #panels{margin-top:0;border-radius:0;overflow:visible;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:32px;max-width:1440px;width:100%;margin:0 auto;padding:32px 32px 0}
   .tab{display:flex;position:static;overflow:visible;padding:0;gap:14px}
   #coach{position:static;grid-column:1;grid-row:1;max-height:none;box-shadow:none}body.coaching .tab{top:auto}
@@ -351,10 +352,16 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   #board .inqrow{grid-column:3/9;padding:12px 14px 18px;color:var(--mute)}
   #update{bottom:24px}
   #over{align-items:center}.overbox{border-radius:20px}
-  #start .art{height:100dvh}.art-text{top:48px;left:64px;right:64px}.art-text p{font-size:21px}
-  .startbox{position:absolute;left:0;right:0;bottom:0;padding:0 64px 40px}#start-chars{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-  .whobtn{flex-direction:column;align-items:flex-start;gap:8px;padding:22px;background:rgba(42,33,87,.94);border-radius:18px}.whobtn .avatar{width:48px;height:48px;font-size:18px}.whobtn .n b{font-size:24px}.whobtn .n span{font-size:15px}.whobtn .n .blurb{display:block}
-  #start-demo .primary{min-height:60px;font-size:20px;padding:0 36px}
+  /* the runway fills the screen; everything you read sits in a solid column on the left */
+  #start::before{content:'';position:fixed;top:0;bottom:0;left:600px;right:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 0,rgba(21,15,46,0) 120px),var(--runway,#2C1E58) 30% bottom/cover no-repeat;image-rendering:pixelated}
+  #start .art{height:auto;background:none!important;flex:none}#start .art-shade{display:none}
+  .art-text{position:static;padding:56px 64px 0;max-width:720px;gap:12px}.art-text h2{font-size:104px}.art-text p{font-size:23px;line-height:1.5;text-shadow:none}
+  .startbox{position:static;max-width:720px;margin:0;padding:28px 64px 40px;gap:16px}
+  #start-chars{grid-template-columns:1fr;gap:12px}
+  .whobtn{flex-direction:row;align-items:flex-start;gap:16px;padding:18px 20px;border-radius:16px}.whobtn.w1,.whobtn.w2{background:var(--s3)}.whobtn .avatar{width:48px;height:48px;font-size:18px;flex:none}.whobtn .n b{font-size:23px}.whobtn .n span{font-size:17px}.whobtn .n .blurb{display:block;font-size:18px;color:var(--ink)}
+  #start-demo .primary,#start-demo .pill{min-height:56px;font-size:19px;padding:0 30px}#start-demo .small{font-size:18px;line-height:1.45;color:var(--ink)}
+  #start-free{font-size:20px;color:var(--ink);margin-top:8px}.dailybtn{font-size:18px}.dailybtn b{font-size:20px}.dailybtn span:last-child{font-size:17px;color:var(--ink)}
+  #start .byline{font-size:16px;margin-top:8px}
 }
 
 /* Overlays on the scene are read-only; let the pointer reach the people in the scene. */
@@ -393,7 +400,7 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 @keyframes ifade{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}@keyframes irise{0%{transform:translateY(12px)}20%{transform:none}}
 @media(prefers-reduced-motion:reduce){#interstitial,#interstitial .ibox{animation:none}}
 .dailybtn{display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;padding:12px 14px;background:var(--s3);color:var(--ink);border:0;border-radius:14px;box-shadow:0 0 0 2px var(--gold);min-height:56px;font:400 16px/1.3 var(--font-body)}
-.dailybtn b{font:400 18px/1.2 var(--font-title)}.dailybtn .mono{color:var(--gold)}.dailybtn span:last-child{color:var(--soft);font-size:14px}
+.dailybtn b{font:400 18px/1.2 var(--font-title)}.dailybtn .mono{color:var(--gold)}.dailybtn span:last-child{color:var(--ink);font-size:16px}
 @media(min-width:1000px){
   #phasebar{position:static;grid-column:1/3;grid-row:1;padding:0;background:transparent}
   #coach{grid-row:2}#tab-here{grid-row:3}#tab-hand{grid-row:4}#tab-phone{grid-row:2/5}#tab-route{grid-row:5}
@@ -455,7 +462,7 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
   </section>
 
   <aside class="tab" id="tab-phone" data-tab="phone">
-    <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>The phone</h2><span class="chip lav" id="waiting"></span></div>
+    <div class="h2row"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg><span id="phoneh">The phone</span></h2><span class="chip lav" id="waiting"></span></div>
     <button id="phasedone" class="primary" hidden>Done with the phone</button>
     <div id="inbox"></div>
     <h3>Calls</h3>
@@ -491,12 +498,12 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 <div id="title"><div class="title-shade"></div><div class="title-box"><div class="title-kicker">Valdória, Saturday 14:00</div><h1 class="title-word">Coalition</h1><p class="title-line">Seventy-two hours to escape. Your allies are on the phone.</p><button id="title-start">Start</button><p class="title-foot">An escape game set in Nelôxia. Sound on.</p></div></div>
 
 <div id="start" hidden>
-  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><span class="kicker mono">Sat 14:00, Valdória</span><h2>Coalition</h2><p id="start-blurb">You lost the election. A court has barred you from leaving Valdória. Get to Esmeralda, then fly to Atlanta. Arrange help while you travel. Escape within 72 hours.</p></div></div>
+  <div class="art" id="start-art"><div class="art-shade"></div><div class="art-text"><h2>Coalition</h2><p id="start-blurb">You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda and reach the jet your family has booked to Atlanta.</p></div></div>
   <div class="startbox">
     <button id="continue" class="pill ghost" hidden>Continue your run</button>
     <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>Daily run</b><span id="daily-note"></span></button>
     <div id="start-demo"><button id="start-tutorial" class="primary">Play the tutorial</button><span class="small" id="start-demo-note"></span></div>
-    <h3 id="start-free">Or choose your character</h3>
+    <h3 id="start-free">Pick who you play</h3>
     <div id="start-chars"></div>
     <p class="small byline">A Nelosphere universe by <a href="https://ronbronson.dev">Ron Bronson</a></p>
   </div>
@@ -2856,13 +2863,13 @@ const Data = (() => {
   const CHARACTERS = {
     woman: { id: 'woman', name: 'Teresā Albukerkē', short: 'Teresā', title: 'the defeated candidate', pronoun: 'she',
              sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
-             blurb: "Former interior minister. Wealthy, well connected and defeated by four points.",
+             blurb: "A friend inside the inquiry warns her when the police move. Border guards know her face.",
              // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
              hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], exposure: 1, faceKnown: true,
              edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
     man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
              sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
-             blurb: "Former senator and shipping heir. Defeated by four points and watched since the count.",
+             blurb: "The family barges can carry him down the river. Police have watched his house since the count.",
              // Matēu has the family barges, but he has been watched since the count.
              hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], exposure: 3, faceKnown: false,
              edge: 'Your family barges on the river', flaw: 'Watched since the count' },
@@ -3072,8 +3079,8 @@ const Data = (() => {
   ];
 
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
-  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'senior aide, the winning party', pronoun: 'she',
-                blurb: 'Stop the escape. Prevent the departure and bring the candidate to the hearing. Your ministry does not command every desk, and none across the line.' };
+  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',
+                blurb: "Stop the candidate's flight before Tuesday afternoon. Your orders stop at the border." };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
     watch:     { name: 'The watch team', tag: 'watch', from: 'Inspector Sosā', reach: ['residence', 'road'], works: 'The residence and the road out of the capital.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
@@ -3094,6 +3101,75 @@ const Data = (() => {
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'A public claim. It can calm the minister and send your own offices after the wrong lead.' },
     { id: 'rail_ask', name: () => 'Ask the Salta yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He tells you who asked about the midnight freight.', where: [3], fail: 'He wants to see who else is asking first.' },
     { id: 'lean', name: () => "Review the charter operator's licence", hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'The operator withdraws the crew until she reassures him. It pauses the booking; it does not find her.', after: 12 },
+  ];
+
+  // ---- Government dispatches: the Reports phase on Sofīā's side. Invented, like the candidate's.
+  // at: stop indexes where the search must be looking (null = anywhere). after: earliest hour. needs: a government card id.
+  // fx: hours, lead (a true report of where she is now; delay in hours), false (a report that points elsewhere),
+  // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the
+  // search), press (her exposure up), warn (her side learns something: her exposure down), stall (her bookings slip,
+  // hours), crossing (the line is closed for n hours), ban (the ban is confirmed at the post), unban (the post loses it),
+  // holdup (the Esmeraldan request moves forward), dc (orders easier or harder: [delta, hours]), minister (+1 pleased,
+  // -1 angry), sooner (the minister's deadline moves up, hours), roll {need, win, lose}, say.
+  const GOV_EVENTS = [
+    { id: 'tipster', title: 'A caller wants money', text: 'A man says he drove her this morning. He wants cash before he says where.', choices: [
+      { id: 'pay', label: 'Pay him', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He names the road and the car. It checks out.' }, lose: { false: true, say: 'He names a town. He has never been there.' } } } },
+      { id: 'trace', label: 'Trace the call instead', needs: 'registry', fx: { hours: 2, lead: 3, say: 'The registry finds the number. The number finds the car.' } },
+      { id: 'hang_up', label: 'Hang up', fx: {} } ] },
+    { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}. It runs in the morning edition.', choices: [
+      { id: 'confirm', label: 'Confirm it on the record', fx: { minister: 1, warn: 1, say: 'The minister likes the headline. So does she.' } },
+      { id: 'deny', label: 'Deny it', fx: { minister: -1, say: 'The minister reads your denial in his own paper.' } },
+      { id: 'spin', label: 'Tell the paper she has already crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
+    { id: 'judge', after: 4, title: 'The duty judge wants a hearing', text: 'He will not sign the order for the border post until a hearing tomorrow.', choices: [
+      { id: 'wait_judge', label: 'Wait for the hearing', fx: { unban: true, say: 'The post keeps the old list for one more night.' } },
+      { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Santa Laura signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
+      { id: 'around', label: 'Have the minister call the post', fx: { ban: true, minister: -1, warn: 1, say: 'The post confirms. Her lawyers call it irregular on the radio.' } } ] },
+    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Santa Laura, in Salta and on the coast road, all in the same hour.', choices: [
+      { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols, three empty rooms. The desk is stretched thin.' } },
+      { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
+      { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
+    { id: 'sosa_alone', title: 'Sosā wants to drive out himself', text: 'He wants to take two officers to {there} tonight without telling the desk.', choices: [
+      { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'Sosā takes the unmarked car.' } },
+      { id: 'keep_him', label: 'Keep him on the desk', fx: { dc: [-1, 6], say: 'He sulks, then works the phones harder than anyone.' } } ] },
+    { id: 'driver', after: 6, title: 'One of her drivers calls', text: 'A driver from her convoy wants a promise that he will not be charged.', choices: [
+      { id: 'immunity', label: 'Promise him', fx: { minister: -1, lead: 3, say: 'He talks for an hour. The minister did not want promises made.' } },
+      { id: 'bargain', label: 'Bargain', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He settles for a lawyer and a lift home.' }, lose: { warn: 1, say: 'He hangs up and calls her instead.' } } } },
+      { id: 'refuse_driver', label: 'Refuse', fx: {} } ] },
+    { id: 'strike', after: 8, title: 'The rail union walks out', text: 'Salta yard workers strike at midnight. The freight may not run.', choices: [
+      { id: 'let_strike', label: 'Let the strike stand', fx: { stall: 4, minister: -1, say: 'Nothing leaves Salta. The minister hates strikes.' } },
+      { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } } ] },
+    { id: 'photo', title: 'A paper has a photo', text: 'Rādiô Portô Venla has a blurred photo of her at a petrol station. They want to run it.', choices: [
+      { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The station has a sign. The sign has a town on it.' } },
+      { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } } ] },
+    { id: 'dinner', after: 6, title: 'Dinner at the Esmeraldan embassy', text: 'The ambassador invites you tonight. Three hours, and he likes to talk.', choices: [
+      { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: 'Somewhere after the fish he writes a name on a card.' } },
+      { id: 'deputy', label: 'Send your deputy', fx: { roll: { need: 5, win: { holdup: true, say: 'Your deputy is a better guest than you.' }, lose: { say: 'The ambassador talks about horses all night.' } } } },
+      { id: 'decline', label: 'Decline', fx: {} } ] },
+    { id: 'storm', after: 10, title: 'Snow at the Huhūi passes', text: 'The road service is closing the passes for the night.', choices: [
+      { id: 'hold_post', label: 'Keep your patrol at the post', fx: { hours: 1, crossing: 5, say: 'Your patrol sleeps in the guardhouse and searches every car that tries.' } },
+      { id: 'pull_back', label: 'Pull the patrol back', fx: { dc: [-1, 4], say: 'The patrol comes home warm and in a better mood.' } } ] },
+    { id: 'rival', title: 'A rival aide wants your file', text: 'Another aide tells the minister he can find her faster. He wants your reports.', choices: [
+      { id: 'share', label: 'Share the file', fx: { minister: 1, warn: 1, say: 'He leaks half of it by dinner.' } },
+      { id: 'refuse_rival', label: 'Refuse', fx: { sooner: 2, say: 'The minister wants your answer two hours sooner.' } },
+      { id: 'doctor', label: 'Share a doctored file', fx: { hours: 1, roll: { need: 3, win: { minister: 1, say: 'He chases a lead you made up.' }, lose: { minister: -1, say: 'He spots the fake and shows the minister.' } } } } ] },
+    { id: 'bribe', after: 4, title: 'Her family asks your price', text: 'A lawyer for her family asks what it would take to look away for one day.', choices: [
+      { id: 'report_it', label: 'Report the offer', fx: { press: 1, minister: 1, say: 'A bribery file opens. Her lawyers stop answering their phones.' } },
+      { id: 'play_along', label: 'Pretend to accept', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'The lawyer tells you where to send the money.' }, lose: { warn: 2, say: 'The lawyer knows a trap when he hears one.' } } } },
+      { id: 'hang_up_bribe', label: 'Hang up', fx: {} } ] },
+    { id: 'sergeant', after: 14, title: 'The sergeant is her cousin', text: "The desk says tonight's sergeant at the border post is married to her cousin.", choices: [
+      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift. He reads every name.' } },
+      { id: 'watch_him', label: 'Watch him', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'He makes a call from the guardhouse. You hear every word.' }, lose: { unban: true, say: 'He notices the watcher and loses the list.' } } } },
+      { id: 'leave_him', label: 'Leave it', fx: { unban: true } } ] },
+    { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch one road all night. The general wants a signature.', choices: [
+      { id: 'sign', label: 'Sign for it', fx: { dc: [-1, 8], minister: -1, say: 'The drone goes up. The minister reads about it in the morning.' } },
+      { id: 'no_drone', label: 'Decline', fx: {} } ] },
+    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at six, promising she will be found by Monday.', choices: [
+      { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
+      { id: 'send_sosa', label: 'Send Sosā instead', fx: { dc: [1, 4], say: 'Sosā hates cameras. He takes it out on the desk.' } },
+      { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } } ] },
+    { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says a number tied to her family pinged a tower an hour ago.', choices: [
+      { id: 'tower_now', label: 'Demand the tower now', fx: { hours: 2, roll: { need: 4, win: { lead: 0, say: 'The carrier sends the tower and a map.' }, lose: { warn: 1, say: 'The carrier tells its lawyers, who tell hers.' } } } },
+      { id: 'paperwork', label: 'File the paperwork', fx: { lead: 6, say: 'The answer will come through the proper channel.' } } ] },
   ];
 
   // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
@@ -3228,7 +3304,7 @@ const Data = (() => {
     (n) => `${n} asked twice which car you will take.`,
     (n) => `${n} paid off a debt this morning. In cash.`,
   ];
-  return { EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS };
+  return { EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;
 
@@ -3649,7 +3725,7 @@ const Sim = (() => {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: 'Monday noon. Your own passport is cancelled and the ban is at every post.', belief: s.belief })); }
-      if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
+      if (s.belief === s.pos && s.hour % (s._manual ? 4 : 2) === 0) heat(s, 1, events);
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
       if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 6; climbHold(s, events); } }
       if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: `${clockText(s.hour)}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
@@ -3674,7 +3750,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
       case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += ' The last call came from where you are.'; } else text += ' Nothing new.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
@@ -3714,7 +3790,7 @@ const Sim = (() => {
     return out.join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
 
@@ -3828,13 +3904,15 @@ const Gov = (() => {
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
   const ev = (type, data) => Object.assign({ type }, data);
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
+  const EVERY = 5, LEAK = 0.5; // a stop she reaches is reported only some of the time
   const place = (i) => i === 0 ? 'the residence' : i === 4 ? 'the line' : LV(i).short;
 
   function newRun(seed, target) {
     target = target || 'woman';
     const c = S.newRun(seed, target, { manualEnemy: true });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
-      timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null };
+      timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
+      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0 };
     g._rngState = (seed ^ 0x9e3779b9) >>> 0;
     attach(g);
     const events = [];
@@ -3861,12 +3939,15 @@ const Gov = (() => {
   function herStep(g) {
     const c = g.c, A = S.actions(c), before = c.hour;
     // her dispatches and holds come first; she takes the choice whose markers look cheapest
-    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
+    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: c.belief === c.pos ? 3 : 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
     const calls = A.calls.filter(x => x.ok), lvl = c.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     const L = D.LEVELS[c.pos];
-    const apps = A.approaches.filter(a => a.ok && a.need <= 6).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); }).sort((a, b) => a.need - b.need);
+    const found = c.belief === c.pos;
+    const apps = A.approaches.filter(a => a.ok && a.need <= (found ? 6 : 5)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
+    apps.sort((a, b) => exits(a) - exits(b) || a.need - b.need);
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
     return S.commit(c, 'wait').events;
   }
@@ -3877,7 +3958,7 @@ const Gov = (() => {
       if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 1, 'watch', 'A red sedan took the south road toward Santa Laura.', 'A car is heading south.', 'She was inside.', 0, c.hour, true);
       if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 0, 'watch', 'Three cars left the residence in different directions.', 'The cars left.', 'Which one she is in.', 0, c.hour);
       if (e.type === 'attempt' && e.id === 'partycar') report(g, events, 0, 'watch', "The party's official car left the residence with its flags up.", 'The car left.', 'Who was in the back.', 1, c.hour);
-      if (e.type === 'travel') { const to = e.to;
+      if (e.type === 'travel' && g._rng() < LEAK) { const to = e.to;
         if (to === 1) report(g, events, 1, 'desk', 'A plain car with capital plates was seen at the Santa Laura square.', 'A car from the capital is in Santa Laura.', 'Whose it is.', 3, c.hour);
         if (to === 2) report(g, events, 2, 'desk', 'The Nova Trentô cooperative had a visitor overnight.', 'Someone stayed at the colônia.', 'Who.', 5, c.hour);
         if (to === 3) report(g, events, 3, 'rail', 'Somebody asked about the midnight freight.', 'Someone wants the freight.', 'That it was her.', 2, c.hour);
@@ -3891,8 +3972,9 @@ const Gov = (() => {
     }
   }
   function pass(g, events, hours) {
-    const target = g.c.hour + hours;
+    const target = g.c.hour + hours, from = g.c.hour;
     while (g.c.hour < target && !g.c.over) { leak(g, events, herStep(g)); }
+    if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
     if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', `"You asked for time. The time is up. Where is she?"`, [
@@ -3917,7 +3999,8 @@ const Gov = (() => {
       // across the line your ministry commands nothing: a search or a checkpoint in Esmeralda needs the hold
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? 'Your ministry does not command this tower. Ask Esmeralda to hold her first.' : '';
-      const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0));
+      const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
+      const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? 'Who acts: Esmeraldan officials, on your introduction' : `Who acts: ${o.who}`, pay: false,
         odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
         preview: [o.text, need <= 1 ? 'Succeeds without a roll.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${o.hours} hour${o.hours === 1 ? '' : 's'}. ${o.who[0].toUpperCase() + o.who.slice(1)} acts.`, o.fail ? `On failure: ${o.fail}` : 'Cannot fail.'] });
@@ -3940,7 +4023,7 @@ const Gov = (() => {
       levelName: ['The assignment, Portô Venla', 'Provincial desks, Santa Laura', 'The support network, Nova Trentô', 'The freight, Salta', 'The Huhūi border', 'Susana airfield'][g.belief],
       objective: ['The watched convoy splits. The minister wants a location.', 'Reports conflict. A patrol can check one of them.', 'Someone is sheltering her. Your source has conditions.', 'A departure window is approaching. Railway staff give different accounts.', 'The crossing could happen before your instructions arrive. A sent message alone does not close the border.', 'She may be across the border. Your domestic authority has limited reach.'][g.belief],
       reports: g.reports.map(r => Object.assign({}, r, { age: age(r.hour), source: personName(g, r.source) })),
-      orders: orders(g), calls: calls(g),
+      event: eventView(g), orders: orders(g), calls: calls(g),
       messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? 'Interior minister' : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
       requests: [
         { at: 4, title: 'Travel ban at the post', state: g.req.ban === 'inhand' ? 'inhand' : c.flags.restriction ? 'promised' : 'notyet', sub: g.req.ban === 'inhand' ? 'Confirmed. The post has her name.' : c.flags.restriction ? 'Ban sent. Not confirmed at the post. A sent message does not close the border.' : 'Not sent.' },
@@ -3955,6 +4038,8 @@ const Gov = (() => {
     if (g.over || g.c.over) return { ok: false, why: 'The run is over.' };
     const events = [], c = g.c;
     const before = { pos: c.pos, belief: g.belief };
+    if (id.startsWith('evt:')) { if (!g.event) return { ok: false, why: 'No news waiting.' }; resolveEvent(g, id.slice(4), events); return done(g, events); }
+    if (g.event && !id.startsWith('msg:')) return { ok: false, why: 'Deal with the news first.' };
     if (id === 'wait') { pass(g, events, 1); return done(g, events); }
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: 'That message is gone.' };
@@ -3999,7 +4084,77 @@ const Gov = (() => {
       if (j.job === 'operator') { const ok = d >= 3; g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? `"The review is open. Say the word and the operator hears about his licence."` : `"Legal wants the file first. Not today."` })); if (ok) g.hand.push('operator'); }
       if (j.job === 'ban') { const ok = d >= 2; g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? `"The post confirms. The sergeant has her name on the desk."` : `"The sergeant is off shift. Nobody has read it."` })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
+    else if (!g.event && g.c.hour >= g.nextEventAt) drawEvent(g, events);
     return { ok: true, events };
+  }
+
+  // ---- Sofīā's dispatches: one every few hours, each with choices whose costs show as markers ----
+  const fill = (g, t) => String(t).replace(/\{there\}/g, place(g.belief));
+  function eventOk(g, e) { return !g.seenEvents.includes(e.id) && (!e.after || g.c.hour >= e.after) && (!e.at || e.at.includes(g.belief)); }
+  function drawEvent(g, events) {
+    const pool = D.GOV_EVENTS.filter(e => eventOk(g, e)); g.nextEventAt = g.c.hour + EVERY;
+    if (!pool.length) return;
+    const e = pool[Math.floor(g._rng() * pool.length)]; g.event = { id: e.id }; g.seenEvents.push(e.id);
+    events.push(ev('dispatch', { title: e.title }));
+  }
+  function govTags(g, fx, out) {
+    out = out || []; if (!fx) return out;
+    if (fx.roll) { out.push({ k: 'roll', t: `Roll ${fx.roll.need}+` }); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` }); if (w.length) out.push({ k: 'gain', t: 'Win: ' + w.map(x => x.t.toLowerCase()).join(', ') }); if (l.length) out.push({ k: 'risk', t: 'Fail: ' + l.map(x => x.t.toLowerCase()).join(', ') }); return out; }
+    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
+    if (fx.lead !== undefined) out.push({ k: 'gain', t: fx.lead ? `A real lead in ${fx.lead} h` : 'A real lead now' });
+    if (fx.false) out.push({ k: 'risk', t: 'A false lead' });
+    if (fx.act === 'check_belief') out.push({ k: 'gain', t: `Search ${place(g.belief)}` });
+    if (fx.press) out.push({ k: 'gain', t: 'Harder for her to hide' });
+    if (fx.warn) out.push({ k: 'lose', t: 'Her side is warned' });
+    if (fx.stall) out.push({ k: 'gain', t: `Her plans slip ${fx.stall} h` });
+    if (fx.crossing) out.push({ k: 'gain', t: `Line harder to cross for ${fx.crossing} h` });
+    if (fx.ban) out.push({ k: 'gain', t: 'Ban confirmed at the post' });
+    if (fx.unban) out.push({ k: 'lose', t: 'Post loses the ban' });
+    if (fx.holdup) out.push({ k: 'gain', t: 'Esmeralda moves on your hold' });
+    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.GOV_CARDS[fx.card].name}` });
+    if (fx.dc) out.push({ k: fx.dc[0] < 0 ? 'gain' : 'lose', t: `Orders ${fx.dc[0] < 0 ? 'easier' : 'harder'} for ${fx.dc[1]} h` });
+    if (fx.minister) out.push({ k: fx.minister > 0 ? 'gain' : 'lose', t: fx.minister > 0 ? 'Minister pleased' : 'Minister angry' });
+    if (fx.sooner) out.push({ k: 'lose', t: `Minister wants it ${fx.sooner} h sooner` });
+    return out;
+  }
+  function eventView(g) {
+    if (!g.event) return null; const d = D.GOV_EVENTS.find(e => e.id === g.event.id);
+    return { kind: 'event', title: fill(g, d.title), text: fill(g, d.text), choices: d.choices.map(c => { const why = c.needs && !g.hand.includes(c.needs) ? `Needs ${D.GOV_CARDS[c.needs].name.toLowerCase()}.` : ''; return { id: c.id, label: fill(g, c.label), ok: !why, why, tags: govTags(g, c.fx) }; }) };
+  }
+  function resolveEvent(g, choiceId, events) {
+    const d = D.GOV_EVENTS.find(e => e.id === g.event.id), ch = d.choices.find(c => c.id === choiceId);
+    if (!ch) return; g.event = null; events.push(ev('chose', { label: fill(g, ch.label) }));
+    g.timeline.push({ hour: g.c.hour, pos: g.c.pos, belief: g.belief, order: fill(g, ch.label) });
+    applyFx(g, ch.fx, events);
+  }
+  function trueLead(g, events, delay) {
+    const at = g.c.pos, p = place(at);
+    report(g, events, at, 'desk', `A source places her at ${p}.`, `She was at ${p} when the source saw her.`, 'Where she goes next.', delay || 0, g.c.hour);
+  }
+  function falseLead(g, events) {
+    const opts = [0, 1, 2, 3, 4].filter(i => i !== g.c.pos), at = opts[Math.floor(g._rng() * opts.length)], p = place(at);
+    report(g, events, at, 'desk', `A caller swears she is at ${p}.`, 'Someone says so.', 'That it is true.', 0, g.c.hour, true);
+  }
+  function applyFx(g, fx, events) {
+    if (!fx) return; const c = g.c;
+    if (fx.roll) { const die = roll(g), won = die >= fx.roll.need; events.push(ev('roll', { die, need: fx.roll.need, won })); applyFx(g, Object.assign({ hours: fx.hours }, won ? fx.roll.win : fx.roll.lose), events); return; }
+    if (fx.say) events.push(ev('say', { who: 'narrator', text: fx.say }));
+    if (fx.card && !g.hand.includes(fx.card)) g.hand.push(fx.card);
+    if (fx.lose) g.hand = g.hand.filter(x => x !== fx.lose);
+    if (fx.press) S.heat(c, fx.press, []);
+    if (fx.warn) { S.heat(c, -fx.warn, []); if (c.belief === c.pos) c.belief = -1; }
+    if (fx.stall) for (const j of c.jobs) j.due += fx.stall;
+    if (fx.crossing) c.flags.roadblock = { pos: 4, until: c.hour + fx.crossing };
+    if (fx.ban) { c.flags.restriction = true; g.req.ban = 'inhand'; }
+    if (fx.unban && g.req.ban === 'inhand') g.req.ban = 'promised';
+    if (fx.holdup) { const job = g.pending.find(j => j.job === 'hold'); if (job) job.hour = Math.min(job.hour, c.hour + 1); else if (g.req.hold === 'notyet') { g.req.hold = 'promised'; g.pending.push({ job: 'hold', hour: c.hour + 3 }); } }
+    if (fx.dc) g.dcMods.push({ delta: fx.dc[0], until: c.hour + fx.dc[1] });
+    if (fx.minister) g.standing += fx.minister;
+    if (fx.sooner) g.ministerBy = Math.max(c.hour, g.ministerBy - fx.sooner);
+    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; S.enemyAct(c, fx.act, events); report(g, events, g.belief, 'enemy', close ? `Sosā finds fresh tracks at ${place(g.belief)}.` : `Sosā finds nothing at ${place(g.belief)}.`, close ? 'She is here or just left.' : 'She is not there now.', close ? 'That she will stay.' : 'Where she is instead.', 0, c.hour); }
+    if (fx.false) falseLead(g, events);
+    if (fx.lead !== undefined) trueLead(g, events, fx.lead);
+    if (fx.hours) pass(g, events, fx.hours);
   }
 
   // ---- the debrief: what happened against what you believed ------------------------------------
@@ -4013,7 +4168,8 @@ const Gov = (() => {
     const byWho = {}; for (const o of g.orders) { byWho[o.who] = byWho[o.who] || { ok: 0, no: 0 }; byWho[o.who][o.won ? 'ok' : 'no'] += 1; }
     const delivered = Object.entries(byWho).map(([w, n]) => `${w[0].toUpperCase() + w.slice(1)}: ${n.ok} delivered, ${n.no} failed.`).join(' ');
     const minister = g.flags.wrongClaim ? 'You gave him a town and it was the wrong one. He said it on television. He does not say your name now.' : g.flags.admitted ? 'You told him you did not know. He briefed the papers himself and remembers that you made him.' : g.flags.locationGiven ? 'You gave him the right town. He took the credit, which is what you are for.' : g.flags.askedTime ? `You asked for time ${g.flags.askedTime === 1 ? 'once' : g.flags.askedTime + ' times'} and never named a place. He has a new aide in mind.` : 'He never got his location. He has a new aide in mind.';
-    return `<div class="debrief"><p>${esc(head)}</p><h3>Where she was, and where you looked</h3><table><tr><th>When</th><th>She was</th><th>You looked</th></tr>${rows || '<tr><td colspan="3">You gave no orders.</td></tr>'}</table><h3>Reports that misled you</h3><p>${mis.length ? mis.join(' ') : 'None. Every report was true as far as it went.'}</p><h3>Who delivered</h3><p>${delivered || 'Nobody was asked to do anything.'}</p><h3>The minister</h3><p>${esc(minister)}</p></div>`;
+    const mood = g.standing >= 2 ? ' Your handling of the press pleased him.' : g.standing <= -2 ? ' He has not forgotten the promises you made without him.' : '';
+    return `<div class="debrief"><p>${esc(head)}</p><h3>Where she was, and where you looked</h3><table><tr><th>When</th><th>She was</th><th>You looked</th></tr>${rows || '<tr><td colspan="3">You gave no orders.</td></tr>'}</table><h3>Reports that misled you</h3><p>${mis.length ? mis.join(' ') : 'None. Every report was true as far as it went.'}</p><h3>Who delivered</h3><p>${delivered || 'Nobody was asked to do anything.'}</p><h3>The minister</h3><p>${esc(minister + mood)}</p></div>`;
   }
   function serialize(g) { const o = Object.assign({}, g); delete o._rng; delete o._boot; o.c = S.serialize(g.c); return JSON.stringify(o); }
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }
@@ -5109,7 +5265,7 @@ const UI = (() => {
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = (r.lines || []).join(''); $('start').hidden = true; document.body.classList.toggle('gov', !!gov);
     round = r.round || 1; daily = r.daily && r.daily === dailyInfo().key ? dailyInfo() : null;
-    setTab('here'); renderAll(); if (!gov) startRound(true); return true;
+    setTab('here'); renderAll(); startRound(true); return true;
   }
 
   // ---- runs --------------------------------------------------------------
@@ -5131,7 +5287,7 @@ const UI = (() => {
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
     log('sys', `${Sim.clockText(0)}. You are ${Data.GOV.name}, ${Data.GOV.title}. ${Data.CHARACTERS[gov.target].name} lost on Saturday and the court has barred her from leaving. The minister wants a location.`, 'sys');
-    animate(gov._boot); renderAll(); saveRun();
+    round = 1; animate(gov._boot); renderAll(); startRound(true); saveRun();
   }
 
   function setTab(t) { tab = t; document.querySelectorAll('#tabs button').forEach(b => { if (b.dataset.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === t)); }
@@ -5158,6 +5314,7 @@ const UI = (() => {
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = `The minister wants a location by ${short(v.ministerBy)}.`;
       $('expl-l').textContent = 'Suspected:'; $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? 'last report ' + v.lastReport : 'no reports';
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
+      $('wait').textContent = 'Wait one hour'; $('phoneh').textContent = 'The desk'; document.querySelector('#herehead h2').textContent = 'Orders';
       return;
     }
     $('goaltxt').textContent = 'Leave Esmeraldan airspace by'; $('leftverb').textContent = 'Out by';
@@ -5170,6 +5327,7 @@ const UI = (() => {
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = 'Exposure'; $('expl-b').textContent = ''; $('heat2').hidden = false;
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
+    $('wait').textContent = 'Lie low one hour'; $('phoneh').textContent = 'The phone'; document.querySelector('#herehead h2').textContent = 'Here';
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
   }
 
@@ -5224,7 +5382,7 @@ const UI = (() => {
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
   function callBtn(c, allowed, label) {
     const b = document.createElement('button'); b.className = 'call' + (c.ok ? '' : ' no') + (sel === c.id ? ' sel' : '') + (allowed ? '' : ' off'); b.disabled = !allowed;
-    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span><span class="hrs">${c.ok ? c.hours + ' h' : esc(c.why)}</span>`;
+    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${c.hours} h</span>` : `<span class="why">${esc(c.why)}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === c.id ? null : c.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -5353,16 +5511,19 @@ const UI = (() => {
   // ---- phase turns ------------------------------------------------------------------
   const PH = ['news', 'phone', 'move', 'roll', 'sosa'];
   const mks = (tags) => `<span class="mks">${tags.map(t => `<span class="mk ${t.k}">${esc(t.t)}</span>`).join('')}</span>`;
+  const PH_LABEL = { news: ['News', 'Reports'], phone: ['Phone', 'Desk'], move: ['Move', 'Order'], roll: ['Roll', 'Roll'], sosa: ['Sosā', 'Her move'] };
+  const pendingEvent = () => gov ? Gov.view(gov).event : Sim.actions(s).event;
   function phoneUseful() {
+    if (gov) { const v = Gov.view(gov); return v.messages.length > 0 || (phoneCalls < 1 && v.calls.some(c => c.ok)); }
     const A = Sim.actions(s);
     return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id))) || (phoneCalls < 1 && A.calls.some(c => c.ok && Tutorial.allowsCall(c.arr)));
   }
   function startRound(first) {
-    if (gov || !s || s.over) return;
+    if (!s || s.over) return;
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
-    interstitial(short(s.hour), `Round ${round}`, `${Data.LEVELS[s.pos].short}${s.hold ? `. Held ${s.hold} of 3` : ''}`);
-    enterPhase(Sim.actions(s).event ? 'news' : 'phone');
+    interstitial(short(s.hour), `Round ${round}`, gov ? `Searching ${Gov.view(gov).suspectName.replace(/^The /, 'the ')}` : `${Data.LEVELS[s.pos].short}${s.hold ? `. Held ${s.hold} of 3` : ''}`);
+    enterPhase(pendingEvent() ? 'news' : 'phone');
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
@@ -5377,31 +5538,32 @@ const UI = (() => {
     el.onclick = () => { el.hidden = true; };
   }
   function renderPhase() {
-    const on = !gov && !!s && !s.over && $('start').hidden;
+    const on = !!s && !s.over && $('start').hidden;
     $('phasebar').hidden = !on; document.body.classList.toggle('phased', on);
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
       if (phase === 'move' && Tutorial.active() && !movedThisRound && phoneUseful()) phase = 'phone';
       if (phase === 'phone' && !phoneUseful()) phase = 'move';
-      if ((phase === 'phone' || phase === 'move') && Sim.actions(s).event && !movedThisRound) phase = 'news';
+      if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
     }
     $('round').textContent = `Round ${round}`;
     const idx = PH.indexOf(phase);
-    document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; });
+    document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = PH_LABEL[PH[i]][gov ? 1 : 0]; });
+    $('phasedone').textContent = gov ? 'Done at the desk' : 'Done with the phone';
     $('phasedone').hidden = phase !== 'phone';
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
     const was = card.dataset.ph; card.dataset.ph = phase;
     card.hidden = !showCard; $('herehead').hidden = showCard; $('approaches').hidden = showCard; $('lvlhead2').hidden = showCard;
     if (was !== phase) { $('tab-here').scrollTop = 0; $('tab-phone').scrollTop = 0; }
-    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, 'See what Sosā did', () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
+    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, gov ? 'See what came in' : 'See what Sosā did', () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
   }
   const KIND = { event: 'News', rumor: 'A rumor', hold: 'The inquiry has you' };
   function newsCard(card) {
-    if (result && result.from === 'news') { resultCard(card, result, 'Continue', () => { result = null; enterPhase(Sim.actions(s).event ? 'news' : 'phone'); }); return; }
-    const v = Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
+    if (result && result.from === 'news') { resultCard(card, result, 'Continue', () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
+    const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${KIND[v.kind]}${v.kind === 'hold' ? ` · ${v.rung} of 3` : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over; b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over; b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
@@ -5413,14 +5575,16 @@ const UI = (() => {
   }
   function sosaCard(card) {
     card.className = 'sosa';
-    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : '<li class="gain"><i></i><span>Quiet. Nobody moved against you.</span></li>';
-    card.innerHTML = `<span class="kind">While you moved</span><h3>${roundSum.hours} h passed. Now ${esc(short(s.hour))}</h3><ul class="rows">${rows}</ul>`;
+    const quiet = gov ? 'No new reports. She could be anywhere on the route.' : 'Quiet. Nobody moved against you.';
+    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
+    card.innerHTML = `<span class="kind">${gov ? 'While your orders ran' : 'While you moved'}</span><h3>${roundSum.hours} h passed. Now ${esc(short(s.hour))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = 'Next round'; b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
     const r = { kind, title, roll: null, line: '', mine: [], theirs: [], hours: 0 }; let after = false, expMine = 0, expTheirs = 0;
     for (const e of events) {
       if (e.type === 'hour') { after = true; r.hours += 1; continue; }
+      if (e.type === 'passed') { after = true; r.hours += e.hours; continue; }
       const bucket = after ? r.theirs : r.mine;
       switch (e.type) {
         case 'attempt': r.title = e.name; break;
@@ -5437,6 +5601,8 @@ const UI = (() => {
         case 'hold': r.theirs.push({ k: 'enemy', t: `${e.title}. You deal with it next.` }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: `News waiting: ${e.title}` }); break;
         case 'message': r.theirs.push({ k: 'news', t: `Message from ${pname(e.from)}` }); break;
+        case 'report': bucket.push({ k: e.from === 'enemy' ? 'enemy' : 'news', t: `${pname(e.from)}: ${e.text.replace(/ \(.*\)$/, '')}` }); break;
+        case 'order': r.title = r.title || e.name; break;
         default: break;
       }
     }
@@ -5491,19 +5657,18 @@ const UI = (() => {
   function renderGovHere() {
     const box = $('approaches'); box.innerHTML = '';
     const v = Gov.view(gov);
-    const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>Reports</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span><span class="mono">${r.age}</span> ago</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>Proves</b><span>${esc(r.proves)}</span></span><span><b>Does not prove</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : '<p class="hint">No reports yet. The watch team is at the residence.</p>');
+    for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, 'Send the order', () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move')); }
+    const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>Reports</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span>${r.age === 'just now' ? 'just now' : `<span class="mono">${r.age}</span> ago`}</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>Proves</b><span>${esc(r.proves)}</span></span><span><b>Does not prove</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : '<p class="hint">No reports yet. The watch team is at the residence.</p>');
     box.appendChild(rep);
-    const h = document.createElement('h2'); h.textContent = 'Orders'; box.appendChild(h);
-    for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, 'Send the order', () => doGov(a.id))); else box.appendChild(approachBtn(a, true)); }
-    $('wait').disabled = !!s.over;
+    $('wait').disabled = !!s.over || phase !== 'move';
   }
   function renderGovPhone() {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';
     $('waiting').textContent = v.messages.length ? `${v.messages.length} waiting` : ''; const badge = $('tab-badge'); badge.hidden = !v.messages.length; badge.textContent = v.messages.length;
     if (!v.messages.length) inbox.innerHTML = '<p class="hint">No calls waiting.</p>';
-    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), () => true));
+    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), () => phase === 'phone'));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">Send</button><button class="cancel">Cancel</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, true, c.name)); }
+    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">Send</button><button class="cancel">Cancel</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, phase === 'phone' && phoneCalls < 1, c.name)); }
   }
   function renderGovHand() {
     const h = $('hand'); h.innerHTML = '';
@@ -5514,7 +5679,7 @@ const UI = (() => {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
     Data.LEVELS.forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
-      const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(r.source)}, ${r.age} ago</b><span>${esc(r.text)} ${esc(r.doesnt ? 'Does not prove ' + r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) : '')}</span></span>`).join('');
+      const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(r.source)}, ${r.age === 'just now' ? 'just now' : r.age + ' ago'}</b><span>${esc(r.text)} ${esc(r.doesnt ? 'Does not prove ' + r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) : '')}</span></span>`).join('');
       const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === gov.belief ? 'She may be here' : i === 4 ? 'The border' : i === 5 ? 'Esmeralda' : ''}</span></div><span class="who">${esc(v.people[i])}</span>${i === 5 ? '<span class="need notyet"><b>Your ministry does not command this tower</b><span>Ask Esmeralda. The request must reach the people who can stop the flight.</span></span>' : ''}${reqs}${reps}</div>`;
       rail.appendChild(li);
@@ -5525,7 +5690,14 @@ const UI = (() => {
   function doGov(id, opt) {
     Sfx.unlock(); const r = Gov.commit(gov, id, opt);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    Sfx.confirm(); sel = null; animate(r.events); renderAll(); saveRun();
+    Sfx.confirm(); sel = null; animate(r.events);
+    const sid = String(id), sm = summarize(r.events, 'Your order', null);
+    roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
+    if (sid.startsWith('evt:')) { result = summarize(r.events, 'Your choice', null); result.from = 'news'; phase = 'news'; }
+    else if (sid.startsWith('req:')) { phoneCalls += 1; if (!phoneUseful()) { phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } }
+    else if (sid.startsWith('msg:')) { /* stay at the desk */ }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = 'You waited'; result.title = 'One hour for reports'; } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    renderAll(); saveRun();
   }
 
   // ---- start, title, boot --------------------------------------------------------------
@@ -5533,15 +5705,15 @@ const UI = (() => {
     const box = $('start-chars'); box.innerHTML = '';
     const first = !seen(), saved = savedRun();
     $('continue').hidden = !saved; if (saved) $('continue').textContent = saved.gov ? `Continue your run as ${Data.GOV.name}` : `Continue your run as ${Data.CHARACTERS[saved.who].name}`;
-    $('start-demo-note').textContent = (first ? 'New here? ' : '') + 'Learn the route to the border as ' + Data.CHARACTERS[Tutorial.WHO].name + '. Finish at the airfield on your own.';
+    $('start-demo-note').textContent = `A guided run as ${Data.CHARACTERS[Tutorial.WHO].name} walks you to the airfield, where you take over.`;
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
-    $('start-free').textContent = first ? 'Or choose your character' : 'Choose your character';
+    $('start-free').textContent = 'Pick who you play';
     let n = 0;
-    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(c.sibling.rel[0].toUpperCase() + c.sibling.rel.slice(1))} ${esc(c.sibling.short)} is abroad</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
-    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title)}. Stop the escape.</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
-    const url = Render.runwayStill(); if (url) $('start-art').style.backgroundImage = `url(${url})`;
+    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${c.pronoun === 'she' ? 'Her' : 'His'} ${esc(c.sibling.rel.replace('your ', ''))} ${esc(c.sibling.short)} is booking the jet</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
+    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
+    const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
-    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? `${done.line}. Play again or share.` : `Today: ${Data.CHARACTERS[D.who].name}. Same run for everyone.`;
+    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? `${done.line}. Play again or share it.` : `Everyone plays the same run today, as ${Data.CHARACTERS[D.who].name}.`;
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
   }

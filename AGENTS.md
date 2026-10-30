@@ -78,7 +78,7 @@ favicon must stay embedded so the game works offline.
 government state as the second argument to `setState` in that mode; the scene then
 shows the suspected stop and the search team and must never show the candidate's
 real position, people or arrangements. Keep the 2D fallback working for devices
-without WebGL or WebGPU, and keep people above the level heading (`GROUND`).
+without WebGL or WebGPU, and keep people above the bottom strip of the scene (`GROUND`). The level heading sits in the panel at every width, not on the scene.
 
 ## Check changes
 

@@ -12,13 +12,15 @@ const Gov = (() => {
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
   const ev = (type, data) => Object.assign({ type }, data);
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
+  const EVERY = 5, LEAK = 0.5; // a stop she reaches is reported only some of the time
   const place = (i) => i === 0 ? 'the residence' : i === 4 ? 'the line' : LV(i).short;
 
   function newRun(seed, target) {
     target = target || 'woman';
     const c = S.newRun(seed, target, { manualEnemy: true });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
-      timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null };
+      timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
+      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0 };
     g._rngState = (seed ^ 0x9e3779b9) >>> 0;
     attach(g);
     const events = [];
@@ -45,12 +47,15 @@ const Gov = (() => {
   function herStep(g) {
     const c = g.c, A = S.actions(c), before = c.hour;
     // her dispatches and holds come first; she takes the choice whose markers look cheapest
-    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
+    if (A.event) { const score = (x) => x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1, roll: 1 }[t.k] || 0) - ({ down: c.belief === c.pos ? 3 : 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
     const calls = A.calls.filter(x => x.ok), lvl = c.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     const L = D.LEVELS[c.pos];
-    const apps = A.approaches.filter(a => a.ok && a.need <= 6).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); }).sort((a, b) => a.need - b.need);
+    const found = c.belief === c.pos;
+    const apps = A.approaches.filter(a => a.ok && a.need <= (found ? 6 : 5)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
+    apps.sort((a, b) => exits(a) - exits(b) || a.need - b.need);
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
     return S.commit(c, 'wait').events;
   }
@@ -61,7 +66,7 @@ const Gov = (() => {
       if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 1, 'watch', 'A red sedan took the south road toward Santa Laura.', 'A car is heading south.', 'She was inside.', 0, c.hour, true);
       if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 0, 'watch', 'Three cars left the residence in different directions.', 'The cars left.', 'Which one she is in.', 0, c.hour);
       if (e.type === 'attempt' && e.id === 'partycar') report(g, events, 0, 'watch', "The party's official car left the residence with its flags up.", 'The car left.', 'Who was in the back.', 1, c.hour);
-      if (e.type === 'travel') { const to = e.to;
+      if (e.type === 'travel' && g._rng() < LEAK) { const to = e.to;
         if (to === 1) report(g, events, 1, 'desk', 'A plain car with capital plates was seen at the Santa Laura square.', 'A car from the capital is in Santa Laura.', 'Whose it is.', 3, c.hour);
         if (to === 2) report(g, events, 2, 'desk', 'The Nova Trentô cooperative had a visitor overnight.', 'Someone stayed at the colônia.', 'Who.', 5, c.hour);
         if (to === 3) report(g, events, 3, 'rail', 'Somebody asked about the midnight freight.', 'Someone wants the freight.', 'That it was her.', 2, c.hour);
@@ -75,8 +80,9 @@ const Gov = (() => {
     }
   }
   function pass(g, events, hours) {
-    const target = g.c.hour + hours;
+    const target = g.c.hour + hours, from = g.c.hour;
     while (g.c.hour < target && !g.c.over) { leak(g, events, herStep(g)); }
+    if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
     if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', `"You asked for time. The time is up. Where is she?"`, [
@@ -101,7 +107,8 @@ const Gov = (() => {
       // across the line your ministry commands nothing: a search or a checkpoint in Esmeralda needs the hold
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? 'Your ministry does not command this tower. Ask Esmeralda to hold her first.' : '';
-      const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0));
+      const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
+      const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? 'Who acts: Esmeraldan officials, on your introduction' : `Who acts: ${o.who}`, pay: false,
         odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
         preview: [o.text, need <= 1 ? 'Succeeds without a roll.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${o.hours} hour${o.hours === 1 ? '' : 's'}. ${o.who[0].toUpperCase() + o.who.slice(1)} acts.`, o.fail ? `On failure: ${o.fail}` : 'Cannot fail.'] });
@@ -124,7 +131,7 @@ const Gov = (() => {
       levelName: ['The assignment, Portô Venla', 'Provincial desks, Santa Laura', 'The support network, Nova Trentô', 'The freight, Salta', 'The Huhūi border', 'Susana airfield'][g.belief],
       objective: ['The watched convoy splits. The minister wants a location.', 'Reports conflict. A patrol can check one of them.', 'Someone is sheltering her. Your source has conditions.', 'A departure window is approaching. Railway staff give different accounts.', 'The crossing could happen before your instructions arrive. A sent message alone does not close the border.', 'She may be across the border. Your domestic authority has limited reach.'][g.belief],
       reports: g.reports.map(r => Object.assign({}, r, { age: age(r.hour), source: personName(g, r.source) })),
-      orders: orders(g), calls: calls(g),
+      event: eventView(g), orders: orders(g), calls: calls(g),
       messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? 'Interior minister' : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
       requests: [
         { at: 4, title: 'Travel ban at the post', state: g.req.ban === 'inhand' ? 'inhand' : c.flags.restriction ? 'promised' : 'notyet', sub: g.req.ban === 'inhand' ? 'Confirmed. The post has her name.' : c.flags.restriction ? 'Ban sent. Not confirmed at the post. A sent message does not close the border.' : 'Not sent.' },
@@ -139,6 +146,8 @@ const Gov = (() => {
     if (g.over || g.c.over) return { ok: false, why: 'The run is over.' };
     const events = [], c = g.c;
     const before = { pos: c.pos, belief: g.belief };
+    if (id.startsWith('evt:')) { if (!g.event) return { ok: false, why: 'No news waiting.' }; resolveEvent(g, id.slice(4), events); return done(g, events); }
+    if (g.event && !id.startsWith('msg:')) return { ok: false, why: 'Deal with the news first.' };
     if (id === 'wait') { pass(g, events, 1); return done(g, events); }
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: 'That message is gone.' };
@@ -183,7 +192,77 @@ const Gov = (() => {
       if (j.job === 'operator') { const ok = d >= 3; g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? `"The review is open. Say the word and the operator hears about his licence."` : `"Legal wants the file first. Not today."` })); if (ok) g.hand.push('operator'); }
       if (j.job === 'ban') { const ok = d >= 2; g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? `"The post confirms. The sergeant has her name on the desk."` : `"The sergeant is off shift. Nobody has read it."` })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
+    else if (!g.event && g.c.hour >= g.nextEventAt) drawEvent(g, events);
     return { ok: true, events };
+  }
+
+  // ---- Sofīā's dispatches: one every few hours, each with choices whose costs show as markers ----
+  const fill = (g, t) => String(t).replace(/\{there\}/g, place(g.belief));
+  function eventOk(g, e) { return !g.seenEvents.includes(e.id) && (!e.after || g.c.hour >= e.after) && (!e.at || e.at.includes(g.belief)); }
+  function drawEvent(g, events) {
+    const pool = D.GOV_EVENTS.filter(e => eventOk(g, e)); g.nextEventAt = g.c.hour + EVERY;
+    if (!pool.length) return;
+    const e = pool[Math.floor(g._rng() * pool.length)]; g.event = { id: e.id }; g.seenEvents.push(e.id);
+    events.push(ev('dispatch', { title: e.title }));
+  }
+  function govTags(g, fx, out) {
+    out = out || []; if (!fx) return out;
+    if (fx.roll) { out.push({ k: 'roll', t: `Roll ${fx.roll.need}+` }); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` }); if (w.length) out.push({ k: 'gain', t: 'Win: ' + w.map(x => x.t.toLowerCase()).join(', ') }); if (l.length) out.push({ k: 'risk', t: 'Fail: ' + l.map(x => x.t.toLowerCase()).join(', ') }); return out; }
+    if (fx.hours) out.push({ k: 'time', t: `${fx.hours} h` });
+    if (fx.lead !== undefined) out.push({ k: 'gain', t: fx.lead ? `A real lead in ${fx.lead} h` : 'A real lead now' });
+    if (fx.false) out.push({ k: 'risk', t: 'A false lead' });
+    if (fx.act === 'check_belief') out.push({ k: 'gain', t: `Search ${place(g.belief)}` });
+    if (fx.press) out.push({ k: 'gain', t: 'Harder for her to hide' });
+    if (fx.warn) out.push({ k: 'lose', t: 'Her side is warned' });
+    if (fx.stall) out.push({ k: 'gain', t: `Her plans slip ${fx.stall} h` });
+    if (fx.crossing) out.push({ k: 'gain', t: `Line harder to cross for ${fx.crossing} h` });
+    if (fx.ban) out.push({ k: 'gain', t: 'Ban confirmed at the post' });
+    if (fx.unban) out.push({ k: 'lose', t: 'Post loses the ban' });
+    if (fx.holdup) out.push({ k: 'gain', t: 'Esmeralda moves on your hold' });
+    if (fx.card) out.push({ k: 'gain', t: `Card: ${D.GOV_CARDS[fx.card].name}` });
+    if (fx.dc) out.push({ k: fx.dc[0] < 0 ? 'gain' : 'lose', t: `Orders ${fx.dc[0] < 0 ? 'easier' : 'harder'} for ${fx.dc[1]} h` });
+    if (fx.minister) out.push({ k: fx.minister > 0 ? 'gain' : 'lose', t: fx.minister > 0 ? 'Minister pleased' : 'Minister angry' });
+    if (fx.sooner) out.push({ k: 'lose', t: `Minister wants it ${fx.sooner} h sooner` });
+    return out;
+  }
+  function eventView(g) {
+    if (!g.event) return null; const d = D.GOV_EVENTS.find(e => e.id === g.event.id);
+    return { kind: 'event', title: fill(g, d.title), text: fill(g, d.text), choices: d.choices.map(c => { const why = c.needs && !g.hand.includes(c.needs) ? `Needs ${D.GOV_CARDS[c.needs].name.toLowerCase()}.` : ''; return { id: c.id, label: fill(g, c.label), ok: !why, why, tags: govTags(g, c.fx) }; }) };
+  }
+  function resolveEvent(g, choiceId, events) {
+    const d = D.GOV_EVENTS.find(e => e.id === g.event.id), ch = d.choices.find(c => c.id === choiceId);
+    if (!ch) return; g.event = null; events.push(ev('chose', { label: fill(g, ch.label) }));
+    g.timeline.push({ hour: g.c.hour, pos: g.c.pos, belief: g.belief, order: fill(g, ch.label) });
+    applyFx(g, ch.fx, events);
+  }
+  function trueLead(g, events, delay) {
+    const at = g.c.pos, p = place(at);
+    report(g, events, at, 'desk', `A source places her at ${p}.`, `She was at ${p} when the source saw her.`, 'Where she goes next.', delay || 0, g.c.hour);
+  }
+  function falseLead(g, events) {
+    const opts = [0, 1, 2, 3, 4].filter(i => i !== g.c.pos), at = opts[Math.floor(g._rng() * opts.length)], p = place(at);
+    report(g, events, at, 'desk', `A caller swears she is at ${p}.`, 'Someone says so.', 'That it is true.', 0, g.c.hour, true);
+  }
+  function applyFx(g, fx, events) {
+    if (!fx) return; const c = g.c;
+    if (fx.roll) { const die = roll(g), won = die >= fx.roll.need; events.push(ev('roll', { die, need: fx.roll.need, won })); applyFx(g, Object.assign({ hours: fx.hours }, won ? fx.roll.win : fx.roll.lose), events); return; }
+    if (fx.say) events.push(ev('say', { who: 'narrator', text: fx.say }));
+    if (fx.card && !g.hand.includes(fx.card)) g.hand.push(fx.card);
+    if (fx.lose) g.hand = g.hand.filter(x => x !== fx.lose);
+    if (fx.press) S.heat(c, fx.press, []);
+    if (fx.warn) { S.heat(c, -fx.warn, []); if (c.belief === c.pos) c.belief = -1; }
+    if (fx.stall) for (const j of c.jobs) j.due += fx.stall;
+    if (fx.crossing) c.flags.roadblock = { pos: 4, until: c.hour + fx.crossing };
+    if (fx.ban) { c.flags.restriction = true; g.req.ban = 'inhand'; }
+    if (fx.unban && g.req.ban === 'inhand') g.req.ban = 'promised';
+    if (fx.holdup) { const job = g.pending.find(j => j.job === 'hold'); if (job) job.hour = Math.min(job.hour, c.hour + 1); else if (g.req.hold === 'notyet') { g.req.hold = 'promised'; g.pending.push({ job: 'hold', hour: c.hour + 3 }); } }
+    if (fx.dc) g.dcMods.push({ delta: fx.dc[0], until: c.hour + fx.dc[1] });
+    if (fx.minister) g.standing += fx.minister;
+    if (fx.sooner) g.ministerBy = Math.max(c.hour, g.ministerBy - fx.sooner);
+    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; S.enemyAct(c, fx.act, events); report(g, events, g.belief, 'enemy', close ? `Sosā finds fresh tracks at ${place(g.belief)}.` : `Sosā finds nothing at ${place(g.belief)}.`, close ? 'She is here or just left.' : 'She is not there now.', close ? 'That she will stay.' : 'Where she is instead.', 0, c.hour); }
+    if (fx.false) falseLead(g, events);
+    if (fx.lead !== undefined) trueLead(g, events, fx.lead);
+    if (fx.hours) pass(g, events, fx.hours);
   }
 
   // ---- the debrief: what happened against what you believed ------------------------------------
@@ -197,7 +276,8 @@ const Gov = (() => {
     const byWho = {}; for (const o of g.orders) { byWho[o.who] = byWho[o.who] || { ok: 0, no: 0 }; byWho[o.who][o.won ? 'ok' : 'no'] += 1; }
     const delivered = Object.entries(byWho).map(([w, n]) => `${w[0].toUpperCase() + w.slice(1)}: ${n.ok} delivered, ${n.no} failed.`).join(' ');
     const minister = g.flags.wrongClaim ? 'You gave him a town and it was the wrong one. He said it on television. He does not say your name now.' : g.flags.admitted ? 'You told him you did not know. He briefed the papers himself and remembers that you made him.' : g.flags.locationGiven ? 'You gave him the right town. He took the credit, which is what you are for.' : g.flags.askedTime ? `You asked for time ${g.flags.askedTime === 1 ? 'once' : g.flags.askedTime + ' times'} and never named a place. He has a new aide in mind.` : 'He never got his location. He has a new aide in mind.';
-    return `<div class="debrief"><p>${esc(head)}</p><h3>Where she was, and where you looked</h3><table><tr><th>When</th><th>She was</th><th>You looked</th></tr>${rows || '<tr><td colspan="3">You gave no orders.</td></tr>'}</table><h3>Reports that misled you</h3><p>${mis.length ? mis.join(' ') : 'None. Every report was true as far as it went.'}</p><h3>Who delivered</h3><p>${delivered || 'Nobody was asked to do anything.'}</p><h3>The minister</h3><p>${esc(minister)}</p></div>`;
+    const mood = g.standing >= 2 ? ' Your handling of the press pleased him.' : g.standing <= -2 ? ' He has not forgotten the promises you made without him.' : '';
+    return `<div class="debrief"><p>${esc(head)}</p><h3>Where she was, and where you looked</h3><table><tr><th>When</th><th>She was</th><th>You looked</th></tr>${rows || '<tr><td colspan="3">You gave no orders.</td></tr>'}</table><h3>Reports that misled you</h3><p>${mis.length ? mis.join(' ') : 'None. Every report was true as far as it went.'}</p><h3>Who delivered</h3><p>${delivered || 'Nobody was asked to do anything.'}</p><h3>The minister</h3><p>${esc(minister + mood)}</p></div>`;
   }
   function serialize(g) { const o = Object.assign({}, g); delete o._rng; delete o._boot; o.c = S.serialize(g.c); return JSON.stringify(o); }
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }

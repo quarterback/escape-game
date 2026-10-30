@@ -8,7 +8,7 @@
 
 The owner chose phase turns like a board game, with transitions and more markers. He wanted each stop deepened so it does not feel repetitive. He wanted the escape much harder, with coordination falling apart and real capture threats: being questioned, held at a station, or placed under house arrest. He asked for wild counterfactuals over a faithful retelling, plus a daily run, background sound, and real sprites with layered backgrounds.
 
-**Out of scope:** interface text standards, which the owner is defining in PR #5. The government side keeps its existing turn flow.
+**Out of scope:** interface text standards, which the owner is defining in PR #5.
 
 ## What changed
 
@@ -85,8 +85,23 @@ The design is recorded in `docs/deeper-stops.md`.
 - Endings use outcome codes (P14).
 - New strings are not yet registered as declared patterns (C01, C12). That waits for the validator and loader the spec describes.
 
+## Follow-up: government rounds, the heading, the start screen
+
+The owner chose these in answer to four questions: mirror the five phases, give Sofīā her own events, move the heading into the panel, and make her side hard (the candidate escapes about 60% of the time).
+
+- **Rounds.** Sofīā's round runs Reports, Desk, Order, Roll, Her move. The Desk allows the minister's messages and one request; the Order phase allows one order or an hour's wait. Her move lists the reports that came in while the hours passed. It never shows the candidate's position.
+- **Events.** There are 16 government events in `Data.GOV_EVENTS`: a tipster who wants money, the minister leaking your lead, a judge who stalls the border order, three sightings at once, a driver who wants immunity, a rail strike, a snowstorm at the passes, a sergeant married to her cousin, an air force drone and more. One is drawn every five hours. Choices show their costs as markers generated from the rules (`govTags` in `gov.js`). A "real lead" is a true report of where she is, sometimes delayed.
+- **Balance.** `tools/gov-calibrate.js` plays the government side with a simple policy in rounds. Before this pass that policy caught her 90% of the time, because the computer-played candidate played badly (she waited at stops instead of leaving, and lost 36% of runs to the clock even with no one chasing her). Changes, all limited to government mode:
+  - she now prefers the move that leaves a stop;
+  - she reacts when the search is on her stop;
+  - a correct search raises her exposure by 1 instead of 2, and the drift is every four hours instead of two;
+  - a stop she reaches is reported half the time.
+  Result: she escapes 61% of 400 runs. The escape side's calibration is unchanged (26.7% and 25.7%).
+- **Heading.** On a computer the place name and objective now sit at the top of the Here column, as on a phone. The scene stays clear.
+- **Start screen.** The cards were 94% opaque, so the art showed through, and the daily button overlapped the intro. On a computer the runway art now fills the right side and a solid column on the left holds the text. Reading text is 18 to 23px there and at least 15px on a phone. The copy was rewritten with Humanizer and checked with Prosekeep (no mechanical findings). The eyebrow date line is gone, and the character cards now say how the candidates differ.
+- **Fonts.** Call buttons showed their blocked reasons in Overbit. They now use the reading font.
+
 ## Open
 
 - Real character sprites and layered backgrounds are merged from the art thread (`src/art.js`, four layers per scene, sprites with breathing and walk frames, `Render.detain`). A hold now shows officers walking up to the player before the hold card.
-- The government side still uses the old flow.
 - Not yet tested on a physical phone.

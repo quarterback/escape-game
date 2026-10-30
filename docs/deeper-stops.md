@@ -68,5 +68,4 @@ The calibration harness's simple policy won 59% before this pass. The target is 
 
 ## Out of scope this pass
 
-- The government side keeps its current turn flow.
 - Interface text standards wait for the owner's content structure.

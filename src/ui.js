@@ -45,7 +45,7 @@ const UI = (() => {
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = (r.lines || []).join(''); $('start').hidden = true; document.body.classList.toggle('gov', !!gov);
     round = r.round || 1; daily = r.daily && r.daily === dailyInfo().key ? dailyInfo() : null;
-    setTab('here'); renderAll(); if (!gov) startRound(true); return true;
+    setTab('here'); renderAll(); startRound(true); return true;
   }
 
   // ---- runs --------------------------------------------------------------
@@ -67,7 +67,7 @@ const UI = (() => {
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
     log('sys', `${Sim.clockText(0)}. You are ${Data.GOV.name}, ${Data.GOV.title}. ${Data.CHARACTERS[gov.target].name} lost on Saturday and the court has barred her from leaving. The minister wants a location.`, 'sys');
-    animate(gov._boot); renderAll(); saveRun();
+    round = 1; animate(gov._boot); renderAll(); startRound(true); saveRun();
   }
 
   function setTab(t) { tab = t; document.querySelectorAll('#tabs button').forEach(b => { if (b.dataset.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === t)); }
@@ -94,6 +94,7 @@ const UI = (() => {
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = `The minister wants a location by ${short(v.ministerBy)}.`;
       $('expl-l').textContent = 'Suspected:'; $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? 'last report ' + v.lastReport : 'no reports';
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
+      $('wait').textContent = 'Wait one hour'; $('phoneh').textContent = 'The desk'; document.querySelector('#herehead h2').textContent = 'Orders';
       return;
     }
     $('goaltxt').textContent = 'Leave Esmeraldan airspace by'; $('leftverb').textContent = 'Out by';
@@ -106,6 +107,7 @@ const UI = (() => {
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = 'Exposure'; $('expl-b').textContent = ''; $('heat2').hidden = false;
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
+    $('wait').textContent = 'Lie low one hour'; $('phoneh').textContent = 'The phone'; document.querySelector('#herehead h2').textContent = 'Here';
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
   }
 
@@ -160,7 +162,7 @@ const UI = (() => {
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
   function callBtn(c, allowed, label) {
     const b = document.createElement('button'); b.className = 'call' + (c.ok ? '' : ' no') + (sel === c.id ? ' sel' : '') + (allowed ? '' : ' off'); b.disabled = !allowed;
-    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span><span class="hrs">${c.ok ? c.hours + ' h' : esc(c.why)}</span>`;
+    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${c.hours} h</span>` : `<span class="why">${esc(c.why)}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === c.id ? null : c.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -289,16 +291,19 @@ const UI = (() => {
   // ---- phase turns ------------------------------------------------------------------
   const PH = ['news', 'phone', 'move', 'roll', 'sosa'];
   const mks = (tags) => `<span class="mks">${tags.map(t => `<span class="mk ${t.k}">${esc(t.t)}</span>`).join('')}</span>`;
+  const PH_LABEL = { news: ['News', 'Reports'], phone: ['Phone', 'Desk'], move: ['Move', 'Order'], roll: ['Roll', 'Roll'], sosa: ['Sosā', 'Her move'] };
+  const pendingEvent = () => gov ? Gov.view(gov).event : Sim.actions(s).event;
   function phoneUseful() {
+    if (gov) { const v = Gov.view(gov); return v.messages.length > 0 || (phoneCalls < 1 && v.calls.some(c => c.ok)); }
     const A = Sim.actions(s);
     return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id))) || (phoneCalls < 1 && A.calls.some(c => c.ok && Tutorial.allowsCall(c.arr)));
   }
   function startRound(first) {
-    if (gov || !s || s.over) return;
+    if (!s || s.over) return;
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
-    interstitial(short(s.hour), `Round ${round}`, `${Data.LEVELS[s.pos].short}${s.hold ? `. Held ${s.hold} of 3` : ''}`);
-    enterPhase(Sim.actions(s).event ? 'news' : 'phone');
+    interstitial(short(s.hour), `Round ${round}`, gov ? `Searching ${Gov.view(gov).suspectName.replace(/^The /, 'the ')}` : `${Data.LEVELS[s.pos].short}${s.hold ? `. Held ${s.hold} of 3` : ''}`);
+    enterPhase(pendingEvent() ? 'news' : 'phone');
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
@@ -313,31 +318,32 @@ const UI = (() => {
     el.onclick = () => { el.hidden = true; };
   }
   function renderPhase() {
-    const on = !gov && !!s && !s.over && $('start').hidden;
+    const on = !!s && !s.over && $('start').hidden;
     $('phasebar').hidden = !on; document.body.classList.toggle('phased', on);
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
       if (phase === 'move' && Tutorial.active() && !movedThisRound && phoneUseful()) phase = 'phone';
       if (phase === 'phone' && !phoneUseful()) phase = 'move';
-      if ((phase === 'phone' || phase === 'move') && Sim.actions(s).event && !movedThisRound) phase = 'news';
+      if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
     }
     $('round').textContent = `Round ${round}`;
     const idx = PH.indexOf(phase);
-    document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; });
+    document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = PH_LABEL[PH[i]][gov ? 1 : 0]; });
+    $('phasedone').textContent = gov ? 'Done at the desk' : 'Done with the phone';
     $('phasedone').hidden = phase !== 'phone';
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
     const was = card.dataset.ph; card.dataset.ph = phase;
     card.hidden = !showCard; $('herehead').hidden = showCard; $('approaches').hidden = showCard; $('lvlhead2').hidden = showCard;
     if (was !== phase) { $('tab-here').scrollTop = 0; $('tab-phone').scrollTop = 0; }
-    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, 'See what Sosā did', () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
+    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, gov ? 'See what came in' : 'See what Sosā did', () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
   }
   const KIND = { event: 'News', rumor: 'A rumor', hold: 'The inquiry has you' };
   function newsCard(card) {
-    if (result && result.from === 'news') { resultCard(card, result, 'Continue', () => { result = null; enterPhase(Sim.actions(s).event ? 'news' : 'phone'); }); return; }
-    const v = Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
+    if (result && result.from === 'news') { resultCard(card, result, 'Continue', () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
+    const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${KIND[v.kind]}${v.kind === 'hold' ? ` · ${v.rung} of 3` : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over; b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over; b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
@@ -349,14 +355,16 @@ const UI = (() => {
   }
   function sosaCard(card) {
     card.className = 'sosa';
-    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : '<li class="gain"><i></i><span>Quiet. Nobody moved against you.</span></li>';
-    card.innerHTML = `<span class="kind">While you moved</span><h3>${roundSum.hours} h passed. Now ${esc(short(s.hour))}</h3><ul class="rows">${rows}</ul>`;
+    const quiet = gov ? 'No new reports. She could be anywhere on the route.' : 'Quiet. Nobody moved against you.';
+    const rows = roundSum.theirs.length ? roundSum.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
+    card.innerHTML = `<span class="kind">${gov ? 'While your orders ran' : 'While you moved'}</span><h3>${roundSum.hours} h passed. Now ${esc(short(s.hour))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = 'Next round'; b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
     const r = { kind, title, roll: null, line: '', mine: [], theirs: [], hours: 0 }; let after = false, expMine = 0, expTheirs = 0;
     for (const e of events) {
       if (e.type === 'hour') { after = true; r.hours += 1; continue; }
+      if (e.type === 'passed') { after = true; r.hours += e.hours; continue; }
       const bucket = after ? r.theirs : r.mine;
       switch (e.type) {
         case 'attempt': r.title = e.name; break;
@@ -373,6 +381,8 @@ const UI = (() => {
         case 'hold': r.theirs.push({ k: 'enemy', t: `${e.title}. You deal with it next.` }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: `News waiting: ${e.title}` }); break;
         case 'message': r.theirs.push({ k: 'news', t: `Message from ${pname(e.from)}` }); break;
+        case 'report': bucket.push({ k: e.from === 'enemy' ? 'enemy' : 'news', t: `${pname(e.from)}: ${e.text.replace(/ \(.*\)$/, '')}` }); break;
+        case 'order': r.title = r.title || e.name; break;
         default: break;
       }
     }
@@ -427,19 +437,18 @@ const UI = (() => {
   function renderGovHere() {
     const box = $('approaches'); box.innerHTML = '';
     const v = Gov.view(gov);
-    const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>Reports</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span><span class="mono">${r.age}</span> ago</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>Proves</b><span>${esc(r.proves)}</span></span><span><b>Does not prove</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : '<p class="hint">No reports yet. The watch team is at the residence.</p>');
+    for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, 'Send the order', () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move')); }
+    const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>Reports</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span>${r.age === 'just now' ? 'just now' : `<span class="mono">${r.age}</span> ago`}</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>Proves</b><span>${esc(r.proves)}</span></span><span><b>Does not prove</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : '<p class="hint">No reports yet. The watch team is at the residence.</p>');
     box.appendChild(rep);
-    const h = document.createElement('h2'); h.textContent = 'Orders'; box.appendChild(h);
-    for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, 'Send the order', () => doGov(a.id))); else box.appendChild(approachBtn(a, true)); }
-    $('wait').disabled = !!s.over;
+    $('wait').disabled = !!s.over || phase !== 'move';
   }
   function renderGovPhone() {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';
     $('waiting').textContent = v.messages.length ? `${v.messages.length} waiting` : ''; const badge = $('tab-badge'); badge.hidden = !v.messages.length; badge.textContent = v.messages.length;
     if (!v.messages.length) inbox.innerHTML = '<p class="hint">No calls waiting.</p>';
-    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), () => true));
+    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), () => phase === 'phone'));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">Send</button><button class="cancel">Cancel</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, true, c.name)); }
+    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">Send</button><button class="cancel">Cancel</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, phase === 'phone' && phoneCalls < 1, c.name)); }
   }
   function renderGovHand() {
     const h = $('hand'); h.innerHTML = '';
@@ -450,7 +459,7 @@ const UI = (() => {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
     Data.LEVELS.forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
-      const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(r.source)}, ${r.age} ago</b><span>${esc(r.text)} ${esc(r.doesnt ? 'Does not prove ' + r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) : '')}</span></span>`).join('');
+      const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(r.source)}, ${r.age === 'just now' ? 'just now' : r.age + ' ago'}</b><span>${esc(r.text)} ${esc(r.doesnt ? 'Does not prove ' + r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) : '')}</span></span>`).join('');
       const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === gov.belief ? 'She may be here' : i === 4 ? 'The border' : i === 5 ? 'Esmeralda' : ''}</span></div><span class="who">${esc(v.people[i])}</span>${i === 5 ? '<span class="need notyet"><b>Your ministry does not command this tower</b><span>Ask Esmeralda. The request must reach the people who can stop the flight.</span></span>' : ''}${reqs}${reps}</div>`;
       rail.appendChild(li);
@@ -461,7 +470,14 @@ const UI = (() => {
   function doGov(id, opt) {
     Sfx.unlock(); const r = Gov.commit(gov, id, opt);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    Sfx.confirm(); sel = null; animate(r.events); renderAll(); saveRun();
+    Sfx.confirm(); sel = null; animate(r.events);
+    const sid = String(id), sm = summarize(r.events, 'Your order', null);
+    roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
+    if (sid.startsWith('evt:')) { result = summarize(r.events, 'Your choice', null); result.from = 'news'; phase = 'news'; }
+    else if (sid.startsWith('req:')) { phoneCalls += 1; if (!phoneUseful()) { phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } }
+    else if (sid.startsWith('msg:')) { /* stay at the desk */ }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = 'You waited'; result.title = 'One hour for reports'; } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    renderAll(); saveRun();
   }
 
   // ---- start, title, boot --------------------------------------------------------------
@@ -469,15 +485,15 @@ const UI = (() => {
     const box = $('start-chars'); box.innerHTML = '';
     const first = !seen(), saved = savedRun();
     $('continue').hidden = !saved; if (saved) $('continue').textContent = saved.gov ? `Continue your run as ${Data.GOV.name}` : `Continue your run as ${Data.CHARACTERS[saved.who].name}`;
-    $('start-demo-note').textContent = (first ? 'New here? ' : '') + 'Learn the route to the border as ' + Data.CHARACTERS[Tutorial.WHO].name + '. Finish at the airfield on your own.';
+    $('start-demo-note').textContent = `A guided run as ${Data.CHARACTERS[Tutorial.WHO].name} walks you to the airfield, where you take over.`;
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
-    $('start-free').textContent = first ? 'Or choose your character' : 'Choose your character';
+    $('start-free').textContent = 'Pick who you play';
     let n = 0;
-    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(c.sibling.rel[0].toUpperCase() + c.sibling.rel.slice(1))} ${esc(c.sibling.short)} is abroad</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
-    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title)}. Stop the escape.</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
-    const url = Render.runwayStill(); if (url) $('start-art').style.backgroundImage = `url(${url})`;
+    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${c.pronoun === 'she' ? 'Her' : 'His'} ${esc(c.sibling.rel.replace('your ', ''))} ${esc(c.sibling.short)} is booking the jet</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
+    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
+    const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
-    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? `${done.line}. Play again or share.` : `Today: ${Data.CHARACTERS[D.who].name}. Same run for everyone.`;
+    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? `${done.line}. Play again or share it.` : `Everyone plays the same run today, as ${Data.CHARACTERS[D.who].name}.`;
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
   }

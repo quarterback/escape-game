@@ -413,7 +413,7 @@ const Sim = (() => {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
       if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: 'Monday noon. Your own passport is cancelled and the ban is at every post.', belief: s.belief })); }
-      if (s.belief === s.pos && s.hour % 2 === 0) heat(s, 1, events);
+      if (s.belief === s.pos && s.hour % (s._manual ? 4 : 2) === 0) heat(s, 1, events);
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
       if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 6; climbHold(s, events); } }
       if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: `${clockText(s.hour)}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. ${epilogue(s, false)}` }; events.push(ev('over', s.over)); }
@@ -438,7 +438,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = D.LEVELS[Math.max(0, s.belief)].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
+      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 6 && !s._manual) { text += ' They find you.'; events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += ' They are close.'; } else text += ' Nobody there has seen you.'; break; }
       case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += ' The last call came from where you are.'; } else text += ' Nothing new.'; break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + ' The operator withdraws the crew until you reassure him.'; } else text = pick.text(); break;
@@ -478,6 +478,6 @@ const Sim = (() => {
     return out.join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
