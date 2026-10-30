@@ -20,7 +20,9 @@ const Gov = (() => {
 
   function newRun(seed, target, opts) {
     target = target || 'woman'; opts = opts || {};
-    const c = S.newRun(seed, target, { manualEnemy: true });
+    // she picks her own country; the player learns it from the charter's flight plan, never from the state
+    const pick = ((seed >>> 0) % 10) < 8 ? 'atlanta' : ['zaryanova', 'tarun'][(seed >>> 0) % 2]; // she usually knows who will have her
+    const c = S.newRun(seed, target, { manualEnemy: true, dest: (opts && opts.dest) || pick });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
       timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
       event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0 };
@@ -49,7 +51,7 @@ const Gov = (() => {
   function release(g, events) { for (const r of g.pending.slice()) if (!r.job && r.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== r); g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: r.source, text: r.text, at: r.at })); } }
 
   // ---- the candidate plays herself: the harness policy, one action at a time ----
-  const PREF = { name_atlanta: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, confirm_yacht: 1, sign_accounts: 1, go_midnight: 1, guest_yes: 1, sosa_hang: 1 };
+  const PREF = { confirm_dest: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, confirm_yacht: 1, sign_accounts: 1, go_midnight: 1, guest_yes: 1, sosa_hang: 1 };
   function herStep(g) {
     const c = g.c, A = S.actions(c), before = c.hour;
     // her dispatches and holds come first; she takes the choice whose markers look cheapest
@@ -77,9 +79,9 @@ const Gov = (() => {
         if (to === 2) report(g, events, 2, 'desk', T('gov.report.the_nova_trent_cooperative_had'), T('gov.report.someone_stayed_at_the_col'), 'Who.', 5, c.hour);
         if (to === 3) report(g, events, 3, 'rail', T('gov.report.somebody_asked_about_the_midnight'), T('gov.report.someone_wants_the_freight'), T('gov.report.that_it_was_her'), 2, c.hour);
         if (to === 4) report(g, events, 4, 'desk', T('gov.report.a_passenger_left_the_salta'), T('gov.report.someone_rode_the_freight'), T('gov.report.that_she_crossed'), 2, c.hour);
-        if (to === 5) report(g, events, 5, 'aviation', T('gov.report.a_charter_at_susana_is'), T('gov.report.a_jet_is_preparing_to'), T('gov.report.that_she_has_reached_it'), 2, c.hour); }
-      if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', T('gov.report.a_charter_to_layuna_is'), T('gov.report.an_aircraft_is_booked'), T('gov.report.that_she_has_reached_it'), 3, c.hour);
-      if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', T('gov.report.atlanta_has_issued_her_an'), T('gov.report.atlanta_will_receive_her'), T('gov.report.where_she_is_now'), 4, c.hour);
+        if (to === 5) report(g, events, 5, 'aviation', T('gov.report.a_charter_at_susana_is', { city: D.DESTS[c.dest].city }), T('gov.report.a_jet_is_preparing_to'), T('gov.report.that_she_has_reached_it'), 2, c.hour); }
+      if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', T('gov.report.a_charter_to_layuna_is', { city: D.DESTS[c.dest].city }), T('gov.report.an_aircraft_is_booked'), T('gov.report.that_she_has_reached_it'), 3, c.hour);
+      if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', T('gov.report.visa_issued', { name: D.DESTS[c.dest].name }), T('gov.report.will_receive_her', { name: D.DESTS[c.dest].name }), T('gov.report.where_she_is_now'), 4, c.hour);
       if (e.type === 'enemy' && e.id === 'press_ally' && e.talked) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, T('gov.report.where_she_was_last_seen'), T('gov.inquiry.where_she_is_now'), 0, c.hour); }
       if (e.type === 'hold') report(g, events, c.pos, 'desk', T('gov.report.a_patrol_report_in', { title: e.title.toLowerCase(), place: place(c.pos) }), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
       if (e.type === 'over') g.over = e;
@@ -277,8 +279,8 @@ const Gov = (() => {
   // ---- the debrief: what happened against what you believed ------------------------------------
   function debrief(g) {
     const c = g.c, esc = (t) => String(t).replace(/</g, '&lt;');
-    const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal'); // outcome codes, never prose
-    const head = c.over.win ? T('gov.debrief.the_jet_left_esmeraldan_airspace', { time: S.clockText(c.hour), esmeralda_was_never_asked_in: g.req.hold === 'inhand' ? T('gov.debrief.esmeralda_acknowledged_your_hold_the') : T('gov.debrief.esmeralda_was_never_asked_in') }) : win ? T('gov.debrief.sosa_s_people_reached_her', { place: place(c.pos), time: S.clockText(c.hour) }) : T('gov.debrief.she_never_left_the_hearing', { time: S.clockText(c.hour) });
+    const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal' || c.over.kind === 'landed'); // outcome codes, never prose
+    const head = c.over.kind === 'landed' ? T('gov.debrief.taken_on_landing', { time: S.clockText(c.hour), city: D.DESTS[c.dest].city, name: D.DESTS[c.dest].name }) : c.over.win ? T('gov.debrief.the_jet_left_esmeraldan_airspace', { time: S.clockText(c.hour), esmeralda_was_never_asked_in: g.req.hold === 'inhand' ? T('gov.debrief.esmeralda_acknowledged_your_hold_the') : T('gov.debrief.esmeralda_was_never_asked_in') }) : win ? T('gov.debrief.sosa_s_people_reached_her', { place: place(c.pos), time: S.clockText(c.hour) }) : T('gov.debrief.she_never_left_the_hearing', { time: S.clockText(c.hour) });
     const label = (t) => { if (t.pos === t.belief) return ['right', T('gov.debrief.right')]; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', T('gov.debrief.decoy')]; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', T('gov.debrief.wrong')]; };
     const rows = g.timeline.map(t => { const [k, l] = label(t); return `<tr><td class="mono">${esc(S.clockText(t.hour).replace(/^(\w{3})\w+/, '$1'))}</td><td>${esc(place(t.pos)[0].toUpperCase() + place(t.pos).slice(1))}</td><td>${esc(place(t.belief)[0].toUpperCase() + place(t.belief).slice(1))} <span class="v ${k}">${l}</span></td></tr>`; }).join('');
     const mis = g.reports.filter(r => r.misleading).map(r => T('gov.debrief.it_was_one_of_nando', { text: esc(r.text) }));

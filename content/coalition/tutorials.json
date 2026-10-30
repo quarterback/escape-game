@@ -36,7 +36,7 @@
      "id": "intro",
      "kind": "read",
      "title": "A guided first run",
-     "body": "You are Teresā Albukerkē, the defeated candidate. Reach Atlanta within 72 hours.\n\nThis tutorial guides you to the border. The airfield is yours to play.",
+     "body": "You are Teresā Albukerkē, the defeated candidate. Reach the jet and leave within 72 hours.\n\nThis tutorial guides you to the border. The airfield is yours to play.",
      "goal": "Know the goal and the deadline",
      "highlight": []
     },
@@ -65,14 +65,14 @@
      "id": "answer_brother",
      "kind": "act",
      "title": "Answer your brother",
-     "body": "Duartē found a jet. He needs a destination to book the crew.\n\nChoose **Name Atlanta now**.",
+     "body": "Duartē found a jet. He needs a destination to book the crew.\n\nChoose **Confirm Lāyūna**. The tutorial has already picked where you are going.",
      "goal": "Answer a message",
      "highlight": [
       "#inbox"
      ],
      "allow": {
       "options": [
-       "name_atlanta"
+       "confirm_dest"
       ]
      },
      "done": {
@@ -150,7 +150,7 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Engage the sponsor",
-     "body": "**Call Salek about your visa**. He can ask Atlanta to let you in.\n\nRead his terms before committing. Calling accepts them.",
+     "body": "**Call Salek about your visa**. He is Atlanta's sponsor and can ask Lāyūna to let you in.\n\nRead his terms before committing. Calling accepts them.",
      "goal": "Accept terms by calling",
      "highlight": [
       "#calls"
@@ -301,7 +301,7 @@
      "id": "border",
      "kind": "read",
      "title": "The border",
-     "body": "Your second passport counts from here on. The border has Sosā's ban, but Gianlūka's card still helps on this side of the line.\n\nYou can cross now or wait for Vélez's people.",
+     "body": "Three posts cross the line. One has taken Valdória’s money, and you do not know which. Vélez’s people, when they come, cover one of the others.\n\nYou can cross now or wait for reception to be arranged.",
      "goal": "Know where the second passport counts",
      "highlight": [
       "#approaches",
@@ -309,17 +309,17 @@
      ]
     },
     {
-     "id": "show_passport",
+     "id": "post_rail",
      "kind": "act",
-     "title": "Show your second passport",
-     "body": "Select **Show your second passport**. Read how the ban and your cards change the roll, then commit.",
+     "title": "Cross at the rail post",
+     "body": "Select **Cross at the Paso Huhūi rail post**. Your second passport goes on the desk. Read how the ban and your cards change the roll, then commit.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
      ],
      "allow": {
       "approaches": [
-       "show_passport"
+       "post_rail"
       ]
      },
      "done": {
@@ -329,8 +329,8 @@
     {
      "id": "airfield",
      "kind": "read",
-     "title": "Susana airfield. The rest is yours.",
-     "body": "You crossed. Now fuel the jet and get Atlanta's visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
+     "title": "Susana. The rest is yours.",
+     "body": "You crossed. Esmeralda lets you fly from Susana and nothing more. Now fuel the jet and get the visa. Your party card has no influence here.\n\nCall Duartē and Salek as needed. Depart when the aircraft and permission are ready, or risk leaving without permission.\n\nPress **Finish** to continue. Rolls and inquiry moves are no longer scripted.",
      "goal": "Play the airfield alone",
      "highlight": [
       "#board",

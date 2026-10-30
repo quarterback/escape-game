@@ -50,11 +50,11 @@ const UI = (() => {
   }
 
   // ---- runs --------------------------------------------------------------
-  function newRun(w, demo, isDaily) {
-    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1;
-    if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true }); Tutorial.stop(); }
+  function newRun(w, demo, isDaily, dest) {
+    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun((Math.random() * 1e9) >>> 0, who, { dest }); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -174,7 +174,7 @@ const UI = (() => {
     $('waiting').textContent = A.messages.length ? T('phone.waiting', { n: A.messages.length }) : ''; const badge = $('tab-badge'); badge.hidden = !A.messages.length; badge.textContent = A.messages.length;
     if (!A.messages.length) inbox.innerHTML = `<p class="hint">${T('phone.empty')}</p>`;
     for (const m of A.messages) {
-      const role = m.from === 'sibling' ? T('phone.sibling_role', { rel: Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '') }) : m.from === 'enemy' ? Data.ENEMY.role : (Data.PEOPLE[m.from] || {}).role || '';
+      const role = m.from === 'sibling' ? T('phone.sibling_role', { rel: Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '') }) : m.from === 'enemy' ? Data.ENEMY.role : gov ? (Data.PEOPLE[m.from] || {}).role || '' : Sim.personRole(s, m.from);
       inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && phase === 'phone'));
     }
     const calls = $('calls'); calls.innerHTML = '';
@@ -215,7 +215,7 @@ const UI = (() => {
         title = n.arr === 'reception' ? T(n.stage >= 3 ? 'need.officials' : 'need.expects') : n.arr === 'aircraft' ? T(n.stage >= 4 ? 'need.aircraft_ready' : n.stage >= 2 ? 'need.crew' : 'need.charter') : NEED_LABEL[n.arr] ? T(NEED_LABEL[n.arr]) : def.name;
         seen[key] = n.stage; out.push({ key, title, sub: '', state: '' }); const slot = out[out.length - 1];
         state = cur.stage >= n.stage ? 'inhand' : job ? 'promised' : 'notyet';
-        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { stage: def.stages[cur.stage], ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek') : def.what);
+        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { stage: def.stages[cur.stage], ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek', { sponsor: Sim.sponsor(s).short }) : def.what);
         slot.sub = sub; slot.state = state; continue; }
       else if (n.card) { if (n.card === 'decoy' || n.card === 'influence') continue; key = 'card' + n.card; const held = s.hand.find(id => Data.CARDS[id].tag === n.card); state = held ? 'inhand' : 'notyet';
         title = n.card === 'document' ? T('need.passport') : n.card === 'passage' ? T('need.passage') : n.card === 'decoy' ? T('need.decoy') : n.card === 'influence' ? T('need.influence') : T('need.card', { tag: n.card });
@@ -229,7 +229,8 @@ const UI = (() => {
   function whoActs(i) { return Object.keys(Data.PEOPLE).filter(k => Data.PEOPLE[k].where === i).map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned })); }
   const abroad = () => ['sibling', 'sponsor'].map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned, role: T(k === 'sibling' ? 'route.role_aircraft' : 'route.role_visa') }));
   function whoMark(k) { const p = s.people[k]; if (!p) return ['unknown', T('who.unknown')]; if (p.cut) return ['cut', T('who.cut')]; if (p.turned) return ['talked', T('who.talked')]; if (p.known) return ['trust', T('who.clean')]; if (p.doubt) return ['doubt', T('who.doubted')]; if (p.trust >= 2) return ['trust', T('who.trusted')]; return ['unknown', T('who.unknown')]; }
-  const whoHtml = (w) => { const [c, t] = whoMark(w.k); return `<span class="whoi">${esc(w.name)} <span class="mk ${c}">${t}</span></span>`; };
+  const lastLedger = (k) => { const L = (s.ledger || []).filter(x => x.who === k).slice(-2); return L.length ? `<span class="ledger">${L.map(x => `<span class="h">${short(x.hour)}</span> ${esc(x.text)}`).join('<br>')}</span>` : ''; };
+  const whoHtml = (w) => { const [c, t] = whoMark(w.k); return `<span class="whoi">${esc(w.name)} <span class="mk ${c}">${t}</span>${lastLedger(w.k)}</span>`; };
   const inSentence = (n) => /^(Your|Two|A|An|The)\b/.test(n) ? n[0].toLowerCase() + n.slice(1) : n; // card names mid-sentence
   function cardNotes(i) {
     const notes = [];
@@ -269,7 +270,7 @@ const UI = (() => {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
     o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
-    $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
+    $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal', landed: 'over.landed' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
     $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
     $('share').hidden = !(daily && !gov);
@@ -496,7 +497,7 @@ const UI = (() => {
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
     $('start-free').textContent = T('start.pick');
     let n = 0;
-    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(T(c.pronoun === 'she' ? 'start.sibling_her' : 'start.sibling_his', { rel: c.sibling.rel.replace('your ', ''), name: c.sibling.short }))}</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); newRun(k); }; box.appendChild(b); }
+    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(T(c.pronoun === 'she' ? 'start.sibling_her' : 'start.sibling_his', { rel: c.sibling.rel.replace('your ', ''), name: c.sibling.short }))}</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(k, false, false, d)); }; box.appendChild(b); }
     const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
     const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
@@ -504,6 +505,43 @@ const UI = (() => {
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
   }
+  // The map: Valdória, the strip you fly from, and the three countries that might take you. The player picks one
+  // with no more information than the blurbs; which country has actually agreed is never shown.
+  const MAP_LAND = [
+    // coarse continent outlines in lon,lat; a schematic, not a chart
+    [[-168,66],[-140,70],[-95,72],[-62,62],[-55,50],[-66,45],[-75,36],[-81,28],[-97,26],[-105,22],[-97,16],[-85,12],[-78,8],[-82,0],[-77,-5],[-70,-18],[-71,-30],[-73,-45],[-68,-55],[-64,-50],[-58,-38],[-48,-26],[-38,-12],[-35,-6],[-50,0],[-52,6],[-61,10],[-72,12],[-78,9],[-88,15],[-96,19],[-104,25],[-117,32],[-124,40],[-125,48],[-135,58],[-150,61],[-165,62]],
+    [[-10,36],[-6,36],[10,38],[32,31],[35,28],[43,12],[51,12],[47,-1],[40,-10],[40,-16],[35,-24],[31,-29],[26,-34],[18,-34],[13,-24],[12,-14],[9,-1],[9,4],[0,5],[-8,4],[-15,10],[-17,15],[-17,21],[-13,27],[-10,30]],
+    [[-10,43],[-2,43],[3,43],[10,44],[14,41],[16,38],[19,40],[24,38],[28,41],[41,41],[49,43],[52,42],[60,44],[70,40],[62,25],[57,21],[52,25],[48,30],[36,36],[27,37],[36,40],[28,41]],
+    [[-10,43],[-9,53],[-6,58],[5,62],[12,66],[20,70],[30,70],[45,68],[60,70],[75,73],[100,78],[130,72],[150,70],[180,66],[165,60],[160,52],[140,45],[132,43],[125,40],[122,30],[118,22],[108,10],[104,2],[100,10],[95,18],[90,22],[80,10],[77,8],[72,20],[66,25],[62,25],[70,40],[60,44],[52,42],[49,43],[41,41],[28,41],[24,38],[19,40],[16,38],[14,41],[10,44],[3,43],[-2,43]],
+    [[115,-20],[125,-14],[132,-12],[142,-11],[147,-19],[153,-27],[150,-37],[141,-38],[131,-32],[118,-34],[114,-26]],
+    [[-55,-62],[-20,-68],[20,-66],[60,-66],[100,-66],[150,-66],[180,-70],[-120,-72],[-80,-70]],
+  ];
+  const proj = (lon, lat) => [((lon + 180) / 360) * 1000, ((90 - lat) / 180) * 500];
+  function drawMap(sel) {
+    const svg = $('worldmap'); let h = '';
+    for (let x = 0; x <= 1000; x += 125) h += `<line class="grid" x1="${x}" y1="0" x2="${x}" y2="500"/>`; for (let y = 0; y <= 500; y += 125) h += `<line class="grid" x1="0" y1="${y}" x2="1000" y2="${y}"/>`;
+    for (const poly of MAP_LAND) h += `<polygon class="land" points="${poly.map(([lo, la]) => proj(lo, la).map(v => v.toFixed(1)).join(',')).join(' ')}"/>`;
+    const V = proj(Data.PLACES.valdoria.lon, Data.PLACES.valdoria.lat), E = proj(Data.PLACES.susana.lon, Data.PLACES.susana.lat);
+    h += `<path class="route drive" d="M${V[0]},${V[1]} Q${(V[0] + E[0]) / 2},${Math.min(V[1], E[1]) - 30} ${E[0]},${E[1]}"/>`;
+    for (const k in Data.DESTS) { const d = Data.DESTS[k]; const P = proj(d.lon, d.lat); const mx = (E[0] + P[0]) / 2, my = Math.min(E[1], P[1]) - 90; h += `<path class="route" d="M${E[0]},${E[1]} Q${mx},${my} ${P[0]},${P[1]}"/>`; }
+    h += `<circle class="pt here" cx="${V[0]}" cy="${V[1]}" r="7"/><text class="lbl" x="${V[0] - 10}" y="${V[1] + 28}">${esc(Data.PLACES.valdoria.name)}</text><text class="lbl sub" x="${V[0] - 10}" y="${V[1] + 44}">${esc(T('map.here'))}</text>`;
+    h += `<circle class="pt via" cx="${E[0]}" cy="${E[1]}" r="6"/><text class="lbl" x="${E[0] + 10}" y="${E[1] - 8}">${esc(Data.PLACES.susana.name)}</text>`;
+    for (const k in Data.DESTS) { const d = Data.DESTS[k]; const P = proj(d.lon, d.lat); h += `<circle class="pt pick${sel === k ? ' on' : ''}" data-dest="${k}" cx="${P[0]}" cy="${P[1]}" r="9"/><text class="lbl" x="${P[0] + 14}" y="${P[1] - 6}">${esc(d.city)}</text><text class="lbl sub" x="${P[0] + 14}" y="${P[1] + 10}">${esc(d.name)}</text>`; }
+    svg.innerHTML = h;
+    svg.querySelectorAll('.pt.pick').forEach(c => c.onclick = () => drawChoices(c.dataset.dest));
+  }
+  let mapGo = null;
+  function drawChoices(sel) {
+    drawMap(sel); const box = $('map-choices'); box.innerHTML = '';
+    for (const k in Data.DESTS) {
+      const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : '');
+      b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: d.hours }))}</span></span>`
+        + `<dl><dt>${esc(T('map.who_asks'))}</dt><dd>${esc(d.sponsor.asks)}</dd><dt>${esc(T('map.the_catch'))}</dt><dd>${esc(d.sponsor.catch)}</dd></dl>`
+        + `<span class="dfoot"><span class="pill">${esc(T('map.not_yet'))}</span><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
+      b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b);
+    }
+  }
+  function showMap(go) { mapGo = go; $('start').hidden = true; drawChoices(null); $('map').hidden = false; }
   function showTitle() {
     const t = Sim.newRun(3, 'woman'); t.pos = 4; t.hour = 36; t.belief = 1;
     const paint = () => { const url = Render.still(t); if (!url) { setTimeout(paint, 60); return; } $('title').style.backgroundImage = `url(${url})`; };
@@ -523,7 +561,7 @@ const UI = (() => {
     if (/iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone) $('ioshint').hidden = false;
   }
   function boot() {
-    Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', esc(T('log.person_role', { name: pname(id), role: Data.PEOPLE[id].role })), 'sys'); } });
+    Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', esc(T('log.person_role', { name: pname(id), role: gov ? Data.PEOPLE[id].role : Sim.personRole(s, id) })), 'sys'); } });
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
@@ -543,7 +581,7 @@ const UI = (() => {
       if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
-    $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, false, true); };
+    $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };
     const released = () => { if (gov && !Tutorial.active()) Gov.endTutorial(gov); };
