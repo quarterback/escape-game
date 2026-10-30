@@ -31,8 +31,9 @@ embedded, all sound is synthesized with Web Audio and career records live in
   next. Heat climbs when people notice you, and the bailiffs take you at 8.
   Three personas start the night with different purses.
 - The lore that the setting, names and words come from is listed in
-  `docs/aar-last-freight-out.md`; the one piece of new canon the game proposes,
-  Esmeralda, is in `docs/PROPOSAL-esmeralda.md`.
+  `docs/aar-last-freight-out.md`; the far side of the line is Esmeralda, the
+  second Nelosphere state in South America (capital Baca, largest city
+  Susana), owner canon of 2026-10-30.
 - Waiting with a card selected swaps that card for a fresh draw.
 
 Keys 1 to 4 pick a card, the arrow keys walk, Enter commits and Esc cancels.

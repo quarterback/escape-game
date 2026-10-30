@@ -150,8 +150,8 @@ Keeping the sim pure and loadable from Node, so a calibration harness can measur
 **What belongs with a human rather than an agent:**
 
 The game concept and theme, and above all which country of the owner's world
-it sits in and what the far side of the border is called (the Esmeralda
-proposal in `docs/PROPOSAL-esmeralda.md` is the owner's to ratify). The feel targets for each persona. Whether the hand swap stays, since it changes the texture of a night. Any renaming of characters or places, per the owner's rule in the tennis repo that names are theirs to pick.
+it sits in and what the far side of the border is called (the owner named Esmeralda, Baca and Susana themselves when the agent's
+first two attempts missed). The feel targets for each persona. Whether the hand swap stays, since it changes the texture of a night. Any renaming of characters or places, per the owner's rule in the tennis repo that names are theirs to pick.
 
 **Signal that the change worked:**
 

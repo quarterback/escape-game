@@ -30,7 +30,7 @@ const UI = (() => {
     $('dialogue').innerHTML = '';
     $('seed').value = seed;
     const P0 = Sim.PERSONAS[persona];
-    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Esmeralda, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
+    log('sys', `A rail town in Salta, on the edge of la Perlā, ${Sim.clockText(0)}. Your name is in the ledger for a debt you cannot pay, and the midnight frēt over the Huhūi passes, the Andean line north to Esmeralda and its big port Susana, is the last one before the line closes. Tonight you are ${P0.name}. ${P0.blurb} You have seven hours.`, 'sys');
     log('you', 'A stamped pāsportô, a way past customs, a way across the jārd and a crate with my chalk mark on it. In that order, or any order that works.');
     renderAll();
   }

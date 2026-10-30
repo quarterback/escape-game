@@ -317,10 +317,13 @@ ships:
 - **The far side.** The written world has one South American Nelosphere
   state. The owner ruled a counterfactual second one, Ecuador preferred,
   "since that's what happened IRL" (a peg state, the dollarization analog).
-  The game names it **Esmeralda**, formed by the Spanish-zone crisol rules, in
-  four strings. The naming, the capital and the open adjacency question are
-  in `docs/PROPOSAL-esmeralda.md` for the owner to ratify in kels. Nothing was
-  written into that repo.
+  The owner named it **Esmeralda**, capital **Baca**, largest city **Susana**
+  (dictated names, 2026-10-30, after rejecting a crisol respelling of the real
+  name as too close to it). Built straight into the game as canon at the
+  owner's instruction, no proposal. The kels world layer does not yet carry
+  it; that is the owner's to write there. Valdória's written map does not
+  touch Esmeralda's ground, so the frēt runs "the Andean line north" and the
+  game does not say what lies between.
 
 "Veloria" appears in none of the owner's repos; the owner confirmed
 Valdória. The lesson is in the Agent Action Record: when a project has a
