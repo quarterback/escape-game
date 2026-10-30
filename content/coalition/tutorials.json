@@ -150,7 +150,7 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Engage the sponsor",
-     "body": "**Call Salek about your visa**. He can ask the country you chose to let you in.\n\nRead his terms before committing. Calling accepts them.",
+     "body": "**Call Salek about your visa**. He is Atlanta's sponsor and can ask Lāyūna to let you in.\n\nRead his terms before committing. Calling accepts them.",
      "goal": "Accept terms by calling",
      "highlight": [
       "#calls"

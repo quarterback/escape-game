@@ -174,7 +174,7 @@ const UI = (() => {
     $('waiting').textContent = A.messages.length ? T('phone.waiting', { n: A.messages.length }) : ''; const badge = $('tab-badge'); badge.hidden = !A.messages.length; badge.textContent = A.messages.length;
     if (!A.messages.length) inbox.innerHTML = `<p class="hint">${T('phone.empty')}</p>`;
     for (const m of A.messages) {
-      const role = m.from === 'sibling' ? T('phone.sibling_role', { rel: Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '') }) : m.from === 'enemy' ? Data.ENEMY.role : (Data.PEOPLE[m.from] || {}).role || '';
+      const role = m.from === 'sibling' ? T('phone.sibling_role', { rel: Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '') }) : m.from === 'enemy' ? Data.ENEMY.role : gov ? (Data.PEOPLE[m.from] || {}).role || '' : Sim.personRole(s, m.from);
       inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && phase === 'phone'));
     }
     const calls = $('calls'); calls.innerHTML = '';
@@ -215,7 +215,7 @@ const UI = (() => {
         title = n.arr === 'reception' ? T(n.stage >= 3 ? 'need.officials' : 'need.expects') : n.arr === 'aircraft' ? T(n.stage >= 4 ? 'need.aircraft_ready' : n.stage >= 2 ? 'need.crew' : 'need.charter') : NEED_LABEL[n.arr] ? T(NEED_LABEL[n.arr]) : def.name;
         seen[key] = n.stage; out.push({ key, title, sub: '', state: '' }); const slot = out[out.length - 1];
         state = cur.stage >= n.stage ? 'inhand' : job ? 'promised' : 'notyet';
-        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { stage: def.stages[cur.stage], ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek') : def.what);
+        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { stage: def.stages[cur.stage], ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek', { sponsor: Sim.sponsor(s).short }) : def.what);
         slot.sub = sub; slot.state = state; continue; }
       else if (n.card) { if (n.card === 'decoy' || n.card === 'influence') continue; key = 'card' + n.card; const held = s.hand.find(id => Data.CARDS[id].tag === n.card); state = held ? 'inhand' : 'notyet';
         title = n.card === 'document' ? T('need.passport') : n.card === 'passage' ? T('need.passage') : n.card === 'decoy' ? T('need.decoy') : n.card === 'influence' ? T('need.influence') : T('need.card', { tag: n.card });
@@ -533,7 +533,13 @@ const UI = (() => {
   let mapGo = null;
   function drawChoices(sel) {
     drawMap(sel); const box = $('map-choices'); box.innerHTML = '';
-    for (const k in Data.DESTS) { const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : ''); b.innerHTML = `<b>${esc(d.city)}, ${esc(d.name)}</b><span>${esc(d.blurb)}</span><span class="go">${esc(T('map.choose', { city: d.city }))}</span>`; b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b); }
+    for (const k in Data.DESTS) {
+      const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : '');
+      b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: d.hours }))}</span></span>`
+        + `<dl><dt>${esc(T('map.who_asks'))}</dt><dd>${esc(d.sponsor.asks)}</dd><dt>${esc(T('map.the_catch'))}</dt><dd>${esc(d.sponsor.catch)}</dd></dl>`
+        + `<span class="dfoot"><span class="pill">${esc(T('map.not_yet'))}</span><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
+      b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b);
+    }
   }
   function showMap(go) { mapGo = go; $('start').hidden = true; drawChoices(null); $('map').hidden = false; }
   function showTitle() {
@@ -555,7 +561,7 @@ const UI = (() => {
     if (/iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone) $('ioshint').hidden = false;
   }
   function boot() {
-    Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', esc(T('log.person_role', { name: pname(id), role: Data.PEOPLE[id].role })), 'sys'); } });
+    Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', esc(T('log.person_role', { name: pname(id), role: gov ? Data.PEOPLE[id].role : Sim.personRole(s, id) })), 'sys'); } });
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };

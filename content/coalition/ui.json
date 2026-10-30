@@ -407,7 +407,10 @@
   {
    "id": "need.salek",
    "pattern": "P05",
-   "text": "Salek asks the ministry"
+   "text": "{sponsor} asks the ministry",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "need.passport",
@@ -1690,11 +1693,6 @@
    ]
   },
   {
-   "id": "sim.end.salek_tells_his_clients_you",
-   "pattern": "P14",
-   "text": "Salek tells his clients you do not keep terms."
-  },
-  {
    "id": "sim.end.baca_reads_your_refusal_as",
    "pattern": "P14",
    "text": "Baca has closed its guest room to you."
@@ -1722,11 +1720,6 @@
    "args": [
     "aide"
    ]
-  },
-  {
-   "id": "sim.end.the_family_accounts_sit_in",
-   "pattern": "P14",
-   "text": "Salek now holds the family accounts."
   },
   {
    "id": "sim.end.a_car_meets_the_aircraft",
@@ -1908,7 +1901,10 @@
   {
    "id": "sim.line.then_call_salek_soon_the",
    "pattern": "P07",
-   "text": "\"Then call Salek soon. The crew will not wait on us forever.\""
+   "text": "\"Then call {sponsor} soon. The crew will not wait on us forever.\"",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.why.pick_one_of_the_answers",
@@ -2049,7 +2045,10 @@
   {
    "id": "sim.why.salek_is_not_taking_your",
    "pattern": "P04",
-   "text": "Salek is not taking your calls."
+   "text": "{sponsor} is not taking your calls.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.why.nando_and_the_spare_cars",
@@ -2064,12 +2063,18 @@
   {
    "id": "sim.why.you_do_not_have_salek",
    "pattern": "P04",
-   "text": "You do not have Salek's line yet. Call him about permission first."
+   "text": "You do not have {sponsor}'s line yet. Call about permission first.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "Contact Salek before reaching Esperanza."
+   "text": "Contact {sponsor} before reaching Esperanza.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.status.arrange_reception_through_your_sibling",
@@ -2094,7 +2099,10 @@
   {
    "id": "sim.why.name_a_destination_or_engage",
    "pattern": "P04",
-   "text": "Name a destination or engage Salek first."
+   "text": "Name a destination or engage {sponsor} first.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.preview.next_reply_in_hours_needs",
@@ -2337,7 +2345,10 @@
   {
    "id": "sim.opt.ask_salek_to_reach_the",
    "pattern": "P01",
-   "text": "Ask Salek to reach the uncle"
+   "text": "Ask {sponsor} to reach the uncle",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.effect.try_again_in_six_hours",
@@ -2347,37 +2358,31 @@
   {
    "id": "sim.line.v_lez_is_not_answering",
    "pattern": "P07",
-   "text": "\"Vélez is not answering. I can try again, or ask Salek to reach her uncle.\""
+   "text": "\"Vélez is not answering. I can try again, or ask {sponsor} to reach her uncle.\"",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "Lose Salek and his line. The visa will not come. You can still fly without it."
+   "text": "Lose {sponsor} and the line to the ministry. The visa will not come. You can still fly without it.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
    "pattern": "P03",
-   "text": "Permission stalls twelve hours. He keeps your line open, for now."
+   "text": "Permission stalls twelve hours. {sponsor} keeps the line open.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.opt.ask_for_a_week",
    "pattern": "P01",
    "text": "Ask for a week"
-  },
-  {
-   "id": "sim.effect.salek_keeps_working_your_family",
-   "pattern": "P03",
-   "text": "Salek keeps working. Your family will not forgive this quickly."
-  },
-  {
-   "id": "sim.opt.sign_move_the_family_accounts",
-   "pattern": "P01",
-   "text": "Sign the transfer papers"
-  },
-  {
-   "id": "sim.line.the_transfer_papers_are_with",
-   "pattern": "P07",
-   "text": "\"The transfer papers are with your brother. Sign tonight, or I stop making calls.\""
   },
   {
    "id": "sim.effect.sends_them_to_the_house",
@@ -2415,17 +2420,23 @@
   {
    "id": "sim.effect.crew_booking_waits_until_salek",
    "pattern": "P03",
-   "text": "Crew booking waits until Salek is engaged."
+   "text": "Crew booking waits until {sponsor} is engaged.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.opt.wait_until_salek_answers",
    "pattern": "P01",
-   "text": "Wait until Salek answers"
+   "text": "Wait until {sponsor} answers",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"Jet found. It will be at Esperanza. The crew needs the destination confirmed. Do I give them the city, or wait for Salek?\""
+   "text": "\"Jet found. It will be at Esperanza. The crew needs the destination confirmed. Do I give them the city, or wait for the visa?\""
   },
   {
    "id": "sim.day.wednesday",
@@ -3706,9 +3717,10 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "Ask Salek to seek {name}’s visa. His terms apply.",
+   "text": "Ask {sponsor} to seek {name}’s visa. The terms apply.",
    "args": [
-    "name"
+    "name",
+    "sponsor"
    ]
   },
   {
@@ -3802,12 +3814,12 @@
   {
    "id": "map.title",
    "pattern": "P02",
-   "text": "Where will you go?"
+   "text": "Where do you go?"
   },
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "The court has barred you from leaving. Three countries might take you. Your family can book a jet to any of them. None has said yes yet."
+   "text": "The Meridians give you safe passage to the strip at Esperanza. It is too close to home to stay. Choose where the jet flies."
   },
   {
    "id": "map.here",
@@ -3822,15 +3834,15 @@
   {
    "id": "map.choose",
    "pattern": "P01",
-   "text": "Go to {city}",
+   "text": "Fly to {name}",
    "args": [
-    "city"
+    "name"
    ]
   },
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "You can ask Salek to seek the visa once the run starts. Changing your mind later costs the hours already spent."
+   "text": "None of the three has said yes. The visa comes once the run starts, or it does not. Changing your mind later costs the hours already spent."
   },
   {
    "id": "gov.debrief.taken_on_landing",
@@ -3842,6 +3854,37 @@
     "name"
    ],
    "role": "gov"
+  },
+  {
+   "id": "sim.effect.requires_sponsor_help",
+   "pattern": "P08",
+   "text": "Requires {sponsor}’s help. Confirms reception; you owe another favor.",
+   "args": [
+    "sponsor"
+   ]
+  },
+  {
+   "id": "map.who_asks",
+   "pattern": "P01",
+   "text": "Who asks"
+  },
+  {
+   "id": "map.the_catch",
+   "pattern": "P01",
+   "text": "The catch"
+  },
+  {
+   "id": "map.not_yet",
+   "pattern": "P01",
+   "text": "Has not said yes"
+  },
+  {
+   "id": "map.hours",
+   "pattern": "P01",
+   "text": "{h} h",
+   "args": [
+    "h"
+   ]
   }
  ]
 }

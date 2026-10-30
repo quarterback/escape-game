@@ -63,8 +63,10 @@ const Sim = (() => {
   const level = (s) => D.LEVELS[s.pos];
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
   const postName = (id) => D.POSTS[id];
+  const sponsor = (s) => dest(s).sponsor;
   const ch = (s) => D.CHARACTERS[s.who];
-  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
+  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : id === 'sponsor' ? sponsor(s).name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
+  const personRole = (s, id) => id === 'sponsor' ? sponsor(s).role : (D.PEOPLE[id] || {}).role || '';
 
   // ---- messages (the phone) ---------------------------------
   function msg(s, events, from, text, options) {
@@ -80,7 +82,7 @@ const Sim = (() => {
     if (s.pos === 0 && first) {
       msg(s, events, 'sibling', T('sim.line.jet_found_in_susana_the'), [
         { id: 'confirm_dest', label: T('sim.opt.confirm_destination', { city: dest(s).city }), hours: 0, effect: T('sim.effect.crew_booking_can_proceed', { name: dest(s).name }) },
-        { id: 'wait_sponsor', label: T('sim.opt.wait_until_salek_answers'), hours: 0, effect: T('sim.effect.crew_booking_waits_until_salek') },
+        { id: 'wait_sponsor', label: T('sim.opt.wait_until_salek_answers', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.crew_booking_waits_until_salek', { sponsor: sponsor(s).short }) },
         { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: D.PEOPLE.sibling.reliability }) },
       ]);
     }
@@ -93,16 +95,17 @@ const Sim = (() => {
     }
     if (s.pos === 2 && s.arr.permission.stage >= 1 && !s.flags.salekDue) {
       s.flags.salekDue = true;
-      msg(s, events, 'sponsor', T('sim.line.the_transfer_papers_are_with'), [
-        { id: 'sign_accounts', label: T('sim.opt.sign_move_the_family_accounts'), hours: 1, effect: T('sim.effect.salek_keeps_working_your_family') },
-        { id: 'stall_salek', label: T('sim.opt.ask_for_a_week'), hours: 0, effect: T('sim.effect.permission_stalls_twelve_hours_he') },
-        { id: 'refuse_salek', label: T('sim.opt.refuse'), hours: 0, effect: T('sim.effect.lose_salek_and_his_line') },
+      const sp = sponsor(s);
+      msg(s, events, 'sponsor', sp.demand.text, [
+        { id: 'sign_accounts', label: sp.demand.accept, hours: 1, effect: sp.demand.effect },
+        { id: 'stall_salek', label: T('sim.opt.ask_for_a_week'), hours: 0, effect: T('sim.effect.permission_stalls_twelve_hours_he', { sponsor: sp.short }) },
+        { id: 'refuse_salek', label: T('sim.opt.refuse'), hours: 0, effect: T('sim.effect.lose_salek_and_his_line', { sponsor: sp.short }) },
       ]);
     }
     if (s.pos === 2 && s.arr.reception.stage === 1) {
-      msg(s, events, 'sibling', T('sim.line.v_lez_is_not_answering'), [
+      msg(s, events, 'sibling', T('sim.line.v_lez_is_not_answering', { sponsor: sponsor(s).short }), [
         { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: T('sim.effect.try_again_in_six_hours') },
-        { id: 'via_sponsor', label: T('sim.opt.ask_salek_to_reach_the'), hours: 0, effect: 'Requires Salek’s help. Confirms reception; you owe him another favor.' },
+        { id: 'via_sponsor', label: T('sim.opt.ask_salek_to_reach_the', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.requires_sponsor_help', { sponsor: sponsor(s).short }) },
         { id: 'wait_velez', label: T('sim.opt.wait'), hours: 0, effect: T('sim.effect.nothing_moves_until_you_call') },
       ]);
     }
@@ -192,13 +195,13 @@ const Sim = (() => {
       out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: personName(s, ally), what: def.name.toLowerCase() }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
         preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally), turned: D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0) })] });
     };
-    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage') : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),
+    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),
       T('sim.status.arrange_the_next_stage_charter'));
     add('reception', A.reception.stage < 2 ? 'sibling' : 'official',
       [A.reception.stage === 2 && s.pos < 3 ? T('sim.status.call_from_salta_to_request') : null].filter(Boolean),
       T('sim.status.arrange_reception_through_your_sibling'));
-    add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? T('sim.status.contact_salek_before_reaching_susana') : null].filter(Boolean),
-      T('sim.status.ask_salek_to_seek_visa', { name: dest(s).name }));
+    add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? T('sim.status.contact_salek_before_reaching_susana', { sponsor: sponsor(s).short }) : null].filter(Boolean),
+      T('sim.status.ask_salek_to_seek_visa', { name: dest(s).name, sponsor: sponsor(s).short }));
     return out;
   }
   const jobHours = (k) => ({ aircraft: 6, reception: 6, permission: 10 })[k];
@@ -207,10 +210,10 @@ const Sim = (() => {
       options: m.options.map(o => Object.assign({}, o, { ok: optionOk(s, o), why: optionWhy(s, o) })) }));
   }
   function optionWhy(s, o) {
-    if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return T('sim.why.you_do_not_have_salek');
+    if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return T('sim.why.you_do_not_have_salek', { sponsor: sponsor(s).short });
     if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return T('sim.why.you_do_not_have_v');
     if (o.id === 'send_decoy_yard' && !heldTag(s, 'decoy')) return T('sim.why.nando_and_the_spare_cars');
-    if (o.id === 'via_sponsor' && s.people.sponsor.turned) return T('sim.why.salek_is_not_taking_your');
+    if (o.id === 'via_sponsor' && s.people.sponsor.turned) return T('sim.why.salek_is_not_taking_your', { sponsor: sponsor(s).short });
     return '';
   }
   const optionOk = (s, o) => !optionWhy(s, o) && !s.event;
@@ -384,7 +387,7 @@ const Sim = (() => {
     const def = D.ARRANGEMENTS[k]; to = Math.max(0, Math.min(def.stages.length - 1, to));
     if (to === s.arr[k].stage) return; s.arr[k].stage = to;
     events.push(ev('stage', { arr: k, stage: to, label: def.stages[to] }));
-    let line = (D.STAGE_LINES[k] || [])[to]; if (line) line = line.replace('{post}', postName(s.escortPost)); if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : 'sponsor', line);
+    let line = (D.STAGE_LINES[k] || [])[to]; if (line) line = line.replace('{post}', postName(s.escortPost)).split('{sponsor}').join(sponsor(s).short).replace('{city}', dest(s).city); if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : 'sponsor', line);
     if (k === 'reception' && to >= 2) gain(s, 'intro_vel', events);
     if (k === 'permission' && to === 1) gain(s, 'sponsor_line', events);
   }
@@ -397,10 +400,10 @@ const Sim = (() => {
   function call(s, k, events) {
     const c = callList(s).find(x => x.id === 'call:' + k);
     if (!c || !c.ok) return { ok: false, why: c ? c.why : T('sim.why.nothing_to_call_about') };
-    if (k === 'permission' && s.arr.permission.stage === 0 && !s.commitments.some(x => x.to === 'sponsor')) { s.commitments.push({ to: 'sponsor', text: D.PEOPLE.sponsor.terms, kept: true }); events.push(ev('commit', { to: 'sponsor', text: D.PEOPLE.sponsor.terms })); }
+    if (k === 'permission' && s.arr.permission.stage === 0 && !s.commitments.some(x => x.to === 'sponsor')) { s.commitments.push({ to: 'sponsor', text: sponsor(s).terms, kept: true }); events.push(ev('commit', { to: 'sponsor', text: sponsor(s).terms })); }
     if (k === 'reception' && s.arr.reception.stage === 1 && !s.commitments.some(x => x.to === 'official')) { s.commitments.push({ to: 'official', text: D.PEOPLE.official.terms, kept: true }); events.push(ev('commit', { to: 'official', text: D.PEOPLE.official.terms })); }
     s.calledAt = s.hour;
-    const due = s.hour + 1 + jobHours(k) + (s.flags.dark ? 2 : 0);
+    const due = s.hour + 1 + jobHours(k) + (s.flags.dark ? 2 : 0) + (k === 'permission' ? sponsor(s).slow : 0);
     s.jobs.push({ arr: k, ally: c.ally, target: s.arr[k].stage + 1, due }); ledger(s, c.ally, T('sim.ledger.promised', { what: D.ARRANGEMENTS[k].stages[s.arr[k].stage + 1], due: clockText(due) }));
     events.push(ev('job', { arr: k, ally: c.ally, due, dueText: clockText(due) }));
     say(events, c.ally, k === 'aircraft' ? T('sim.line.leave_it_with_me_six') : k === 'reception' ? (c.ally === 'official' ? T('sim.line.i_will_see_what_the') : T('sim.line.i_have_a_name_in')) : T('sim.line.ten_hours_and_you_understand'));
@@ -413,7 +416,7 @@ const Sim = (() => {
     s.inbox.splice(i, 1); events.push(ev('answered', { id, option: o.id, label: o.label }));
     switch (o.id) {
       case 'confirm_dest': s.flags.destination = true; stage(s, 'aircraft', 1, events); say(events, 'sibling', T('sim.line.city_i_will_tell_the', { city: dest(s).city })); break;
-      case 'wait_sponsor': stage(s, 'aircraft', 1, events); say(events, 'sibling', T('sim.line.then_call_salek_soon_the')); break;
+      case 'wait_sponsor': stage(s, 'aircraft', 1, events); say(events, 'sibling', T('sim.line.then_call_salek_soon_the', { sponsor: sponsor(s).short })); break;
       case 'delegate_sibling': stage(s, 'aircraft', 1, events); { const d = roll(s); const good = d >= D.PEOPLE.sibling.reliability; events.push(ev('roll', { die: d, need: D.PEOPLE.sibling.reliability, won: good, who: 'sibling' })); if (good) { s.flags.destination = true; say(events, 'sibling', T('sim.line.i_told_them_city_do', { city: dest(s).city })); } else { s.jobs.push({ arr: 'aircraft', ally: 'sibling', target: 1, due: s.hour + 6, stall: true }); say(events, 'sibling', T('sim.line.i_could_not_decide_for')); } } break;
       case 'keep_calling': s.jobs.push({ arr: 'reception', ally: 'sibling', target: 2, due: s.hour + 6 }); break;
       case 'via_sponsor': stage(s, 'reception', 2, events); lose(s, 'sponsor_line', events); s.used.push('sponsor_line'); say(events, 'sponsor', T('sim.line.her_uncle_banks_with_me')); break;
@@ -426,7 +429,7 @@ const Sim = (() => {
       case 'confirm_yacht': s.belief = 0; s.flags.lied = true; heat(s, -1, events); events.push(ev('belief', { belief: 0 })); say(events, 'narrator', T('sim.say.the_radio_has_you_at')); break;
       case 'deny_yacht': s.belief = 0; events.push(ev('belief', { belief: 0 })); say(events, 'narrator', T('sim.say.they_go_to_the_house')); break;
       case 'no_comment': break;
-      case 'sign_accounts': { const c = s.commitments.find(x => x.to === 'sponsor'); if (c) c.kept = true; s.people.sponsor.trust = 2; s.flags.signed = true; say(events, 'sponsor', T('sim.line.good_the_ministry_will_hear')); } break;
+      case 'sign_accounts': { const c = s.commitments.find(x => x.to === 'sponsor'); if (c) c.kept = true; s.people.sponsor.trust = 2; s.flags.signed = true; if (sponsor(s).demand.heat) heat(s, sponsor(s).demand.heat, events); say(events, 'sponsor', T('sim.line.good_the_ministry_will_hear')); } break;
       case 'stall_salek': for (const j of s.jobs) if (j.arr === 'permission') j.due += 12; say(events, 'sponsor', T('sim.line.a_week_i_am_not')); break;
       case 'refuse_salek': { const c = s.commitments.find(x => x.to === 'sponsor'); if (c) c.kept = false; s.people.sponsor.turned = true; lose(s, 'sponsor_line', events); s.jobs = s.jobs.filter(j => j.arr !== 'permission'); say(events, 'sponsor', T('sim.line.then_we_have_nothing_to')); } break;
       case 'go_midnight': break;
@@ -509,13 +512,13 @@ const Sim = (() => {
     for (const c of s.commitments) {
       if (c.to === 'aide') out.push(c.kept === false ? T('sim.end.leads_the_party_now_and', { aide: first('aide') }) : c.kept ? T('sim.end.leads_the_party_in_your', { aide: first('aide') }) : T('sim.end.is_still_waiting_for_the', { aide: first('aide') }));
       if (c.to === 'official' && c.kept === false) out.push(T('sim.end.baca_reads_your_refusal_as'));
-      if (c.to === 'sponsor' && c.kept === false) out.push(T('sim.end.salek_tells_his_clients_you'));
+      if (c.to === 'sponsor' && c.kept === false) out.push(sponsor(s).broke);
     }
-    if (win && s.flags.signed) out.push(T('sim.end.the_family_accounts_sit_in'));
+    if (win && s.flags.signed) out.push(sponsor(s).kept);
     if (s.people.host.trust > 0) out.push(T('sim.end.nona_rosa_s_truck_runs'));
     return out.slice(0, 3).join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, postName, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;

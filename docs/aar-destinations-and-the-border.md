@@ -71,3 +71,25 @@ The dev-site project page still describes Susana as the airfield and Atlanta as 
 - Owner plays the map screen and the border on both sides and confirms the four names.
 - Fix the browser drive's government section against the phase-turn interface.
 - Update the dev-site page's two sentences.
+
+## Addendum, 2026-10-30: the canvas row "First choice: where you go"
+
+The owner's written spec and the two mockups on the Coalition redesign canvas arrived after the first build. Three things moved to match them.
+
+**One sponsor per destination.** Salek is Atlanta's, and only Atlanta's. Tarun's is Dēvan Rāo, a magistrate (working name from the spec); his letters add six hours to every visa job. Zaryanova's is Mirēlā Vosk, a former trade envoy (working name from the spec); her price is a statement on the record with names in it, which the inquiry also reads (exposure +1). Each has their own demand message, terms, and ending line. The sponsor's name, role and terms now come off the chosen destination everywhere: the phone, the route, the ledger, the ending, the needs line, and every string that used to say Salek (`{sponsor}` placeholder, seventeen entries). The card is "Your sponsor's line to the ministry".
+
+**The screen reads like the mockup.** Title "Where do you go?", three identical cards in alphabetical order, each with who asks, the catch, the flight time and a "Has not said yes" pill. The blurbs are gone; they were the last place a tell could hide. Verified at 390 and 1440 with no horizontal overflow.
+
+**The two coined posts take the spec's names:** Ālto Verdē road post (highland road toward Baca) and Punta Marēa crossing (coastal road). The rail post keeps Paso Huhūi.
+
+**Not changed, flagged:** the spec and the mockup say Esmeralda's airfield at Susana; the owner's later message in chat said Esperanza, in the Meridian States, and the kels canon places Esperanza there. The build follows the chat message. Switching back is the `PLACES.esperanza` record, the `map.sub` string, and the Esperanza level copy.
+
+**Harness, 200 runs, `tools/calibrate.js --dest=`:**
+
+| destination | Teresā wins | Matēu wins | landed (of 200) |
+| --- | --- | --- | --- |
+| Atlanta | 30.5% | 32.5% | 0 |
+| Tarun | 0% | 0% | 58 / 49 |
+| Zaryanova | 0% | 0% | 50 / 61 |
+
+Content check clean, six contract tests pass, both tutorial replays pass.
