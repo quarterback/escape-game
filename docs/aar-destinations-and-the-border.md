@@ -117,3 +117,7 @@ Second run: clean. Calibration after the copy pass is identical to before it (th
 ## Addendum, same day: the owner's round-one screenshot
 
 Three faults, all on the phone. The clock box's second line was set not to wrap, so "Out by Tue 14:00" ran under the Sosā panel; it wraps now and the two boxes no longer overlap at 390 px (measured). The round summary listed exposure once per batch of hours ("rose by 1", then "rose by 3"), with no reason; the Sosā card now folds them into one line for the round and names the cause when the inquiry is looking where you are. "News waiting: {title}" was a label row; it reads "{title}. Read it under News." The round title reads "5 hours passed. It is now Sat 19:00". Rules untouched. Not changed, noted for the owner: exposure 0 to 4 inside the first five hours at the residence is the drift rule (one point every two hours while Sosā looks at the right place) plus the search, as the hold-ladder record calibrated it.
+
+## Addendum, same day: the clock on a phone
+
+Owner: the Sosā panel covered the clock. On a phone the clock is now 22 px instead of 28, both boxes have tighter padding, the clock takes at most 56% of the width and the Sosā panel at most 44%, so they cannot meet; the Sosā panel's text is 13 px. Measured at 390 px: the clock box ends at 201 and the Sosā panel starts at 239. Desktop sizes are unchanged (the 1000 px rule still sets the 56 px clock). The contrast check could not run here: its npm packages are not installed in this sandbox, before and after the change. Colours did not move.
