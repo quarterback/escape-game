@@ -1,0 +1,12 @@
+{
+  "contract": "coalition-content/0.5",
+  "concepts": [
+    { "id": "second-passport", "approved": ["second passport"], "prohibited": ["civil record", "spare passport", "backup passport"], "scope": "all" },
+    { "id": "entry-visa", "approved": ["entry visa", "visa"], "prohibited": ["entry permit", "landing permit", "travel document"], "scope": "all" },
+    { "id": "travel-ban", "approved": ["travel ban", "ban"], "prohibited": ["exit ban", "departure order"], "scope": "all" },
+    { "id": "exposure", "approved": ["exposure"], "prohibited": ["heat", "suspicion meter"], "scope": "system", "note": "Characters may say 'heat' in dialogue." },
+    { "id": "inquiry", "approved": ["inquiry"], "prohibited": ["investigation team"], "scope": "system" },
+    { "id": "aircraft", "approved": ["aircraft", "jet", "charter"], "prohibited": ["airplane", "aeroplane"], "scope": "all" },
+    { "id": "hold", "approved": ["held", "hold", "house arrest", "questioned"], "prohibited": ["arrested", "jailed"], "scope": "system", "note": "Only house arrest ends the run; system text never calls a hold an arrest." }
+  ]
+}

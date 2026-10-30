@@ -1,0 +1,204 @@
+{
+ "$id": "coalition-content/0.5/tutorials",
+ "title": "Tutorial runs (P13)",
+ "type": "object",
+ "required": [
+  "contract",
+  "tutorials"
+ ],
+ "properties": {
+  "contract": {
+   "type": "string",
+   "pattern": "^coalition-content/0\\.5$"
+  },
+  "tutorials": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "side",
+     "seed",
+     "steps"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-z]+$"
+     },
+     "side": {
+      "type": "string",
+      "enum": [
+       "escape",
+       "gov"
+      ]
+     },
+     "who": {
+      "type": "string"
+     },
+     "seed": {
+      "type": "integer"
+     },
+     "dice": {
+      "type": "array",
+      "items": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 6
+      }
+     },
+     "enemy": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "events": {
+      "type": "boolean"
+     },
+     "steps": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "id",
+        "kind",
+        "title",
+        "body",
+        "goal"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "id": {
+         "type": "string",
+         "pattern": "^[a-z0-9_]+$"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "read",
+          "act"
+         ]
+        },
+        "title": {
+         "type": "string",
+         "minLength": 1
+        },
+        "body": {
+         "type": "string",
+         "minLength": 1
+        },
+        "goal": {
+         "type": "string",
+         "minLength": 1
+        },
+        "highlight": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "allow": {
+         "type": "object",
+         "additionalProperties": false,
+         "properties": {
+          "approaches": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "calls": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "options": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "events": {
+           "type": "boolean"
+          },
+          "wait": {
+           "type": "boolean"
+          }
+         }
+        },
+        "done": {
+         "$ref": "#/$defs/cond"
+        }
+       }
+      }
+     },
+     "eventQueue": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ },
+ "$defs": {
+  "cond": {
+   "type": "object",
+   "minProperties": 1,
+   "additionalProperties": false,
+   "properties": {
+    "flag": {
+     "type": "string"
+    },
+    "job": {
+     "type": "string"
+    },
+    "pos": {
+     "type": "integer"
+    },
+    "stage": {
+     "type": "array",
+     "items": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "integer"
+      }
+     ]
+    },
+    "card": {
+     "type": "string"
+    },
+    "any": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/cond"
+     }
+    },
+    "answered": {
+     "type": "string"
+    },
+    "request": {
+     "type": "string"
+    },
+    "ban": {
+     "type": "boolean"
+    },
+    "orders": {
+     "type": "integer"
+    },
+    "belief": {
+     "type": "integer"
+    },
+    "chose": {
+     "type": "boolean"
+    }
+   }
+  }
+ }
+}

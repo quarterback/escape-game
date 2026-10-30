@@ -1,0 +1,3661 @@
+{
+ "contract": "coalition-content/0.5",
+ "entries": [
+  {
+   "id": "name.inspector",
+   "pattern": "P07",
+   "text": "Inspector Sosā"
+  },
+  {
+   "id": "log.start_escape",
+   "pattern": "P08",
+   "text": "{clock}. You are {name}, {title}. {sibling}, {rel}, is abroad and has started on the aircraft.",
+   "args": [
+    "clock",
+    "name",
+    "title",
+    "sibling",
+    "rel"
+   ]
+  },
+  {
+   "id": "log.start_gov",
+   "pattern": "P08",
+   "text": "{clock}. You are {name}, {title}. {target} lost on Saturday and the court has barred her from leaving. The minister wants a location.",
+   "args": [
+    "clock",
+    "name",
+    "title",
+    "target"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.gov_goal",
+   "pattern": "P08",
+   "text": "Stop {her} before",
+   "args": [
+    "her"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report",
+   "pattern": "P06",
+   "text": "Last report {age}",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.no_reports",
+   "pattern": "P12",
+   "text": "No reports yet.",
+   "role": "gov"
+  },
+  {
+   "id": "scene.none",
+   "pattern": "P12",
+   "text": "none",
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report_label",
+   "pattern": "P02",
+   "text": "Last report",
+   "role": "gov"
+  },
+  {
+   "id": "scene.minister_by",
+   "pattern": "P08",
+   "text": "The minister wants a location by {time}.",
+   "args": [
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.suspected",
+   "pattern": "P02",
+   "text": "Suspected:",
+   "role": "gov"
+  },
+  {
+   "id": "scene.last_report_lc",
+   "pattern": "P06",
+   "text": "last report {age}",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "scene.no_reports_lc",
+   "pattern": "P12",
+   "text": "no reports",
+   "role": "gov"
+  },
+  {
+   "id": "action.wait_gov",
+   "pattern": "P01",
+   "text": "Wait one hour",
+   "role": "gov"
+  },
+  {
+   "id": "nav.desk",
+   "pattern": "P02",
+   "text": "The desk",
+   "role": "gov"
+  },
+  {
+   "id": "nav.orders",
+   "pattern": "P02",
+   "text": "Orders",
+   "role": "gov"
+  },
+  {
+   "id": "scene.goal",
+   "pattern": "P08",
+   "text": "Leave Esmeraldan airspace by"
+  },
+  {
+   "id": "scene.out_by",
+   "pattern": "P08",
+   "text": "Out by"
+  },
+  {
+   "id": "scene.sosa_here",
+   "pattern": "P06",
+   "text": "Sosā, looking here"
+  },
+  {
+   "id": "scene.sosa_at",
+   "pattern": "P06",
+   "text": "Sosā, looking at {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.sosa_right",
+   "pattern": "P06",
+   "text": "Looking at {place}. He is right.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.sosa_wrong",
+   "pattern": "P06",
+   "text": "Looking at {place}. He is wrong.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.next_move",
+   "pattern": "P02",
+   "text": "Next move"
+  },
+  {
+   "id": "scene.next_in",
+   "pattern": "P05",
+   "text": "in {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "scene.held_again",
+   "pattern": "P05",
+   "text": "At 10 you are held again. Holds: {hold} of 3.",
+   "args": [
+    "hold"
+   ]
+  },
+  {
+   "id": "scene.held_at",
+   "pattern": "P05",
+   "text": "At 10 you are held."
+  },
+  {
+   "id": "scene.exposure",
+   "pattern": "P02",
+   "text": "Exposure"
+  },
+  {
+   "id": "action.wait",
+   "pattern": "P01",
+   "text": "Lie low one hour"
+  },
+  {
+   "id": "nav.phone",
+   "pattern": "P02",
+   "text": "The phone"
+  },
+  {
+   "id": "nav.here",
+   "pattern": "P02",
+   "text": "Here"
+  },
+  {
+   "id": "coach.step",
+   "pattern": "P13",
+   "text": "Guided run · step {n} of {total}",
+   "args": [
+    "n",
+    "total"
+   ]
+  },
+  {
+   "id": "action.finish",
+   "pattern": "P01",
+   "text": "Finish"
+  },
+  {
+   "id": "action.next",
+   "pattern": "P01",
+   "text": "Next"
+  },
+  {
+   "id": "action.uses",
+   "pattern": "P03",
+   "text": "Uses {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "action.uses_a",
+   "pattern": "P03",
+   "text": "a {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "action.uses_an",
+   "pattern": "P03",
+   "text": "an {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "marker.night",
+   "pattern": "P03",
+   "text": "Night only"
+  },
+  {
+   "id": "action.certain",
+   "pattern": "P03",
+   "text": "Certain"
+  },
+  {
+   "id": "action.impossible",
+   "pattern": "P04",
+   "text": "No die can"
+  },
+  {
+   "id": "action.cancel",
+   "pattern": "P01",
+   "text": "Cancel"
+  },
+  {
+   "id": "action.commit",
+   "pattern": "P01",
+   "text": "Commit"
+  },
+  {
+   "id": "phone.waiting",
+   "pattern": "P05",
+   "text": "{n} waiting",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "phone.empty",
+   "pattern": "P12",
+   "text": "No messages waiting."
+  },
+  {
+   "id": "phone.sibling_role",
+   "pattern": "P07",
+   "text": "{rel}, arranging the aircraft",
+   "args": [
+    "rel"
+   ]
+  },
+  {
+   "id": "phone.call_about",
+   "pattern": "P01",
+   "text": "{name} about {what}",
+   "args": [
+    "name",
+    "what"
+   ]
+  },
+  {
+   "id": "phone.your_visa",
+   "pattern": "P01",
+   "text": "your visa",
+   "fragment": true
+  },
+  {
+   "id": "action.call",
+   "pattern": "P01",
+   "text": "Call"
+  },
+  {
+   "id": "card.works_on",
+   "pattern": "P09",
+   "text": "Works on:"
+  },
+  {
+   "id": "card.counts_here",
+   "pattern": "P09",
+   "text": "Counts here"
+  },
+  {
+   "id": "card.counts_at",
+   "pattern": "P09",
+   "text": "Counts at {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "place.the_line",
+   "pattern": "P09",
+   "text": "the line"
+  },
+  {
+   "id": "card.not_here",
+   "pattern": "P09",
+   "text": "Not recognized here"
+  },
+  {
+   "id": "hand.empty",
+   "pattern": "P12",
+   "text": "No cards yet."
+  },
+  {
+   "id": "card.yours",
+   "pattern": "P09",
+   "text": "Yours"
+  },
+  {
+   "id": "card.from",
+   "pattern": "P09",
+   "text": "From {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "need.aircraft_ready",
+   "pattern": "P05",
+   "text": "Aircraft ready"
+  },
+  {
+   "id": "need.visa",
+   "pattern": "P05",
+   "text": "Entry visa for Atlanta"
+  },
+  {
+   "id": "need.officials",
+   "pattern": "P05",
+   "text": "Officials at the border"
+  },
+  {
+   "id": "need.expects",
+   "pattern": "P05",
+   "text": "Esmeralda expects you"
+  },
+  {
+   "id": "need.crew",
+   "pattern": "P05",
+   "text": "Crew confirmed"
+  },
+  {
+   "id": "need.charter",
+   "pattern": "P05",
+   "text": "Charter booked"
+  },
+  {
+   "id": "need.working",
+   "pattern": "P05",
+   "text": "{stage}. {ally} working, due {time}",
+   "args": [
+    "stage",
+    "ally",
+    "time"
+   ]
+  },
+  {
+   "id": "need.velez",
+   "pattern": "P05",
+   "text": "Vélez's people"
+  },
+  {
+   "id": "need.baca",
+   "pattern": "P05",
+   "text": "Someone at the ministry in Baca has your name"
+  },
+  {
+   "id": "need.salek",
+   "pattern": "P05",
+   "text": "Salek asks the ministry"
+  },
+  {
+   "id": "need.passport",
+   "pattern": "P05",
+   "text": "Your second passport"
+  },
+  {
+   "id": "need.passage",
+   "pattern": "P05",
+   "text": "A passage card"
+  },
+  {
+   "id": "need.decoy",
+   "pattern": "P05",
+   "text": "A decoy card"
+  },
+  {
+   "id": "need.influence",
+   "pattern": "P05",
+   "text": "An influence card"
+  },
+  {
+   "id": "need.card",
+   "pattern": "P05",
+   "text": "A {tag} card",
+   "args": [
+    "tag"
+   ]
+  },
+  {
+   "id": "need.passport_held",
+   "pattern": "P05",
+   "text": "In hand. The ban lists your other one."
+  },
+  {
+   "id": "need.in_hand",
+   "pattern": "P05",
+   "text": "In hand."
+  },
+  {
+   "id": "need.passage_from",
+   "pattern": "P05",
+   "text": "From Holt or Theo. The freight leaves at midnight."
+  },
+  {
+   "id": "need.nobody",
+   "pattern": "P05",
+   "text": "Nobody has given you one."
+  },
+  {
+   "id": "need.night",
+   "pattern": "P05",
+   "text": "Night"
+  },
+  {
+   "id": "need.is_night",
+   "pattern": "P05",
+   "text": "It is night."
+  },
+  {
+   "id": "need.after",
+   "pattern": "P04",
+   "text": "After 22:00."
+  },
+  {
+   "id": "route.role_aircraft",
+   "pattern": "P07",
+   "text": "arranging the aircraft"
+  },
+  {
+   "id": "route.role_visa",
+   "pattern": "P07",
+   "text": "asking Atlanta for your visa"
+  },
+  {
+   "id": "who.unknown",
+   "pattern": "P07",
+   "text": "Unknown"
+  },
+  {
+   "id": "who.cut",
+   "pattern": "P07",
+   "text": "Cut off"
+  },
+  {
+   "id": "who.talked",
+   "pattern": "P07",
+   "text": "Talked"
+  },
+  {
+   "id": "who.clean",
+   "pattern": "P07",
+   "text": "Clean"
+  },
+  {
+   "id": "who.doubted",
+   "pattern": "P07",
+   "text": "Doubted"
+  },
+  {
+   "id": "who.trusted",
+   "pattern": "P07",
+   "text": "Trusted"
+  },
+  {
+   "id": "route.stops_here",
+   "pattern": "P09",
+   "text": "{card} stops here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.starts_here",
+   "pattern": "P09",
+   "text": "{card} starts here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.velez_starts",
+   "pattern": "P09",
+   "text": "Vélez's card starts here."
+  },
+  {
+   "id": "route.you_here",
+   "pattern": "P02",
+   "text": "You are here"
+  },
+  {
+   "id": "route.border",
+   "pattern": "P02",
+   "text": "The border"
+  },
+  {
+   "id": "route.esmeralda",
+   "pattern": "P02",
+   "text": "Esmeralda"
+  },
+  {
+   "id": "route.inquiry_here",
+   "pattern": "P06",
+   "text": "Inquiry looking here"
+  },
+  {
+   "id": "route.who_acts",
+   "pattern": "P02",
+   "text": "Who acts here: {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "route.abroad_phone",
+   "pattern": "P02",
+   "text": "Abroad, by phone"
+  },
+  {
+   "id": "route.abroad",
+   "pattern": "P02",
+   "text": "Abroad"
+  },
+  {
+   "id": "route.by_phone",
+   "pattern": "P02",
+   "text": "By phone"
+  },
+  {
+   "id": "route.who_acts_label",
+   "pattern": "P02",
+   "text": "Who acts here"
+  },
+  {
+   "id": "route.needed",
+   "pattern": "P02",
+   "text": "Needed to leave"
+  },
+  {
+   "id": "route.cards_count",
+   "pattern": "P02",
+   "text": "Where your cards count"
+  },
+  {
+   "id": "route.card_stops_line",
+   "pattern": "P09",
+   "text": "{card} stops at the line",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "route.velez_starts_short",
+   "pattern": "P09",
+   "text": "Vélez's card starts here"
+  },
+  {
+   "id": "route.inquiry",
+   "pattern": "P02",
+   "text": "The inquiry"
+  },
+  {
+   "id": "route.looking_here",
+   "pattern": "P06",
+   "text": "Looking here"
+  },
+  {
+   "id": "route.no_inquiry",
+   "pattern": "P12",
+   "text": "No inquiry moves yet. The court wants your passports by Monday."
+  },
+  {
+   "id": "over.gov_win",
+   "pattern": "P14",
+   "text": "She got out"
+  },
+  {
+   "id": "over.gov_stopped",
+   "pattern": "P14",
+   "text": "Stopped"
+  },
+  {
+   "id": "over.out",
+   "pattern": "P14",
+   "text": "Out"
+  },
+  {
+   "id": "over.arrest",
+   "pattern": "P14",
+   "text": "House arrest"
+  },
+  {
+   "id": "over.clock",
+   "pattern": "P14",
+   "text": "Out of time"
+  },
+  {
+   "id": "over.deal",
+   "pattern": "P14",
+   "text": "You took the deal"
+  },
+  {
+   "id": "over.caught",
+   "pattern": "P14",
+   "text": "Caught"
+  },
+  {
+   "id": "over.play_her",
+   "pattern": "P01",
+   "text": "Play her side"
+  },
+  {
+   "id": "over.choose",
+   "pattern": "P01",
+   "text": "Choose character"
+  },
+  {
+   "id": "result.your_move",
+   "pattern": "P10",
+   "text": "Your move"
+  },
+  {
+   "id": "result.your_choice",
+   "pattern": "P10",
+   "text": "Your choice"
+  },
+  {
+   "id": "result.lay_low",
+   "pattern": "P10",
+   "text": "You lay low"
+  },
+  {
+   "id": "result.lay_low_title",
+   "pattern": "P10",
+   "text": "One hour out of sight"
+  },
+  {
+   "id": "result.your_order",
+   "pattern": "P10",
+   "text": "Your order",
+   "role": "gov"
+  },
+  {
+   "id": "result.waited",
+   "pattern": "P10",
+   "text": "You waited",
+   "role": "gov"
+  },
+  {
+   "id": "result.waited_title",
+   "pattern": "P10",
+   "text": "One hour for reports",
+   "role": "gov"
+  },
+  {
+   "id": "phase.news",
+   "pattern": "P02",
+   "text": "News"
+  },
+  {
+   "id": "phase.reports",
+   "pattern": "P02",
+   "text": "Reports"
+  },
+  {
+   "id": "phase.phone",
+   "pattern": "P02",
+   "text": "Phone"
+  },
+  {
+   "id": "phase.desk",
+   "pattern": "P02",
+   "text": "Desk"
+  },
+  {
+   "id": "phase.move",
+   "pattern": "P02",
+   "text": "Move"
+  },
+  {
+   "id": "phase.order",
+   "pattern": "P02",
+   "text": "Order"
+  },
+  {
+   "id": "phase.roll",
+   "pattern": "P02",
+   "text": "Roll"
+  },
+  {
+   "id": "phase.sosa",
+   "pattern": "P02",
+   "text": "Sosā"
+  },
+  {
+   "id": "phase.her_move",
+   "pattern": "P02",
+   "text": "Her move"
+  },
+  {
+   "id": "round.label",
+   "pattern": "P02",
+   "text": "Round {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "round.searching",
+   "pattern": "P02",
+   "text": "Searching {place}",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "round.held",
+   "pattern": "P02",
+   "text": "{place}. Held {hold} of 3",
+   "args": [
+    "place",
+    "hold"
+   ]
+  },
+  {
+   "id": "phase.done_desk",
+   "pattern": "P01",
+   "text": "Done at the desk",
+   "role": "gov"
+  },
+  {
+   "id": "phase.done_phone",
+   "pattern": "P01",
+   "text": "Done with the phone"
+  },
+  {
+   "id": "phase.see_came_in",
+   "pattern": "P01",
+   "text": "See what came in",
+   "role": "gov"
+  },
+  {
+   "id": "phase.see_sosa",
+   "pattern": "P01",
+   "text": "See what Sosā did"
+  },
+  {
+   "id": "card.kind_news",
+   "pattern": "P02",
+   "text": "News"
+  },
+  {
+   "id": "card.kind_rumor",
+   "pattern": "P02",
+   "text": "A rumor"
+  },
+  {
+   "id": "card.kind_hold",
+   "pattern": "P02",
+   "text": "The inquiry has you"
+  },
+  {
+   "id": "card.rung",
+   "pattern": "P02",
+   "text": " · {rung} of 3",
+   "args": [
+    "rung"
+   ]
+  },
+  {
+   "id": "action.continue",
+   "pattern": "P01",
+   "text": "Continue"
+  },
+  {
+   "id": "result.success",
+   "pattern": "P10",
+   "text": "Success"
+  },
+  {
+   "id": "result.failed",
+   "pattern": "P10",
+   "text": "Failed"
+  },
+  {
+   "id": "result.rolled",
+   "pattern": "P10",
+   "text": "Rolled {die}, needed {need}",
+   "args": [
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "result.done",
+   "pattern": "P10",
+   "text": "Done"
+  },
+  {
+   "id": "sosa.quiet_gov",
+   "pattern": "P12",
+   "text": "No new reports. She could be anywhere on the route.",
+   "role": "gov"
+  },
+  {
+   "id": "sosa.quiet",
+   "pattern": "P12",
+   "text": "Quiet. Nobody moved against you."
+  },
+  {
+   "id": "sosa.kind_gov",
+   "pattern": "P10",
+   "text": "While your orders ran",
+   "role": "gov"
+  },
+  {
+   "id": "sosa.kind",
+   "pattern": "P10",
+   "text": "While you moved"
+  },
+  {
+   "id": "sosa.title",
+   "pattern": "P10",
+   "text": "{hours} h passed. Now {time}",
+   "args": [
+    "hours",
+    "time"
+   ]
+  },
+  {
+   "id": "action.next_round",
+   "pattern": "P01",
+   "text": "Next round"
+  },
+  {
+   "id": "sum.held_firm",
+   "pattern": "P10",
+   "text": "held firm under questioning"
+  },
+  {
+   "id": "sum.talked",
+   "pattern": "P10",
+   "text": "talked to Sosā"
+  },
+  {
+   "id": "sum.delivered",
+   "pattern": "P10",
+   "text": "delivered"
+  },
+  {
+   "id": "sum.not_yet",
+   "pattern": "P10",
+   "text": "not yet"
+  },
+  {
+   "id": "sum.person",
+   "pattern": "P10",
+   "text": "{person}: {what}",
+   "args": [
+    "person",
+    "what"
+   ]
+  },
+  {
+   "id": "sum.card",
+   "pattern": "P10",
+   "text": "Card: {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.lost",
+   "pattern": "P10",
+   "text": "Lost: {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.reached",
+   "pattern": "P10",
+   "text": "Reached {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sum.sold",
+   "pattern": "P10",
+   "text": "{person} sold you out",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "id": "sum.hold",
+   "pattern": "P10",
+   "text": "{title}. You deal with it next.",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "sum.news",
+   "pattern": "P10",
+   "text": "News waiting: {title}",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "sum.message",
+   "pattern": "P10",
+   "text": "Message from {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.exposure",
+   "pattern": "P10",
+   "text": "Exposure {signed}",
+   "args": [
+    "signed"
+   ]
+  },
+  {
+   "id": "sum.exposure_rose",
+   "pattern": "P10",
+   "text": "Exposure rose by {n} while time passed",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.exposure_fell",
+   "pattern": "P10",
+   "text": "Exposure fell by {n} while time passed",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "daily.out",
+   "pattern": "P14",
+   "text": "{name} got out at {time}",
+   "args": [
+    "name",
+    "time"
+   ]
+  },
+  {
+   "id": "daily.clock",
+   "pattern": "P14",
+   "text": "{name} ran out of time",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "daily.deal",
+   "pattern": "P14",
+   "text": "{name} took the deal",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "daily.arrest",
+   "pattern": "P14",
+   "text": "{name} ended under house arrest in {place}",
+   "args": [
+    "name",
+    "place"
+   ]
+  },
+  {
+   "id": "daily.share_one",
+   "pattern": "P14",
+   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} time. Round {round}. Exposure {exposure}.\n{url}",
+   "args": [
+    "date",
+    "line",
+    "holds",
+    "round",
+    "exposure",
+    "url"
+   ]
+  },
+  {
+   "id": "daily.share_many",
+   "pattern": "P14",
+   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} times. Round {round}. Exposure {exposure}.\n{url}",
+   "args": [
+    "date",
+    "line",
+    "holds",
+    "round",
+    "exposure",
+    "url"
+   ]
+  },
+  {
+   "id": "log.try",
+   "pattern": "P10",
+   "text": "You try: {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.rolled",
+   "pattern": "P10",
+   "text": "Rolled {die}; needed {need}.",
+   "args": [
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.rolled_lowered",
+   "pattern": "P10",
+   "text": "Rolled {die}; needed {need} (lowered by {list}).",
+   "args": [
+    "die",
+    "need",
+    "list"
+   ]
+  },
+  {
+   "id": "log.success",
+   "pattern": "P10",
+   "text": "Success."
+  },
+  {
+   "id": "log.failed",
+   "pattern": "P10",
+   "text": "Failed."
+  },
+  {
+   "id": "log.pressed_holds",
+   "pattern": "P10",
+   "text": "Sosā presses {name}: {die} against {need}. Holds.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.pressed_breaks",
+   "pattern": "P10",
+   "text": "Sosā presses {name}: {die} against {need}. Breaks.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.ally_delivers",
+   "pattern": "P10",
+   "text": "{name} rolls: {die} against {need}. Delivered.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.ally_not_yet",
+   "pattern": "P10",
+   "text": "{name} rolls: {die} against {need}. Not yet.",
+   "args": [
+    "name",
+    "die",
+    "need"
+   ]
+  },
+  {
+   "id": "log.gives",
+   "pattern": "P10",
+   "text": "{name} gives you: {card}.",
+   "args": [
+    "name",
+    "card"
+   ]
+  },
+  {
+   "id": "log.card_lost",
+   "pattern": "P10",
+   "text": "Card lost: {card}.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "log.owe",
+   "pattern": "P10",
+   "text": "You now owe {name}: {text}",
+   "args": [
+    "name",
+    "text"
+   ]
+  },
+  {
+   "id": "log.reply_by",
+   "pattern": "P05",
+   "text": "{name} will reply by {time}.",
+   "args": [
+    "name",
+    "time"
+   ]
+  },
+  {
+   "id": "log.message",
+   "pattern": "P10",
+   "text": "Message from {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.answer",
+   "pattern": "P10",
+   "text": "You answer: {label}.",
+   "args": [
+    "label"
+   ]
+  },
+  {
+   "id": "log.order",
+   "pattern": "P10",
+   "text": "Order sent: {name}.",
+   "args": [
+    "name"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "log.news",
+   "pattern": "P10",
+   "text": "News: {title}.",
+   "args": [
+    "title"
+   ]
+  },
+  {
+   "id": "log.chose",
+   "pattern": "P10",
+   "text": "You chose: {label}.",
+   "args": [
+    "label"
+   ]
+  },
+  {
+   "id": "log.person_role",
+   "pattern": "P07",
+   "text": "{name}: {role}.",
+   "args": [
+    "name",
+    "role"
+   ]
+  },
+  {
+   "id": "log.tutorial_ended",
+   "pattern": "P13",
+   "text": "Tutorial ended. Continue on your own."
+  },
+  {
+   "id": "action.send_order",
+   "pattern": "P01",
+   "text": "Send the order",
+   "role": "gov"
+  },
+  {
+   "id": "nav.reports",
+   "pattern": "P02",
+   "text": "Reports",
+   "role": "gov"
+  },
+  {
+   "id": "report.just_now",
+   "pattern": "P06",
+   "text": "just now",
+   "role": "gov"
+  },
+  {
+   "id": "report.ago",
+   "pattern": "P06",
+   "text": "{age} ago",
+   "args": [
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "report.proves",
+   "pattern": "P06",
+   "text": "Proves",
+   "role": "gov"
+  },
+  {
+   "id": "report.not_prove",
+   "pattern": "P06",
+   "text": "Does not prove",
+   "role": "gov"
+  },
+  {
+   "id": "report.empty",
+   "pattern": "P12",
+   "text": "No reports yet. The watch team is at the residence.",
+   "role": "gov"
+  },
+  {
+   "id": "desk.empty",
+   "pattern": "P12",
+   "text": "No calls waiting.",
+   "role": "gov"
+  },
+  {
+   "id": "action.send",
+   "pattern": "P01",
+   "text": "Send",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_here",
+   "pattern": "P09",
+   "text": "Counts where you are looking",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_abroad",
+   "pattern": "P09",
+   "text": "Counts across the line",
+   "role": "gov"
+  },
+  {
+   "id": "gov.counts_valdoria",
+   "pattern": "P09",
+   "text": "Counts in Valdória",
+   "role": "gov"
+  },
+  {
+   "id": "gov.not_yours",
+   "pattern": "P09",
+   "text": "Not yet yours",
+   "role": "gov"
+  },
+  {
+   "id": "gov.would_start",
+   "pattern": "P09",
+   "text": "Would start at the line",
+   "role": "gov"
+  },
+  {
+   "id": "route.report_src",
+   "pattern": "P06",
+   "text": "{source}, {age}",
+   "args": [
+    "source",
+    "age"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "route.does_not_prove",
+   "pattern": "P06",
+   "text": "Does not prove {what}",
+   "args": [
+    "what"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "route.may_be_here",
+   "pattern": "P06",
+   "text": "She may be here",
+   "role": "gov"
+  },
+  {
+   "id": "route.no_command",
+   "pattern": "P04",
+   "text": "Your ministry does not command this tower",
+   "role": "gov"
+  },
+  {
+   "id": "route.ask_esm",
+   "pattern": "P04",
+   "text": "Ask Esmeralda. The request must reach the people who can stop the flight.",
+   "role": "gov"
+  },
+  {
+   "id": "route.esm_intro",
+   "pattern": "P09",
+   "text": "An Esmeraldan introduction would start at the line",
+   "role": "gov"
+  },
+  {
+   "id": "start.continue",
+   "pattern": "P01",
+   "text": "Continue your run as {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "start.demo_note",
+   "pattern": "P13",
+   "text": "A guided run as {name} walks you to the airfield, where you take over.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "start.pick",
+   "pattern": "P02",
+   "text": "Pick who you play"
+  },
+  {
+   "id": "start.sibling_her",
+   "pattern": "P08",
+   "text": "Her {rel} {name} is booking the jet",
+   "args": [
+    "rel",
+    "name"
+   ]
+  },
+  {
+   "id": "start.sibling_his",
+   "pattern": "P08",
+   "text": "His {rel} {name} is booking the jet",
+   "args": [
+    "rel",
+    "name"
+   ]
+  },
+  {
+   "id": "daily.done_note",
+   "pattern": "P14",
+   "text": "{line}. Play again or share it.",
+   "args": [
+    "line"
+   ]
+  },
+  {
+   "id": "daily.note",
+   "pattern": "P08",
+   "text": "Everyone plays the same run today, as {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "share.copied",
+   "pattern": "P10",
+   "text": "Copied"
+  },
+  {
+   "id": "sound.off",
+   "pattern": "P02",
+   "text": "Sound off"
+  },
+  {
+   "id": "sound.on",
+   "pattern": "P02",
+   "text": "Sound on"
+  },
+  {
+   "id": "sound.menu_off",
+   "pattern": "P01",
+   "text": "Sound: off"
+  },
+  {
+   "id": "sound.menu_on",
+   "pattern": "P01",
+   "text": "Sound: on"
+  },
+  {
+   "id": "nav.wordmark",
+   "pattern": "P02",
+   "text": "Coalition"
+  },
+  {
+   "id": "menu.guided",
+   "pattern": "P01",
+   "text": "Guided run"
+  },
+  {
+   "id": "menu.start",
+   "pattern": "P01",
+   "text": "Start screen"
+  },
+  {
+   "id": "menu.help",
+   "pattern": "P01",
+   "text": "Help"
+  },
+  {
+   "id": "menu.install",
+   "pattern": "P01",
+   "text": "Install"
+  },
+  {
+   "id": "sound.title",
+   "pattern": "P02",
+   "text": "Sound"
+  },
+  {
+   "id": "nav.menu_label",
+   "pattern": "P02",
+   "text": "Game"
+  },
+  {
+   "id": "scene.label",
+   "pattern": "P02",
+   "text": "Pixel-art scene of the current level"
+  },
+  {
+   "id": "scene.left",
+   "pattern": "P05",
+   "text": "left."
+  },
+  {
+   "id": "scene.goal_label",
+   "pattern": "P02",
+   "text": "Goal"
+  },
+  {
+   "id": "scene.of_ten",
+   "pattern": "P05",
+   "text": "of 10"
+  },
+  {
+   "id": "coach.do",
+   "pattern": "P13",
+   "text": "Choose the highlighted action."
+  },
+  {
+   "id": "coach.leave",
+   "pattern": "P01",
+   "text": "Leave"
+  },
+  {
+   "id": "log.heading",
+   "pattern": "P02",
+   "text": "What happened"
+  },
+  {
+   "id": "hand.heading",
+   "pattern": "P02",
+   "text": "Your hand"
+  },
+  {
+   "id": "hand.game",
+   "pattern": "P02",
+   "text": "Game"
+  },
+  {
+   "id": "phone.calls",
+   "pattern": "P02",
+   "text": "Calls"
+  },
+  {
+   "id": "help.approach",
+   "pattern": "P09",
+   "text": "Choose an approach under **Here**, read its chances, then commit. Use **The phone** to arrange help while you travel. Calls can fail; check when a reply is due."
+  },
+  {
+   "id": "help.cards",
+   "pattern": "P09",
+   "text": "Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse."
+  },
+  {
+   "id": "help.rounds",
+   "pattern": "P09",
+   "text": "Each round: News, Phone, Move, Roll, Sosā. At exposure 10 you are held. Each hold is worse than the last; the third is house arrest. Leave Esmeraldan airspace within 72 hours to win."
+  },
+  {
+   "id": "help.ios",
+   "pattern": "P11",
+   "text": "To install on an iPhone: tap Share, then Add to Home Screen."
+  },
+  {
+   "id": "route.heading",
+   "pattern": "P02",
+   "text": "The route"
+  },
+  {
+   "id": "route.legend_inhand",
+   "pattern": "P05",
+   "text": "In hand"
+  },
+  {
+   "id": "route.legend_promised",
+   "pattern": "P05",
+   "text": "Promised, not delivered"
+  },
+  {
+   "id": "route.legend_notyet",
+   "pattern": "P05",
+   "text": "Not started"
+  },
+  {
+   "id": "nav.panels",
+   "pattern": "P02",
+   "text": "Panels"
+  },
+  {
+   "id": "tab.here",
+   "pattern": "P02",
+   "text": "Here"
+  },
+  {
+   "id": "tab.phone",
+   "pattern": "P02",
+   "text": "Phone"
+  },
+  {
+   "id": "tab.route",
+   "pattern": "P02",
+   "text": "Route"
+  },
+  {
+   "id": "tab.hand",
+   "pattern": "P02",
+   "text": "Hand"
+  },
+  {
+   "id": "update.ready",
+   "pattern": "P11",
+   "text": "New version ready."
+  },
+  {
+   "id": "update.reload",
+   "pattern": "P01",
+   "text": "Reload"
+  },
+  {
+   "id": "over.share",
+   "pattern": "P01",
+   "text": "Share your result"
+  },
+  {
+   "id": "over.again",
+   "pattern": "P01",
+   "text": "Run it again"
+  },
+  {
+   "id": "title.word",
+   "pattern": "P02",
+   "text": "Coalition"
+  },
+  {
+   "id": "title.line",
+   "pattern": "P08",
+   "text": "Seventy-two hours to escape. Your allies are on the phone."
+  },
+  {
+   "id": "title.start",
+   "pattern": "P01",
+   "text": "Start"
+  },
+  {
+   "id": "title.foot",
+   "pattern": "P08",
+   "text": "A Nelosphere universe game by Ron Bronson"
+  },
+  {
+   "id": "start.blurb",
+   "pattern": "P08",
+   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda and reach the jet your family has booked to Atlanta."
+  },
+  {
+   "id": "start.continue_plain",
+   "pattern": "P01",
+   "text": "Continue your run"
+  },
+  {
+   "id": "start.daily",
+   "pattern": "P01",
+   "text": "Daily run"
+  },
+  {
+   "id": "start.tutorial",
+   "pattern": "P01",
+   "text": "Play the tutorial"
+  },
+  {
+   "id": "start.gov_tutorial",
+   "pattern": "P01",
+   "text": "Guided run as Sofīā",
+   "role": "gov"
+  },
+  {
+   "id": "start.byline",
+   "pattern": "P02",
+   "text": "A Nelosphere universe game by"
+  },
+  {
+   "id": "start.author",
+   "pattern": "P02",
+   "text": "Ron Bronson"
+  },
+  {
+   "id": "sim.end.is_named_on_the_warrant",
+   "pattern": "P14",
+   "text": "{name} is named on the warrant by Monday.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.end.you_were_held_times_along",
+   "pattern": "P14",
+   "text": "You were held {holds} times along the way.",
+   "args": [
+    "holds"
+   ]
+  },
+  {
+   "id": "sim.end.you_were_held_once_along",
+   "pattern": "P14",
+   "text": "You were held once along the way."
+  },
+  {
+   "id": "sim.end.nona_rosa_s_truck_runs",
+   "pattern": "P14",
+   "text": "Nonā Rosa's truck runs to Salta every week. Nobody at the colônia says who rode in it."
+  },
+  {
+   "id": "sim.end.they",
+   "pattern": "P14",
+   "text": "They"
+  },
+  {
+   "id": "sim.end.talked_to_the_inquiry_will",
+   "pattern": "P14",
+   "text": "{and} talked to the inquiry. {turned} will not be forgiven at home.",
+   "args": [
+    "and",
+    "turned"
+   ]
+  },
+  {
+   "id": "sim.end.salek_tells_his_clients_you",
+   "pattern": "P14",
+   "text": "Salek tells his clients you do not keep terms."
+  },
+  {
+   "id": "sim.end.baca_reads_your_refusal_as",
+   "pattern": "P14",
+   "text": "Baca reads your refusal as a government in exile. The guest room closes."
+  },
+  {
+   "id": "sim.end.is_still_waiting_for_the",
+   "pattern": "P14",
+   "text": "{aide} is still waiting for the statement you promised.",
+   "args": [
+    "aide"
+   ]
+  },
+  {
+   "id": "sim.end.leads_the_party_in_your",
+   "pattern": "P14",
+   "text": "{aide} leads the party in your name. He expects you to remember that.",
+   "args": [
+    "aide"
+   ]
+  },
+  {
+   "id": "sim.end.leads_the_party_now_and",
+   "pattern": "P14",
+   "text": "{aide} leads the party now and says your name only to deny it.",
+   "args": [
+    "aide"
+   ]
+  },
+  {
+   "id": "sim.end.the_family_accounts_sit_in",
+   "pattern": "P14",
+   "text": "The family accounts sit in Salek's house. He calls on the first of every month."
+  },
+  {
+   "id": "sim.end.atlanta_lets_the_jet_land",
+   "pattern": "P14",
+   "text": "Atlanta lets the jet land and asks questions for a week."
+  },
+  {
+   "id": "sim.end.a_car_meets_the_aircraft",
+   "pattern": "P14",
+   "text": "A car meets the aircraft at Lāyūna."
+  },
+  {
+   "id": "sim.inquiry.the_yacht_story_is_dead",
+   "pattern": "P10",
+   "text": " The yacht story is dead, and the papers say so."
+  },
+  {
+   "id": "sim.inquiry.tells_them_where_you_were",
+   "pattern": "P10",
+   "text": " {first} tells them where you were last seen.{yacht}",
+   "args": [
+    "first",
+    "yacht"
+   ]
+  },
+  {
+   "id": "sim.inquiry.says_nothing_useful",
+   "pattern": "P10",
+   "text": " {first} says nothing useful.",
+   "args": [
+    "first"
+   ]
+  },
+  {
+   "id": "sim.inquiry.reviews_the_passenger_lists_at",
+   "pattern": "P10",
+   "text": "{name} reviews the passenger lists at Portô Venla airport. Nothing.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.inquiry.the_operator_withdraws_the_crew",
+   "pattern": "P10",
+   "text": " The operator withdraws the crew until you reassure him."
+  },
+  {
+   "id": "sim.inquiry.nothing_new",
+   "pattern": "P10",
+   "text": " Nothing new."
+  },
+  {
+   "id": "sim.inquiry.the_last_call_came_from",
+   "pattern": "P10",
+   "text": " The last call came from where you are."
+  },
+  {
+   "id": "sim.inquiry.nobody_there_has_seen_you",
+   "pattern": "P10",
+   "text": " Nobody there has seen you."
+  },
+  {
+   "id": "sim.inquiry.they_are_close",
+   "pattern": "P10",
+   "text": " They are close."
+  },
+  {
+   "id": "sim.inquiry.they_find_you",
+   "pattern": "P10",
+   "text": " They find you."
+  },
+  {
+   "id": "sim.line.the_minister_has_other_guests",
+   "pattern": "P07",
+   "text": "\"The minister has other guests this weekend.\""
+  },
+  {
+   "id": "sim.line.the_ministry_has_not_called",
+   "pattern": "P07",
+   "text": "\"The ministry has not called back. I will try again if you ask.\""
+  },
+  {
+   "id": "sim.line.nothing_yet_they_want_more",
+   "pattern": "P07",
+   "text": "\"Nothing yet. They want more time.\""
+  },
+  {
+   "id": "sim.line.the_crew_will_not_confirm",
+   "pattern": "P07",
+   "text": "\"The crew will not confirm without a destination. Decide.\""
+  },
+  {
+   "id": "sim.end.your_immunity_is_gone_a",
+   "pattern": "P14",
+   "text": "{time}. Your immunity is gone, a warrant is out and Esmeralda has closed its airfields to your flight. {epilogue}",
+   "args": [
+    "time",
+    "epilogue"
+   ]
+  },
+  {
+   "id": "sim.inquiry.monday_noon_your_own_passport",
+   "pattern": "P10",
+   "text": "Monday noon. Your own passport is cancelled and the ban is at every post."
+  },
+  {
+   "id": "sim.line.think_about_it_i_will",
+   "pattern": "P07",
+   "text": "\"Think about it. I will call again.\""
+  },
+  {
+   "id": "sim.line.then_you_will_cross_like",
+   "pattern": "P07",
+   "text": "\"Then you will cross like anyone else.\""
+  },
+  {
+   "id": "sim.line.thank_you_my_people_will",
+   "pattern": "P07",
+   "text": "\"Thank you. My people will be at the post.\""
+  },
+  {
+   "id": "sim.say.the_sedan_rolls_past_the",
+   "pattern": "P10",
+   "text": "The sedan rolls past the gate at a crawl. The car follows it north. Nando waves without looking."
+  },
+  {
+   "id": "sim.line.then_we_have_nothing_to",
+   "pattern": "P07",
+   "text": "\"Then we have nothing to discuss. Good luck with the pilot.\""
+  },
+  {
+   "id": "sim.line.a_week_i_am_not",
+   "pattern": "P07",
+   "text": "\"A week. I am not a patient man, but I am a curious one.\""
+  },
+  {
+   "id": "sim.line.good_the_ministry_will_hear",
+   "pattern": "P07",
+   "text": "\"Good. The ministry will hear from me in the morning.\""
+  },
+  {
+   "id": "sim.say.they_go_to_the_house",
+   "pattern": "P10",
+   "text": "They go to the house. The house is empty."
+  },
+  {
+   "id": "sim.say.the_radio_has_you_at",
+   "pattern": "P10",
+   "text": "The radio has you at sea for the evening. Nando laughs in the front seat."
+  },
+  {
+   "id": "sim.line.the_operator_just_had_a",
+   "pattern": "P07",
+   "text": "\"The operator just had a call from the minister's office. We are good.\""
+  },
+  {
+   "id": "sim.line.the_crew_is_happy_the",
+   "pattern": "P07",
+   "text": "\"The crew is happy. The apron saw you pay them.\""
+  },
+  {
+   "id": "sim.say.gianluka_does_not_answer_again",
+   "pattern": "P10",
+   "text": "Gianlūka does not answer again. By the afternoon the inquiry has a town and a street."
+  },
+  {
+   "id": "sim.line.thank_you_sosa_s_people",
+   "pattern": "P07",
+   "text": "\"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here.\""
+  },
+  {
+   "id": "sim.line.her_uncle_banks_with_me",
+   "pattern": "P07",
+   "text": "\"Her uncle banks with me. She will answer within the hour. That is two things now.\""
+  },
+  {
+   "id": "sim.line.i_could_not_decide_for",
+   "pattern": "P07",
+   "text": "\"I could not decide for you. Six hours lost.\""
+  },
+  {
+   "id": "sim.line.i_told_them_atlanta_do",
+   "pattern": "P07",
+   "text": "\"I told them Atlanta. Do not make me a liar.\""
+  },
+  {
+   "id": "sim.line.then_call_salek_soon_the",
+   "pattern": "P07",
+   "text": "\"Then call Salek soon. The crew will not wait on us forever.\""
+  },
+  {
+   "id": "sim.line.atlanta_i_will_tell_the",
+   "pattern": "P07",
+   "text": "\"Atlanta. I will tell the operator.\""
+  },
+  {
+   "id": "sim.why.pick_one_of_the_answers",
+   "pattern": "P04",
+   "text": "Pick one of the answers."
+  },
+  {
+   "id": "sim.why.that_message_is_gone",
+   "pattern": "P04",
+   "text": "That message is gone."
+  },
+  {
+   "id": "sim.line.ten_hours_and_you_understand",
+   "pattern": "P07",
+   "text": "\"Ten hours, and you understand what I asked.\""
+  },
+  {
+   "id": "sim.line.i_have_a_name_in",
+   "pattern": "P07",
+   "text": "\"I have a name in Baca. Give me six hours.\""
+  },
+  {
+   "id": "sim.line.i_will_see_what_the",
+   "pattern": "P07",
+   "text": "\"I will see what the minister can spare. Call it a courtesy.\""
+  },
+  {
+   "id": "sim.line.leave_it_with_me_six",
+   "pattern": "P07",
+   "text": "\"Leave it with me. Six hours.\""
+  },
+  {
+   "id": "sim.why.nothing_to_call_about",
+   "pattern": "P04",
+   "text": "Nothing to call about."
+  },
+  {
+   "id": "sim.say.sold_you_out_sosa_knows",
+   "pattern": "P10",
+   "text": "{name} sold you out. Sosā knows where you are.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.not_something_you_can_do",
+   "pattern": "P04",
+   "text": "Not something you can do here."
+  },
+  {
+   "id": "sim.why.answer_the_news_first",
+   "pattern": "P04",
+   "text": "Answer the news first."
+  },
+  {
+   "id": "sim.why.you_are_being_held",
+   "pattern": "P04",
+   "text": "You are being held."
+  },
+  {
+   "id": "sim.why.the_run_is_over",
+   "pattern": "P04",
+   "text": "The run is over."
+  },
+  {
+   "id": "sim.say.is_clean_and_offended_you",
+   "pattern": "P10",
+   "text": "{name} is clean. And offended you asked.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.say.was_working_for_sosa_you",
+   "pattern": "P10",
+   "text": "{name} was working for Sosā. You find out before it costs you.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.say.you_stop_answering",
+   "pattern": "P10",
+   "text": "You stop answering {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.pick_one_of_the_choices",
+   "pattern": "P04",
+   "text": "Pick one of the choices."
+  },
+  {
+   "id": "sim.why.no_news_waiting",
+   "pattern": "P04",
+   "text": "No news waiting."
+  },
+  {
+   "id": "sim.opt.cut_them_off",
+   "pattern": "P01",
+   "text": "Cut them off"
+  },
+  {
+   "id": "sim.opt.test_them_quietly",
+   "pattern": "P01",
+   "text": "Test them quietly"
+  },
+  {
+   "id": "sim.opt.keep_trusting",
+   "pattern": "P01",
+   "text": "Keep trusting {split}",
+   "args": [
+    "split"
+   ]
+  },
+  {
+   "id": "sim.title.a_rumor_about",
+   "pattern": "P10",
+   "text": "A rumor about {first}",
+   "args": [
+    "first"
+   ]
+  },
+  {
+   "id": "sim.why.is_not_answering",
+   "pattern": "P04",
+   "text": "{name} is not answering.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.label.lie_low_one_hour",
+   "pattern": "P01",
+   "text": "Lie low one hour"
+  },
+  {
+   "id": "sim.why.salek_is_not_taking_your",
+   "pattern": "P04",
+   "text": "Salek is not taking your calls."
+  },
+  {
+   "id": "sim.why.nando_and_the_spare_cars",
+   "pattern": "P04",
+   "text": "Nando and the spare cars are gone."
+  },
+  {
+   "id": "sim.why.you_do_not_have_v",
+   "pattern": "P04",
+   "text": "You do not have Vélez's card."
+  },
+  {
+   "id": "sim.why.you_do_not_have_salek",
+   "pattern": "P04",
+   "text": "You do not have Salek's line yet. Call him about permission first."
+  },
+  {
+   "id": "sim.status.ask_salek_to_seek_atlanta",
+   "pattern": "P05",
+   "text": "Ask Salek to seek Atlanta’s permission. His terms apply."
+  },
+  {
+   "id": "sim.status.contact_salek_before_reaching_susana",
+   "pattern": "P05",
+   "text": "Contact Salek before reaching Susana."
+  },
+  {
+   "id": "sim.status.arrange_reception_through_your_sibling",
+   "pattern": "P05",
+   "text": "Arrange reception through your sibling, then Vélez."
+  },
+  {
+   "id": "sim.status.call_from_salta_to_request",
+   "pattern": "P05",
+   "text": "Call from Salta to request officials at the border."
+  },
+  {
+   "id": "sim.status.arrange_the_next_stage_charter",
+   "pattern": "P05",
+   "text": "Arrange the next stage: charter, crew, fuel or positioning."
+  },
+  {
+   "id": "sim.why.not_answering",
+   "pattern": "P04",
+   "text": "Not answering."
+  },
+  {
+   "id": "sim.why.name_a_destination_or_engage",
+   "pattern": "P04",
+   "text": "Name a destination or engage Salek first."
+  },
+  {
+   "id": "sim.preview.next_reply_in_hours_needs",
+   "pattern": "P03",
+   "text": "Next: {stage}. Reply in {k} hours. {name} needs a roll of {turned} or more before trust bonuses.",
+   "args": [
+    "stage",
+    "k",
+    "name",
+    "turned"
+   ]
+  },
+  {
+   "id": "sim.label.call_about",
+   "pattern": "P01",
+   "text": "Call {name} about {what}",
+   "args": [
+    "name",
+    "what"
+   ]
+  },
+  {
+   "id": "sim.why.resolves_at",
+   "pattern": "P04",
+   "text": "Resolves at {time}.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "sim.status.is_on_it",
+   "pattern": "P05",
+   "text": "{arrangement}: {name} is on it",
+   "args": [
+    "arrangement",
+    "name"
+   ]
+  },
+  {
+   "id": "sim.preview.takes_hour",
+   "pattern": "P03",
+   "text": "Takes {hours} hour{s}.",
+   "args": [
+    "hours",
+    "s"
+   ]
+  },
+  {
+   "id": "sim.preview.your_cards_lower_it",
+   "pattern": "P03",
+   "text": " Your cards lower it: "
+  },
+  {
+   "id": "sim.preview.die_needs_or_more_in",
+   "pattern": "P03",
+   "text": "Die needs {need} or more ({need2} in 6).{bonus}",
+   "args": [
+    "need",
+    "need2",
+    "bonus"
+   ]
+  },
+  {
+   "id": "sim.preview.cannot_succeed_with_your_current",
+   "pattern": "P03",
+   "text": "Cannot succeed with your current help."
+  },
+  {
+   "id": "sim.preview.succeeds_without_a_roll",
+   "pattern": "P03",
+   "text": "Succeeds without a roll."
+  },
+  {
+   "id": "sim.why.talked_to_the_inquiry",
+   "pattern": "P04",
+   "text": "{name} talked to the inquiry.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.you_cut_off",
+   "pattern": "P04",
+   "text": "You cut off {name}.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.needs_a_card",
+   "pattern": "P04",
+   "text": "Needs a {card} card.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "sim.why.your_card_is_not_recognized",
+   "pattern": "P04",
+   "text": "Your {card} card is not recognized here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "sim.effect.aircraft_preparations_stay_on_hold",
+   "pattern": "P03",
+   "text": "Aircraft preparations stay on hold."
+  },
+  {
+   "id": "sim.opt.ignore_it",
+   "pattern": "P01",
+   "text": "Ignore it"
+  },
+  {
+   "id": "sim.effect.requires_v_lez_s_card",
+   "pattern": "P03",
+   "text": "Requires Vélez’s card. Restores the aircraft without raising exposure."
+  },
+  {
+   "id": "sim.opt.have_v_lez_call_the",
+   "pattern": "P01",
+   "text": "Have Vélez call the operator"
+  },
+  {
+   "id": "sim.effect.restores_the_aircraft_to_ready",
+   "pattern": "P03",
+   "text": "Restores the aircraft to ready. Exposure rises."
+  },
+  {
+   "id": "sim.opt.pay_the_crew_bonus",
+   "pattern": "P01",
+   "text": "Pay the crew bonus"
+  },
+  {
+   "id": "sim.line.your_ministry_threatened_the_operator",
+   "pattern": "P07",
+   "text": "\"Your ministry threatened the operator’s license. He wants Esmeraldan backing or a crew bonus.\""
+  },
+  {
+   "id": "sim.effect.nothing_changes",
+   "pattern": "P03",
+   "text": "Nothing changes."
+  },
+  {
+   "id": "sim.opt.hang_up",
+   "pattern": "P01",
+   "text": "Hang up"
+  },
+  {
+   "id": "sim.effect.an_hour_on_the_phone",
+   "pattern": "P03",
+   "text": "An hour on the phone. He skips his next move while he thinks you are wavering."
+  },
+  {
+   "id": "sim.opt.keep_him_talking",
+   "pattern": "P01",
+   "text": "Keep him talking"
+  },
+  {
+   "id": "sim.line.inspector_sosa_come_back_for",
+   "pattern": "P07",
+   "text": "\"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and your brother's name goes on the warrant too.\""
+  },
+  {
+   "id": "sim.effect.v_lez_withdraws_her_officials",
+   "pattern": "P03",
+   "text": "Vélez withdraws her officials. Her card still opens the tower, not the post."
+  },
+  {
+   "id": "sim.opt.refuse",
+   "pattern": "P01",
+   "text": "Refuse"
+  },
+  {
+   "id": "sim.effect.reception_stands_the_party_at",
+   "pattern": "P03",
+   "text": "Reception stands. The party at home will read it."
+  },
+  {
+   "id": "sim.opt.say_it",
+   "pattern": "P01",
+   "text": "Say it"
+  },
+  {
+   "id": "sim.line.before_my_people_meet_you",
+   "pattern": "P07",
+   "text": "\"Before my people meet you: you will say, on the record, that Esmeralda receives you as a guest. Not a government.\""
+  },
+  {
+   "id": "sim.opt.put_him_off",
+   "pattern": "P01",
+   "text": "Put him off"
+  },
+  {
+   "id": "sim.effect.keep_gianluka_s_support_and",
+   "pattern": "P03",
+   "text": "Keep Gianlūka’s support and gain his informant’s help."
+  },
+  {
+   "id": "sim.opt.send_the_statement",
+   "pattern": "P01",
+   "text": "Send the statement"
+  },
+  {
+   "id": "sim.line.the_party_meets_tonight_send",
+   "pattern": "P07",
+   "text": "\"The party meets tonight. Send your endorsement before midnight. You gave your word.\""
+  },
+  {
+   "id": "sim.opt.send_nando_past_the_gate",
+   "pattern": "P01",
+   "text": "Send Nando past the gate first"
+  },
+  {
+   "id": "sim.effect.nothing_changes_you_know_the",
+   "pattern": "P03",
+   "text": "Nothing changes. You know the clock now."
+  },
+  {
+   "id": "sim.opt.midnight_it_is",
+   "pattern": "P01",
+   "text": "Midnight it is"
+  },
+  {
+   "id": "sim.line.two_men_in_a_car",
+   "pattern": "P07",
+   "text": "\"Two men in a car at the yard gate, asking about a woman. Or a man. Midnight or never.\""
+  },
+  {
+   "id": "sim.effect.nothing_moves_until_you_call",
+   "pattern": "P03",
+   "text": "Nothing moves until you call her yourself."
+  },
+  {
+   "id": "sim.opt.wait",
+   "pattern": "P01",
+   "text": "Wait"
+  },
+  {
+   "id": "sim.opt.ask_salek_to_reach_the",
+   "pattern": "P01",
+   "text": "Ask Salek to reach the uncle"
+  },
+  {
+   "id": "sim.effect.try_again_in_six_hours",
+   "pattern": "P03",
+   "text": "Try again in six hours. Your sibling must pass a reliability roll."
+  },
+  {
+   "id": "sim.line.v_lez_is_not_answering",
+   "pattern": "P07",
+   "text": "\"Vélez is not answering. I can try again, or ask Salek to reach her uncle.\""
+  },
+  {
+   "id": "sim.effect.lose_salek_and_his_line",
+   "pattern": "P03",
+   "text": "Lose Salek and his line. Atlanta will not answer. You can still fly without its yes."
+  },
+  {
+   "id": "sim.effect.permission_stalls_twelve_hours_he",
+   "pattern": "P03",
+   "text": "Permission stalls twelve hours. He keeps your line open, for now."
+  },
+  {
+   "id": "sim.opt.ask_for_a_week",
+   "pattern": "P01",
+   "text": "Ask for a week"
+  },
+  {
+   "id": "sim.effect.salek_keeps_working_your_family",
+   "pattern": "P03",
+   "text": "Salek keeps working. Your family will not forgive this quickly."
+  },
+  {
+   "id": "sim.opt.sign_move_the_family_accounts",
+   "pattern": "P01",
+   "text": "Sign the transfer papers"
+  },
+  {
+   "id": "sim.line.the_transfer_papers_are_with",
+   "pattern": "P07",
+   "text": "\"The transfer papers are with your brother. Sign tonight, or I stop making calls.\""
+  },
+  {
+   "id": "sim.effect.sends_them_to_the_house",
+   "pattern": "P03",
+   "text": "Sends them to the house you just left. Buys less time, costs nothing later."
+  },
+  {
+   "id": "sim.opt.deny_it_you_are_at",
+   "pattern": "P01",
+   "text": "Say you are at home"
+  },
+  {
+   "id": "sim.effect.the_inquiry_believes_the_coast",
+   "pattern": "P03",
+   "text": "The inquiry believes the coast for a while. If a friend later turns, the lie costs you."
+  },
+  {
+   "id": "sim.opt.confirm_it_from_the_yacht",
+   "pattern": "P01",
+   "text": "Confirm it, from the yacht"
+  },
+  {
+   "id": "sim.line.radi_port_venla_we_hear",
+   "pattern": "P07",
+   "text": "\"Rādiô Portô Venla. We hear you are on a yacht off the coast. Can you confirm?\""
+  },
+  {
+   "id": "sim.opt.let_decide",
+   "pattern": "P01",
+   "text": "Let {place} decide",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.effect.crew_booking_waits_until_salek",
+   "pattern": "P03",
+   "text": "Crew booking waits until Salek is engaged."
+  },
+  {
+   "id": "sim.opt.wait_until_salek_answers",
+   "pattern": "P01",
+   "text": "Wait until Salek answers"
+  },
+  {
+   "id": "sim.effect.crew_booking_can_proceed_atlanta",
+   "pattern": "P03",
+   "text": "Crew booking can proceed. Atlanta has not granted permission yet."
+  },
+  {
+   "id": "sim.opt.name_atlanta_now",
+   "pattern": "P01",
+   "text": "Name Atlanta now"
+  },
+  {
+   "id": "sim.line.jet_found_in_susana_the",
+   "pattern": "P07",
+   "text": "\"Jet found in Susana. The crew needs a destination. Atlanta, or wait for Salek?\""
+  },
+  {
+   "id": "sim.day.wednesday",
+   "pattern": "P02",
+   "text": "Wednesday"
+  },
+  {
+   "id": "sim.day.tuesday",
+   "pattern": "P02",
+   "text": "Tuesday"
+  },
+  {
+   "id": "sim.day.monday",
+   "pattern": "P02",
+   "text": "Monday"
+  },
+  {
+   "id": "sim.day.sunday",
+   "pattern": "P02",
+   "text": "Sunday"
+  },
+  {
+   "id": "sim.day.saturday",
+   "pattern": "P02",
+   "text": "Saturday"
+  },
+  {
+   "id": "gov.debrief.nobody_was_asked_to_do",
+   "pattern": "P14",
+   "text": "Nobody was asked to do anything.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.none_every_report_was_true",
+   "pattern": "P14",
+   "text": "None. Every report was true as far as it went.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.he_has_not_forgotten_the",
+   "pattern": "P14",
+   "text": " He has not forgotten the promises you made without him.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.your_handling_of_the_press",
+   "pattern": "P14",
+   "text": " Your handling of the press pleased him.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.he_never_got_his_location",
+   "pattern": "P14",
+   "text": "He never got his location. He has a new aide in mind.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.you_asked_for_time_and",
+   "pattern": "P14",
+   "text": "You asked for time {times} and never named a place. He has a new aide in mind.",
+   "args": [
+    "times"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.you_gave_him_the_right",
+   "pattern": "P14",
+   "text": "You gave him the right town. He took the credit, which is what you are for.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.you_told_him_you_did",
+   "pattern": "P14",
+   "text": "You told him you did not know. He briefed the papers himself and remembers that you made him.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.you_gave_him_a_town",
+   "pattern": "P14",
+   "text": "You gave him a town and it was the wrong one. He said it on television. He does not say your name now.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.delivered_failed",
+   "pattern": "P14",
+   "text": "{w}: {ok} delivered, {no} failed.",
+   "args": [
+    "w",
+    "ok",
+    "no"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.it_was_one_of_nando",
+   "pattern": "P14",
+   "text": "{text} It was one of Nando's decoys.",
+   "args": [
+    "text"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.wrong",
+   "pattern": "P14",
+   "text": "Wrong",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.decoy",
+   "pattern": "P14",
+   "text": "Decoy",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.right",
+   "pattern": "P14",
+   "text": "Right",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.she_never_left_the_hearing",
+   "pattern": "P14",
+   "text": "{time}. She never left. The hearing proceeds without her in custody.",
+   "args": [
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.sosa_s_people_reached_her",
+   "pattern": "P14",
+   "text": "Sosā's people reached her at {place} at {time}. She is in custody for the hearing.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.esmeralda_was_never_asked_in",
+   "pattern": "P14",
+   "text": "Esmeralda was never asked in time.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.esmeralda_acknowledged_your_hold_the",
+   "pattern": "P14",
+   "text": "Esmeralda acknowledged your hold. The tower never received it.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.the_jet_left_esmeraldan_airspace",
+   "pattern": "P14",
+   "text": "The jet left Esmeraldan airspace at {time}. {esmeralda_was_never_asked_in}",
+   "args": [
+    "time",
+    "esmeralda_was_never_asked_in"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_is_instead",
+   "pattern": "P06",
+   "text": "Where she is instead.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_she_will_stay",
+   "pattern": "P06",
+   "text": "That she will stay.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.she_is_not_there_now",
+   "pattern": "P06",
+   "text": "She is not there now.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.she_is_here_or_just",
+   "pattern": "P06",
+   "text": "She is here or just left.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.sosa_finds_nothing_at",
+   "pattern": "P06",
+   "text": "Sosā finds nothing at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.sosa_finds_fresh_tracks_at",
+   "pattern": "P06",
+   "text": "Sosā finds fresh tracks at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_it_is_true",
+   "pattern": "P06",
+   "text": "That it is true.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_says_so",
+   "pattern": "P06",
+   "text": "Someone says so.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_caller_swears_she_is",
+   "pattern": "P06",
+   "text": "A caller swears she is at {p}.",
+   "args": [
+    "p"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_goes_next",
+   "pattern": "P06",
+   "text": "Where she goes next.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.she_was_at_when_the",
+   "pattern": "P06",
+   "text": "She was at {place} when the source saw her.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_source_places_her_at",
+   "pattern": "P06",
+   "text": "A source places her at {p}.",
+   "args": [
+    "p"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.the_sergeant_is_off_shift",
+   "pattern": "P07",
+   "text": "\"The sergeant is off shift. Nobody has read it.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.the_post_confirms_the_sergeant",
+   "pattern": "P07",
+   "text": "\"The post confirms. The sergeant has her name on the desk.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.legal_wants_the_file_first",
+   "pattern": "P07",
+   "text": "\"Legal wants the file first. Not today.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.the_review_is_open_say",
+   "pattern": "P07",
+   "text": "\"The review is open. Say the word and the operator hears about his licence.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.baca_says_it_is_a",
+   "pattern": "P07",
+   "text": "\"Baca says it is a judicial matter. Ask again with more.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.esmeralda_will_hold_her_if",
+   "pattern": "P07",
+   "text": "\"Esmeralda will hold her if she appears. The interior ministry gave us a name to call.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_is",
+   "pattern": "P06",
+   "text": "Where she is.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.her_side_knows_the_ban",
+   "pattern": "P06",
+   "text": "Her side knows the ban is out.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_clerk_at_the_provincial",
+   "pattern": "P06",
+   "text": "A clerk at the provincial desk called a friend of hers before filing the ban.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.nothing_comes_of_it",
+   "pattern": "P06",
+   "text": "Nothing comes of it.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_patrol_searches_nobody_there",
+   "pattern": "P06",
+   "text": "The patrol searches {place}. Nobody there has seen her.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_patrol_finds_the_room",
+   "pattern": "P06",
+   "text": "The patrol finds the room still warm at {place}. She was here within the hour.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_it_was_her_or",
+   "pattern": "P06",
+   "text": "That it was her, or when.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_paid_for_passage",
+   "pattern": "P06",
+   "text": "Someone paid for passage.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.holt_greer_took_money_this",
+   "pattern": "P06",
+   "text": "Holt Greer took money this week for a crate on the midnight freight.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_went",
+   "pattern": "P06",
+   "text": "Where she went.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_it_is_her",
+   "pattern": "P06",
+   "text": "That it is her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_house_is_empty",
+   "pattern": "P06",
+   "text": "The house is empty.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_is_inside",
+   "pattern": "P06",
+   "text": "Someone is inside.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_house_is_dark_nobody",
+   "pattern": "P06",
+   "text": "The house is dark. Nobody has come or gone for an hour.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.lights_on_someone_moved_past",
+   "pattern": "P06",
+   "text": "Lights on. Someone moved past the upstairs window.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.say.you_move_the_search_to",
+   "pattern": "P10",
+   "text": "You move the search to {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.not_an_order_you_can",
+   "pattern": "P04",
+   "text": "Not an order you can give now.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.the_post_will_confirm_when",
+   "pattern": "P07",
+   "text": "\"The post will confirm when the sergeant reads it. Four hours.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.we_can_open_a_review",
+   "pattern": "P07",
+   "text": "\"We can open a review on Sunday. Six hours to get it on paper.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.the_interior_ministry_will_consider",
+   "pattern": "P07",
+   "text": "\"The interior ministry will consider it. Ten hours, and they will want to know why.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.nothing_to_ask",
+   "pattern": "P04",
+   "text": "Nothing to ask.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.then_i_will_tell_them",
+   "pattern": "P07",
+   "text": "\"Then I will tell them she has fled the country. Find her before the papers find you.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.six_hours_then_i_want",
+   "pattern": "P07",
+   "text": "\"Six hours. Then I want a town and a street.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.inquiry.the_minister_names_on_the",
+   "pattern": "P10",
+   "text": "The minister names {place} on the evening news. Every desk in the province drives there.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.i_will_say_so_at",
+   "pattern": "P07",
+   "text": "\"{place}. I will say so at six.\"",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.good_sosa_has_the_address",
+   "pattern": "P07",
+   "text": "\"Good. Sosā has the address. Do not lose her.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.deal_with_the_news_first",
+   "pattern": "P04",
+   "text": "Deal with the news first.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.no_one_here_your_ministry",
+   "pattern": "P05",
+   "text": "No one here. Your ministry does not command this tower.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_a_name_at",
+   "pattern": "P05",
+   "text": "Your people: a name at the interior ministry",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_the_border_post",
+   "pattern": "P05",
+   "text": "Your people: the border post",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_a_railway_contact",
+   "pattern": "P05",
+   "text": "Your people: a railway contact, not asked yet",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_the_railway_contact",
+   "pattern": "P05",
+   "text": "Your people: the railway contact",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.no_one_here_yet",
+   "pattern": "P05",
+   "text": "No one here yet.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_the_registry",
+   "pattern": "P05",
+   "text": "Your people: the registry",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_the_provincial_desk",
+   "pattern": "P05",
+   "text": "Your people: the provincial desk and its patrol",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_the_watch_team",
+   "pattern": "P05",
+   "text": "Your people: the watch team, Inspector Sosā",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.not_asked",
+   "pattern": "P05",
+   "text": "Not asked.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.asked_through_the_embassy_in",
+   "pattern": "P05",
+   "text": "Asked through the embassy in Baca. Not answered.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.esmeralda_has_agreed_to_hold",
+   "pattern": "P05",
+   "text": "Esmeralda has agreed to hold her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.esmeraldan_hold",
+   "pattern": "P05",
+   "text": "Esmeraldan hold",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.not_sent",
+   "pattern": "P05",
+   "text": "Not sent.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.ban_sent_not_confirmed_at",
+   "pattern": "P05",
+   "text": "Ban sent. Not confirmed at the post. A sent message does not close the border.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.confirmed_the_post_has_her",
+   "pattern": "P05",
+   "text": "Confirmed. The post has her name.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.travel_ban_at_the_post",
+   "pattern": "P05",
+   "text": "Travel ban at the post",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.interior_minister",
+   "pattern": "P07",
+   "text": "Interior minister",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.she_may_be_across_the",
+   "pattern": "P08",
+   "text": "She may be across the border. Your domestic authority has limited reach.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_crossing_could_happen_before",
+   "pattern": "P08",
+   "text": "The crossing could happen before your instructions arrive. A sent message alone does not close the border.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.a_departure_window_is_approaching",
+   "pattern": "P08",
+   "text": "A departure window is approaching. Railway staff give different accounts.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.someone_is_sheltering_her_your",
+   "pattern": "P08",
+   "text": "Someone is sheltering her. Your source has conditions.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.reports_conflict_a_patrol_can",
+   "pattern": "P08",
+   "text": "Reports conflict. A patrol can check one of them.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_watched_convoy_splits_the",
+   "pattern": "P08",
+   "text": "The watched convoy splits. The minister wants a location.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.susana_airfield",
+   "pattern": "P08",
+   "text": "Susana airfield",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_huhui_border",
+   "pattern": "P08",
+   "text": "The Huhūi border",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_freight_salta",
+   "pattern": "P08",
+   "text": "The freight, Salta",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_support_network_nova_trent",
+   "pattern": "P08",
+   "text": "The support network, Nova Trentô",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.provincial_desks_santa_laura",
+   "pattern": "P08",
+   "text": "Provincial desks, Santa Laura",
+   "role": "gov"
+  },
+  {
+   "id": "gov.scene.the_assignment_port_venla",
+   "pattern": "P08",
+   "text": "The assignment, Portô Venla",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.confirmed_at_the_post",
+   "pattern": "P05",
+   "text": "Confirmed at the post.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.circulate_the_ban_first",
+   "pattern": "P04",
+   "text": "Circulate the ban first.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.label.confirm_the_travel_ban_reached",
+   "pattern": "P01",
+   "text": "Confirm the ban at the post",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.the_aviation_desk_takes_six",
+   "pattern": "P03",
+   "text": "The aviation desk takes six hours and needs a 3 or more. It gives you the operator card: a review can pause the booking.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.the_aviation_desk_opens_on",
+   "pattern": "P04",
+   "text": "The aviation desk opens on Sunday.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.the_aviation_desk_has_it",
+   "pattern": "P05",
+   "text": "The aviation desk has it.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.label.open_a_licence_review_on",
+   "pattern": "P01",
+   "text": "Review the operator's licence",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.a_promise_to_consider_a",
+   "pattern": "P03",
+   "text": "A promise to consider a hold is not an instruction to a tower.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.through_the_embassy_in_baca",
+   "pattern": "P03",
+   "text": "Through the embassy in Baca. Ten hours for an answer, and the embassy needs a 4 or more. If Esmeralda agrees, her departure gets harder and your introduction at the ministry counts across the line.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.esmeralda_has_agreed",
+   "pattern": "P05",
+   "text": "Esmeralda has agreed.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.asked_the_embassy_has_not",
+   "pattern": "P05",
+   "text": "Asked. The embassy has not confirmed.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.label.ask_esmeralda_to_hold_her",
+   "pattern": "P01",
+   "text": "Ask Esmeralda to hold her",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.cannot_fail",
+   "pattern": "P03",
+   "text": "Cannot fail.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.on_failure",
+   "pattern": "P03",
+   "text": "On failure: {fail}",
+   "args": [
+    "fail"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.takes_hour_acts",
+   "pattern": "P03",
+   "text": "Takes {hours} hour{s}. {who} acts.",
+   "args": [
+    "hours",
+    "s",
+    "who"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.your_cards_lower_it",
+   "pattern": "P03",
+   "text": " Your cards lower it: ",
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.who_acts",
+   "pattern": "P03",
+   "text": "Who acts: {who}",
+   "args": [
+    "who"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.preview.who_acts_esmeraldan_officials_on",
+   "pattern": "P03",
+   "text": "Who acts: Esmeraldan officials, on your introduction",
+   "role": "gov"
+  },
+  {
+   "id": "gov.why.your_ministry_does_not_command",
+   "pattern": "P04",
+   "text": "Your ministry does not command this tower. Ask Esmeralda to hold her first.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.effect.honest_the_minister_briefs_the",
+   "pattern": "P03",
+   "text": "Honest. The minister briefs the papers himself.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.opt.say_you_do_not_know",
+   "pattern": "P01",
+   "text": "Say you do not know yet",
+   "role": "gov"
+  },
+  {
+   "id": "gov.effect.public_if_you_are_wrong",
+   "pattern": "P03",
+   "text": "Public. If you are wrong, your own offices follow the wrong lead for hours.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.opt.name_where_you_think_she",
+   "pattern": "P01",
+   "text": "Name where you think she is",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.you_asked_for_time_the",
+   "pattern": "P07",
+   "text": "\"You asked for time. The time is up. Where is she?\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_goes_after_release",
+   "pattern": "P06",
+   "text": "Where she goes after release.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_was_stopped",
+   "pattern": "P06",
+   "text": "Where she was stopped.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_patrol_report_in",
+   "pattern": "P06",
+   "text": "A patrol report: {title} in {place}.",
+   "args": [
+    "title",
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.inquiry.where_she_is_now",
+   "pattern": "P10",
+   "text": "Where she is now.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_was_last_seen",
+   "pattern": "P06",
+   "text": "Where she was last seen.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.where_she_is_now",
+   "pattern": "P06",
+   "text": "Where she is now.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.atlanta_will_receive_her",
+   "pattern": "P06",
+   "text": "Atlanta will receive her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.atlanta_has_issued_her_an",
+   "pattern": "P06",
+   "text": "Atlanta has issued her an entry visa.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_she_has_reached_it",
+   "pattern": "P06",
+   "text": "That she has reached it.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.an_aircraft_is_booked",
+   "pattern": "P06",
+   "text": "An aircraft is booked.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_charter_to_layuna_is",
+   "pattern": "P06",
+   "text": "A charter to Lāyūna is booked at Susana.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_jet_is_preparing_to",
+   "pattern": "P06",
+   "text": "A jet is preparing to leave.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_charter_at_susana_is",
+   "pattern": "P06",
+   "text": "A charter at Susana is filing for Lāyūna.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_she_crossed",
+   "pattern": "P06",
+   "text": "That she crossed.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_rode_the_freight",
+   "pattern": "P06",
+   "text": "Someone rode the freight.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_passenger_left_the_salta",
+   "pattern": "P06",
+   "text": "A passenger left the Salta freight at the Huhūi passes.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.that_it_was_her",
+   "pattern": "P06",
+   "text": "That it was her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_wants_the_freight",
+   "pattern": "P06",
+   "text": "Someone wants the freight.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.somebody_asked_about_the_midnight",
+   "pattern": "P06",
+   "text": "Somebody asked about the midnight freight.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_stayed_at_the_col",
+   "pattern": "P06",
+   "text": "Someone stayed at the colônia.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_nova_trent_cooperative_had",
+   "pattern": "P06",
+   "text": "The Nova Trentô cooperative had a visitor overnight.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.whose_it_is",
+   "pattern": "P06",
+   "text": "Whose it is.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_car_from_the_capital",
+   "pattern": "P06",
+   "text": "A car from the capital is in Santa Laura.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_plain_car_with_capital",
+   "pattern": "P06",
+   "text": "A plain car with capital plates was seen at the Santa Laura square.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.who_was_in_the_back",
+   "pattern": "P06",
+   "text": "Who was in the back.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_car_left",
+   "pattern": "P06",
+   "text": "The car left.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_party_s_official_car",
+   "pattern": "P06",
+   "text": "The party's official car left the residence with its flags up.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.which_one_she_is_in",
+   "pattern": "P06",
+   "text": "Which one she is in.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.the_cars_left",
+   "pattern": "P06",
+   "text": "The cars left.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.three_cars_left_the_residence",
+   "pattern": "P06",
+   "text": "Three cars left the residence in different directions.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.she_was_inside",
+   "pattern": "P06",
+   "text": "She was inside.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_car_is_heading_south",
+   "pattern": "P06",
+   "text": "A car is heading south.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.a_red_sedan_took_the",
+   "pattern": "P06",
+   "text": "A red sedan took the south road toward Santa Laura.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.radi_port_venla",
+   "pattern": "P07",
+   "text": "Rādiô Portô Venla",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.inspector_sosa",
+   "pattern": "P07",
+   "text": "Inspector Sosā",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_aviation_desk",
+   "pattern": "P07",
+   "text": "The aviation desk",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_embassy_in_baca",
+   "pattern": "P07",
+   "text": "The embassy in Baca",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_railway_contact",
+   "pattern": "P07",
+   "text": "The railway contact",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_santa_laura_desk",
+   "pattern": "P07",
+   "text": "The Santa Laura desk",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_watch_team",
+   "pattern": "P07",
+   "text": "The watch team",
+   "role": "gov"
+  },
+  {
+   "id": "gov.name.the_minister",
+   "pattern": "P07",
+   "text": "The minister",
+   "role": "gov"
+  },
+  {
+   "id": "gov.effect.the_minister_waits_he_remembers",
+   "pattern": "P03",
+   "text": "The minister waits. He remembers asking.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.opt.ask_for_six_hours",
+   "pattern": "P01",
+   "text": "Ask for six hours",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.where_is_she_i_want",
+   "pattern": "P07",
+   "text": "\"Where is she? I want a location before the evening news.\"",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.someone_is_home",
+   "pattern": "P06",
+   "text": "Someone is home.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.her_car_is_in_the",
+   "pattern": "P06",
+   "text": "Her car is in the drive. Lights on upstairs.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.say.port_venla_saturday_afternoon_two",
+   "pattern": "P10",
+   "text": "Portô Venla, Saturday afternoon. Two of your cars watch the residence. The court has barred her from leaving and asked for her passports by Monday.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_where",
+   "pattern": "P02",
+   "text": "Where she was, and where you looked",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.th_when",
+   "pattern": "P02",
+   "text": "When",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.th_she_was",
+   "pattern": "P02",
+   "text": "She was",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.th_you_looked",
+   "pattern": "P02",
+   "text": "You looked",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.no_orders",
+   "pattern": "P12",
+   "text": "You gave no orders.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_misled",
+   "pattern": "P02",
+   "text": "Reports that misled you",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_delivered",
+   "pattern": "P02",
+   "text": "Who delivered",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_minister",
+   "pattern": "P02",
+   "text": "The minister",
+   "role": "gov"
+  },
+  {
+   "id": "render.detain_questioned",
+   "pattern": "P10",
+   "text": "Stopped for questioning"
+  },
+  {
+   "id": "render.detain_held",
+   "pattern": "P10",
+   "text": "Held at the station"
+  },
+  {
+   "id": "render.detain_arrest",
+   "pattern": "P10",
+   "text": "Under house arrest"
+  },
+  {
+   "id": "render.person",
+   "pattern": "P07",
+   "text": "{name}, {role}",
+   "args": [
+    "name",
+    "role"
+   ]
+  },
+  {
+   "id": "render.person_status",
+   "pattern": "P07",
+   "text": "{name}, {role} · {status}",
+   "args": [
+    "name",
+    "role",
+    "status"
+   ]
+  },
+  {
+   "id": "render.you",
+   "pattern": "P07",
+   "text": "{name}, you",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "render.search_team",
+   "pattern": "P07",
+   "text": "Your search team"
+  },
+  {
+   "id": "render.over_custody",
+   "pattern": "P14",
+   "text": "In custody"
+  },
+  {
+   "id": "render.over_out",
+   "pattern": "P14",
+   "text": "Out of Esmeraldan airspace"
+  },
+  {
+   "id": "render.over_inquiry",
+   "pattern": "P14",
+   "text": "The inquiry wins"
+  },
+  {
+   "id": "menu.credits",
+   "pattern": "P01",
+   "text": "Credits"
+  }
+ ]
+}

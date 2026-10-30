@@ -1,0 +1,1 @@
+{ "about": "An entry has no declared pattern.", "expect": ["C01"], "patch": { "ui": { "entries+": [ { "id": "test.no_pattern", "text": "Hello" } ] } } }

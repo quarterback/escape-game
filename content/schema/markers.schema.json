@@ -1,0 +1,16 @@
+{
+  "$id": "coalition-content/0.5/markers", "title": "Effect marker wording",
+  "type": "object", "required": ["contract", "markers"],
+  "properties": {
+    "contract": { "type": "string", "pattern": "^coalition-content/0\\.5$" },
+    "about": { "type": "string" },
+    "markers": { "type": "array", "items": {
+      "type": "object", "required": ["code", "pattern", "text"], "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z]+\\.[a-z_]+$" },
+        "pattern": { "type": "string", "enum": ["P03", "P10"] },
+        "text": { "type": "string", "minLength": 1 },
+        "args": { "type": "array", "items": { "type": "string" } }
+      } } }
+  }
+}

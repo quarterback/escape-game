@@ -1,0 +1,1 @@
+{ "about": "Code asks for an ID the catalog lacks.", "expect": ["C02"], "patch": { "sources": { "src/extra.js": "const x = T('nowhere.at_all');" } } }

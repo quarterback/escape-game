@@ -1,0 +1,1 @@
+{ "about": "A dispatch uses an effect the rules do not know.", "expect": ["C02"], "records": { "EVENTS": [ { "id": "fixture_event", "title": "A test", "text": "Something happens.", "choices": [ { "id": "a", "label": "Do it", "fx": { "teleport": 1 } }, { "id": "b", "label": "Do not", "fx": {} } ] } ] } }

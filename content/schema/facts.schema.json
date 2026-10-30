@@ -1,0 +1,70 @@
+{
+ "$id": "coalition-content/0.5/facts",
+ "title": "Facts conditions may test (pbbg-content-schema fact shape)",
+ "type": "object",
+ "required": [
+  "contract",
+  "facts"
+ ],
+ "properties": {
+  "contract": {
+   "type": "string",
+   "pattern": "^coalition-content/0\\.5$"
+  },
+  "about": {
+   "type": "string"
+  },
+  "facts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "audience",
+     "phases"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+     },
+     "type": {
+      "type": "string",
+      "enum": [
+       "string",
+       "number",
+       "boolean"
+      ]
+     },
+     "audience": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "escape",
+        "gov"
+       ]
+      },
+      "minItems": 1
+     },
+     "phases": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "news",
+        "phone",
+        "move",
+        "roll",
+        "sosa"
+       ]
+      },
+      "minItems": 1
+     }
+    }
+   }
+  }
+ }
+}

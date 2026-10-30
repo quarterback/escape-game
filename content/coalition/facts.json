@@ -1,0 +1,9 @@
+{
+ "contract": "coalition-content/0.5",
+ "about": "Facts that declarative conditions may test, in the pbbg-content-schema fact shape. The host evaluates them; content never runs code.",
+ "facts": [
+  { "id": "clock.hoursLeft", "type": "number", "audience": ["escape", "gov"], "phases": ["news", "phone", "move", "roll", "sosa"] },
+  { "id": "hand.decoy_cars", "type": "boolean", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] },
+  { "id": "flag.dog", "type": "boolean", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] }
+ ]
+}

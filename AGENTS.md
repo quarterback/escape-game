@@ -33,10 +33,16 @@ archive exclusion unless the owner explicitly changes that instruction.
 
 Read the [content pattern specification](docs/content/patterns.md) and its
 [source register](docs/content/source-register.md) before extending the content
-system. They distinguish published guidance, Coalition adaptations and proposed
-checks. Runtime enforcement is not implemented by those documents. Preserve
-current owner requirements while migrating; do not treat proposed budgets as
-permission to rewrite gameplay or character voice.
+system. The package that implements it is in [content/](content/README.md);
+the migration record is [docs/aar-content-migration.md](docs/aar-content-migration.md).
+Preserve current owner requirements; do not treat budgets as permission to
+rewrite gameplay or character voice.
+
+Player-facing wording lives in `content/coalition/`. Code asks for it by ID
+(`T('id', values)`) and the page markup uses `{{c:id}}`. Do not write
+player-facing prose into a `.js` file; rule C12 stops the build. Do not add
+strings to `content/c12-baseline.json` or loosen `content/policy.json` to make an
+edit pass. A policy change goes in its own commit with the owner's approval.
 
 Use [Humanizer](https://github.com/blader/humanizer/blob/main/SKILL.md) when writing
 or reviewing game copy. Read its full rules before the first copy pass. Apply
@@ -85,12 +91,13 @@ favicon must stay embedded so the game works offline.
 government state as the second argument to `setState` in that mode; the scene then
 shows the suspected stop and the search team and must never show the candidate's
 real position, people or arrangements. Keep the 2D fallback working for devices
-without WebGL or WebGPU, and keep people above the level heading (`GROUND`).
+without WebGL or WebGPU, and keep people above the bottom strip of the scene (`GROUND`). The level heading sits in the panel at every width, not on the scene.
 
 ## Check changes
 
-For copy changes, run `python3 tools/build.py` and
-`node tools/tutorial-check.js`. Check the built game in a browser, including the
+For copy changes, run `python3 tools/build.py` (it parses the sources and runs
+the content check first), `node tools/tutorial-check.js`,
+`node tools/gov-tutorial-check.js` and `node tools/contract-tests.js`. Check the built game in a browser, including the
 start screen and tutorial. If editing strings in the simulation or data tables,
 compare the seeded calibration results before and after. Copy edits must not
 change the rules.
