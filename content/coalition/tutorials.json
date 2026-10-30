@@ -472,7 +472,7 @@
      "kind": "act",
      "title": "A sent ban is not a closed border",
      "goal": "Confirm a request reached the people who act on it",
-     "body": "The ban went out, but the border post has not read it.\n\nChoose **Confirm the travel ban reached the border post**, then **Send**.",
+     "body": "The ban went out, but the border post has not read it.\n\nChoose **Confirm the ban at the post**, then **Send**.",
      "highlight": [
       "#calls"
      ],

@@ -1,0 +1,1 @@
+{ "about": "A condition compares a boolean fact with gte.", "expect": ["C02"], "records": { "EVENTS": [ { "id": "fixture_when", "title": "A test", "text": "Something happens.", "when": [ { "ref": "flag.dog", "op": "gte", "value": 3 } ], "choices": [ { "id": "a", "label": "Go", "fx": {} } ] } ] } }

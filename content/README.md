@@ -13,9 +13,10 @@ C01 to C15) come from that document.
 | `coalition/markers.json` | Wording for effect markers. The rules choose the marker and its values; this file chooses the words. Both sides share it |
 | `coalition/tutorials.json` | Both guided runs (P13): seed, scripted dice, steps, what each step allows and a declarative completion condition |
 | `coalition/glossary.json` | Approved terms and prohibited aliases (C05) |
+| `coalition/facts.json` | Facts that event conditions may test, in the pbbg-content-schema fact shape |
 | `policy.json` | Prohibited phrases, allowed markup, length budgets and technical-string exceptions |
 | `schema/` | JSON Schemas for each file, plus the shape of the rule records in `src/data.js` |
-| `c12-baseline.json` | Prose still written into code. It can only shrink |
+| `c12-baseline.json` | Prose still written into code. It is empty, and it can only shrink |
 | `fixtures/` | Invalid packages; each must be caught by the rule it names |
 
 The rule records (dispatch events, government events, holds) stay in
@@ -48,10 +49,9 @@ the committed build matches the sources.
 
 ## Known limits
 
-- Three dispatch events keep `cond` functions that read live state. The check
-  reports them as adapter notes. The contract does not yet express them.
-- Narrative written in `src/sim.js` (148 strings) and `src/gov.js` (173) sits in
-  the C12 baseline: arrival lines, reports, the minister's messages, the
-  debrief. Moving it into the package is the next migration step.
 - The checks cannot stop an agent from editing the checks. Visible policy
   diffs, CI and review are the controls for that.
+- Conditions use the pbbg-content-schema shape (`ref`, `op`, `value`) against
+  facts in `coalition/facts.json`. The engine evaluates them in `src/sim.js`;
+  only `eq`, `gte` and `contains` exist, so a "less than" test is written as
+  `gte` on a counting-down fact (`clock.hoursLeft`).

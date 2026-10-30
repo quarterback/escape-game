@@ -43,7 +43,8 @@ const Render = (() => {
   function ring() { enqueue({ dur: 500, update(v, k) { v.ring = 1 - k; }, end(v) { v.ring = 0; } }); }
   function pause(ms) { enqueue({ dur: ms }); }
   function gameOver(over) { enqueue({ dur: 300, start(v) { v.over = over; } }); }
-  const DETAIN_TEXT = { questioned: 'Stopped for questioning', held: 'Held at the station', arrest: 'Under house arrest' };
+  const T = (id, args) => Content.t(id, args); // scene wording from content/coalition/ui.json
+  const DETAIN_TEXT = { questioned: 'render.detain_questioned', held: 'render.detain_held', arrest: 'render.detain_arrest' };
 
   // ---- the painter Art draws through -------------------------------
   // collect = true: four layer canvases (padded for parallax); people, lights, stars and
@@ -75,7 +76,7 @@ const Render = (() => {
       ally(id, x, role) {
         const s = g.state || {}, pr = !s.hidden && s.people ? s.people[id] : null;
         g.figure(role, x, { turned: !!(pr && pr.turned) });
-        if (!s.hidden && typeof Sim !== 'undefined' && Data.PEOPLE[id]) g.spots.push({ id, x: (x - 6) * SCALE, y: (GROUND - 23) * SCALE, w: 12 * SCALE, h: 23 * SCALE, label: `${Sim.personName(s, id)}, ${Data.PEOPLE[id].role}${pr && pr.turned ? ' (talked to the inquiry)' : pr && pr.trust >= 2 ? ' (trusts you)' : ''}` });
+        if (!s.hidden && typeof Sim !== 'undefined' && Data.PEOPLE[id]) g.spots.push({ id, x: (x - 6) * SCALE, y: (GROUND - 23) * SCALE, w: 12 * SCALE, h: 23 * SCALE, label: pr && (pr.turned || pr.trust >= 2) ? T('render.person_status', { name: Sim.personName(s, id), role: Data.PEOPLE[id].role, status: T(pr.turned ? 'who.talked' : 'who.trusted') }) : T('render.person', { name: Sim.personName(s, id), role: Data.PEOPLE[id].role }) });
       },
     };
     return g;
@@ -102,8 +103,8 @@ const Render = (() => {
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
     const x = Art.PLAYER_X[sceneId(f)] || 110;
-    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }], marker: '#FF7A90', label: `${Data.GOV ? Data.GOV.name : 'Your search team'}, you`, w: 26 };
-    return { x, list: [{ dx: 0, role: f.s.who === 'woman' ? 'teresa' : 'mateu' }], marker: '#FFD24A', label: `${Data.CHARACTERS[f.s.who].name}, you`, w: 12 };
+    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }], marker: '#FF7A90', label: T('render.you', { name: Data.GOV ? Data.GOV.name : T('render.search_team') }), w: 26 };
+    return { x, list: [{ dx: 0, role: f.s.who === 'woman' ? 'teresa' : 'mateu' }], marker: '#FFD24A', label: T('render.you', { name: Data.CHARACTERS[f.s.who].name }), w: 12 };
   }
   function grade(f) {
     const h = (Sim.START_HOUR + f.hour) % 24;
@@ -315,10 +316,10 @@ const Render = (() => {
   }
   function drawDetain() {
     const d = view.detain; X.det.visible = !!(d && d.k > 0.5); if (!X.det.visible) return;
-    const t = DETAIN_TEXT[d.kind] || DETAIN_TEXT.questioned; if (X.detText.text !== t) { X.detText.text = t; X.detBox.clear().roundRect(-X.detText.width / 2 - 18, -24, X.detText.width + 36, 48, 10).fill(0xff7a90); }
+    const t = T(DETAIN_TEXT[d.kind] || DETAIN_TEXT.questioned); if (X.detText.text !== t) { X.detText.text = t; X.detBox.clear().roundRect(-X.detText.width / 2 - 18, -24, X.detText.width + 36, 48, 10).fill(0xff7a90); }
     const vb = visibleBox(X.app.canvas); X.det.position.set(Math.round((vb.x0 + vb.x1) / 2), Math.round(CH * 0.3)); X.det.alpha = Math.min(1, (d.k - 0.5) * 8);
   }
-  function overText(o) { return view.gov ? (o.win ? 'In custody' : 'She got out') : (o.win ? 'Out of Esmeraldan airspace' : 'The inquiry wins'); }
+  function overText(o) { return T(view.gov ? (o.win ? 'render.over_custody' : 'over.gov_win') : (o.win ? 'render.over_out' : 'render.over_inquiry')); }
   function drawOver() {
     const o = view.over; X.over.visible = !!o; if (!o) return;
     const t = overText(o); if (X.overText.text !== t) X.overText.text = t;
@@ -346,7 +347,7 @@ const Render = (() => {
     ctx.font = `22px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
     for (const fl of view.floats) { ctx.fillStyle = fl.color; ctx.fillText(fl.text, fl.x, fl.y - (fl.t / fl.life) * 36); }
     if (view.die) { const d = view.die, k = Math.min(1, d.t * 3), face = k < 1 ? 1 + (Math.floor(now / 70) % 6) : d.die; ctx.fillStyle = k < 1 ? '#f6f1ff' : d.won ? '#3bd15e' : '#ff4d6d'; ctx.fillRect(CW / 2 - 28, CH / 2 - 62, 56, 56); ctx.fillStyle = '#150f2e'; ctx.font = `28px ${FONT}`; ctx.textBaseline = 'middle'; ctx.fillText(String(face), CW / 2, CH / 2 - 34); ctx.font = `18px ${FONT}`; ctx.fillStyle = '#f6f1ff'; ctx.fillText(`needs ${d.need}`, CW / 2, CH / 2 + 12); }
-    if (view.detain && view.detain.k > 0.5) { const t = DETAIN_TEXT[view.detain.kind] || DETAIN_TEXT.questioned, vb = visibleBox(X.c2); ctx.font = `24px ${FONT}`; const w = ctx.measureText(t).width + 36, cx = (vb.x0 + vb.x1) / 2; ctx.fillStyle = '#ff7a90'; ctx.fillRect(cx - w / 2, CH * 0.3 - 24, w, 48); ctx.fillStyle = '#2a0610'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, CH * 0.3); }
+    if (view.detain && view.detain.k > 0.5) { const t = T(DETAIN_TEXT[view.detain.kind] || DETAIN_TEXT.questioned), vb = visibleBox(X.c2); ctx.font = `24px ${FONT}`; const w = ctx.measureText(t).width + 36, cx = (vb.x0 + vb.x1) / 2; ctx.fillStyle = '#ff7a90'; ctx.fillRect(cx - w / 2, CH * 0.3 - 24, w, 48); ctx.fillStyle = '#2a0610'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, CH * 0.3); }
     const h = !busy() ? hover : null;
     if (h) { ctx.font = `18px ${FONT}`; const w = ctx.measureText(h.label).width + 20, vb = visibleBox(X.c2), tx = Math.min(vb.x1 - w - 8, Math.max(vb.x0 + 8, h.x + h.w / 2 - w / 2)), ty = Math.max(vb.y0 + 6, h.y - 44); ctx.fillStyle = 'rgba(12,12,20,0.95)'; ctx.fillRect(tx, ty, w, 34); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(h.label, tx + 10, ty + 17); }
     if (view.over) { ctx.fillStyle = 'rgba(21,15,46,0.72)'; ctx.fillRect(0, 0, CW, CH); ctx.font = `34px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = (view.gov ? !view.over.win : view.over.win) ? '#FFC93C' : '#FF7A90'; ctx.fillText(overText(view.over), CW / 2, CH / 2); }

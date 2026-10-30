@@ -319,7 +319,7 @@ const Data = (() => {
   ];
 
   // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
-  // at: level ids where it can be drawn (null = anywhere). cond(s, C): extra test. Text placeholders: {sib}, {here}.
+  // at: level ids where it can be drawn (null = anywhere). when: declarative conditions on facts in content/coalition/facts.json. Text placeholders: {sib}, {here}.
   // Choice fx: hours, exposure, belief ('away' | 'here'), card (gain), lose (card id | 'random' | 'best'), trust {who: +n},
   // doubt, cut, test (person ids), stage {arr: +n}, flag {k: v}, deadline (hours, negative = sooner), skipEnemy, mod (roll
   // change at this stop), hold (climb a rung), advance (reach the next stop), end {reason}, roll {need, win: fx, lose: fx}, say.
@@ -353,7 +353,7 @@ const Data = (() => {
       { id: 'wait_water', label: 'Wait for the water', fx: { hours: 4 } },
       { id: 'ford', label: 'Drive through it', fx: { roll: { need: 4, win: { exposure: -1, say: 'Water to the doors, then dry road.' }, lose: { hours: 2, exposure: 1, lose: 'random', say: 'The engine floods. You leave something in the car.' } } } },
       { id: 'ferry', label: "Pay a smuggler's ferry", fx: { hours: 1, exposure: 1, say: 'The ferryman knows who you are and says nothing. For now.' } } ] },
-    { id: 'decoy_ditch', at: ['road'], cond: (s) => s.hand.includes('decoy_cars'), title: 'A decoy on the evening news', text: 'One of your spare sedans rolled into a ditch on camera. The plates are yours.', choices: [
+    { id: 'decoy_ditch', at: ['road'], when: [{ ref: 'hand.decoy_cars', op: 'eq', value: true }], title: 'A decoy on the evening news', text: 'One of your spare sedans rolled into a ditch on camera. The plates are yours.', choices: [
       { id: 'claim', label: 'Say it was you', fx: { belief: 'away', exposure: -2, lose: 'decoy_cars', say: 'For one evening you are in a ditch two hundred kilometers away.' } },
       { id: 'quiet', label: 'Say nothing', fx: { exposure: 1 } } ] },
     // the colônia
@@ -394,7 +394,7 @@ const Data = (() => {
     { id: 'blizzard', at: ['border'], title: 'A blizzard closes the pass', text: "The post is shut. A smugglers' path runs over the ridge.", choices: [
       { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'Nobody moves. Not you, not Sosā.' } },
       { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Esmeralda with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
-    { id: 'dog_bark', at: ['border'], cond: (s) => s.flags.dog, title: 'The dog barks at the post', text: 'The guards look up. A dog in your car was on the news.', choices: [
+    { id: 'dog_bark', at: ['border'], when: [{ ref: 'flag.dog', op: 'eq', value: true }], title: 'The dog barks at the post', text: 'The guards look up. A dog in your car was on the news.', choices: [
       { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },
       { id: 'give_dog', label: 'Give the dog to a trucker', fx: { trust: { sibling: -1 }, say: 'Your daughter does not speak to you until Esmeralda.' } } ] },
     { id: 'esm_press', at: ['border'], title: 'Cameras across the line', text: 'Someone told the press in Baca. Cameras wait on the far side.', choices: [
@@ -425,7 +425,7 @@ const Data = (() => {
     { id: 'coffee', at: ['residence', 'road', 'colonia', 'salta'], title: 'A police car pulls in beside you', text: 'Two officers get out for coffee. One glances at your window.', choices: [
       { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
-    { id: 'hearing', at: null, cond: (s) => s.hour < 30, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
+    { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 }] /* before hour 30 */, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
       { id: 'noted', label: 'Keep going', fx: { deadline: -10 } } ] },
     { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios and the inquiry go quiet.', choices: [
       { id: 'dark', label: 'Use the dark', fx: { exposure: -1, skipEnemy: true } } ] },

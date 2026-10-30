@@ -77,6 +77,13 @@
   "#menu2 [data-act=install]",
   "#menu2 [data-act=mute]",
   "Coalition",
-  "./content.js"
+  "./content.js",
+  "./data.js",
+  "./sim.js",
+  "PixiJS missing",
+  "Render error, switching to 2D",
+  "PixiJS unavailable, drawing in 2D",
+  "image/png",
+  "'GCNorthSans-Regular', Arial, sans-serif"
  ]
 }

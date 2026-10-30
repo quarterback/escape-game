@@ -59,7 +59,7 @@ function check(pkg) {
   if (pol.contract !== contract) add('C15', 'error', 'content/policy.json', 'policy', 'contract', contract, pol.contract, 'Policy and package must share a contract.');
 
   // schemas (structural failures are C01: the field is not a declared, well-formed content field)
-  for (const k of ['ui', 'markers', 'tutorials', 'glossary']) for (const e of schemaErrors(pkg.schemas[k], pkg[k], k)) add('C01', 'error', P + pkg.manifest.files[k], k, e.at, e.expected, e.observed, 'Fix the field to match content/schema/' + k + '.schema.json.');
+  for (const k of ['ui', 'markers', 'tutorials', 'glossary', 'facts']) for (const e of schemaErrors(pkg.schemas[k], pkg[k], k)) add('C01', 'error', P + pkg.manifest.files[k], k, e.at, e.expected, e.observed, 'Fix the field to match content/schema/' + k + '.schema.json.');
 
   // C01: unique IDs
   const dup = (list, key, file, label) => { const seen = new Set(); list.forEach((e, i) => { if (seen.has(e[key])) add('C01', 'error', file, e[key], `${label}[${i}].${key}`, 'a unique ID', e[key], 'Rename one of the entries; IDs never repeat.'); seen.add(e[key]); }); };
@@ -114,7 +114,14 @@ function check(pkg) {
   } };
   for (const e of D.EVENTS) { for (const e2 of schemaErrors(pkg.schemas.records.$defs.event, e, 'EVENTS.' + e.id, pkg.schemas.records)) add('C01', 'error', 'src/data.js', 'event.' + e.id, e2.at, e2.expected, e2.observed, 'Fix the record shape.'); for (const c of e.choices) walkFx(c.fx, 'escape', `event.${e.id}.${c.id}`, 'fx'); }
   for (const e of D.GOV_EVENTS) { for (const e2 of schemaErrors(pkg.schemas.records.$defs.event, e, 'GOV_EVENTS.' + e.id, pkg.schemas.records)) add('C01', 'error', 'src/data.js', 'gov_event.' + e.id, e2.at, e2.expected, e2.observed, 'Fix the record shape.'); for (const c of e.choices) walkFx(c.fx, 'gov', `gov_event.${e.id}.${c.id}`, 'fx'); }
-  for (const e of D.EVENTS) if (e.cond) add('C02', 'info', 'src/data.js', 'event.' + e.id, 'cond', 'a declarative condition', 'function (adapter)', 'Documented adapter: conditions that read live state stay in code until the contract supports them.');
+  // C02: declarative conditions name a declared fact, and the operator and value suit its type (pbbg-content-schema CONDITION)
+  const FACTS = {}; for (const f of pkg.facts.facts) FACTS[f.id] = f;
+  for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event']]) for (const e of list) {
+    if (typeof e.cond === 'function') add('C02', 'error', 'src/data.js', `${pre}.${e.id}`, 'cond', 'a declarative when condition', 'a function', 'Express the test as { ref, op, value } against a fact in content/coalition/facts.json.');
+    (e.when || []).forEach((c, i) => { const f = FACTS[c.ref], at = `when[${i}]`;
+      if (!f) { add('C02', 'error', 'src/data.js', `${pre}.${e.id}`, at + '.ref', 'a fact declared in facts.json', c.ref, 'Declare the fact or correct the reference.'); return; }
+      if (typeof c.value !== f.type || (c.op === 'gte' && f.type !== 'number') || (c.op === 'contains' && f.type !== 'string')) add('C02', 'error', 'src/data.js', `${pre}.${e.id}`, at, `eq for any type, gte for numbers, contains for strings; value of type ${f.type}`, `${c.op} ${JSON.stringify(c.value)}`, 'Match the operator and value to the fact type.'); });
+  }
 
   // texts by scope for C05, C06, C10, C11
   const texts = [];
@@ -152,7 +159,7 @@ function report(F) {
   F.sort((a, b) => order[a.severity] - order[b.severity] || a.ruleId.localeCompare(b.ruleId));
   for (const f of F) if (f.severity !== 'info') console.log(`${f.severity.toUpperCase()} ${f.ruleId} ${f.file} ${f.contentId} ${f.fieldPath}\n  expected: ${f.expected}\n  observed: ${f.observed}\n  hint: ${f.hint}`);
   const n = (s) => F.filter(f => f.severity === s).length;
-  console.log(`content-check: ${n('error')} errors, ${n('warn')} warnings, ${n('info')} adapter notes`);
+  console.log(`content-check: ${n('error')} errors, ${n('warn')} warnings`);
   return n('error');
 }
 

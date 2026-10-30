@@ -126,12 +126,61 @@ Two of my own mistakes got past the content checks.
 | C15 contract version | Enforced on every file |
 | C07, C08, C09 | Not automated. C09 is covered by browser checks at phone and desktop sizes |
 
-## Open
+## Follow-up: narrative, conditions and the scene
 
-- Move the narrative in `sim.js` and `gov.js` into the package (P06 reports,
-  P07 messages, P08 arrivals, P14 debrief). The baseline shows what is left.
-- Three `cond` functions need declarative conditions or a documented adapter.
-- Try a second package (spec step 6) before extracting the tooling.
-- In both tutorials, read steps can appear while a result card is still open.
-  The government tutorial's copy now tells the player to move on first. An
-  engine option to hold a step until a phase opens would be cleaner.
+The owner released the architecture as
+[pbbg-content-schema](https://github.com/quarterback/pbbg-content-schema) and
+asked for the two open items.
+
+**Narrative migration.** A script moved 333 literals from `src/sim.js` and
+`src/gov.js` into the catalog: messages and their answers, spoken lines,
+blocked-action reasons, previews, reports, the debrief and the endings. It
+re-lexed after every replacement and turned template expressions into named
+placeholders. A second pass corrected 114 IDs and patterns the classifier had
+put in fallback groups, and renamed seven arguments (`split`, `false`, `p` and
+others). The scene's tooltips and end overlay in `src/render.js` moved too.
+The catalog now holds 598 entries and the C12 baseline is empty in every file.
+
+**Evidence.** Before the migration I recorded every string the rules hand to
+the interface over 22 seeded runs on both sides (1,739 lines, 3.3 MB). After
+the migration it was byte for byte identical. The only later differences are
+four labels changed on purpose (below).
+
+**What the move exposed.**
+- `gov.js` decided whether to file a report by matching the words "tells them"
+  in Sosā's event text: a rule keyed to wording. C14 had not caught it because
+  that sentence lived in `sim.js` code, which the perturbation never touched.
+  The event now carries a `talked` field and the report keys on it.
+- Two answer labels held a sentence inside a label ("Sign. Move the family
+  accounts." and "Deny it. You are at home."). C06 flagged them once they were
+  catalog entries. They now read "Sign the transfer papers" and "Say you are
+  at home".
+- Two government request labels ran eight words, over the advisory budget.
+  They now read "Confirm the ban at the post" and "Review the operator's
+  licence"; the tutorial step that names one was updated.
+- The scene's hover labels still said "(trusts you)" and "(talked to the
+  inquiry)". They now use the same status markers as the rest of the
+  interface ("Trusted", "Talked").
+- The script swept two pieces of debrief HTML into the catalog. C10 rejected
+  them. The markup went back into `gov.js` and only the headings and sentences
+  stayed in the catalog.
+
+**Conditions.** The three `cond` functions became declarative conditions in
+the pbbg-content-schema shape, against facts declared in
+`content/coalition/facts.json`:
+
+| Event | Before | After |
+| --- | --- | --- |
+| `decoy_ditch` | `s.hand.includes('decoy_cars')` | `hand.decoy_cars eq true` |
+| `dog_bark` | `s.flags.dog` | `flag.dog eq true` |
+| `hearing` | `s.hour < 30` | `clock.hoursLeft gte 43` |
+
+The schema has no "less than", so the hour test uses a fact that counts down.
+The content check now rejects a function condition, an undeclared fact, and an
+operator or value that does not suit the fact type, using the same rule as the
+package's CONDITION check. Two new fixtures cover the last two.
+
+**Unchanged.** Rules fingerprint (564 recorded actions), markers, the escape
+tutorial replay and both calibrations match the baselines exactly. All 16
+fixtures are caught and all contract tests pass. Both tutorials and an escape
+round play through in the browser with no missing content IDs and no errors.

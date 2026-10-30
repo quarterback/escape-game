@@ -12,6 +12,7 @@ const Gov = (() => {
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
   const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
   const M = (k, code, args) => C.marker(k, code, args);
+  const T = (id, args) => C.t(id, args);
   const ev = (type, data) => Object.assign({ type }, data);
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
   const EVERY = 5, LEAK = 0.5; // a stop she reaches is reported only some of the time
@@ -29,17 +30,17 @@ const Gov = (() => {
     g._rngState = (seed ^ 0x9e3779b9) >>> 0;
     attach(g);
     const events = [];
-    events.push(ev('say', { who: 'narrator', text: 'Portô Venla, Saturday afternoon. Two of your cars watch the residence. The court has barred her from leaving and asked for her passports by Monday.' }));
-    report(g, events, 0, 'watch', 'Her car is in the drive. Lights on upstairs.', 'Someone is home.', 'That she will stay.', 0, 0);
-    msg(g, events, 'minister', `"Where is she? I want a location before the evening news."`, [
-      { id: 'tell_now', label: 'Name where you think she is', hours: 0, effect: 'Public. If you are wrong, your own offices follow the wrong lead for hours.' },
-      { id: 'ask_time', label: 'Ask for six hours', hours: 0, effect: 'The minister waits. He remembers asking.' },
+    events.push(ev('say', { who: 'narrator', text: T('gov.say.port_venla_saturday_afternoon_two') }));
+    report(g, events, 0, 'watch', T('gov.report.her_car_is_in_the'), T('gov.report.someone_is_home'), T('gov.report.that_she_will_stay'), 0, 0);
+    msg(g, events, 'minister', T('gov.line.where_is_she_i_want'), [
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
+      { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: T('gov.effect.the_minister_waits_he_remembers') },
     ]);
     g._boot = events; return g;
   }
   function attach(g) { g._rng = function () { let a = (g._rngState + 0x6D2B79F5) | 0; g._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return g; }
   const roll = (g) => (g._dice && g._dice.length) ? g._dice.shift() : 1 + Math.floor(g._rng() * 6);
-  const personName = (g, id) => ({ minister: 'The minister', watch: 'The watch team', desk: 'The Santa Laura desk', rail: 'The railway contact', embassy: 'The embassy in Baca', aviation: 'The aviation desk', enemy: 'Inspector Sosā', press: 'Rādiô Portô Venla' })[id] || S.personName(g.c, id);
+  const personName = (g, id) => ({ minister: T('gov.name.the_minister'), watch: T('gov.name.the_watch_team'), desk: T('gov.name.the_santa_laura_desk'), rail: T('gov.name.the_railway_contact'), embassy: T('gov.name.the_embassy_in_baca'), aviation: T('gov.name.the_aviation_desk'), enemy: T('gov.name.inspector_sosa'), press: T('gov.name.radi_port_venla') })[id] || S.personName(g.c, id);
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
     const r = { at, source, text, proves, doesnt, hour: (hour === undefined ? g.c.hour : hour) + (delay || 0), misleading: !!misleading, seen: false };
@@ -68,19 +69,19 @@ const Gov = (() => {
   function leak(g, events, evs) {
     const c = g.c;
     for (const e of evs) {
-      if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 1, 'watch', 'A red sedan took the south road toward Santa Laura.', 'A car is heading south.', 'She was inside.', 0, c.hour, true);
-      if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 0, 'watch', 'Three cars left the residence in different directions.', 'The cars left.', 'Which one she is in.', 0, c.hour);
-      if (e.type === 'attempt' && e.id === 'partycar') report(g, events, 0, 'watch', "The party's official car left the residence with its flags up.", 'The car left.', 'Who was in the back.', 1, c.hour);
+      if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 1, 'watch', T('gov.report.a_red_sedan_took_the'), T('gov.report.a_car_is_heading_south'), T('gov.report.she_was_inside'), 0, c.hour, true);
+      if (e.type === 'attempt' && e.id === 'decoy') report(g, events, 0, 'watch', T('gov.report.three_cars_left_the_residence'), T('gov.report.the_cars_left'), T('gov.report.which_one_she_is_in'), 0, c.hour);
+      if (e.type === 'attempt' && e.id === 'partycar') report(g, events, 0, 'watch', T('gov.report.the_party_s_official_car'), T('gov.report.the_car_left'), T('gov.report.who_was_in_the_back'), 1, c.hour);
       if (e.type === 'travel' && g._rng() < LEAK) { const to = e.to;
-        if (to === 1) report(g, events, 1, 'desk', 'A plain car with capital plates was seen at the Santa Laura square.', 'A car from the capital is in Santa Laura.', 'Whose it is.', 3, c.hour);
-        if (to === 2) report(g, events, 2, 'desk', 'The Nova Trentô cooperative had a visitor overnight.', 'Someone stayed at the colônia.', 'Who.', 5, c.hour);
-        if (to === 3) report(g, events, 3, 'rail', 'Somebody asked about the midnight freight.', 'Someone wants the freight.', 'That it was her.', 2, c.hour);
-        if (to === 4) report(g, events, 4, 'desk', 'A passenger left the Salta freight at the Huhūi passes.', 'Someone rode the freight.', 'That she crossed.', 2, c.hour);
-        if (to === 5) report(g, events, 5, 'aviation', 'A charter at Susana is filing for Lāyūna.', 'A jet is preparing to leave.', 'That she has reached it.', 2, c.hour); }
-      if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', 'A charter to Lāyūna is booked at Susana.', 'An aircraft is booked.', 'That she has reached it.', 3, c.hour);
-      if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', 'Atlanta has issued her an entry visa.', 'Atlanta will receive her.', 'Where she is now.', 4, c.hour);
-      if (e.type === 'enemy' && e.id === 'press_ally' && /tells them/.test(e.text)) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, 'Where she was last seen.', 'Where she is now.', 0, c.hour); }
-      if (e.type === 'hold') report(g, events, c.pos, 'desk', `A patrol report: ${e.title.toLowerCase()} in ${place(c.pos)}.`, 'Where she was stopped.', 'Where she goes after release.', 1, c.hour);
+        if (to === 1) report(g, events, 1, 'desk', T('gov.report.a_plain_car_with_capital'), T('gov.report.a_car_from_the_capital'), T('gov.report.whose_it_is'), 3, c.hour);
+        if (to === 2) report(g, events, 2, 'desk', T('gov.report.the_nova_trent_cooperative_had'), T('gov.report.someone_stayed_at_the_col'), 'Who.', 5, c.hour);
+        if (to === 3) report(g, events, 3, 'rail', T('gov.report.somebody_asked_about_the_midnight'), T('gov.report.someone_wants_the_freight'), T('gov.report.that_it_was_her'), 2, c.hour);
+        if (to === 4) report(g, events, 4, 'desk', T('gov.report.a_passenger_left_the_salta'), T('gov.report.someone_rode_the_freight'), T('gov.report.that_she_crossed'), 2, c.hour);
+        if (to === 5) report(g, events, 5, 'aviation', T('gov.report.a_charter_at_susana_is'), T('gov.report.a_jet_is_preparing_to'), T('gov.report.that_she_has_reached_it'), 2, c.hour); }
+      if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', T('gov.report.a_charter_to_layuna_is'), T('gov.report.an_aircraft_is_booked'), T('gov.report.that_she_has_reached_it'), 3, c.hour);
+      if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', T('gov.report.atlanta_has_issued_her_an'), T('gov.report.atlanta_will_receive_her'), T('gov.report.where_she_is_now'), 4, c.hour);
+      if (e.type === 'enemy' && e.id === 'press_ally' && e.talked) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, T('gov.report.where_she_was_last_seen'), T('gov.inquiry.where_she_is_now'), 0, c.hour); }
+      if (e.type === 'hold') report(g, events, c.pos, 'desk', T('gov.report.a_patrol_report_in', { title: e.title.toLowerCase(), place: place(c.pos) }), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
       if (e.type === 'over') g.over = e;
     }
   }
@@ -90,9 +91,9 @@ const Gov = (() => {
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
-    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', `"You asked for time. The time is up. Where is she?"`, [
-      { id: 'tell_now', label: 'Name where you think she is', hours: 0, effect: 'Public. If you are wrong, your own offices follow the wrong lead for hours.' },
-      { id: 'admit', label: 'Say you do not know yet', hours: 0, effect: 'Honest. The minister briefs the papers himself.' },
+    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
+      { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
     ]); }
   }
 
@@ -111,21 +112,21 @@ const Gov = (() => {
       for (const tag in o.mods) if (m[tag]) { bonus += o.mods[tag]; used.push({ tag, bonus: o.mods[tag] }); }
       // across the line your ministry commands nothing: a search or a checkpoint in Esmeralda needs the hold
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
-      const why = abroad && !g.hand.includes('esm_intro') ? 'Your ministry does not command this tower. Ask Esmeralda to hold her first.' : '';
+      const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
       const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
-      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? 'Who acts: Esmeraldan officials, on your introduction' : `Who acts: ${o.who}`, pay: false,
+      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, need <= 1 ? 'Succeeds without a roll.' : `Die needs ${need} or more (${7 - need} in 6).${used.length ? ' Your cards lower it: ' + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : ''}`, `Takes ${o.hours} hour${o.hours === 1 ? '' : 's'}. ${o.who[0].toUpperCase() + o.who.slice(1)} acts.`, o.fail ? `On failure: ${o.fail}` : 'Cannot fail.'] });
+        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
   function calls(g) {
     const out = [], c = g.c;
     const add = (id, name, ok, why, hours, preview) => out.push({ kind: 'call', id, name, ok, why, hours, preview });
-    add('req:hold', 'Ask Esmeralda to hold her', g.req.hold === 'notyet', g.req.hold === 'promised' ? 'Asked. The embassy has not confirmed.' : 'Esmeralda has agreed.', 1, ['Through the embassy in Baca. Ten hours for an answer, and the embassy needs a 4 or more. If Esmeralda agrees, her departure gets harder and your introduction at the ministry counts across the line.', 'A promise to consider a hold is not an instruction to a tower.']);
-    add('req:operator', "Open a licence review on the Susana operator", g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? 'The aviation desk has it.' : 'The aviation desk opens on Sunday.', 1, ['The aviation desk takes six hours and needs a 3 or more. It gives you the operator card: a review can pause the booking.']);
-    add('req:ban', 'Confirm the travel ban reached the border post', g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? 'Circulate the ban first.' : 'Confirmed at the post.', 1, ['The post answers in four hours and needs a 2 or more. A sent message does not close the border; a confirmed one does.']);
+    add('req:hold', T('gov.label.ask_esmeralda_to_hold_her'), g.req.hold === 'notyet', g.req.hold === 'promised' ? T('gov.status.asked_the_embassy_has_not') : T('gov.status.esmeralda_has_agreed'), 1, [T('gov.preview.through_the_embassy_in_baca'), T('gov.preview.a_promise_to_consider_a')]);
+    add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six')]);
+    add('req:ban', T('gov.label.confirm_the_travel_ban_reached'), g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? T('gov.why.circulate_the_ban_first') : T('gov.status.confirmed_at_the_post'), 1, ['The post answers in four hours and needs a 2 or more. A sent message does not close the border; a confirmed one does.']);
     return out;
   }
   function view(g) {
@@ -133,43 +134,43 @@ const Gov = (() => {
     return {
       her: c.who === 'woman' ? 'her' : 'him', suspectName: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1),
       lastReport: g.lastReportHour === null ? '' : age(g.lastReportHour) + (g.lastReportHour === c.hour ? '' : ' old'), ministerBy: g.ministerBy,
-      levelName: ['The assignment, Portô Venla', 'Provincial desks, Santa Laura', 'The support network, Nova Trentô', 'The freight, Salta', 'The Huhūi border', 'Susana airfield'][g.belief],
-      objective: ['The watched convoy splits. The minister wants a location.', 'Reports conflict. A patrol can check one of them.', 'Someone is sheltering her. Your source has conditions.', 'A departure window is approaching. Railway staff give different accounts.', 'The crossing could happen before your instructions arrive. A sent message alone does not close the border.', 'She may be across the border. Your domestic authority has limited reach.'][g.belief],
+      levelName: [T('gov.scene.the_assignment_port_venla'), T('gov.scene.provincial_desks_santa_laura'), T('gov.scene.the_support_network_nova_trent'), T('gov.scene.the_freight_salta'), T('gov.scene.the_huhui_border'), T('gov.scene.susana_airfield')][g.belief],
+      objective: [T('gov.scene.the_watched_convoy_splits_the'), T('gov.scene.reports_conflict_a_patrol_can'), T('gov.scene.someone_is_sheltering_her_your'), T('gov.scene.a_departure_window_is_approaching'), T('gov.scene.the_crossing_could_happen_before'), T('gov.scene.she_may_be_across_the')][g.belief],
       reports: g.reports.map(r => Object.assign({}, r, { age: age(r.hour), source: personName(g, r.source) })),
       event: eventView(g), orders: orders(g), calls: calls(g),
-      messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? 'Interior minister' : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
+      messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? T('gov.name.interior_minister') : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
       requests: [
-        { at: 4, title: 'Travel ban at the post', state: g.req.ban === 'inhand' ? 'inhand' : c.flags.restriction ? 'promised' : 'notyet', sub: g.req.ban === 'inhand' ? 'Confirmed. The post has her name.' : c.flags.restriction ? 'Ban sent. Not confirmed at the post. A sent message does not close the border.' : 'Not sent.' },
-        { at: 5, title: 'Esmeraldan hold', state: g.req.hold, sub: g.req.hold === 'inhand' ? 'Esmeralda has agreed to hold her.' : g.req.hold === 'promised' ? 'Asked through the embassy in Baca. Not answered.' : 'Not asked.' },
+        { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: g.req.ban === 'inhand' ? 'inhand' : c.flags.restriction ? 'promised' : 'notyet', sub: g.req.ban === 'inhand' ? T('gov.status.confirmed_the_post_has_her') : c.flags.restriction ? T('gov.status.ban_sent_not_confirmed_at') : T('gov.status.not_sent') },
+        { at: 5, title: T('gov.status.esmeraldan_hold'), state: g.req.hold, sub: g.req.hold === 'inhand' ? T('gov.status.esmeralda_has_agreed_to_hold') : g.req.hold === 'promised' ? T('gov.status.asked_through_the_embassy_in') : T('gov.status.not_asked') },
       ],
-      people: ['Your people: the watch team, Inspector Sosā', 'Your people: the provincial desk and its patrol', g.hand.includes('registry') ? 'Your people: the registry' : 'No one here yet.', g.hand.includes('rail') ? 'Your people: the railway contact' : 'Your people: a railway contact, not asked yet', 'Your people: the border post', g.hand.includes('esm_intro') ? 'Your people: a name at the interior ministry' : 'No one here. Your ministry does not command this tower.'],
+      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), g.hand.includes('registry') ? T('gov.status.your_people_the_registry') : T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
     };
   }
 
   // ---- commit --------------------------------------------------------------------------------
   function commit(g, id, optionId) {
-    if (g.over || g.c.over) return { ok: false, why: 'The run is over.' };
+    if (g.over || g.c.over) return { ok: false, why: T('sim.why.the_run_is_over') };
     const events = [], c = g.c;
     const before = { pos: c.pos, belief: g.belief };
-    if (id.startsWith('evt:')) { if (!g.event) return { ok: false, why: 'No news waiting.' }; resolveEvent(g, id.slice(4), events); return done(g, events); }
-    if (g.event && !id.startsWith('msg:')) return { ok: false, why: 'Deal with the news first.' };
+    if (id.startsWith('evt:')) { if (!g.event) return { ok: false, why: T('sim.why.no_news_waiting') }; resolveEvent(g, id.slice(4), events); return done(g, events); }
+    if (g.event && !id.startsWith('msg:')) return { ok: false, why: T('gov.why.deal_with_the_news_first') };
     if (id === 'wait') { pass(g, events, 1); return done(g, events); }
     if (id.startsWith('msg:')) {
-      const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: 'That message is gone.' };
+      const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: T('sim.why.that_message_is_gone') };
       g.inbox.splice(i, 1); g.answered.push(optionId); events.push(ev('answered', { label: optionId }));
-      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } events.push(ev('say', { who: 'minister', text: right ? `"Good. Sosā has the address. Do not lose her."` : `"${place(g.belief)[0].toUpperCase() + place(g.belief).slice(1)}. I will say so at six."` })); if (!right) { c.belief = g.belief; events.push(ev('enemy', { id: 'claim', text: `The minister names ${place(g.belief)} on the evening news. Every desk in the province drives there.` })); } }
-      if (optionId === 'ask_time') { g.flags.askedTime += 1; g.ministerBy = c.hour + 6; events.push(ev('say', { who: 'minister', text: `"Six hours. Then I want a town and a street."` })); }
-      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: `"Then I will tell them she has fled the country. Find her before the papers find you."` })); S.enemyAct(c, 'press_story', events); }
+      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } events.push(ev('say', { who: 'minister', text: right ? T('gov.line.good_sosa_has_the_address') : T('gov.line.i_will_say_so_at', { place: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1) }) })); if (!right) { c.belief = g.belief; events.push(ev('enemy', { id: 'claim', text: T('gov.inquiry.the_minister_names_on_the', { place: place(g.belief) }) })); } }
+      if (optionId === 'ask_time') { g.flags.askedTime += 1; g.ministerBy = c.hour + 6; events.push(ev('say', { who: 'minister', text: T('gov.line.six_hours_then_i_want') })); }
+      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: T('gov.line.then_i_will_tell_them') })); S.enemyAct(c, 'press_story', events); }
       return done(g, events);
     }
     if (id.startsWith('req:')) {
-      const k = id.slice(4), cl = calls(g).find(x => x.id === id); if (!cl || !cl.ok) return { ok: false, why: cl ? cl.why : 'Nothing to ask.' };
-      if (k === 'hold') { g.req.hold = 'promised'; g.pending.push({ job: 'hold', hour: c.hour + 11 }); events.push(ev('say', { who: 'embassy', text: `"The interior ministry will consider it. Ten hours, and they will want to know why."` })); }
-      if (k === 'operator') { g.req.operator = 'promised'; g.pending.push({ job: 'operator', hour: c.hour + 7 }); events.push(ev('say', { who: 'aviation', text: `"We can open a review on Sunday. Six hours to get it on paper."` })); }
-      if (k === 'ban') { g.req.ban = 'promised'; g.pending.push({ job: 'ban', hour: c.hour + 5 }); events.push(ev('say', { who: 'desk', text: `"The post will confirm when the sergeant reads it. Four hours."` })); }
+      const k = id.slice(4), cl = calls(g).find(x => x.id === id); if (!cl || !cl.ok) return { ok: false, why: cl ? cl.why : T('gov.why.nothing_to_ask') };
+      if (k === 'hold') { g.req.hold = 'promised'; g.pending.push({ job: 'hold', hour: c.hour + 11 }); events.push(ev('say', { who: 'embassy', text: T('gov.line.the_interior_ministry_will_consider') })); }
+      if (k === 'operator') { g.req.operator = 'promised'; g.pending.push({ job: 'operator', hour: c.hour + 7 }); events.push(ev('say', { who: 'aviation', text: T('gov.line.we_can_open_a_review') })); }
+      if (k === 'ban') { g.req.ban = 'promised'; g.pending.push({ job: 'ban', hour: c.hour + 5 }); events.push(ev('say', { who: 'desk', text: T('gov.line.the_post_will_confirm_when') })); }
       events.push(ev('order', { name: cl.name })); pass(g, events, 1); return done(g, events);
     }
-    const o = orders(g).find(x => x.id === id); if (!o) return { ok: false, why: 'Not an order you can give now.' };
+    const o = orders(g).find(x => x.id === id); if (!o) return { ok: false, why: T('gov.why.not_an_order_you_can') };
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
@@ -178,24 +179,24 @@ const Gov = (() => {
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
-      if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: `You move the search to ${place(g.belief)}.` })); }
-      else if (id === 'watch_house') { const home = c.pos === 0; report(g, events, 0, 'watch', home ? 'Lights on. Someone moved past the upstairs window.' : 'The house is dark. Nobody has come or gone for an hour.', home ? 'Someone is inside.' : 'The house is empty.', home ? 'That it is her.' : 'Where she went.', 0, c.hour); if (!home && g.belief === 0) { } }
-      else if (id === 'rail_ask') { g.hand.push('rail'); report(g, events, 3, 'rail', 'Holt Greer took money this week for a crate on the midnight freight.', 'Someone paid for passage.', 'That it was her, or when.', 0, c.hour); }
+      if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: T('gov.say.you_move_the_search_to', { place: place(g.belief) }) })); }
+      else if (id === 'watch_house') { const home = c.pos === 0; report(g, events, 0, 'watch', home ? T('gov.report.lights_on_someone_moved_past') : T('gov.report.the_house_is_dark_nobody'), home ? T('gov.report.someone_is_inside') : T('gov.report.the_house_is_empty'), home ? T('gov.report.that_it_is_her') : T('gov.report.where_she_went'), 0, c.hour); if (!home && g.belief === 0) { } }
+      else if (id === 'rail_ask') { g.hand.push('rail'); report(g, events, 3, 'rail', T('gov.report.holt_greer_took_money_this'), T('gov.report.someone_paid_for_passage'), T('gov.report.that_it_was_her_or'), 0, c.hour); }
       else if (def.act) {
         c.belief = g.belief;
         const text = S.enemyAct(c, def.act, events);
-        if (id === 'search') { const close = c.pos === g.belief; report(g, events, g.belief, 'desk', close ? `The patrol finds the room still warm at ${place(g.belief)}. She was here within the hour.` : `The patrol searches ${place(g.belief)}. Nobody there has seen her.`, close ? 'She is here or just left.' : 'She is not there now.', close ? 'That she will stay.' : 'Where she is instead.', 0, c.hour); }
+        if (id === 'search') { const close = c.pos === g.belief; report(g, events, g.belief, 'desk', close ? T('gov.report.the_patrol_finds_the_room', { place: place(g.belief) }) : T('gov.report.the_patrol_searches_nobody_there', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
         if (id === 'circulate') g.req.ban = 'promised';
       }
-    } else { events.push(ev('say', { who: 'narrator', text: def.fail || 'Nothing comes of it.' })); if (id === 'circulate') { c.belief = -1; report(g, events, g.belief, 'desk', 'A clerk at the provincial desk called a friend of hers before filing the ban.', 'Her side knows the ban is out.', 'Where she is.', 0, c.hour); } }
+    } else { events.push(ev('say', { who: 'narrator', text: def.fail || T('gov.report.nothing_comes_of_it') })); if (id === 'circulate') { c.belief = -1; report(g, events, g.belief, 'desk', T('gov.report.a_clerk_at_the_provincial'), T('gov.report.her_side_knows_the_ban'), T('gov.report.where_she_is'), 0, c.hour); } }
     pass(g, events, o.hours); return done(g, events);
   }
   function done(g, events) {
     // resolve requests that came due
     for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j); const d = roll(g);
-      if (j.job === 'hold') { const ok = d >= 4; g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); S.enemyAct(g.c, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: `"Esmeralda will hold her if she appears. The interior ministry gave us a name to call."` })); } else events.push(ev('say', { who: 'embassy', text: `"Baca says it is a judicial matter. Ask again with more."` })); }
-      if (j.job === 'operator') { const ok = d >= 3; g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? `"The review is open. Say the word and the operator hears about his licence."` : `"Legal wants the file first. Not today."` })); if (ok) g.hand.push('operator'); }
-      if (j.job === 'ban') { const ok = d >= 2; g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? `"The post confirms. The sergeant has her name on the desk."` : `"The sergeant is off shift. Nobody has read it."` })); } }
+      if (j.job === 'hold') { const ok = d >= 4; g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); S.enemyAct(g.c, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
+      if (j.job === 'operator') { const ok = d >= 3; g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); }
+      if (j.job === 'ban') { const ok = d >= 2; g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? T('gov.line.the_post_confirms_the_sergeant') : T('gov.line.the_sergeant_is_off_shift') })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
     else if (!g.event && g.c.hour >= g.nextEventAt) drawEvent(g, events);
     return { ok: true, events };
@@ -245,11 +246,11 @@ const Gov = (() => {
   }
   function trueLead(g, events, delay) {
     const at = g.c.pos, p = place(at);
-    report(g, events, at, 'desk', `A source places her at ${p}.`, `She was at ${p} when the source saw her.`, 'Where she goes next.', delay || 0, g.c.hour);
+    report(g, events, at, 'desk', T('gov.report.a_source_places_her_at', { p }), T('gov.report.she_was_at_when_the', { place: p}), T('gov.report.where_she_goes_next'), delay || 0, g.c.hour);
   }
   function falseLead(g, events) {
     const opts = [0, 1, 2, 3, 4].filter(i => i !== g.c.pos), at = opts[Math.floor(g._rng() * opts.length)], p = place(at);
-    report(g, events, at, 'desk', `A caller swears she is at ${p}.`, 'Someone says so.', 'That it is true.', 0, g.c.hour, true);
+    report(g, events, at, 'desk', T('gov.report.a_caller_swears_she_is', { p }), T('gov.report.someone_says_so'), T('gov.report.that_it_is_true'), 0, g.c.hour, true);
   }
   function applyFx(g, fx, events) {
     if (!fx) return; const c = g.c;
@@ -267,7 +268,7 @@ const Gov = (() => {
     if (fx.dc) g.dcMods.push({ delta: fx.dc[0], until: c.hour + fx.dc[1] });
     if (fx.minister) g.standing += fx.minister;
     if (fx.sooner) g.ministerBy = Math.max(c.hour, g.ministerBy - fx.sooner);
-    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; S.enemyAct(c, fx.act, events); report(g, events, g.belief, 'enemy', close ? `Sosā finds fresh tracks at ${place(g.belief)}.` : `Sosā finds nothing at ${place(g.belief)}.`, close ? 'She is here or just left.' : 'She is not there now.', close ? 'That she will stay.' : 'Where she is instead.', 0, c.hour); }
+    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; S.enemyAct(c, fx.act, events); report(g, events, g.belief, 'enemy', close ? T('gov.report.sosa_finds_fresh_tracks_at', { place: place(g.belief) }) : T('gov.report.sosa_finds_nothing_at', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
     if (fx.false) falseLead(g, events);
     if (fx.lead !== undefined) trueLead(g, events, fx.lead);
     if (fx.hours) pass(g, events, fx.hours);
@@ -277,15 +278,15 @@ const Gov = (() => {
   function debrief(g) {
     const c = g.c, esc = (t) => String(t).replace(/</g, '&lt;');
     const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal'); // outcome codes, never prose
-    const head = c.over.win ? `The jet left Esmeraldan airspace at ${S.clockText(c.hour)}. ${g.req.hold === 'inhand' ? 'Esmeralda acknowledged your hold. The tower never received it.' : 'Esmeralda was never asked in time.'}` : win ? `Sosā's people reached her at ${place(c.pos)} at ${S.clockText(c.hour)}. She is in custody for the hearing.` : `${S.clockText(c.hour)}. She never left. The hearing proceeds without her in custody.`;
-    const label = (t) => { if (t.pos === t.belief) return ['right', 'Right']; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', 'Decoy']; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', 'Wrong']; };
+    const head = c.over.win ? T('gov.debrief.the_jet_left_esmeraldan_airspace', { time: S.clockText(c.hour), esmeralda_was_never_asked_in: g.req.hold === 'inhand' ? T('gov.debrief.esmeralda_acknowledged_your_hold_the') : T('gov.debrief.esmeralda_was_never_asked_in') }) : win ? T('gov.debrief.sosa_s_people_reached_her', { place: place(c.pos), time: S.clockText(c.hour) }) : T('gov.debrief.she_never_left_the_hearing', { time: S.clockText(c.hour) });
+    const label = (t) => { if (t.pos === t.belief) return ['right', T('gov.debrief.right')]; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', T('gov.debrief.decoy')]; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', T('gov.debrief.wrong')]; };
     const rows = g.timeline.map(t => { const [k, l] = label(t); return `<tr><td class="mono">${esc(S.clockText(t.hour).replace(/^(\w{3})\w+/, '$1'))}</td><td>${esc(place(t.pos)[0].toUpperCase() + place(t.pos).slice(1))}</td><td>${esc(place(t.belief)[0].toUpperCase() + place(t.belief).slice(1))} <span class="v ${k}">${l}</span></td></tr>`; }).join('');
-    const mis = g.reports.filter(r => r.misleading).map(r => `${esc(r.text)} It was one of Nando's decoys.`);
+    const mis = g.reports.filter(r => r.misleading).map(r => T('gov.debrief.it_was_one_of_nando', { text: esc(r.text) }));
     const byWho = {}; for (const o of g.orders) { byWho[o.who] = byWho[o.who] || { ok: 0, no: 0 }; byWho[o.who][o.won ? 'ok' : 'no'] += 1; }
-    const delivered = Object.entries(byWho).map(([w, n]) => `${w[0].toUpperCase() + w.slice(1)}: ${n.ok} delivered, ${n.no} failed.`).join(' ');
-    const minister = g.flags.wrongClaim ? 'You gave him a town and it was the wrong one. He said it on television. He does not say your name now.' : g.flags.admitted ? 'You told him you did not know. He briefed the papers himself and remembers that you made him.' : g.flags.locationGiven ? 'You gave him the right town. He took the credit, which is what you are for.' : g.flags.askedTime ? `You asked for time ${g.flags.askedTime === 1 ? 'once' : g.flags.askedTime + ' times'} and never named a place. He has a new aide in mind.` : 'He never got his location. He has a new aide in mind.';
-    const mood = g.standing >= 2 ? ' Your handling of the press pleased him.' : g.standing <= -2 ? ' He has not forgotten the promises you made without him.' : '';
-    return `<div class="debrief"><p>${esc(head)}</p><h3>Where she was, and where you looked</h3><table><tr><th>When</th><th>She was</th><th>You looked</th></tr>${rows || '<tr><td colspan="3">You gave no orders.</td></tr>'}</table><h3>Reports that misled you</h3><p>${mis.length ? mis.join(' ') : 'None. Every report was true as far as it went.'}</p><h3>Who delivered</h3><p>${delivered || 'Nobody was asked to do anything.'}</p><h3>The minister</h3><p>${esc(minister + mood)}</p></div>`;
+    const delivered = Object.entries(byWho).map(([w, n]) => T('gov.debrief.delivered_failed', { w: w[0].toUpperCase() + w.slice(1), ok: n.ok, no: n.no })).join(' ');
+    const minister = g.flags.wrongClaim ? T('gov.debrief.you_gave_him_a_town') : g.flags.admitted ? T('gov.debrief.you_told_him_you_did') : g.flags.locationGiven ? T('gov.debrief.you_gave_him_the_right') : g.flags.askedTime ? T('gov.debrief.you_asked_for_time_and', { times: g.flags.askedTime === 1 ? 'once' : g.flags.askedTime + ' times' }) : T('gov.debrief.he_never_got_his_location');
+    const mood = g.standing >= 2 ? T('gov.debrief.your_handling_of_the_press') : g.standing <= -2 ? T('gov.debrief.he_has_not_forgotten_the') : '';
+    return `<div class="debrief"><p>${esc(head)}</p><h3>${T('gov.debrief.h_where')}</h3><table><tr><th>${T('gov.debrief.th_when')}</th><th>${T('gov.debrief.th_she_was')}</th><th>${T('gov.debrief.th_you_looked')}</th></tr>${rows || `<tr><td colspan="3">${T('gov.debrief.no_orders')}</td></tr>`}</table><h3>${T('gov.debrief.h_misled')}</h3><p>${mis.length ? mis.join(' ') : T('gov.debrief.none_every_report_was_true')}</p><h3>${T('gov.debrief.h_delivered')}</h3><p>${delivered || T('gov.debrief.nobody_was_asked_to_do')}</p><h3>${T('gov.debrief.h_minister')}</h3><p>${esc(minister + mood)}</p></div>`;
   }
   function serialize(g) { const o = Object.assign({}, g); delete o._rng; delete o._boot; o.c = S.serialize(g.c); return JSON.stringify(o); }
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }

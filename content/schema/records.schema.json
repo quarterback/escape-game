@@ -44,9 +44,6 @@
     "after": {
      "type": "integer"
     },
-    "cond": {
-     "x-adapter": "function"
-    },
     "title": {
      "type": "string",
      "x-pattern": "P10"
@@ -61,7 +58,37 @@
      "items": {
       "$ref": "#/$defs/choice"
      }
+    },
+    "when": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/condition"
+     }
     }
+   }
+  },
+  "condition": {
+   "type": "object",
+   "required": [
+    "ref",
+    "op",
+    "value"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "ref": {
+     "type": "string",
+     "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+    },
+    "op": {
+     "type": "string",
+     "enum": [
+      "eq",
+      "gte",
+      "contains"
+     ]
+    },
+    "value": {}
    }
   }
  },
