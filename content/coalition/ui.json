@@ -1495,7 +1495,7 @@
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "Cards improve your chances or unlock an approach. Each card says where it counts. Party influence stops at the line. Some people accept money; others refuse."
+   "text": "Cards improve your chances or open an approach, and each card says where it counts. Party influence stops at the line. Some people accept money and some do not."
   },
   {
    "id": "help.rounds",
@@ -1595,7 +1595,7 @@
   {
    "id": "start.blurb",
    "pattern": "P08",
-   "text": "You lost the election, and the court has barred you from leaving Valdória. You have 72 hours to cross into Esmeralda, reach the jet your family has booked at Susana, and land somewhere that will have you."
+   "text": "You lost the election, and the court has barred you from leaving Valdória. In 72 hours you have to cross into Esmeralda, reach the jet your family has booked at Susana, and land somewhere that will have you."
   },
   {
    "id": "start.continue_plain",
@@ -1857,7 +1857,7 @@
   {
    "id": "sim.line.the_crew_is_happy_the",
    "pattern": "P07",
-   "text": "\"The crew is happy. The apron saw you pay them.\"",
+   "text": "\"The crew is happy, and the apron saw you pay them.\"",
    "speaker": "pilot"
   },
   {
@@ -2465,7 +2465,7 @@
   {
    "id": "gov.debrief.none_every_report_was_true",
    "pattern": "P14",
-   "text": "None. Every report was true as far as it went.",
+   "text": "Every report was true as far as it went.",
    "role": "gov"
   },
   {
@@ -2483,7 +2483,7 @@
   {
    "id": "gov.debrief.he_never_got_his_location",
    "pattern": "P14",
-   "text": "He never got his location. He has a new aide in mind.",
+   "text": "He never got his location, and he has a new aide in mind.",
    "role": "gov"
   },
   {
@@ -2510,7 +2510,7 @@
   {
    "id": "gov.debrief.you_gave_him_a_town",
    "pattern": "P14",
-   "text": "You gave him a town and it was the wrong one. He said it on television. He does not say your name now.",
+   "text": "You gave him a town, he said it on television, and it was the wrong one. He does not say your name now.",
    "role": "gov"
   },
   {
@@ -2689,7 +2689,7 @@
   {
    "id": "gov.line.the_post_confirms_the_sergeant",
    "pattern": "P07",
-   "text": "\"The post confirms. The sergeant has her name on the desk.\"",
+   "text": "\"The post confirms, and the sergeant has her name on the desk.\"",
    "role": "gov",
    "speaker": "desk"
   },
@@ -3051,7 +3051,7 @@
   {
    "id": "gov.scene.the_watched_convoy_splits_the",
    "pattern": "P08",
-   "text": "The watched convoy splits. The minister wants a location.",
+   "text": "The watched convoy splits, and the minister wants a location.",
    "role": "gov",
    "note": "objective"
   },
@@ -3827,7 +3827,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda gives you safe passage to its airfield at Susana. You cannot stay there. Choose where the jet flies. None of the three has said yes."
+   "text": "Esmeralda will let you fly out of Susana but not stay. Pick where the jet goes."
   },
   {
    "id": "map.here",
@@ -3837,7 +3837,7 @@
   {
    "id": "map.via",
    "pattern": "P08",
-   "text": "Susana. Safe passage to fly out, not to stay."
+   "text": "Susana, where you fly from"
   },
   {
    "id": "map.choose",
@@ -3956,7 +3956,7 @@
   {
    "id": "about.lede",
    "pattern": "P08",
-   "text": "Saturday, 2 p.m. You lost the election. The court has barred you from leaving Valdória and wants your passports by Monday noon. One of them is in your coat."
+   "text": "Saturday, 2 p.m. You lost the election, the court has barred you from leaving Valdória, and it wants your passports by Monday noon. One of them is in your coat."
   },
   {
    "id": "about.p1",
@@ -3991,7 +3991,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "Every call takes hours. Every move is a roll of one die. Every mistake pushes the Exposure count toward 10, and at 10 Sosā's people stop you. The first time they ask questions. The second time they put you under house arrest. The third time the run is over. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move takes a roll of one die, and a mistake pushes the Exposure count toward 10. At 10 Sosā's people stop you: questions the first time, house arrest the second, and the third time the run is over. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -4001,7 +4001,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, and the minister wants a location by Tuesday. She has the watch team, the Santa Laura desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border. Her reports are hours old, and some of them are wrong."
+   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Santa Laura desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
   },
   {
    "id": "about.start_h",
@@ -4011,12 +4011,12 @@
   {
    "id": "about.p8",
    "pattern": "P08",
-   "text": "The demo is one scripted escape with a coach beside you, 20 steps. The daily run hands everyone the same dice, so you and a friend can compare endings. The game is one page. It works offline once it has loaded, and it saves your run. It is hard on purpose: one bad call on Saturday evening can end it before it starts. A run is 20 minutes. Start another."
+   "text": "The demo is one scripted escape with a coach beside you, 20 steps. In the daily run everyone gets the same dice, so you and a friend can compare endings. It is one page that works offline once loaded and saves your run. It is hard on purpose, and one bad call on Saturday evening can end it before it starts, so when a 20-minute run ends you start another."
   },
   {
    "id": "about.world",
    "pattern": "P08",
-   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991. The countries stand on real ground. The story does not."
+   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991, and they stand on real ground."
   },
   {
    "id": "daily.held_never",

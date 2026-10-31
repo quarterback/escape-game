@@ -236,7 +236,7 @@ const Data = (() => {
                  landing: '' },
     tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: false,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
-                            asks: 'Dēvan Rāo, a magistrate who has taken in exiles before, will ask for you by letter, and letters are slow.',
+                            asks: 'Dēvan Rāo, a magistrate who has taken in exiles before, will ask for you by letter, which takes days.',
                             terms: 'He will write to the ministry if you give your word to keep out of politics while you are his guest.', slow: 6,
                             demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo writes tonight. Your party reads it as retirement.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.', broke: 'Rāo tells the ministry you do not keep terms.' },
