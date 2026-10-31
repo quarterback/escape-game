@@ -52,6 +52,11 @@ that kept coming back and the rule for each.
   "Oct."; no title case.
 - Read it aloud. If you take a breath, split it or cut it. A card line is under 12
   words; a button is a verb phrase; a hint is one short sentence.
+- Tightening never breaks the grammar. Every line is a complete sentence with its
+  subject, verb, and articles; no clipped fragments ("Needs the card"), no dangling
+  modifiers ("ready again, unseen"), no phrases that are not English ("land to
+  nothing"). Two short complete sentences beat one compressed one. Chicago for
+  prose: serial comma, full sentences.
 - Never patch a flagged sentence. Throw it away and write the thought again from
   nothing, then run the Humanizer rules and the checkers.
 
