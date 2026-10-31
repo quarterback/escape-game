@@ -111,3 +111,13 @@ renders as "Her brother Duartē", because the code strips "your".
   the engine's `apply` function to choose who speaks. That works, but the
   speaker belongs in the data record (for example `success.line`), so a new
   scene needs no engine edit. It is otherwise compatible with this branch.
+
+## Contrast note
+
+`node tools/contrast-check.js` reports 7 distinct failures, the same count as
+before this run. All 7 are game panels drawn behind the title and start
+screens by the attract replay, measured while dimmed under the overlay (for
+example "Continue" at 3.27:1). None is on the briefing, the results screen or
+the Close button, and 32 of 32 text-over-picture checks pass. The flash
+interstitial's failing subtitle no longer appears outside replays. The check
+should skip elements under an open overlay; that fix is not made here.
