@@ -2469,12 +2469,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.debrief.none_every_report_was_true",
-   "pattern": "P14",
-   "text": "Every report was true as far as it went.",
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.he_has_not_forgotten_the",
    "pattern": "P14",
    "text": " He has not forgotten the promises you made without him.",
@@ -2520,56 +2514,9 @@
    "role": "gov"
   },
   {
-   "id": "gov.debrief.delivered_failed",
-   "pattern": "P14",
-   "text": "{w}: {ok} delivered, {no} failed.",
-   "args": [
-    "w",
-    "ok",
-    "no"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.it_was_one_of_nando",
-   "pattern": "P14",
-   "text": "{text} It was one of Nando's decoys.",
-   "args": [
-    "text"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.wrong",
-   "pattern": "P14",
-   "text": "Wrong",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.decoy",
-   "pattern": "P14",
-   "text": "Decoy",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.right",
-   "pattern": "P14",
-   "text": "Right",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.she_never_left_the_hearing",
-   "pattern": "P14",
-   "text": "{time}. She never left. The hearing proceeds without her in custody.",
-   "args": [
-    "time"
-   ],
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.sosa_s_people_reached_her",
    "pattern": "P14",
-   "text": "Sosā's people reached her at {place} at {time}. She is in custody for the hearing.",
+   "text": "At {time}, Sosā's people reached her at {place}. She is in custody for the hearing.",
    "args": [
     "place",
     "time"
@@ -2591,7 +2538,7 @@
   {
    "id": "gov.debrief.the_jet_left_esmeraldan_airspace",
    "pattern": "P14",
-   "text": "The jet left Esmeraldan airspace at {time}. {esmeralda_was_never_asked_in}",
+   "text": "At {time}, the jet left Esmeraldan airspace. {esmeralda_was_never_asked_in}",
    "args": [
     "time",
     "esmeralda_was_never_asked_in"
@@ -3535,12 +3482,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.debrief.h_where",
-   "pattern": "P02",
-   "text": "Where she was, and where you looked",
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.th_when",
    "pattern": "P02",
    "text": "When",
@@ -3562,18 +3503,6 @@
    "id": "gov.debrief.no_orders",
    "pattern": "P12",
    "text": "You gave no orders.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.h_misled",
-   "pattern": "P02",
-   "text": "Reports that misled you",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.h_delivered",
-   "pattern": "P02",
-   "text": "Who delivered",
    "role": "gov"
   },
   {
@@ -4131,6 +4060,248 @@
    "id": "sim.effect.break_word",
    "pattern": "P03",
    "text": "You lose every card Gianlūka gave you. He tells Sosā where you are, and your exposure rises by two."
+  },
+  {
+   "id": "gov.debrief.clock_end",
+   "pattern": "P14",
+   "text": "At {time}, her immunity ran out with her still in {place}. She can be held now, but nobody has her yet.",
+   "args": [
+    "time",
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.ladder_label",
+   "pattern": "P02",
+   "text": "How it ended, from best to worst",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.ladder_custody",
+   "pattern": "P02",
+   "text": "In custody",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.ladder_country",
+   "pattern": "P02",
+   "text": "Still in the country",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.ladder_out",
+   "pattern": "P02",
+   "text": "Got away",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.k_on",
+   "pattern": "P02",
+   "text": "On her",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.k_close",
+   "pattern": "P02",
+   "text": "One stop off",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.k_decoy",
+   "pattern": "P02",
+   "text": "Decoy",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.k_lost",
+   "pattern": "P02",
+   "text": "Lost her",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.trail_sum",
+   "pattern": "P14",
+   "text": "On her in {on} of {total} checks",
+   "args": [
+    "on",
+    "total"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_decided",
+   "pattern": "P02",
+   "text": "What decided it",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_never",
+   "pattern": "P14",
+   "text": "You never had her: every check missed.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_clean",
+   "pattern": "P14",
+   "text": "You stayed on her the whole way.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_lost",
+   "pattern": "P14",
+   "text": "{time}: you lost her when she reached {pos} and you were looking at {belief}.",
+   "args": [
+    "time",
+    "pos",
+    "belief"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_streak",
+   "pattern": "P14",
+   "text": "{from} to {to}: you spent {hours} hours on {belief} while she moved on to {pos}.",
+   "args": [
+    "from",
+    "to",
+    "hours",
+    "belief",
+    "pos"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_streak_next",
+   "pattern": "P14",
+   "text": "For the next {hours} hours you looked at {belief} while she moved on to {pos}.",
+   "args": [
+    "hours",
+    "belief",
+    "pos"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_streak_next_moving",
+   "pattern": "P14",
+   "text": "For the next {hours} hours your searches kept missing her, and she reached {pos}.",
+   "args": [
+    "hours",
+    "pos"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_streak_moving",
+   "pattern": "P14",
+   "text": "{from} to {to}: for {hours} hours your searches kept missing her, and she reached {pos}.",
+   "args": [
+    "from",
+    "to",
+    "hours",
+    "pos"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_decoy_one",
+   "pattern": "P14",
+   "text": "A decoy from Nando cost you one check.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_decoys",
+   "pattern": "P14",
+   "text": "Nando's decoys cost you {n} checks.",
+   "args": [
+    "n"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_found",
+   "pattern": "P14",
+   "text": "{time}: you found her again in {place}.",
+   "args": [
+    "time",
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.once",
+   "pattern": "P14",
+   "text": "once",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.n_times",
+   "pattern": "P14",
+   "text": "{n} times",
+   "args": [
+    "n"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_desk",
+   "pattern": "P02",
+   "text": "Your desk",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.desk_sum",
+   "pattern": "P14",
+   "text": "{ok} of {total} orders delivered.",
+   "args": [
+    "ok",
+    "total"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.desk_failed",
+   "pattern": "P14",
+   "text": "Failed: {list}.",
+   "args": [
+    "list"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_hours",
+   "pattern": "P02",
+   "text": "Hour by hour",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.time_range",
+   "pattern": "P14",
+   "text": "{from} to {to}",
+   "args": [
+    "from",
+    "to"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.share",
+   "pattern": "P14",
+   "text": "Coalition, the ministry side: {result}.\n{grid}\nOn her in {on} of {total} checks.\n{url}",
+   "args": [
+    "result",
+    "grid",
+    "on",
+    "total",
+    "url"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "over.close",
+   "pattern": "P01",
+   "text": "Close"
   }
  ]
 }

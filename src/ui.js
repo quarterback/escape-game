@@ -270,12 +270,12 @@ const UI = (() => {
 
   function renderOver() {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
-    o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
+    o.hidden = false; o.className = (gov ? !s.over.win : s.over.win) ? 'win' : 'lose'; // the ministry wins when she does not get out
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
     $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal', landed: 'over.landed' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
     $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
-    $('share').hidden = !(daily && !gov);
+    $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
@@ -477,7 +477,7 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
-  function shareText() { return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result.toLowerCase(), grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -635,6 +635,8 @@ const UI = (() => {
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
+    const closeOver = () => { Sfx.click(); $('over').hidden = true; saveRun(); showStart(); };
+    $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
@@ -650,7 +652,7 @@ const UI = (() => {
       if (creditsHad && creditsHad.theme) Sfx.theme(true); if (creditsHad && creditsHad.amb && Sfx.ambience) Sfx.ambience(creditsHad.amb.scene, creditsHad.amb.night); creditsHad = null;
       if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
+    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (!$('credits').hidden) closeCredits(); else if (!$('over').hidden && s && s.over) closeOver(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
     $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
