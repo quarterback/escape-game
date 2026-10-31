@@ -3651,56 +3651,56 @@
   {
    "id": "hint.news",
    "pattern": "P08",
-   "text": "News: choose how to respond. Each choice shows its cost."
+   "text": "Pick a response. Each one shows what it costs."
   },
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Phone: answer a message or place one call, then press Done with the phone."
+   "text": "Answer a message or make one call, then tap Done with the phone."
   },
   {
    "id": "hint.move",
    "pattern": "P08",
-   "text": "Move: choose one approach under Here, or lie low for an hour."
+   "text": "Pick one approach, or lie low for an hour."
   },
   {
    "id": "hint.roll",
    "pattern": "P08",
-   "text": "Roll: see how your move went."
+   "text": "See how it went."
   },
   {
    "id": "hint.sosa",
    "pattern": "P08",
-   "text": "Sosā: see what the inquiry did while the hours passed."
+   "text": "See what the inquiry did while the hours passed."
   },
   {
    "id": "hint.gov_news",
    "pattern": "P08",
-   "text": "Reports: choose how to respond. Each choice shows its cost.",
+   "text": "Pick a response. Each one shows what it costs.",
    "role": "gov"
   },
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Desk: answer the minister or send one request, then press Done at the desk.",
+   "text": "Answer the minister or send one request, then tap Done at the desk.",
    "role": "gov"
   },
   {
    "id": "hint.gov_move",
    "pattern": "P08",
-   "text": "Order: give one order under Orders, or wait an hour.",
+   "text": "Give one order, or wait an hour.",
    "role": "gov"
   },
   {
    "id": "hint.gov_roll",
    "pattern": "P08",
-   "text": "Roll: see how your order went.",
+   "text": "See how it went.",
    "role": "gov"
   },
   {
    "id": "hint.gov_sosa",
    "pattern": "P08",
-   "text": "Her move: read what reached your desk while the order ran.",
+   "text": "Read what reached your desk while the order ran.",
    "role": "gov"
   },
   {
