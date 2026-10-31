@@ -92,7 +92,7 @@ const Data = (() => {
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
           mods: { information: 2 }, text: "Send three cars in different directions. The watch must follow the wrong one.",
-          success: { belief: 0, exposure: -1, say: "The watch follows a decoy. You leave by the service lane." },
+          success: { belief: 0, exposure: -1 },
           fail: { exposure: 2, say: 'The second car is stopped at the avenida. Nando talks his way out, but they know the cars now.' } },
         { id: 'service', name: 'The service door after dark', hours: 1, dc: 4, needs: [{ night: true }],
           mods: { information: 1 }, text: "Leave with the kitchen staff after 22:00.",
@@ -130,8 +130,8 @@ const Data = (() => {
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
           mods: { influence: 2 }, text: "Free the cooperative’s truck instead of calling your own contacts.",
-          success: { card: 'truck', trust: 'host', say: "The truck is released. Nonā Rosa offers it with a driver and keeps your visit quiet." },
-          fail: { card: 'truck', hours: 1, say: 'The truck comes back at dawn, late and dented. She is grateful anyway.' } },
+          success: { card: 'truck', trust: 'host' },
+          fail: { card: 'truck', hours: 1 } },
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, needs: [],
           mods: {}, text: "Advance the aircraft, reception and permission arrangements.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'By two in the morning three things have moved. Nonā Rosa eats alone.' }, fail: { say: '' } },

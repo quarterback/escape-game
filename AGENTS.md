@@ -67,6 +67,10 @@ instructions, tutorial text or the start screen. It records the owner's
 Humanizer and plain-language requirements, the verification results and the
 remaining browser check.
 
+Read [the dialogue AAR](docs/aar-coalition-dialogue.md) before adding or revising
+character dialogue. It records how to show speaker lines in action results
+without changing the game rules.
+
 Do not restore deleted explanations, technical notes on player screens or
 archive links as routine cleanup. Make a copy change to resolve a specific
 player need while preserving the requirements and consequences. Keep the
