@@ -4558,6 +4558,19 @@
    "args": [
     "step"
    ]
+  },
+  {
+   "id": "hint.wait_sosa",
+   "pattern": "P08",
+   "text": "If you wait the hour, Sosā acts during it."
+  },
+  {
+   "id": "action.her_during",
+   "pattern": "P03",
+   "text": "She keeps moving during these {hours} hours, and her moves can leave new reports.",
+   "args": [
+    "hours"
+   ]
   }
  ]
 }

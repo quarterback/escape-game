@@ -140,16 +140,17 @@ const UI = (() => {
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
   // chance of success and time taken are different facts, shown on separate lines
   const chanceText = (a) => a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds });
-  const metaLine = (a) => `<span class="meta"><span class="nd">${esc(chanceText(a))}</span><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span></span>`;
+  const metaLine = (a, withSosa) => `<span class="meta"><span class="nd">${esc(chanceText(a))}</span><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
-  const sosaDuring = (a) => { if (gov) return ''; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); const n = a.hours >= next ? 1 + Math.floor((a.hours - next) / Sim.ENEMY_EVERY) : 0; return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
+  const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
+  const sosaDuring = (a) => { if (gov) return T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
   const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -193,7 +194,7 @@ const UI = (() => {
     for (const c of A.calls) {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
-      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
+      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && phase === 'phone' && phoneCalls < 1, label));
     }
   }
@@ -478,7 +479,7 @@ const UI = (() => {
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`);
+    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '');
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
     $('phasedone').hidden = phase !== 'phone';
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';

@@ -380,3 +380,4 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 
 /* chance and time on separate lines */
 .act .meta,.approach .meta{display:flex;flex-direction:column;gap:2px}.act .meta .hrs,.approach .meta .hrs{color:var(--soft);font-family:var(--font-body)}
+.act .meta .sosa-during,.approach .meta .sosa-during{color:var(--coral2);font-family:var(--font-body)}
