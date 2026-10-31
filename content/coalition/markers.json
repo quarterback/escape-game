@@ -5,7 +5,7 @@
   {
    "code": "roll.need",
    "pattern": "P03",
-   "text": "Roll {need}+",
+   "text": "Roll {need} or more",
    "args": [
     "need"
    ]
@@ -13,7 +13,7 @@
   {
    "code": "roll.win",
    "pattern": "P03",
-   "text": "Win: {list}",
+   "text": "If it works: {list}",
    "args": [
     "list"
    ]
@@ -21,7 +21,7 @@
   {
    "code": "roll.fail",
    "pattern": "P03",
-   "text": "Fail: {list}",
+   "text": "If it fails: {list}",
    "args": [
     "list"
    ]
@@ -37,7 +37,7 @@
   {
    "code": "exposure.change",
    "pattern": "P03",
-   "text": "Exposure {signed}",
+   "text": "Police attention {signed}",
    "args": [
     "signed"
    ]
@@ -45,17 +45,17 @@
   {
    "code": "search.elsewhere",
    "pattern": "P03",
-   "text": "Sosā looks elsewhere"
+   "text": "Sosā's search moves off your stop"
   },
   {
    "code": "search.finds",
    "pattern": "P03",
-   "text": "Sosā finds you"
+   "text": "Sosā searches where you are"
   },
   {
    "code": "search.loses_move",
    "pattern": "P03",
-   "text": "Sosā loses a move"
+   "text": "Sosā skips his next action"
   },
   {
    "code": "search.at",
@@ -68,7 +68,7 @@
   {
    "code": "card.gain",
    "pattern": "P03",
-   "text": "Card: {card}",
+   "text": "You gain {card}",
    "args": [
     "card"
    ]
@@ -81,7 +81,7 @@
   {
    "code": "card.lose",
    "pattern": "P03",
-   "text": "Lose: {card}",
+   "text": "You lose {card}",
    "args": [
     "card"
    ]
@@ -105,7 +105,7 @@
   {
    "code": "trust.rely",
    "pattern": "P03",
-   "text": "Keeps {person}'s help",
+   "text": "You keep {person}'s help and the risk",
    "args": [
     "person"
    ]
@@ -113,7 +113,7 @@
   {
    "code": "trust.cut",
    "pattern": "P03",
-   "text": "Loses {person}'s help",
+   "text": "You lose {person}'s help and cards",
    "args": [
     "person"
    ]
@@ -126,32 +126,32 @@
   {
    "code": "arrangement.moves",
    "pattern": "P03",
-   "text": "Reception moves"
+   "text": "Reception moves up one stage"
   },
   {
    "code": "deadline.sooner",
    "pattern": "P03",
-   "text": "Deadline sooner"
+   "text": "Passport deadline comes sooner"
   },
   {
    "code": "deadline.later",
    "pattern": "P03",
-   "text": "Deadline later"
+   "text": "Passport deadline comes later"
   },
   {
    "code": "rolls.easier",
    "pattern": "P03",
-   "text": "Rolls here easier"
+   "text": "Moves here get easier"
   },
   {
    "code": "rolls.harder",
    "pattern": "P03",
-   "text": "Rolls here harder"
+   "text": "Moves here get harder"
   },
   {
    "code": "hold.climb",
    "pattern": "P03",
-   "text": "Held"
+   "text": "The police stop you, one step further"
   },
   {
    "code": "route.advance",
@@ -161,17 +161,17 @@
   {
    "code": "run.ends",
    "pattern": "P03",
-   "text": "Ends the run"
+   "text": "You lose"
   },
   {
    "code": "allies.slower",
    "pattern": "P03",
-   "text": "Allies slower"
+   "text": "Your allies take two hours longer"
   },
   {
    "code": "lead.real_in",
    "pattern": "P03",
-   "text": "A real lead in {hours} h",
+   "text": "A true sighting, arriving in {hours} h",
    "args": [
     "hours"
    ]
@@ -179,7 +179,7 @@
   {
    "code": "lead.real_now",
    "pattern": "P03",
-   "text": "A real lead now"
+   "text": "A true sighting now"
   },
   {
    "code": "lead.false",
@@ -207,7 +207,7 @@
   {
    "code": "line.harder",
    "pattern": "P03",
-   "text": "Line harder to cross for {hours} h",
+   "text": "The line is harder to cross for {hours} h",
    "args": [
     "hours"
    ]

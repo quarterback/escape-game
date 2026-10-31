@@ -159,3 +159,46 @@ glossary does not yet list "move" as the approved term.
 
 **Checks:** content check 0 errors; contract tests, both tutorials and
 pbbg-check pass; both calibrations match `main`.
+
+## Third pass, same day: player language, traced to the code
+
+**What went wrong in the second pass.** I read "say it once" as "use the
+fewest words" and cut lines to stubs. The owner corrected this: the rule is
+understandable text, not shorter text. Lines like "On her in 7 of 13
+checks", "3/10 exposure" and "Your desk" exposed the game's internal
+bookkeeping, and short wording did not fix that. I also proposed rewrites
+that replaced internal terms with my own guesses at their meaning ("Jet" as
+a contact, "Baca has your name" as Baca learning who you are) without
+checking the code. The owner's rule, now in AGENTS.md, is to trace every
+string to the code before writing it, and to flag what cannot be traced.
+
+**What changed:**
+- **Traced table for the two screens.** Every line on the results screen and
+  the briefing was traced to the code, rewritten in player language, and the
+  approved rows applied. Endings now name the outcome ("She is under house
+  arrest.", "It is Tuesday at 2 p.m. Her immunity is gone, and she can no
+  longer fly out."). The score says where your search was aimed against
+  where she was. The briefing explains the deadline, police attention and
+  what each arrangement step gets you.
+- **Audit of all player text.** Four audits traced every string in
+  `src/data.js`, `ui.json`, `markers.json` and `tutorials.json` (about 1,390
+  strings): 358 rewrites, 1,033 keeps, 41 left for open decisions, none
+  unknown. The rewrites were applied by a script that changed a string only
+  when it still matched the audited original. The tables are in
+  `docs/text-audit/`.
+- **Enforced term.** The glossary now approves "police attention" and the
+  content check rejects "exposure" in system text.
+- **Display bugs fixed** (no rule changed): Sosā's location read "the santa
+  laura" and "the the line"; the government log printed "You said
+  ask_time"; the floating "+1 exposure" showed her hidden number on the
+  government side and now does not.
+- **Design issues recorded** in `docs/design-issues.md`: the six open
+  decisions, plus every case where a name, label or text disagrees with the
+  code. None was changed. The most serious: arrangement messages never
+  appear, climbing out of house arrest returns you to house arrest, the
+  escape demo stays scripted after it ends, and the minister's reply tells
+  you whether she is where you said.
+
+**Checks:** content check 0 errors and 0 warnings; contract tests, both
+tutorials and pbbg-check pass; both calibrations are identical to before;
+both sides played to round three in the browser with no errors.

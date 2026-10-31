@@ -27,6 +27,41 @@ are all working as intended. Do not soften a rule because a harness win rate or
 a first-round screenshot looks harsh. A balance change needs the owner's words
 and a calibration before and after; see `docs/aar-hold-ladder-balance.md`.
 
+## Player language comes first (owner, October 31, 2026)
+
+This rule governs every player-facing string and overrides any shorter-is-better
+habit. In the owner's words:
+
+> Describe what is happening in the game as a player would understand it.
+> Explain events, consequences, relationships and instructions in ordinary
+> language. Don't expose internal simulation concepts, but don't invent new
+> narrative facts to replace them either.
+>
+> 1. Preserve meaning. Never introduce characters, relationships, actions,
+>    locations or causal explanations that aren't supported by the actual game
+>    logic.
+> 2. Explain the experience. Don't simply rename internal variables. Explain
+>    what a mechanic means to the player and what happened as a result.
+> 3. Separate information types. Narrative events explain what happened.
+>    Instructions explain what to do. Statistics explain measurable game state.
+>    Don't mix them together or assume that a number explains itself.
+>
+> The objective isn't to make the game sound simpler. It's to make the game
+> understandable without requiring players to understand its implementation.
+
+How to work under it:
+- **Trace before you write.** Find the code or data that produces the string
+  and what the mechanic does, then write the explanation. If you cannot
+  establish the meaning from the code, flag it; do not guess.
+- **Preserve mechanics.** A copy edit never changes a rule. When a name or
+  label disagrees with the code, record it in
+  [docs/design-issues.md](docs/design-issues.md) for the owner instead of
+  rewording around it.
+- **Player terms:** "police attention" (never "exposure", which the content
+  check now rejects), "move" (never "approach"), "Deck" (never "Hand").
+- **Endings** read "You win" or "You lose", then the reason in a full sentence.
+- The traced audit of every string is in [docs/text-audit/](docs/text-audit/).
+
 ## Write microcopy like a person talks
 
 Owner, October 31, 2026, after six rewrites of one screen. These are the faults
