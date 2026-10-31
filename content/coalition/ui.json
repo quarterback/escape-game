@@ -998,7 +998,7 @@
   {
    "id": "daily.out",
    "pattern": "P14",
-   "text": "{name} got out at {time}",
+   "text": "{name} got out {time}",
    "args": [
     "name",
     "time"
@@ -1007,7 +1007,7 @@
   {
    "id": "daily.clock",
    "pattern": "P14",
-   "text": "{name} ran out of hours",
+   "text": "{name} ran out of time",
    "args": [
     "name"
    ]
@@ -1023,7 +1023,7 @@
   {
    "id": "daily.arrest",
    "pattern": "P14",
-   "text": "{name} ended under house arrest in {place}",
+   "text": "{name} was put under house arrest in {place}",
    "args": [
     "name",
     "place"
@@ -1368,7 +1368,7 @@
   {
    "id": "daily.done_note",
    "pattern": "P14",
-   "text": "{line}. You can play it again. The first finish is the one that counts.",
+   "text": "{line}. Your first finish is the one we keep. You can play again.",
    "args": [
     "line"
    ]
@@ -1376,7 +1376,7 @@
   {
    "id": "daily.note",
    "pattern": "P08",
-   "text": "One world for everyone today. You are {name}. Same dice, same people, same bought post. Where you fly is still yours to pick.",
+   "text": "Everyone gets the same run today. You play {name}. You pick where to fly.",
    "args": [
     "name"
    ]
@@ -1569,7 +1569,7 @@
   {
    "id": "over.share",
    "pattern": "P01",
-   "text": "Share how it ended"
+   "text": "Share"
   },
   {
    "id": "over.again",
@@ -1609,7 +1609,7 @@
   {
    "id": "start.daily",
    "pattern": "P01",
-   "text": "Today's run"
+   "text": "Play today's run"
   },
   {
    "id": "start.tutorial",
@@ -4033,22 +4033,22 @@
   {
    "id": "daily.held_never",
    "pattern": "P14",
-   "text": "Never held"
+   "text": "Never held."
   },
   {
    "id": "daily.held_once",
    "pattern": "P14",
-   "text": "Held once"
+   "text": "Held once."
   },
   {
    "id": "daily.held_twice",
    "pattern": "P14",
-   "text": "Held twice"
+   "text": "Held twice."
   },
   {
    "id": "daily.held_many",
    "pattern": "P14",
-   "text": "Held {holds} times",
+   "text": "Held {holds} times.",
    "args": [
     "holds"
    ]
@@ -4056,7 +4056,7 @@
   {
    "id": "daily.share",
    "pattern": "P14",
-   "text": "Coalition, {date}\n{line}. {held}, {round} rounds, exposure {exposure} of 10.\n{url}",
+   "text": "Coalition, {date}\n{line}. {held} {round} rounds. Exposure {exposure} of 10.\n{url}",
    "args": [
     "date",
     "line",
@@ -4069,11 +4069,35 @@
   {
    "id": "daily.landed",
    "pattern": "P14",
-   "text": "{name} landed at {city} and was taken on the apron",
+   "text": "{name} landed in {city} and was held on the apron",
    "args": [
     "name",
     "city"
    ]
+  },
+  {
+   "id": "daily.at",
+   "pattern": "P14",
+   "text": "{day} at {when}",
+   "args": [
+    "day",
+    "when"
+   ]
+  },
+  {
+   "id": "daily.noon",
+   "pattern": "P14",
+   "text": "noon"
+  },
+  {
+   "id": "daily.midnight",
+   "pattern": "P14",
+   "text": "midnight"
+  },
+  {
+   "id": "daily.months",
+   "pattern": "P14",
+   "text": "Jan.|Feb.|March|April|May|June|July|Aug.|Sept.|Oct.|Nov.|Dec."
   }
  ]
 }

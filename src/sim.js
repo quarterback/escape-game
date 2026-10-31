@@ -47,7 +47,15 @@ const Sim = (() => {
     s.boughtPost = opts.tutorial ? 'coast' : POST_IDS[Math.floor(s._rng() * 3)];
     s.escortPost = POST_IDS.filter(x => x !== s.boughtPost)[Math.floor(s._rng() * 2)];
     // Two people on the ground are secretly working for the inquiry. Which two changes every run.
-    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < 2; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
+    // how many allies have already gone over: two, or one to three on a daily
+    const approached = opts.daily ? 1 + Math.floor(s._rng() * 3) : 2;
+    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < approached; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
+    if (opts.daily) {
+      // the daily draws more from its date: how hot the morning starts, where Sosā is looking, and the fourth card
+      s.exposure = Math.max(0, Math.min(4, (ch.exposure || 1) + Math.floor(s._rng() * 3) - 1));
+      s.belief = s._rng() < 0.3 ? 1 : 0;
+      const alts = [s.hand[3]].concat(ch.handAlt || []); s.hand[3] = alts[Math.floor(s._rng() * alts.length)];
+    }
     const events = [];
     arrive(s, events, true);
     s._boot = events;
