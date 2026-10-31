@@ -27,6 +27,39 @@ are all working as intended. Do not soften a rule because a harness win rate or
 a first-round screenshot looks harsh. A balance change needs the owner's words
 and a calibration before and after; see `docs/aar-hold-ladder-balance.md`.
 
+## Write microcopy like a person talks
+
+Owner, October 31, 2026, after six rewrites of one screen. These are the faults
+that kept coming back and the rule for each.
+
+- One idea per sentence. "Asks for your visa once you move the family accounts to
+  him" is three ideas chained; nobody says it. Write "He helps once the family
+  accounts are his."
+- Say who, then what they do, then the price, in that order, with a plain verb.
+  Name the concrete thing (the family accounts, a letter), never the abstraction
+  (terms, a price, a condition).
+- No false titles: never "Banker Amādū Salek". The name, then what they are in its
+  own clause or sentence.
+- No couplets: a second sentence that restates the first is cut, and the content
+  check (C15) fails the build on one in a label, status or result. A second sentence
+  that adds a FACT stays, above all in an effect line. Owner, October 31, 2026, on
+  "The jet is back, but people notice": "What are you trying to say? Tell me." The
+  effect has to say what happens and why: "The crew comes back and the jet is ready
+  again, but paying them on the apron gets you seen, and your exposure rises by one."
+- No label-and-value rows ("Who asks", "The catch", "News waiting: …"). Write the
+  sentence.
+- AP style: figures from 10, words below; "2 p.m.", "noon", "midnight"; "Sept.",
+  "Oct."; no title case.
+- Read it aloud. If you take a breath, split it or cut it. A card line is under 12
+  words; a button is a verb phrase; a hint is one short sentence.
+- Tightening never breaks the grammar. Every line is a complete sentence with its
+  subject, verb, and articles; no clipped fragments ("Needs the card"), no dangling
+  modifiers ("ready again, unseen"), no phrases that are not English ("land to
+  nothing"). Two short complete sentences beat one compressed one. Chicago for
+  prose: serial comma, full sentences.
+- Never patch a flagged sentence. Throw it away and write the thought again from
+  nothing, then run the Humanizer rules and the checkers.
+
 ## Preserve the copy decisions
 
 Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,

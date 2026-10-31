@@ -62,7 +62,6 @@
    "patterns": [
     "P01",
     "P02",
-    "P03",
     "P04",
     "P05",
     "P06",
@@ -75,7 +74,7 @@
    ],
    "severity": "error",
    "rule": "C15",
-   "note": "Owner, October 31, 2026: no couplets. An interface string is one sentence; a second sentence that restates or explains the first is cut."
+   "note": "Owner, October 31, 2026: no couplets. An interface string is one sentence; a second sentence that restates or explains the first is cut. Effects and previews (P03) are exempt: owner, October 31, 2026, \"this is the kind of detail the user needs.\" A second sentence that adds a fact stays; one that restates is still cut."
   }
  },
  "patterns": {

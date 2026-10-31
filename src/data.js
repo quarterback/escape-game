@@ -26,7 +26,7 @@ const Data = (() => {
     sibling:  { role: 'arranging the aircraft from abroad', where: -1, reliability: 3 },
     aide:     { name: 'Gianlūka Moretī', role: 'party chief of staff', where: 0, reliability: 3,
                 terms: 'He wants your public word that he leads the party in your absence.' },
-    nando:    { name: 'Nando', role: 'your driver for eleven years', where: 0, reliability: 2 },
+    nando:    { name: 'Nando', role: 'your driver for 11 years', where: 0, reliability: 2 },
     sponsor:  { name: 'Your sponsor', role: 'the person asking a ministry to let you in; set by where you chose to go', where: -1, reliability: 4,
                 terms: '' },
     host:     { name: 'Nonā Rosa Trentinī', role: 'matriarch of the Nova Trentô colônia', where: 2, reliability: 2 },
@@ -44,11 +44,11 @@ const Data = (() => {
   // Continuing arrangements: ordered stages. A stage is a promise until the ally delivers.
   const ARRANGEMENTS = {
     aircraft:   { name: 'Aircraft',    stages: ['none', 'charter found', 'crew confirmed', 'fueled at Susana', 'ready at Susana'],
-                  what: 'Your sibling arranges the charter, crew, fuel and position at Susana.' },
+                  what: 'Your sibling finds the charter, the crew, the fuel and a place to wait at Susana.' },
     reception:  { name: 'Reception',   stages: ['none', 'Esmeralda expects you', 'minister informed', 'officials at the border'],
-                  what: "Someone at the ministry in Baca has your name. Vélez arranges officials to meet you at the border." },
+                  what: "Baca has your name, and Vélez puts officials at the post to meet you." },
     permission: { name: 'Entry visa',  stages: ['none', 'sponsor engaged', 'Entry visa issued'],
-                  what: 'Your sponsor asks the ministry of the country you chose for a visa to land and stay.' },
+                  what: 'Your sponsor asks the ministry in the country you chose for a visa.' },
   };
 
   // Cards: specific help from a specific person. A card is authority, and authority is local:
@@ -78,7 +78,7 @@ const Data = (() => {
     barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Santa Laura.',
                     text: "The barges still run the river. The captains still owe your father." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
-                    text: "Nineteen, quick, and he knows which boxcar the guards skip." },
+                    text: "He is 19, quick, and knows which boxcar the guards skip." },
     informant:    { name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where Sosā is looking and who is on duty." },
   };
@@ -87,7 +87,7 @@ const Data = (() => {
   // and what happens. hours: time spent attempting. Failure never ends the run by itself.
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
-      objective: "Get past the watch. Start your calls now: the jet, the border and the visa take hours.",
+      objective: "Get past the watch, and start calling now, because every arrangement takes hours.",
       arrive: "Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday. One of them is in your coat.",
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
@@ -104,7 +104,7 @@ const Data = (() => {
           fail: { exposure: 1, commit: 'aide', say: 'The car is let through, but the inspector is told whose car it was.' } },
       ] },
     { id: 'road', name: 'The road south, Santa Laura', short: 'Santa Laura', scene: 'road',
-      objective: "Change cars and keep the inquiry looking at the coast.",
+      objective: "Change cars, and keep Sosā looking at the coast.",
       arrive: "Santa Laura. The radio puts you on a yacht in Portô Venla. The posts have not received the travel ban yet.",
       approaches: [
         { id: 'second_driver', with: 'nando', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
@@ -125,7 +125,7 @@ const Data = (() => {
           fail: { exposure: 3, belief: 1, say: 'The post at the river has your plate. They let you through and pick up the phone.' } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
-      objective: "Make your calls tonight. Leave for the border once Baca has your name.",
+      objective: "Make your calls tonight, and leave for the border once Baca has your name.",
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative’s truck was impounded this morning.",
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
@@ -143,12 +143,12 @@ const Data = (() => {
           success: { say: 'Nonā Rosa’s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
-      objective: "Get on the midnight freight. The yardmaster will sell you out to Sosā.",
+      objective: "Get on the midnight freight, but not through the yardmaster, who sells you to Sosā.",
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
           mods: { passage: 2 }, text: "The freight leaves at midnight. Holt or Theo gets you on; you still have to be there.",
-          success: { say: 'The train pulls out at twelve past. Cold straw, then the sound of the grade.' },
+          success: { say: 'The train pulls out at 12 past. Cold straw, then the sound of the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars. You miss the midnight and wait for the next.' } },
         { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
           mods: { vehicle: 1, information: 1 }, text: "Pay Holt to hide you in the third boxcar.",
@@ -164,7 +164,7 @@ const Data = (() => {
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: "Three posts cross into Esmeralda. One has taken Valdória's money; choose, or wait for Vélez's people.",
+      objective: "Three posts cross into Esmeralda and one has been paid, so pick one or wait for Vélez's people.",
       arrive: "The passes. Three crossings within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Baca, and the Punta Marēa crossing toward the coast. Somewhere among them, guards who have been paid from your side of the line.",
       border: true,
       approaches: [
@@ -182,9 +182,9 @@ const Data = (() => {
           fail: { exposure: 2, hours: 2, say: 'The older guard takes the money and the younger one calls the ministry. Two hours in the salt wind.' } },
       ],
       received: { id: 'received', name: "Walk to the people waiting", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
-      bought: { say: 'The sergeant takes your passport, walks into the hut, and does not come back. Through the window you can see him on the telephone. Twelve hours later a Valdórian liaison arrives to "assist". By then it is too late to matter which side of the line you are on.' } },
+      bought: { say: 'The sergeant takes your passport, walks into the hut, and does not come back. Through the window you can see him on the telephone. 12 hours later a Valdórian liaison arrives to "assist". By then it is too late to matter which side of the line you are on.' } },
     { id: 'airfield', name: 'Susana airfield, Esmeralda', short: 'Susana', scene: 'airfield',
-      objective: "Safe passage to fly, not to stay. Fuel the jet, get the visa and take off.",
+      objective: "Esmeralda lets you fly, not stay, so fuel the jet, get the visa and go.",
       arrive: "Susana. The charter apron behind the port, Esmeraldan flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
       final: true,
       approaches: [
@@ -205,7 +205,7 @@ const Data = (() => {
 
   // Things people say when a stage is reached. who: speaker id.
   const STAGE_LINES = {
-    aircraft:   ['', 'Charter found: a jet in Susana, twelve seats, no questions so far.', 'Crew confirmed. The operator needs a destination.', 'Fuel paid. The jet is being positioned.', 'The jet is ready at Susana.'],
+    aircraft:   ['', 'Charter found: a jet in Susana, 12 seats, no questions so far.', 'Crew confirmed. The operator needs a destination.', 'Fuel paid. The jet is being positioned.', 'The jet is ready at Susana.'],
     reception:  ['', 'Your sibling reached Rosario Vélez, the minister\'s aide in Baca. Esmeralda expects you. She has not answered since.', 'Vélez has spoken to her minister. Esmeralda will not turn you away at the line.', 'Esmeraldan officials will be at the {post} when you arrive. Not the others. Only that one.'],
     permission: ['', '{sponsor} has taken your call and will speak to the ministry, on {sponsor}’s terms.', 'The entry visa is issued. A car will meet the aircraft at {city}.'],
   };
@@ -229,24 +229,24 @@ const Data = (() => {
   const DESTS = {
     atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad with ministries on his phone; an old client of the family',
-                            asks: 'Amādū Salek, an old client of the family, will ask for you. He wants the family accounts moved first.',
+                            asks: 'A family associate has agreed to arrange safe passage, but he has sent a wire request.',
                             terms: 'He will speak to the ministry if you move the family accounts to his house.', slow: 0,
-                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek keeps working. Your family will not forgive this quickly.', heat: 0 },
+                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek calls the ministry and the visa moves. The family accounts are his, and your family will not forgive it quickly.', heat: 0 },
                             kept: 'Salek now holds the family accounts.', broke: 'Salek tells his clients you do not keep terms.' },
                  landing: '' },
     tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: false,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
-                            asks: 'Dēvan Rāo, a magistrate who has taken in exiles before, will ask for you. He answers by letter, and letters are slow.',
+                            asks: 'A government official has agreed to help, but is notoriously fickle.',
                             terms: 'He will write to the ministry if you give your word to keep out of politics while you are his guest.', slow: 6,
-                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo writes tonight. Your party reads it as retirement.', heat: 0 },
+                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo writes to the ministry tonight and the visa moves. Your party at home reads the letter as your retirement.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.', broke: 'Rāo tells the ministry you do not keep terms.' },
                  landing: 'You land at Almatau at dawn. The flight plan was accepted; you were not. Tarun never agreed to take you, and the men at the foot of the stairs are police. A Valdórian liaison arrives by evening.' },
     zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8, accepts: false,
                  sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Gannibal with friends at the foreign ministry',
-                            asks: 'Mirēlā Vosk, a former trade envoy, will ask for you. She wants you to speak on the record first.',
-                            terms: 'She will take it to the ministry if you give a statement, on the record, naming the men who forced the vote.', slow: 0,
-                            demand: { text: '"A journalist I trust is holding the line. Give the statement now, with names, and the ministry has a reason to say yes."', accept: 'Give the statement', effect: 'Vosk takes it to the ministry. The inquiry reads it too, and your exposure rises by one.', heat: 1 },
-                            kept: 'Your statement runs in Gannibal with the names in it.', broke: 'Vosk tells the ministry you do not keep terms.' },
+                            asks: 'The trade envoy has agreed to secure safe passage in exchange for mineral rights that you cannot guarantee.',
+                            terms: 'She will take it to the ministry if you sign over mineral rights you do not control.', slow: 0,
+                            demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession to the ministry and the visa moves. Word of it reaches home, and your exposure rises by one.', heat: 1 },
+                            kept: 'Your signature on the concessions is in Gannibal.', broke: 'Vosk tells the ministry you do not keep terms.' },
                  landing: 'You land at Gannibal after eight hours. Officers wait on the apron. Zaryanova never agreed to take you. You are held at the airport until Valdória sends for you.' },
   };
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Susana', city: 'Esmeralda', lon: -79.9, lat: -2.2 } };
@@ -361,7 +361,7 @@ const Data = (() => {
       { id: 'bring_dog', label: 'Bring the dog', fx: { flag: { dog: true }, trust: { sibling: 1 }, say: 'The dog sleeps across your feet.' } },
       { id: 'leave_dog', label: 'Leave him with the cook', fx: { hours: 1, say: 'An hour of crying in the back seat.' } } ] },
     { id: 'summons', at: ['residence'], title: 'A court officer at the gate', text: 'He has a summons and orders to hand it to you in person.', choices: [
-      { id: 'accept', label: 'Take the summons', fx: { deadline: -12, say: 'The court now has your signature. The deadline moves up twelve hours.' } },
+      { id: 'accept', label: 'Take the summons', fx: { deadline: -12, say: 'The court now has your signature. The deadline moves up 12 hours.' } },
       { id: 'lawyer', label: "Send Gianlūka's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer argues at the gate for two hours.' } },
       { id: 'ignore', label: 'Keep the gate shut', fx: { exposure: 1 } } ] },
     { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
@@ -390,7 +390,7 @@ const Data = (() => {
     { id: 'wedding', at: ['colonia'], title: 'A wedding for three hundred', text: "A cousin's wedding fills every street tonight. Nobody counts faces at a wedding.", choices: [
       { id: 'dance', label: 'Hide among the guests', fx: { hours: 3, exposure: -3, say: 'You dance with a great aunt who never asks your name.' } },
       { id: 'skip', label: 'Stay inside', fx: {} } ] },
-    { id: 'grandson', at: ['colonia'], title: 'The grandson wants out', text: "Nonā Rosa's grandson is nineteen, knows the rail yard and wants to come.", choices: [
+    { id: 'grandson', at: ['colonia'], title: 'The grandson wants out', text: "Nonā Rosa's grandson is 19, knows the rail yard and wants to come.", choices: [
       { id: 'take', label: 'Take him with you', fx: { card: 'grandson' } },
       { id: 'no', label: 'Say no', fx: { trust: { host: -1 } } } ] },
     { id: 'raid', at: ['colonia'], title: 'Police raid the next farm', text: 'Federal police are searching the neighbor for contraband. Not for you. Yet.', choices: [
