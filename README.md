@@ -67,8 +67,8 @@ candidate in custody.
 Choose an action, inspect its requirements and chances, then commit. Time moves
 when you act, so you can read and think before deciding.
 
-On phones, switch between **Here**, **Phone**, **Route** and **Hand**. The Route
-board distinguishes help in hand, work promised and arrangements not started.
+On phones, switch between **Here**, **Phone**, **Route** and **Deck**. The Route
+board distinguishes help in your deck, work promised and arrangements not started.
 
 The game saves your run in the current browser after each move. Choose
 **Continue your run** on the start screen to resume. Saves do not sync across

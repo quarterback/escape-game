@@ -53,7 +53,7 @@ const UI = (() => {
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
   function newRun(w, demo, isDaily, dest, seed) {
-    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    markSeen(); briefPos = -1; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
@@ -161,7 +161,7 @@ const UI = (() => {
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span><small>${esc(o.ok ? o.effect : o.why)}</small>`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>${(o.ok ? o.effect : o.why) ? `<small>${esc(o.ok ? o.effect : o.why)}</small>` : ''}`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
@@ -270,12 +270,15 @@ const UI = (() => {
 
   function renderOver() {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
-    o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
+    o.hidden = false; o.className = (gov ? !s.over.win : s.over.win) ? 'win' : 'lose'; // the ministry wins when she does not get out
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
-    $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal', landed: 'over.landed' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
-    $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
+    const won = gov ? !s.over.win : s.over.win;
+    $('overtitle').textContent = T(won ? 'over.win' : 'over.lose');
+    const why = gov ? (s.over.win ? T('over.why_gov_escaped') : s.over.kind === 'clock' ? T('over.why_gov_time') : T('over.why_gov_caught'))
+      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), landed: T('over.why_landed'), deal: T('over.why_deal') })[s.over.kind] || T('over.why_caught');
+    $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : '');
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
-    $('share').hidden = !(daily && !gov);
+    $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
@@ -370,8 +373,9 @@ const UI = (() => {
     if (!s || s.over) return;
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
-    interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
     enterPhase(pendingEvent() ? 'news' : 'phone');
+    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
+    else showBrief();
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
@@ -379,6 +383,61 @@ const UI = (() => {
     if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
     if (Sfx.sting) Sfx.sting('phase');
     renderAll();
+  }
+  // ---- the round briefing: where things stand and what this round is for, before any button ------
+  let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
+  const P = (t) => `<p>${esc(t)}</p>`;
+  function briefEscape() {
+    const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: '' };
+    if (s.pos !== briefPos) out.story.push(L.arrive);
+    const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
+    out.need = [['aircraft', 4, T('brief.need_jet')], ['permission', 2, T('brief.need_visa')], ['reception', 3, T('brief.need_reception')]]
+      .map(([k, full, name]) => ({ name, have: st(k), of: full, done: st(k) >= full, now: st(k) && st(k) < full ? cap(A[k].stages[st(k)]) : '' }));
+    // the job: the call that moves the most urgent arrangement, or the stop's objective
+    const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
+    const calls = Sim.actions(s).calls.filter(c => c.ok);
+    const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
+    out.job = call ? call.name : L.objective;
+    out.stats = [[String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), T('brief.hours_left'), null], [`${s.exposure}/${Sim.EXPOSURE_LIMIT}`, T('brief.exposure'), [s.exposure, Sim.EXPOSURE_LIMIT]]];
+    out.marks = { [s.pos]: [['you', T('brief.you')]], [s.belief]: (s.belief === s.pos ? [['you', T('brief.you')]] : []).concat([['sosa', T('brief.sosa')]]), 5: [['jet', T('brief.jet')]] };
+    if (s.belief !== s.pos) out.marks[s.pos] = [['you', T('brief.you')]];
+    return out;
+  }
+  function briefGov() {
+    const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: '' };
+    const r = v.reports[0];
+    if (r) out.story.push(c.hour - r.hour <= 0 ? T('brief.gov_seen_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_seen_hour', { place: placeName(r.at) }) : T('brief.gov_seen_hours', { place: placeName(r.at), n: c.hour - r.hour }));
+    const ban = v.requests[0].state, hold = v.requests[1].state;
+    out.need = [{ name: T('brief.gov_need_ban'), have: ban === 'inhand' ? 1 : 0, of: 1, done: ban === 'inhand', now: ban === 'promised' ? T('brief.gov_not_confirmed') : '' },
+      { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
+    out.job = ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) });
+    out.stats = [[String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), T('brief.hours_left'), null]];
+    if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push([short(v.ministerBy), T('brief.minister_deadline'), null]);
+    out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
+    if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
+    return out;
+  }
+  const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
+  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  function briefRoute(marks) {
+    return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+      const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
+      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Data.LEVELS.length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
+  }
+  function showBrief() {
+    if (!s || s.over) return;
+    const b = gov ? briefGov() : briefEscape();
+    if (!gov) briefPos = s.pos;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });
+    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].short;
+    $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
+    $('b-route').innerHTML = briefRoute(b.marks);
+    $('b-stats').innerHTML = b.stats.map(([big, small, bar]) => `<div><b>${esc(big)}</b><span>${esc(small)}</span>${bar ? `<span class="segs">${Array.from({ length: bar[1] }, (_, k) => `<i class="${k < bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</div>`).join('');
+    $('b-job').textContent = b.job;
+    $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
+    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
+    $('b-start').textContent = T('brief.start', { n: round });
+    $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   function interstitial(clock, title, sub) {
     const el = $('interstitial'); $('i-clock').textContent = clock; $('i-title').textContent = title; $('i-sub').textContent = sub;
@@ -412,7 +471,7 @@ const UI = (() => {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
-    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
+    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
     for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   function resultCard(card, r, nextLabel, next) {
@@ -477,7 +536,7 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
-  function shareText() { return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -635,6 +694,8 @@ const UI = (() => {
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
+    const closeOver = () => { Sfx.click(); $('over').hidden = true; saveRun(); showStart(); };
+    $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
@@ -650,9 +711,11 @@ const UI = (() => {
       if (creditsHad && creditsHad.theme) Sfx.theme(true); if (creditsHad && creditsHad.amb && Sfx.ambience) Sfx.ambience(creditsHad.amb.scene, creditsHad.amb.night); creditsHad = null;
       if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
+    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (!$('credits').hidden) closeCredits(); else if (!$('brief').hidden) $('b-start').click(); else if (!$('over').hidden && s && s.over) closeOver(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
+    $('b-start').onclick = () => { Sfx.click(); $('brief').hidden = true; };
+    $('briefagain').onclick = () => { Sfx.click(); showBrief(); $('b-start').textContent = T('brief.back'); };
     $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
     $('copyreplay').onclick = () => { Sfx.click(); copyReplay(); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };

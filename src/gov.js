@@ -35,8 +35,8 @@ const Gov = (() => {
     events.push(ev('say', { who: 'narrator', text: T('gov.say.port_venla_saturday_afternoon_two') }));
     report(g, events, 0, 'watch', T('gov.report.her_car_is_in_the'), T('gov.report.someone_is_home'), T('gov.report.that_she_will_stay'), 0, 0);
     msg(g, events, 'minister', T('gov.line.where_is_she_i_want'), [
-      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
-      { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: T('gov.effect.the_minister_waits_he_remembers') },
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
+      { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: '' },
     ]);
     g._boot = events; return g;
   }
@@ -94,7 +94,7 @@ const Gov = (() => {
     release(g, events);
     if (g.c.over) g.over = g.c.over;
     if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
-      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
       { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
     ]); }
   }
@@ -119,7 +119,7 @@ const Gov = (() => {
       const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
+        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
@@ -281,24 +281,70 @@ const Gov = (() => {
     if (fx.hours) pass(g, events, fx.hours);
   }
 
-  // ---- the debrief: what happened against what you believed ------------------------------------
+  // ---- the debrief: a result you can read at a glance, then why, then the detail ---------------
+  // Each check (one per hour you acted) is scored against where she really was, Wordle style:
+  // on her, one stop off, sent the wrong way by a decoy, or lost.
+  const short = (h) => S.clockText(h).replace(/^(\w{3})\w+/, '$1');
+  const cap = (t) => t[0].toUpperCase() + t.slice(1);
+  function checks(g) {
+    const byHour = new Map(); for (const t of g.timeline) byHour.set(t.hour, t); // the last order in an hour stands
+    return [...byHour.values()].map(t => {
+      const k = t.pos === t.belief ? 'on' : g.reports.some(r => r.misleading && r.at === t.belief) ? 'decoy' : Math.abs(t.pos - t.belief) === 1 ? 'close' : 'lost';
+      return Object.assign({ k }, t);
+    });
+  }
+  const KEY = () => ({ on: T('gov.debrief.k_on'), close: T('gov.debrief.k_close'), decoy: T('gov.debrief.k_decoy'), lost: T('gov.debrief.k_lost') });
+  function tier(c) { return c.over.win ? 'out' : (c.over.kind === 'clock' ? 'country' : 'custody'); }
+  const EMOJI = { on: '\u{1F7E9}', close: '\u{1F7E8}', decoy: '\u{1F7EA}', lost: '⬛' };
+  function shareGrid(g) {
+    const ck = checks(g);
+    return { grid: ck.map(x => EMOJI[x.k]).join(''), on: ck.filter(x => x.k === 'on').length, total: ck.length, result: g.c.over.win ? T('over.lose') : T('over.win') };
+  }
+  function moments(g, ck) {
+    const out = [], n = (k) => ck.filter(x => x.k === k).length;
+    if (!ck.length) return out;
+    if (!n('on')) out.push(T('gov.debrief.m_never'));
+    else if (n('on') === ck.length) out.push(T('gov.debrief.m_clean'));
+    // the first time you lost her after having her
+    const firstOn = ck.findIndex(x => x.k === 'on'), lostAt = firstOn < 0 ? -1 : ck.findIndex((x, i) => i > firstOn && x.k !== 'on');
+    if (lostAt > 0) { const x = ck[lostAt]; out.push(T('gov.debrief.m_lost', { time: short(x.hour), pos: place(x.pos) })); }
+    // the longest run off her trail
+    let best = null; for (let i = 0; i < ck.length; i++) { if (ck[i].k === 'on') continue; let j = i; while (j + 1 < ck.length && ck[j + 1].k !== 'on') j++; if (!best || ck[j].hour - ck[i].hour > best[1].hour - best[0].hour) best = [ck[i], ck[j]]; i = j; }
+    if (best && best[1].hour - best[0].hour >= 4) { const [a, z] = best; out.push(lostAt > 0 && a === ck[lostAt] ? T('gov.debrief.m_streak_next', { hours: z.hour - a.hour }) : T('gov.debrief.m_streak', { from: short(a.hour), to: short(z.hour) })); }
+    // found her again after losing her
+    if (lostAt > 0) { const back = ck.findIndex((x, i) => i > lostAt && x.k === 'on'); if (back > 0) out.push(T('gov.debrief.m_found', { time: short(ck[back].hour), place: place(ck[back].pos) })); }
+    const fooled = n('decoy');
+    if (fooled) out.push(fooled === 1 ? T('gov.debrief.m_decoy_one') : T('gov.debrief.m_decoys', { n: fooled }));
+    return out.slice(0, 4);
+  }
   function debrief(g) {
-    const c = g.c, esc = (t) => String(t).replace(/</g, '&lt;');
-    const win = !c.over.win && (c.over.kind === 'arrest' || c.over.kind === 'deal' || c.over.kind === 'landed'); // outcome codes, never prose
-    const head = c.over.kind === 'landed' ? T('gov.debrief.taken_on_landing', { time: S.clockText(c.hour), city: D.DESTS[c.dest].city, name: D.DESTS[c.dest].name }) : c.over.win ? T('gov.debrief.the_jet_left_esmeraldan_airspace', { time: S.clockText(c.hour), esmeralda_was_never_asked_in: g.req.hold === 'inhand' ? T('gov.debrief.esmeralda_acknowledged_your_hold_the') : T('gov.debrief.esmeralda_was_never_asked_in') }) : win ? T('gov.debrief.sosa_s_people_reached_her', { place: place(c.pos), time: S.clockText(c.hour) }) : T('gov.debrief.she_never_left_the_hearing', { time: S.clockText(c.hour) });
-    const label = (t) => { if (t.pos === t.belief) return ['right', T('gov.debrief.right')]; const dec = g.reports.find(r => r.misleading && r.at === t.belief); if (dec) return ['decoy', T('gov.debrief.decoy')]; if (t.belief < t.pos) return ['late', `${Math.max(1, t.pos - t.belief) * 2} hours late`]; return ['wrong', T('gov.debrief.wrong')]; };
-    const rows = g.timeline.map(t => { const [k, l] = label(t); return `<tr><td class="mono">${esc(S.clockText(t.hour).replace(/^(\w{3})\w+/, '$1'))}</td><td>${esc(place(t.pos)[0].toUpperCase() + place(t.pos).slice(1))}</td><td>${esc(place(t.belief)[0].toUpperCase() + place(t.belief).slice(1))} <span class="v ${k}">${l}</span></td></tr>`; }).join('');
-    const mis = g.reports.filter(r => r.misleading).map(r => T('gov.debrief.it_was_one_of_nando', { text: esc(r.text) }));
-    const byWho = {}; for (const o of g.orders) { byWho[o.who] = byWho[o.who] || { ok: 0, no: 0 }; byWho[o.who][o.won ? 'ok' : 'no'] += 1; }
-    const delivered = Object.entries(byWho).map(([w, n]) => T('gov.debrief.delivered_failed', { w: w[0].toUpperCase() + w.slice(1), ok: n.ok, no: n.no })).join(' ');
-    const minister = g.flags.wrongClaim ? T('gov.debrief.you_gave_him_a_town') : g.flags.admitted ? T('gov.debrief.you_told_him_you_did') : g.flags.locationGiven ? T('gov.debrief.you_gave_him_the_right') : g.flags.askedTime ? T('gov.debrief.you_asked_for_time_and', { times: g.flags.askedTime === 1 ? 'once' : g.flags.askedTime + ' times' }) : T('gov.debrief.he_never_got_his_location');
+    const c = g.c, esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const end = tier(c), ck = checks(g), n = (k) => ck.filter(x => x.k === k).length;
+    const KEYS = ['on', 'close', 'decoy', 'lost'], key = (k) => esc(KEY()[k]);
+    const trail = ck.map(x => `<i class="sq ${x.k}" title="${esc(short(x.hour) + ': ' + KEY()[x.k])}"></i>`).join('');
+    const legend = KEYS.filter(k => n(k)).map(k => `<li><i class="sq ${k}" aria-hidden="true"></i>${key(k)}</li>`).join('');
+    const ms = moments(g, ck).map(m => `<li>${esc(m)}</li>`).join('');
+    const ok = g.orders.filter(o => o.won).length, failed = {}; for (const o of g.orders) if (!o.won) failed[o.who] = (failed[o.who] || 0) + 1;
+    const failList = Object.entries(failed).map(([w, k]) => k > 1 ? `${w} (${k})` : w).join(', ');
+    const desk = g.orders.length ? T('gov.debrief.desk_sum', { ok, total: g.orders.length }) + (failList ? ' ' + T('gov.debrief.desk_failed', { list: failList }) : '') : T('gov.debrief.nobody_was_asked_to_do');
+    const minister = g.flags.wrongClaim ? T('gov.debrief.you_gave_him_a_town') : g.flags.admitted ? T('gov.debrief.you_told_him_you_did') : g.flags.locationGiven ? T('gov.debrief.you_gave_him_the_right') : g.flags.askedTime ? T('gov.debrief.you_asked_for_time_and', { times: g.flags.askedTime === 1 ? T('gov.debrief.once') : T('gov.debrief.n_times', { n: g.flags.askedTime }) }) : T('gov.debrief.he_never_got_his_location');
     const mood = g.standing >= 2 ? T('gov.debrief.your_handling_of_the_press') : g.standing <= -2 ? T('gov.debrief.he_has_not_forgotten_the') : '';
-    return `<div class="debrief"><p>${esc(head)}</p><h3>${T('gov.debrief.h_where')}</h3><table><tr><th>${T('gov.debrief.th_when')}</th><th>${T('gov.debrief.th_she_was')}</th><th>${T('gov.debrief.th_you_looked')}</th></tr>${rows || `<tr><td colspan="3">${T('gov.debrief.no_orders')}</td></tr>`}</table><h3>${T('gov.debrief.h_misled')}</h3><p>${mis.length ? mis.join(' ') : T('gov.debrief.none_every_report_was_true')}</p><h3>${T('gov.debrief.h_delivered')}</h3><p>${delivered || T('gov.debrief.nobody_was_asked_to_do')}</p><h3>${T('gov.debrief.h_minister')}</h3><p>${esc(minister + mood)}</p></div>`;
+    // hour by hour, with runs of identical checks folded into one row
+    const runs = []; for (const x of ck) { const r = runs[runs.length - 1]; if (r && r.pos === x.pos && r.belief === x.belief && r.k === x.k) r.to = x.hour; else runs.push({ from: x.hour, to: x.hour, pos: x.pos, belief: x.belief, k: x.k }); }
+    const rows = runs.map(r => `<tr><td class="mono">${esc(r.from === r.to ? short(r.from) : T('gov.debrief.time_range', { from: short(r.from), to: short(r.to) }))}</td><td>${esc(cap(place(r.pos)))}</td><td><i class="sq ${r.k}" title="${key(r.k)}"></i> ${esc(cap(place(r.belief)))}</td></tr>`).join('');
+    return `<div class="debrief ${end}">`
+      + (ck.length ? `<p class="trailsum">${esc(T('gov.debrief.trail_sum', { on: n('on'), total: ck.length }))}</p>`
+        + `<div class="trail" aria-hidden="true">${trail}</div><ul class="legend">${legend}</ul>` : `<p>${esc(T('gov.debrief.no_orders'))}</p>`)
+      + (ms ? `<h3>${esc(T('gov.debrief.h_decided'))}</h3><ul class="moments">${ms}</ul>` : '')
+      + `<h3>${esc(T('gov.debrief.h_desk'))}</h3><p>${esc(desk)}</p>`
+      + `<h3>${esc(T('gov.debrief.h_minister'))}</h3><p>${esc(minister + mood)}</p>`
+      + (rows ? `<details><summary>${esc(T('gov.debrief.h_hours'))}</summary><table><tr><th>${esc(T('gov.debrief.th_when'))}</th><th>${esc(T('gov.debrief.th_she_was'))}</th><th>${esc(T('gov.debrief.th_you_looked'))}</th></tr>${rows}</table></details>` : '')
+      + `</div>`;
   }
   function serialize(g) { const o = Object.assign({}, g); delete o._rng; delete o._boot; o.c = S.serialize(g.c); return JSON.stringify(o); }
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }
   // the guided run ends: rolls and news are no longer scripted
   function endTutorial(g) { delete g._dice; delete g._events; delete g.tutorial; }
-  return { newRun, view, commit, debrief, serialize, restore, personName, endTutorial };
+  return { newRun, view, commit, debrief, shareGrid, serialize, restore, personName, endTutorial };
 })();
 if (typeof module !== 'undefined') module.exports = Gov;

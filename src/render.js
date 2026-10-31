@@ -319,7 +319,7 @@ const Render = (() => {
     const t = T(DETAIN_TEXT[d.kind] || DETAIN_TEXT.questioned); if (X.detText.text !== t) { X.detText.text = t; X.detBox.clear().roundRect(-X.detText.width / 2 - 18, -24, X.detText.width + 36, 48, 10).fill(0xff7a90); }
     const vb = visibleBox(X.app.canvas); X.det.position.set(Math.round((vb.x0 + vb.x1) / 2), Math.round(CH * 0.3)); X.det.alpha = Math.min(1, (d.k - 0.5) * 8);
   }
-  function overText(o) { return T(view.gov ? (o.win ? 'render.over_custody' : 'over.gov_win') : (o.win ? 'render.over_out' : 'render.over_inquiry')); }
+  function overText(o) { return (view.gov ? !o.win : o.win) ? T('over.win') : T('over.lose'); }
   function drawOver() {
     const o = view.over; X.over.visible = !!o; if (!o) return;
     const t = overText(o); if (X.overText.text !== t) X.overText.text = t;

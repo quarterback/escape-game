@@ -188,7 +188,7 @@ const Sim = (() => {
       const need = Math.max(1, dc - bonus);
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
+        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
     }
     return out;
   }
