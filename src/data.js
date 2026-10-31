@@ -92,7 +92,7 @@ const Data = (() => {
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
           mods: { information: 2 }, text: 'Send three cars out in different directions so the watch follows the wrong one.',
-          success: { belief: 0, exposure: -1, say: "The watch follows a decoy. You leave by the service lane." },
+          success: { belief: 0, exposure: -1 },
           fail: { exposure: 2, say: 'The second car is stopped at the avenida. Nando talks his way out, and the police are watching the house more closely now.' } },
         { id: 'service', name: 'The service door after dark', hours: 1, dc: 4, needs: [{ night: true }],
           mods: { information: 1 }, text: 'Leave with the kitchen staff between 10 p.m. and 5 a.m.',
@@ -130,8 +130,8 @@ const Data = (() => {
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
           mods: { influence: 2 }, text: "Spend three hours getting the cooperative's truck released. If it works, her cousin drives you to Salta in it.",
-          success: { card: 'truck', trust: 'host', say: 'The truck is released. Nonā Rosa lends it to you with a driver, and you set off for Salta.' },
-          fail: { card: 'truck', hours: 1, say: 'The truck comes back late and dented. Nonā Rosa lends it to you anyway.' } },
+          success: { card: 'truck', trust: 'host' },
+          fail: { card: 'truck', hours: 1 } },
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, needs: [],
           mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Esmeralda and your visa each move one step.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },

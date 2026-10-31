@@ -524,7 +524,9 @@ const UI = (() => {
         case 'attempt': r.title = e.name; break;
         case 'chose': r.title = r.title || e.label; break;
         case 'roll': if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: pname(e.who).split(' ')[0], what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
-        case 'say': if (e.who === 'narrator' && !after && !r.line) r.line = e.text; break;
+        case 'say':
+          if (!after && !r.line && (e.who === 'narrator' || e.featured)) r.line = e.who === 'narrator' ? e.text : `${pname(e.who)}: ${e.text}`;
+          break;
         case 'exposure': if (after) expTheirs += e.delta; else expMine += e.delta; break;
         case 'card': bucket.push({ k: 'gain', t: T('sum.card', { name: e.name }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: e.name }) }); break;
