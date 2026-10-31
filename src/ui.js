@@ -89,7 +89,7 @@ const UI = (() => {
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
     const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
-    $('clock').textContent = short(s.hour); $('left').textContent = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: hoursLeft }); $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
+    $('clock').textContent = short(s.hour); $('left').textContent = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) }); $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
     const L = Data.LEVELS[s.pos];
     if (gov) {
       const v = Gov.view(gov);
@@ -107,7 +107,7 @@ const UI = (() => {
     $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
     $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: Data.LEVELS[s.belief].short.toLowerCase() === Data.LEVELS[s.belief].short ? Data.LEVELS[s.belief].short : 'the ' + Data.LEVELS[s.belief].short.toLowerCase() });
     $('sosa-nextl').textContent = T('scene.next_move');
-    { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: n }); }
+    { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: Sim.num(n) }); }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: s.hold }) : T('scene.held_at');
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = ''; $('heat2').hidden = false;
@@ -431,7 +431,7 @@ const UI = (() => {
     if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? (s.belief === s.pos ? 'sum.exposure_round_here' : 'sum.exposure_round') : 'sum.exposure_round_fell', { n: Math.abs(exp) }) });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
-    card.innerHTML = `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T('sosa.title', { hours: roundSum.hours, time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
+    card.innerHTML = `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
@@ -604,7 +604,7 @@ const UI = (() => {
     drawMap(sel); const box = $('map-choices'); box.innerHTML = '';
     for (const k in Data.DESTS) {
       const d = Data.DESTS[k]; const b = document.createElement('button'); b.className = 'destbtn' + (sel === k ? ' on' : '');
-      b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: d.hours }))}</span></span>`
+      b.innerHTML = `<span class="dhead"><b>${esc(d.name)}</b><span class="dh">${esc(T('map.hours', { h: Sim.num(d.hours) }))}</span></span>`
         + `<p>${esc(d.sponsor.asks)}</p>`
         + `<span class="dfoot"><span class="go">${esc(T('map.choose', { name: d.name }))}</span></span>`;
       b.onclick = () => { Sfx.click(); if (mapGo) mapGo(k); }; box.appendChild(b);

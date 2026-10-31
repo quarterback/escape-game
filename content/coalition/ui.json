@@ -169,7 +169,7 @@
   {
    "id": "scene.held_again",
    "pattern": "P05",
-   "text": "Held {hold} of 3; at 10 you are held again",
+   "text": "Held {hold} of three; at 10 you are held again",
    "args": [
     "hold"
    ]
@@ -770,7 +770,7 @@
   {
    "id": "round.held",
    "pattern": "P02",
-   "text": "{place}, held {hold} of 3",
+   "text": "{place}, held {hold} of three",
    "args": [
     "place",
     "hold"
@@ -816,7 +816,7 @@
   {
    "id": "card.rung",
    "pattern": "P02",
-   "text": " · {rung} of 3",
+   "text": " · {rung} of three",
    "args": [
     "rung"
    ]
@@ -1580,7 +1580,7 @@
   {
    "id": "title.line",
    "pattern": "P08",
-   "text": "Seventy-two hours to escape. Your allies are on the phone."
+   "text": "72 hours to escape, and your allies are on the phone."
   },
   {
    "id": "title.start",
@@ -1905,7 +1905,7 @@
   {
    "id": "sim.line.ten_hours_and_you_understand",
    "pattern": "P07",
-   "text": "\"Ten hours, and you understand what I asked.\"",
+   "text": "\"10 hours, and you understand what I asked.\"",
    "speaker": "ally"
   },
   {
@@ -2146,7 +2146,7 @@
   {
    "id": "sim.preview.die_needs_or_more_in",
    "pattern": "P03",
-   "text": "Die needs {need} or more ({need2} in 6).{bonus}",
+   "text": "Die needs {need} or more ({need2} in six).{bonus}",
    "args": [
     "need",
     "need2",
@@ -2368,7 +2368,7 @@
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
    "pattern": "P03",
-   "text": "Permission stalls twelve hours"
+   "text": "Permission stalls 12 hours"
   },
   {
    "id": "sim.opt.ask_for_a_week",
@@ -2849,7 +2849,7 @@
   {
    "id": "gov.line.the_interior_ministry_will_consider",
    "pattern": "P07",
-   "text": "\"The interior ministry will consider it. Ten hours, and they will want to know why.\"",
+   "text": "\"The interior ministry will consider it. 10 hours, and they will want to know why.\"",
    "role": "gov",
    "speaker": "embassy"
   },
@@ -3112,7 +3112,7 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "Six hours, needs a 3 or more, and gives you the operator card",
+   "text": "Six hours, needs a three or more, and gives you the operator card",
    "role": "gov"
   },
   {
@@ -3142,7 +3142,7 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Ten hours through Baca, needs a 4 or more, and if Esmeralda agrees her departure gets harder",
+   "text": "10 hours through Baca, needs a four or more, and if Esmeralda agrees her departure gets harder",
    "role": "gov"
   },
   {
@@ -3793,7 +3793,7 @@
   {
    "id": "sim.ledger.post_was_bought",
    "pattern": "P05",
-   "text": "The {post} had taken Valdória’s money, twelve hours lost",
+   "text": "The {post} had taken Valdória’s money, 12 hours lost",
    "args": [
     "post"
    ]
@@ -3850,7 +3850,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "The visa comes once the run starts, or it does not. Changing your mind later costs the hours you have already spent."
+   "text": "The visa comes during the run or not at all."
   },
   {
    "id": "gov.debrief.taken_on_landing",
@@ -3956,7 +3956,7 @@
   {
    "id": "about.lede",
    "pattern": "P08",
-   "text": "Saturday, two in the afternoon. You lost the election. The court has barred you from leaving Valdória and wants your passports by Monday noon. One of them is in your coat."
+   "text": "Saturday, 2 p.m. You lost the election. The court has barred you from leaving Valdória and wants your passports by Monday noon. One of them is in your coat."
   },
   {
    "id": "about.p1",
@@ -3971,7 +3971,7 @@
   {
    "id": "about.p3",
    "pattern": "P08",
-   "text": "Nando has driven you for eleven years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Three of these people have already talked to Sosā."
+   "text": "Nando has driven you for 11 years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Three of these people have already talked to Sosā."
   },
   {
    "id": "about.road_h",
@@ -3991,7 +3991,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "Every call takes hours. Every move is a roll of one die. Every mistake pushes the Exposure count toward ten, and at ten Sosā's people stop you. The first time they ask questions. The second time they put you under house arrest. The third time the run is over. You have seventy-two hours, Saturday afternoon to Tuesday at two."
+   "text": "Every call takes hours. Every move is a roll of one die. Every mistake pushes the Exposure count toward 10, and at 10 Sosā's people stop you. The first time they ask questions. The second time they put you under house arrest. The third time the run is over. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -4011,7 +4011,7 @@
   {
    "id": "about.p8",
    "pattern": "P08",
-   "text": "The demo is one scripted escape with a coach beside you, twenty steps. The daily run hands everyone the same dice, so you and a friend can compare endings. The game is one page. It works offline once it has loaded, and it saves your run. It is hard on purpose: one bad call on Saturday evening can end it before it starts. A run is twenty minutes. Start another."
+   "text": "The demo is one scripted escape with a coach beside you, 20 steps. The daily run hands everyone the same dice, so you and a friend can compare endings. The game is one page. It works offline once it has loaded, and it saves your run. It is hard on purpose: one bad call on Saturday evening can end it before it starts. A run is 20 minutes. Start another."
   },
   {
    "id": "about.world",
@@ -4093,12 +4093,25 @@
   {
    "id": "scene.hours_one",
    "pattern": "P05",
-   "text": "1 hour"
+   "text": "one hour"
   },
   {
    "id": "scene.next_in_one",
    "pattern": "P05",
-   "text": "in 1 hour"
+   "text": "in one hour"
+  },
+  {
+   "id": "sim.num.words",
+   "pattern": "P05",
+   "text": "zero|one|two|three|four|five|six|seven|eight|nine"
+  },
+  {
+   "id": "sosa.title_one",
+   "pattern": "P10",
+   "text": "One hour later, {time}",
+   "args": [
+    "time"
+   ]
   }
  ]
 }

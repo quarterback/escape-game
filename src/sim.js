@@ -72,6 +72,7 @@ const Sim = (() => {
   const level = (s) => D.LEVELS[s.pos];
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
   const postName = (id) => D.POSTS[id];
+  const num = (n) => (n >= 0 && n < 10) ? T('sim.num.words').split('|')[n] : String(n); // AP: words below 10
   const sponsor = (s) => dest(s).sponsor;
   const ch = (s) => D.CHARACTERS[s.who];
   const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : id === 'sponsor' ? sponsor(s).name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
@@ -534,6 +535,6 @@ const Sim = (() => {
     return out.slice(0, 3).join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
