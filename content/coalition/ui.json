@@ -3827,7 +3827,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda lets you fly out of Susana. Nobody has said yes yet."
+   "text": "The leader of Esmeralda has arranged safe passage if you can make it to the capital city, Susana."
   },
   {
    "id": "map.here",
@@ -3850,7 +3850,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "The visa comes later, or it never does."
+   "text": "You have a second passport to fly already. What you need to escape is a proper visa."
   },
   {
    "id": "gov.debrief.taken_on_landing",
