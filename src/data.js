@@ -87,7 +87,7 @@ const Data = (() => {
   // and what happens. hours: time spent attempting. Failure never ends the run by itself.
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
-      objective: "Get past the watch, and start calling now, because every arrangement takes hours.",
+      objective: "Get past the watch.",
       arrive: "Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday. One of them is in your coat.",
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
@@ -104,7 +104,7 @@ const Data = (() => {
           fail: { exposure: 1, commit: 'aide', say: 'The car is let through, but the inspector is told whose car it was.' } },
       ] },
     { id: 'road', name: 'The road south, Santa Laura', short: 'Santa Laura', scene: 'road',
-      objective: "Change cars, and keep Sosā looking at the coast.",
+      objective: "Change cars.",
       arrive: "Santa Laura. The radio puts you on a yacht in Portô Venla. The posts have not received the travel ban yet.",
       approaches: [
         { id: 'second_driver', with: 'nando', name: "Hire a driver and plain car", hours: 2, dc: 3, needs: [], pay: true,
@@ -125,7 +125,7 @@ const Data = (() => {
           fail: { exposure: 3, belief: 1, say: 'The post at the river has your plate. They let you through and pick up the phone.' } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
-      objective: "Make your calls tonight, and leave for the border once Baca has your name.",
+      objective: "Leave for the border once Baca has your name.",
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative's truck was impounded this morning.",
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
@@ -143,7 +143,7 @@ const Data = (() => {
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
-      objective: "Get on the midnight freight. Do not go through the yardmaster, because he sells you to Sosā.",
+      objective: "Get on the midnight freight. The yardmaster sells you to Sosā.",
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
@@ -164,7 +164,7 @@ const Data = (() => {
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: "Three crossings lead into Esmeralda. One is bought; choose a post or wait for Vélez's people.",
+      objective: "Cross into Esmeralda. One post is bought.",
       arrive: "The passes. Three crossings within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Baca, and the Punta Marēa crossing toward the coast. Somewhere among them, guards who have been paid from your side of the line.",
       border: true,
       approaches: [
@@ -184,7 +184,7 @@ const Data = (() => {
       received: { id: 'received', name: "Walk to the people waiting", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
       bought: { say: 'The sergeant takes your passport, walks into the hut, and does not come back. Through the window you can see him on the telephone. 12 hours later a Valdórian liaison arrives to "assist". By then it is too late to matter which side of the line you are on.' } },
     { id: 'airfield', name: 'Susana airfield, Esmeralda', short: 'Susana', scene: 'airfield',
-      objective: "Esmeralda lets you fly, not stay, so fuel the jet, get the visa and go.",
+      objective: "Board the jet.",
       arrive: "Susana. The charter apron behind the port, Esmeraldan flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
       final: true,
       approaches: [

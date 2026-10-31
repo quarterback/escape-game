@@ -113,7 +113,7 @@
      "kind": "act",
      "title": "Get out of the house",
      "body": "Pick **Decoy convoy**, read the time and the roll it needs, then tap **Commit**. You can do this because Nando gave you the cars.",
-     "goal": "Read an approach before committing",
+     "goal": "Read a move before committing",
      "highlight": [
       "#approaches"
      ],
@@ -130,7 +130,7 @@
      "id": "die",
      "kind": "read",
      "title": "The die",
-     "body": "Cards lower the number you need, and they stay in your hand until you spend them or someone takes them back. You are in Santa Laura now, and Sosā still thinks you are at home.",
+     "body": "Cards lower the number you need, and they stay in your deck until you spend them or someone takes them back. You are in Santa Laura now, and Sosā still thinks you are at home.",
      "goal": "See how cards change the roll",
      "highlight": [
       "#scene"

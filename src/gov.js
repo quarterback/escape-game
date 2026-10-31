@@ -35,8 +35,8 @@ const Gov = (() => {
     events.push(ev('say', { who: 'narrator', text: T('gov.say.port_venla_saturday_afternoon_two') }));
     report(g, events, 0, 'watch', T('gov.report.her_car_is_in_the'), T('gov.report.someone_is_home'), T('gov.report.that_she_will_stay'), 0, 0);
     msg(g, events, 'minister', T('gov.line.where_is_she_i_want'), [
-      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
-      { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: T('gov.effect.the_minister_waits_he_remembers') },
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
+      { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: '' },
     ]);
     g._boot = events; return g;
   }
@@ -94,7 +94,7 @@ const Gov = (() => {
     release(g, events);
     if (g.c.over) g.over = g.c.over;
     if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
-      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: T('gov.effect.public_if_you_are_wrong') },
+      { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
       { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
     ]); }
   }
@@ -293,13 +293,12 @@ const Gov = (() => {
       return Object.assign({ k }, t);
     });
   }
-  const LADDER = () => ({ custody: T('gov.debrief.ladder_custody'), country: T('gov.debrief.ladder_country'), out: T('gov.debrief.ladder_out') });
   const KEY = () => ({ on: T('gov.debrief.k_on'), close: T('gov.debrief.k_close'), decoy: T('gov.debrief.k_decoy'), lost: T('gov.debrief.k_lost') });
   function tier(c) { return c.over.win ? 'out' : (c.over.kind === 'clock' ? 'country' : 'custody'); }
   const EMOJI = { on: '\u{1F7E9}', close: '\u{1F7E8}', decoy: '\u{1F7EA}', lost: '⬛' };
   function shareGrid(g) {
     const ck = checks(g);
-    return { grid: ck.map(x => EMOJI[x.k]).join(''), on: ck.filter(x => x.k === 'on').length, total: ck.length, result: LADDER()[tier(g.c)] };
+    return { grid: ck.map(x => EMOJI[x.k]).join(''), on: ck.filter(x => x.k === 'on').length, total: ck.length, result: g.c.over.win ? T('over.lose') : T('over.win') };
   }
   function moments(g, ck) {
     const out = [], n = (k) => ck.filter(x => x.k === k).length;
@@ -308,14 +307,10 @@ const Gov = (() => {
     else if (n('on') === ck.length) out.push(T('gov.debrief.m_clean'));
     // the first time you lost her after having her
     const firstOn = ck.findIndex(x => x.k === 'on'), lostAt = firstOn < 0 ? -1 : ck.findIndex((x, i) => i > firstOn && x.k !== 'on');
-    if (lostAt > 0) { const x = ck[lostAt]; out.push(T('gov.debrief.m_lost', { time: short(x.hour), pos: place(x.pos), belief: place(x.belief) })); }
+    if (lostAt > 0) { const x = ck[lostAt]; out.push(T('gov.debrief.m_lost', { time: short(x.hour), pos: place(x.pos) })); }
     // the longest run off her trail
     let best = null; for (let i = 0; i < ck.length; i++) { if (ck[i].k === 'on') continue; let j = i; while (j + 1 < ck.length && ck[j + 1].k !== 'on') j++; if (!best || ck[j].hour - ck[i].hour > best[1].hour - best[0].hour) best = [ck[i], ck[j]]; i = j; }
-    if (best && best[1].hour - best[0].hour >= 4) { const [a, z] = best, hours = z.hour - a.hour;
-      const run = ck.slice(ck.indexOf(a), ck.indexOf(z) + 1), still = run.every(x => x.belief === a.belief), next = lostAt > 0 && a === ck[lostAt];
-      // name the place you watched only when you watched one place the whole time
-      out.push(still ? (next ? T('gov.debrief.m_streak_next', { hours, belief: place(z.belief), pos: place(z.pos) }) : T('gov.debrief.m_streak', { from: short(a.hour), to: short(z.hour), hours, belief: place(z.belief), pos: place(z.pos) }))
-        : (next ? T('gov.debrief.m_streak_next_moving', { hours, pos: place(z.pos) }) : T('gov.debrief.m_streak_moving', { from: short(a.hour), to: short(z.hour), hours, pos: place(z.pos) }))); }
+    if (best && best[1].hour - best[0].hour >= 4) { const [a, z] = best; out.push(lostAt > 0 && a === ck[lostAt] ? T('gov.debrief.m_streak_next', { hours: z.hour - a.hour }) : T('gov.debrief.m_streak', { from: short(a.hour), to: short(z.hour) })); }
     // found her again after losing her
     if (lostAt > 0) { const back = ck.findIndex((x, i) => i > lostAt && x.k === 'on'); if (back > 0) out.push(T('gov.debrief.m_found', { time: short(ck[back].hour), place: place(ck[back].pos) })); }
     const fooled = n('decoy');
@@ -325,11 +320,6 @@ const Gov = (() => {
   function debrief(g) {
     const c = g.c, esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const end = tier(c), ck = checks(g), n = (k) => ck.filter(x => x.k === k).length;
-    const why = c.over.kind === 'landed' ? T('gov.debrief.taken_on_landing', { time: S.clockText(c.hour), city: D.DESTS[c.dest].city, name: D.DESTS[c.dest].name })
-      : c.over.win ? T('gov.debrief.the_jet_left_esmeraldan_airspace', { time: S.clockText(c.hour), esmeralda_was_never_asked_in: g.req.hold === 'inhand' ? T('gov.debrief.esmeralda_acknowledged_your_hold_the') : T('gov.debrief.esmeralda_was_never_asked_in') })
-      : end === 'country' ? T('gov.debrief.clock_end', { time: S.clockText(c.hour), place: place(c.pos) })
-      : T('gov.debrief.sosa_s_people_reached_her', { place: place(c.pos), time: S.clockText(c.hour) });
-    const ladder = ['custody', 'country', 'out'].map(k => `<li class="${k}${k === end ? ' now' : ''}">${esc(LADDER()[k])}</li>`).join('');
     const KEYS = ['on', 'close', 'decoy', 'lost'], key = (k) => esc(KEY()[k]);
     const trail = ck.map(x => `<i class="sq ${x.k}" title="${esc(short(x.hour) + ': ' + KEY()[x.k])}"></i>`).join('');
     const legend = KEYS.filter(k => n(k)).map(k => `<li><i class="sq ${k}" aria-hidden="true"></i>${key(k)}</li>`).join('');
@@ -343,8 +333,6 @@ const Gov = (() => {
     const runs = []; for (const x of ck) { const r = runs[runs.length - 1]; if (r && r.pos === x.pos && r.belief === x.belief && r.k === x.k) r.to = x.hour; else runs.push({ from: x.hour, to: x.hour, pos: x.pos, belief: x.belief, k: x.k }); }
     const rows = runs.map(r => `<tr><td class="mono">${esc(r.from === r.to ? short(r.from) : T('gov.debrief.time_range', { from: short(r.from), to: short(r.to) }))}</td><td>${esc(cap(place(r.pos)))}</td><td><i class="sq ${r.k}" title="${key(r.k)}"></i> ${esc(cap(place(r.belief)))}</td></tr>`).join('');
     return `<div class="debrief ${end}">`
-      + `<ol class="ladder" aria-label="${esc(T('gov.debrief.ladder_label'))}">${ladder}</ol>`
-      + `<p class="why">${esc(why)}</p>`
       + (ck.length ? `<p class="trailsum">${esc(T('gov.debrief.trail_sum', { on: n('on'), total: ck.length }))}</p>`
         + `<div class="trail" aria-hidden="true">${trail}</div><ul class="legend">${legend}</ul>` : `<p>${esc(T('gov.debrief.no_orders'))}</p>`)
       + (ms ? `<h3>${esc(T('gov.debrief.h_decided'))}</h3><ul class="moments">${ms}</ul>` : '')

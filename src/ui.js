@@ -161,7 +161,7 @@ const UI = (() => {
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span><small>${esc(o.ok ? o.effect : o.why)}</small>`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>${(o.ok ? o.effect : o.why) ? `<small>${esc(o.ok ? o.effect : o.why)}</small>` : ''}`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
@@ -272,8 +272,11 @@ const UI = (() => {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
     o.hidden = false; o.className = (gov ? !s.over.win : s.over.win) ? 'win' : 'lose'; // the ministry wins when she does not get out
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
-    $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal', landed: 'over.landed' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
-    $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
+    const won = gov ? !s.over.win : s.over.win;
+    $('overtitle').textContent = T(won ? 'over.win' : 'over.lose');
+    const why = gov ? (s.over.win ? T('over.why_gov_escaped') : s.over.kind === 'clock' ? T('over.why_gov_time') : T('over.why_gov_caught'))
+      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), landed: T('over.why_landed'), deal: T('over.why_deal') })[s.over.kind] || T('over.why_caught');
+    $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : '');
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
     $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
@@ -385,51 +388,54 @@ const UI = (() => {
   let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
   const P = (t) => `<p>${esc(t)}</p>`;
   function briefEscape() {
-    const L = Data.LEVELS[s.pos], last = Data.LEVELS.length - 1, out = { story: [], need: [], goal: [] };
-    const at = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+    const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: '' };
     if (s.pos !== briefPos) out.story.push(L.arrive);
-    out.story.push(s.pos === last ? T('brief.where_final') : T('brief.where', { place: at(s.pos), n: last - s.pos, stops: last - s.pos === 1 ? T('brief.stop') : T('brief.stops') }));
-    const gap = s.pos - s.belief, bp = at(s.belief);
-    out.story.push(gap === 0 ? T('brief.sosa_here') : gap > 0 ? T('brief.sosa_behind', { place: bp, n: gap, stops: gap === 1 ? T('brief.stop') : T('brief.stops') }) : T('brief.sosa_ahead', { place: bp }));
-    if (s.hold) out.story.push(T('brief.held', { n: s.hold }));
-    out.story.push(T('brief.exposure', { n: s.exposure, max: Sim.EXPOSURE_LIMIT }));
-    out.story.push(T('brief.time', { n: Math.max(0, Sim.HOURS_TOTAL - s.hour) }));
-    const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage, words = (k) => st(k) ? A[k].stages[st(k)] : T('brief.nothing_yet');
-    const rows = [['aircraft', 4], ['permission', 2], ['reception', 3]];
-    const line = { aircraft: (d) => d ? T('brief.need_jet_done') : T('brief.need_jet_todo', { now: words('aircraft') }), permission: (d) => d ? T('brief.need_visa_done') : T('brief.need_visa_todo', { now: words('permission') }), reception: (d) => d ? T('brief.need_rec_done') : T('brief.need_rec_todo', { now: words('reception') }) };
-    out.need = rows.map(([k, full]) => ({ done: st(k) >= full, text: line[k](st(k) >= full) }));
-    out.goal.push(L.objective);
-    const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception']; // Nova Trentô and Salta are where Baca must get your name
-    const missing = order.map(k => rows.find(r => r[0] === k)).find(([k, full]) => st(k) < full && (k !== 'reception' || s.pos < 4));
-    if (missing && s.pos < last) out.goal.push(T('brief.call_for', { what: A[missing[0]].name.toLowerCase() }));
+    const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
+    out.need = [['aircraft', 4, T('brief.need_jet')], ['permission', 2, T('brief.need_visa')], ['reception', 3, T('brief.need_reception')]]
+      .map(([k, full, name]) => ({ name, have: st(k), of: full, done: st(k) >= full, now: st(k) && st(k) < full ? cap(A[k].stages[st(k)]) : '' }));
+    // the job: the call that moves the most urgent arrangement, or the stop's objective
+    const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
+    const calls = Sim.actions(s).calls.filter(c => c.ok);
+    const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
+    out.job = call ? call.name : L.objective;
+    out.stats = [[String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), T('brief.hours_left'), null], [`${s.exposure}/${Sim.EXPOSURE_LIMIT}`, T('brief.exposure'), [s.exposure, Sim.EXPOSURE_LIMIT]]];
+    out.marks = { [s.pos]: [['you', T('brief.you')]], [s.belief]: (s.belief === s.pos ? [['you', T('brief.you')]] : []).concat([['sosa', T('brief.sosa')]]), 5: [['jet', T('brief.jet')]] };
+    if (s.belief !== s.pos) out.marks[s.pos] = [['you', T('brief.you')]];
     return out;
   }
   function briefGov() {
-    const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], goal: [] };
-    if (round === 1) out.story.push(T('brief.gov_intro', { name: Data.CHARACTERS[gov.target].name }));
-    out.story.push(T('brief.gov_guess', { place: v.suspectName }));
-    const r = v.reports[0]; out.story.push(r ? T('brief.gov_report', { age: r.age === 'just now' ? T('brief.just_now') : (c.hour - r.hour === 1 ? T('brief.hour_old') : T('brief.hours_old', { n: c.hour - r.hour })), text: r.text }) : T('brief.gov_no_report'));
-    if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.story.push(T('brief.gov_minister', { time: Sim.clockText(v.ministerBy) }));
-    out.story.push(T('brief.gov_time', { n: Math.max(0, Sim.HOURS_TOTAL - c.hour) }));
+    const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: '' };
+    const r = v.reports[0];
+    if (r) out.story.push(c.hour - r.hour <= 0 ? T('brief.gov_seen_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_seen_hour', { place: placeName(r.at) }) : T('brief.gov_seen_hours', { place: placeName(r.at), n: c.hour - r.hour }));
     const ban = v.requests[0].state, hold = v.requests[1].state;
-    out.need.push({ done: ban === 'inhand', text: ban === 'inhand' ? T('brief.gov_ban_inhand') : ban === 'promised' ? T('brief.gov_ban_promised') : T('brief.gov_ban_notyet') });
-    out.need.push({ done: hold === 'inhand', text: hold === 'inhand' ? T('brief.gov_hold_inhand') : hold === 'promised' ? T('brief.gov_hold_promised') : T('brief.gov_hold_notyet') });
-    out.goal.push(T('brief.gov_goal'));
-    out.goal.push(ban === 'notyet' ? T('brief.gov_tip_ban') : hold === 'notyet' ? T('brief.gov_tip_hold') : T('brief.gov_tip_follow'));
+    out.need = [{ name: T('brief.gov_need_ban'), have: ban === 'inhand' ? 1 : 0, of: 1, done: ban === 'inhand', now: ban === 'promised' ? T('brief.gov_not_confirmed') : '' },
+      { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
+    out.job = ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) });
+    out.stats = [[String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), T('brief.hours_left'), null]];
+    if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push([short(v.ministerBy), T('brief.minister_deadline'), null]);
+    out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
+    if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
     return out;
+  }
+  const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
+  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  function briefRoute(marks) {
+    return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+      const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
+      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Data.LEVELS.length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
   function showBrief() {
     if (!s || s.over) return;
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });
-    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].name;
-    $('b-story').innerHTML = b.story.map(P).join('');
-    $('b-needhead').textContent = gov ? T('brief.h_requests') : T('brief.h_fly');
-    $('b-needlead').textContent = gov ? T('brief.gov_ladder') : T('brief.escape_goal');
-    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span>${esc(n.text)}</span></li>`).join('');
-    $('b-goal').innerHTML = b.goal.map(P).join('');
-    $('b-flow').textContent = gov ? T('brief.flow_gov') : T('brief.flow_escape');
+    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].short;
+    $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
+    $('b-route').innerHTML = briefRoute(b.marks);
+    $('b-stats').innerHTML = b.stats.map(([big, small, bar]) => `<div><b>${esc(big)}</b><span>${esc(small)}</span>${bar ? `<span class="segs">${Array.from({ length: bar[1] }, (_, k) => `<i class="${k < bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</div>`).join('');
+    $('b-job').textContent = b.job;
+    $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
+    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
     $('b-start').textContent = T('brief.start', { n: round });
     $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
@@ -530,7 +536,7 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
-  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result.toLowerCase(), grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {

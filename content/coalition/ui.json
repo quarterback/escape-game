@@ -448,7 +448,7 @@
   {
    "id": "need.in_hand",
    "pattern": "P05",
-   "text": "In your hand"
+   "text": "In your deck"
   },
   {
    "id": "need.passage_from",
@@ -621,41 +621,6 @@
    "id": "route.no_inquiry",
    "pattern": "P12",
    "text": "Sosā has not moved yet"
-  },
-  {
-   "id": "over.gov_win",
-   "pattern": "P14",
-   "text": "She got away"
-  },
-  {
-   "id": "over.gov_stopped",
-   "pattern": "P14",
-   "text": "You stopped her"
-  },
-  {
-   "id": "over.out",
-   "pattern": "P14",
-   "text": "You got out"
-  },
-  {
-   "id": "over.arrest",
-   "pattern": "P14",
-   "text": "House arrest"
-  },
-  {
-   "id": "over.clock",
-   "pattern": "P14",
-   "text": "Out of time"
-  },
-  {
-   "id": "over.deal",
-   "pattern": "P14",
-   "text": "You took the deal"
-  },
-  {
-   "id": "over.caught",
-   "pattern": "P14",
-   "text": "Caught"
   },
   {
    "id": "over.play_her",
@@ -1475,7 +1440,7 @@
   {
    "id": "hand.heading",
    "pattern": "P02",
-   "text": "Your hand"
+   "text": "Deck"
   },
   {
    "id": "hand.game",
@@ -1490,7 +1455,7 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick an approach under Here, read the odds, then commit. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move under Here, read the odds, then commit. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
   },
   {
    "id": "help.cards",
@@ -1515,7 +1480,7 @@
   {
    "id": "route.legend_inhand",
    "pattern": "P05",
-   "text": "In hand"
+   "text": "In deck"
   },
   {
    "id": "route.legend_promised",
@@ -1550,7 +1515,7 @@
   {
    "id": "tab.hand",
    "pattern": "P02",
-   "text": "Hand"
+   "text": "Deck"
   },
   {
    "id": "update.ready",
@@ -2471,25 +2436,25 @@
   {
    "id": "gov.debrief.he_has_not_forgotten_the",
    "pattern": "P14",
-   "text": " He has not forgotten the promises you made without him.",
+   "text": " He is angry.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.your_handling_of_the_press",
    "pattern": "P14",
-   "text": " Your handling of the press pleased him.",
+   "text": " He is pleased.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.he_never_got_his_location",
    "pattern": "P14",
-   "text": "He never got his location, and he has a new aide in mind.",
+   "text": "You never gave him a town.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.you_asked_for_time_and",
    "pattern": "P14",
-   "text": "You asked for time {times} and never named a place. He has a new aide in mind.",
+   "text": "You asked him for time {times} and never named a town.",
    "args": [
     "times"
    ],
@@ -2498,51 +2463,19 @@
   {
    "id": "gov.debrief.you_gave_him_the_right",
    "pattern": "P14",
-   "text": "You gave him the right town. He took the credit, which is what you are for.",
+   "text": "You gave him the right town.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.you_told_him_you_did",
    "pattern": "P14",
-   "text": "You told him you did not know. He briefed the papers himself and remembers that you made him.",
+   "text": "You told him you did not know.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.you_gave_him_a_town",
    "pattern": "P14",
-   "text": "You gave him a town, he said it on television, and it was the wrong one. He does not say your name now.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.sosa_s_people_reached_her",
-   "pattern": "P14",
-   "text": "At {time}, Sosā's people reached her at {place}. She is in custody for the hearing.",
-   "args": [
-    "place",
-    "time"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.esmeralda_was_never_asked_in",
-   "pattern": "P14",
-   "text": "Esmeralda was never asked in time.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.esmeralda_acknowledged_your_hold_the",
-   "pattern": "P14",
-   "text": "Esmeralda acknowledged your hold. The tower never received it.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.the_jet_left_esmeraldan_airspace",
-   "pattern": "P14",
-   "text": "At {time}, the jet left Esmeraldan airspace. {esmeralda_was_never_asked_in}",
-   "args": [
-    "time",
-    "esmeralda_was_never_asked_in"
-   ],
+   "text": "You gave him the wrong town.",
    "role": "gov"
   },
   {
@@ -3182,12 +3115,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.effect.public_if_you_are_wrong",
-   "pattern": "P03",
-   "text": "It goes public, so a wrong town sends your offices after the wrong lead for hours.",
-   "role": "gov"
-  },
-  {
    "id": "gov.opt.name_where_you_think_she",
    "pattern": "P01",
    "text": "Name where you think she is",
@@ -3445,12 +3372,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.effect.the_minister_waits_he_remembers",
-   "pattern": "P03",
-   "text": "The minister waits and remembers asking",
-   "role": "gov"
-  },
-  {
    "id": "gov.opt.ask_for_six_hours",
    "pattern": "P01",
    "text": "Ask for six hours",
@@ -3559,21 +3480,6 @@
    "text": "Your search team"
   },
   {
-   "id": "render.over_custody",
-   "pattern": "P14",
-   "text": "In custody"
-  },
-  {
-   "id": "render.over_out",
-   "pattern": "P14",
-   "text": "Out of Esmeraldan airspace"
-  },
-  {
-   "id": "render.over_inquiry",
-   "pattern": "P14",
-   "text": "The inquiry wins"
-  },
-  {
    "id": "menu.credits",
    "pattern": "P01",
    "text": "Credits"
@@ -3591,7 +3497,7 @@
   {
    "id": "hint.move",
    "pattern": "P08",
-   "text": "Pick one approach, or lie low for an hour."
+   "text": "Pick one move, or lie low for an hour."
   },
   {
    "id": "hint.roll",
@@ -3753,11 +3659,6 @@
    ]
   },
   {
-   "id": "over.landed",
-   "pattern": "P02",
-   "text": "Taken on landing"
-  },
-  {
    "id": "map.title",
    "pattern": "P02",
    "text": "Pick a country"
@@ -3789,17 +3690,6 @@
    "id": "map.hint",
    "pattern": "P08",
    "text": "You have a second passport to fly already. What you need to escape is a proper visa."
-  },
-  {
-   "id": "gov.debrief.taken_on_landing",
-   "pattern": "P14",
-   "text": "The jet left Susana at {time} and landed at {city}. {name} had never agreed to take her. She was held at the airport and handed back.",
-   "args": [
-    "time",
-    "city",
-    "name"
-   ],
-   "role": "gov"
   },
   {
    "id": "sim.effect.requires_sponsor_help",
@@ -4062,40 +3952,6 @@
    "text": "You lose every card Gianlūka gave you. He tells Sosā where you are, and your exposure rises by two."
   },
   {
-   "id": "gov.debrief.clock_end",
-   "pattern": "P14",
-   "text": "At {time}, her immunity ran out with her still in {place}. She can be held now, but nobody has her yet.",
-   "args": [
-    "time",
-    "place"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.ladder_label",
-   "pattern": "P02",
-   "text": "How it ended, from best to worst",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.ladder_custody",
-   "pattern": "P02",
-   "text": "In custody",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.ladder_country",
-   "pattern": "P02",
-   "text": "Still in the country",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.ladder_out",
-   "pattern": "P02",
-   "text": "Got away",
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.k_on",
    "pattern": "P02",
    "text": "On her",
@@ -4150,57 +4006,29 @@
   {
    "id": "gov.debrief.m_lost",
    "pattern": "P14",
-   "text": "{time}: you lost her when she reached {pos} and you were looking at {belief}.",
+   "text": "{time}: you lost her at {pos}.",
    "args": [
     "time",
-    "pos",
-    "belief"
+    "pos"
    ],
    "role": "gov"
   },
   {
    "id": "gov.debrief.m_streak",
    "pattern": "P14",
-   "text": "{from} to {to}: you spent {hours} hours on {belief} while she moved on to {pos}.",
+   "text": "{from} to {to}: you missed her.",
    "args": [
     "from",
-    "to",
-    "hours",
-    "belief",
-    "pos"
+    "to"
    ],
    "role": "gov"
   },
   {
    "id": "gov.debrief.m_streak_next",
    "pattern": "P14",
-   "text": "For the next {hours} hours you looked at {belief} while she moved on to {pos}.",
+   "text": "You missed her for the next {hours} hours.",
    "args": [
-    "hours",
-    "belief",
-    "pos"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.m_streak_next_moving",
-   "pattern": "P14",
-   "text": "For the next {hours} hours your searches kept missing her, and she reached {pos}.",
-   "args": [
-    "hours",
-    "pos"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.m_streak_moving",
-   "pattern": "P14",
-   "text": "{from} to {to}: for {hours} hours your searches kept missing her, and she reached {pos}.",
-   "args": [
-    "from",
-    "to",
-    "hours",
-    "pos"
+    "hours"
    ],
    "role": "gov"
   },
@@ -4288,15 +4116,14 @@
   {
    "id": "gov.share",
    "pattern": "P14",
-   "text": "Coalition, the ministry side: {result}.\n{grid}\nOn her in {on} of {total} checks.\n{url}",
+   "text": "Coalition, ministry side. {result}.\n{grid}\nOn her in {on} of {total} checks.\n{url}",
    "args": [
     "result",
     "grid",
     "on",
     "total",
     "url"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "over.close",
@@ -4304,69 +4131,9 @@
    "text": "Close"
   },
   {
-   "id": "brief.where",
-   "pattern": "P08",
-   "text": "You are at {place}, {n} {stops} from the jet at Susana.",
-   "args": [
-    "place",
-    "n",
-    "stops"
-   ]
-  },
-  {
-   "id": "brief.stop",
-   "pattern": "P08",
-   "text": "stop"
-  },
-  {
-   "id": "brief.stops",
-   "pattern": "P08",
-   "text": "stops"
-  },
-  {
-   "id": "brief.where_final",
-   "pattern": "P08",
-   "text": "You are at Susana, where the jet leaves from."
-  },
-  {
-   "id": "brief.sosa_here",
-   "pattern": "P08",
-   "text": "Sosā is looking for you right here."
-  },
-  {
-   "id": "brief.sosa_behind",
-   "pattern": "P08",
-   "text": "Sosā is looking at {place}, {n} {stops} behind you.",
-   "args": [
-    "place",
-    "n",
-    "stops"
-   ]
-  },
-  {
-   "id": "brief.sosa_ahead",
-   "pattern": "P08",
-   "text": "Sosā is watching {place}, which is ahead of you on the route.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "brief.held",
-   "pattern": "P08",
-   "text": "You have been stopped {n} times, and the third stop is house arrest.",
-   "args": [
-    "n"
-   ]
-  },
-  {
    "id": "brief.exposure",
-   "pattern": "P08",
-   "text": "Exposure is {n} of {max}, and at {max} Sosā's people stop you.",
-   "args": [
-    "n",
-    "max"
-   ]
+   "pattern": "P02",
+   "text": "exposure"
   },
   {
    "id": "brief.time",
@@ -4377,81 +4144,9 @@
    ]
   },
   {
-   "id": "brief.nothing_yet",
-   "pattern": "P08",
-   "text": "nothing"
-  },
-  {
-   "id": "brief.need_jet_done",
-   "pattern": "P08",
-   "text": "The jet is ready at Susana."
-  },
-  {
-   "id": "brief.need_jet_todo",
-   "pattern": "P08",
-   "text": "The jet is not ready yet (so far: {now}).",
-   "args": [
-    "now"
-   ]
-  },
-  {
-   "id": "brief.need_visa_done",
-   "pattern": "P08",
-   "text": "The entry visa is issued."
-  },
-  {
-   "id": "brief.need_visa_todo",
-   "pattern": "P08",
-   "text": "The entry visa is not issued yet (so far: {now}).",
-   "args": [
-    "now"
-   ]
-  },
-  {
-   "id": "brief.need_rec_done",
-   "pattern": "P08",
-   "text": "Officials will meet you at the border."
-  },
-  {
-   "id": "brief.need_rec_todo",
-   "pattern": "P08",
-   "text": "Nobody will meet you at the border yet (so far: {now}).",
-   "args": [
-    "now"
-   ]
-  },
-  {
-   "id": "brief.call_for",
-   "pattern": "P08",
-   "text": "Use your one phone call on the {what}, because it takes hours to come through.",
-   "args": [
-    "what"
-   ]
-  },
-  {
-   "id": "brief.escape_goal",
-   "pattern": "P09",
-   "text": "To win, reach Susana with the jet ready and the visa issued before Tuesday at 2 p.m. Officials at the border make the crossing safer."
-  },
-  {
-   "id": "brief.flow_escape",
-   "pattern": "P09",
-   "text": "Each round you read the news, make one call, make one move and roll the die, and then Sosā takes a turn."
-  },
-  {
    "id": "brief.h_round",
    "pattern": "P02",
    "text": "This round"
-  },
-  {
-   "id": "brief.h_fly",
-   "pattern": "P02",
-   "text": "To fly out"
-  },
-  {
-   "id": "brief.h_requests",
-   "pattern": "P02",
-   "text": "To stop her"
   },
   {
    "id": "brief.start",
@@ -4474,126 +4169,7 @@
   {
    "id": "brief.gov_title",
    "pattern": "P02",
-   "text": "The search for her"
-  },
-  {
-   "id": "brief.gov_intro",
-   "pattern": "P08",
-   "text": "{name} lost the election on Saturday, and the court has barred her from leaving the country.",
-   "args": [
-    "name"
-   ]
-  },
-  {
-   "id": "brief.gov_guess",
-   "pattern": "P08",
-   "text": "Your best guess is that she is at {place}.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "brief.gov_report",
-   "pattern": "P08",
-   "text": "The latest report came in {age}: {text}",
-   "args": [
-    "age",
-    "text"
-   ]
-  },
-  {
-   "id": "brief.just_now",
-   "pattern": "P08",
-   "text": "just now"
-  },
-  {
-   "id": "brief.hours_old",
-   "pattern": "P08",
-   "text": "{n} hours ago",
-   "args": [
-    "n"
-   ]
-  },
-  {
-   "id": "brief.gov_no_report",
-   "pattern": "P08",
-   "text": "No report has come in yet."
-  },
-  {
-   "id": "brief.gov_minister",
-   "pattern": "P08",
-   "text": "By {time}, the minister wants a location from you.",
-   "args": [
-    "time"
-   ]
-  },
-  {
-   "id": "brief.gov_time",
-   "pattern": "P08",
-   "text": "Her immunity runs out in {n} hours, on Tuesday at 2 p.m.",
-   "args": [
-    "n"
-   ]
-  },
-  {
-   "id": "brief.gov_ban_inhand",
-   "pattern": "P08",
-   "text": "The border posts have the travel ban."
-  },
-  {
-   "id": "brief.gov_ban_promised",
-   "pattern": "P08",
-   "text": "The travel ban is sent, but the border has not confirmed it."
-  },
-  {
-   "id": "brief.gov_ban_notyet",
-   "pattern": "P08",
-   "text": "The travel ban has not gone to the border."
-  },
-  {
-   "id": "brief.gov_hold_inhand",
-   "pattern": "P08",
-   "text": "Esmeralda has agreed to hold her at Susana."
-  },
-  {
-   "id": "brief.gov_hold_promised",
-   "pattern": "P08",
-   "text": "The embassy has asked Esmeralda to hold her."
-  },
-  {
-   "id": "brief.gov_hold_notyet",
-   "pattern": "P08",
-   "text": "Nobody has asked Esmeralda to hold her."
-  },
-  {
-   "id": "brief.gov_ladder",
-   "pattern": "P09",
-   "text": "You win outright if she is in custody, and you still stop her if she is in the country on Tuesday at 2 p.m."
-  },
-  {
-   "id": "brief.gov_goal",
-   "pattern": "P08",
-   "text": "Find her, and send Sosā's people to where she is before she reaches the jet at Susana."
-  },
-  {
-   "id": "brief.gov_tip_ban",
-   "pattern": "P08",
-   "text": "Ask for the travel ban at your desk, because it takes hours to reach the border."
-  },
-  {
-   "id": "brief.gov_tip_hold",
-   "pattern": "P08",
-   "text": "Ask the embassy for an Esmeraldan hold, because Susana is where she flies from."
-  },
-  {
-   "id": "brief.gov_tip_follow",
-   "pattern": "P08",
-   "text": "Send your order to the place the newest report points to."
-  },
-  {
-   "id": "brief.flow_gov",
-   "pattern": "P09",
-   "text": "Each round you read the reports, work the desk, send one order and see the roll, and then she moves."
+   "text": "The search"
   },
   {
    "id": "brief.the_residence",
@@ -4606,9 +4182,182 @@
    "text": "the line"
   },
   {
-   "id": "brief.hour_old",
+   "id": "over.win",
+   "pattern": "P14",
+   "text": "You win"
+  },
+  {
+   "id": "over.lose",
+   "pattern": "P14",
+   "text": "You lose"
+  },
+  {
+   "id": "over.why_gov_caught",
+   "pattern": "P14",
+   "text": "She got caught."
+  },
+  {
+   "id": "over.why_gov_time",
+   "pattern": "P14",
+   "text": "Her time ran out."
+  },
+  {
+   "id": "over.why_gov_escaped",
+   "pattern": "P14",
+   "text": "She escaped."
+  },
+  {
+   "id": "over.why_out",
+   "pattern": "P14",
+   "text": "You got out."
+  },
+  {
+   "id": "over.why_caught",
+   "pattern": "P14",
+   "text": "You got caught."
+  },
+  {
+   "id": "over.why_time",
+   "pattern": "P14",
+   "text": "Your time ran out."
+  },
+  {
+   "id": "over.why_landed",
+   "pattern": "P14",
+   "text": "You landed somewhere that won't take you."
+  },
+  {
+   "id": "over.why_deal",
+   "pattern": "P14",
+   "text": "You took the deal."
+  },
+  {
+   "id": "brief.need_jet",
+   "pattern": "P02",
+   "text": "Jet"
+  },
+  {
+   "id": "brief.need_visa",
+   "pattern": "P02",
+   "text": "Visa"
+  },
+  {
+   "id": "brief.need_reception",
+   "pattern": "P02",
+   "text": "Officials at the border"
+  },
+  {
+   "id": "brief.hours_left",
+   "pattern": "P02",
+   "text": "hours left"
+  },
+  {
+   "id": "brief.you",
+   "pattern": "P02",
+   "text": "You"
+  },
+  {
+   "id": "brief.sosa",
+   "pattern": "P02",
+   "text": "Sosā"
+  },
+  {
+   "id": "brief.jet",
+   "pattern": "P02",
+   "text": "Jet"
+  },
+  {
+   "id": "brief.gov_need_ban",
+   "pattern": "P02",
+   "text": "Travel ban"
+  },
+  {
+   "id": "brief.gov_need_hold",
+   "pattern": "P02",
+   "text": "Esmeralda holds her"
+  },
+  {
+   "id": "brief.minister_deadline",
+   "pattern": "P02",
+   "text": "minister's deadline"
+  },
+  {
+   "id": "brief.gov_search",
+   "pattern": "P02",
+   "text": "Search"
+  },
+  {
+   "id": "brief.gov_last_seen",
+   "pattern": "P02",
+   "text": "Last seen"
+  },
+  {
+   "id": "brief.h_win",
+   "pattern": "P02",
+   "text": "To win"
+  },
+  {
+   "id": "brief.gov_not_confirmed",
+   "pattern": "P05",
+   "text": "Not confirmed."
+  },
+  {
+   "id": "brief.gov_asked",
+   "pattern": "P05",
+   "text": "Asked."
+  },
+  {
+   "id": "brief.gov_seen_now",
    "pattern": "P08",
-   "text": "an hour ago"
+   "text": "She was last seen at {place} just now.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_seen_hour",
+   "pattern": "P08",
+   "text": "She was last seen at {place} an hour ago.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_seen_hours",
+   "pattern": "P08",
+   "text": "She was last seen at {place} {n} hours ago.",
+   "args": [
+    "place",
+    "n"
+   ]
+  },
+  {
+   "id": "brief.gov_job_ban",
+   "pattern": "P08",
+   "text": "Send the travel ban."
+  },
+  {
+   "id": "brief.gov_job_hold",
+   "pattern": "P08",
+   "text": "Ask Esmeralda to hold her."
+  },
+  {
+   "id": "brief.gov_job_search",
+   "pattern": "P08",
+   "text": "Search {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_win",
+   "pattern": "P08",
+   "text": "Keep her in the country until Tuesday at 2 p.m."
+  },
+  {
+   "id": "brief.escape_win",
+   "pattern": "P08",
+   "text": "Get out of the country by Tuesday at 2 p.m."
   }
  ]
 }

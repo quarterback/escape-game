@@ -121,3 +121,41 @@ example "Continue" at 3.27:1). None is on the briefing, the results screen or
 the Close button, and 32 of 32 text-over-picture checks pass. The flash
 interstitial's failing subtitle no longer appears outside replays. The check
 should skip elements under an open overlay; that fix is not made here.
+
+## Second pass, same day: say it once
+
+The owner set the rule for every line in the game: state the situation one
+time and stop. Nothing repeats a button, explains what a line means, or says
+it again in other words. If someone asks something, show their words with
+their name. Endings are "You win" or "You lose", with one line of reason.
+
+**What changed under that rule:**
+- **Endings, both sides.** Title "You win" or "You lose", then one reason:
+  "She got caught.", "Her time ran out.", "She escaped.", "You got out.",
+  "You got caught.", "Your time ran out.", "You landed somewhere that won't
+  take you.", "You took the deal." Her time running out is a ministry win.
+  The epilogue paragraph on the escape side no longer shows.
+- **Government results.** The three-step ladder and the long reason sentence
+  are gone. Turning points are one fact each ("Sat 8 p.m.: you lost her at
+  Santa Laura."). The minister line is one sentence plus his mood.
+- **Briefing.** Matches the canvas boards: clock, round, place, the arrival
+  text on a new stop, a route strip with You, Sosā and the jet (or Search
+  and Last seen), hours left and exposure (or the minister's deadline), one
+  job line, the win line and a checklist with progress pips. The job is the
+  phone call that moves the most urgent arrangement, or the stop's objective.
+- **Objectives** cut to the task: "Get past the watch.", "Change cars.",
+  "Leave for the border once Baca has your name.", "Get on the midnight
+  freight. The yardmaster sells you to Sosā.", "Cross into Esmeralda. One
+  post is bought.", "Board the jet."
+- **The minister's two options** have no preview line; the button says it.
+- **Names:** "move" replaces "approach" and "Deck" replaces "Hand" on every
+  player screen, in the tutorial and in the README.
+- **Canvas:** three boards in the row "Before every round: the briefing".
+
+**Not yet swept to this rule** (next run): move descriptions and order
+descriptions in `src/data.js`, the odds and hours lines under each move,
+report text, arrangement statuses, event text and the tutorial steps. The
+glossary does not yet list "move" as the approved term.
+
+**Checks:** content check 0 errors; contract tests, both tutorials and
+pbbg-check pass; both calibrations match `main`.
