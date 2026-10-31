@@ -2208,7 +2208,7 @@
   {
    "id": "sim.effect.requires_v_lez_s_card",
    "pattern": "P03",
-   "text": "Needs Vélez's card. She calls the operator, the crew comes back, and nobody sees a thing."
+   "text": "Needs Vélez's card. She calls the operator and the jet is ready again, unseen."
   },
   {
    "id": "sim.opt.have_v_lez_call_the",
@@ -2218,7 +2218,7 @@
   {
    "id": "sim.effect.restores_the_aircraft_to_ready",
    "pattern": "P03",
-   "text": "The crew comes back and the jet is ready again, but paying them on the apron gets you seen, and your exposure rises by one."
+   "text": "The jet is ready again, but cash on the apron gets you seen and exposure rises by one."
   },
   {
    "id": "sim.opt.pay_the_crew_bonus",
@@ -2244,7 +2244,7 @@
   {
    "id": "sim.effect.an_hour_on_the_phone",
    "pattern": "P03",
-   "text": "You keep Sosā on the line for an hour, and he skips his next move because he thinks you are wavering."
+   "text": "An hour on the line, and Sosā skips his next move because he thinks you are wavering."
   },
   {
    "id": "sim.opt.keep_him_talking",
@@ -2260,7 +2260,7 @@
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
    "pattern": "P03",
-   "text": "Vélez pulls her officials from the post. Her card still opens the tower at Susana."
+   "text": "Vélez pulls her officials from the post, but her card still opens the tower."
   },
   {
    "id": "sim.opt.refuse",
@@ -2270,7 +2270,7 @@
   {
    "id": "sim.effect.reception_stands_the_party_at",
    "pattern": "P03",
-   "text": "Your people at the post stay arranged. The party at home reads the statement."
+   "text": "Her people stay at the post, but the party at home reads what you said."
   },
   {
    "id": "sim.opt.say_it",
@@ -2291,7 +2291,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, and his friend inside the inquiry keeps telling you where Sosā is looking."
+   "text": "Gianlūka stays with you, and his friend inside the inquiry keeps reporting where Sosā looks."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2312,7 +2312,7 @@
   {
    "id": "sim.effect.nothing_changes_you_know_the",
    "pattern": "P03",
-   "text": "You board at midnight as planned, with the men still at the gate."
+   "text": "You board at midnight with the men still at the gate."
   },
   {
    "id": "sim.opt.midnight_it_is",
@@ -2363,7 +2363,7 @@
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "{sponsor} hangs up for good. No visa will come, and you can still fly without one and take your chances on landing.",
+   "text": "{sponsor} hangs up for good and no visa comes, but you can still fly without one.",
    "args": [
     "sponsor"
    ]
@@ -2371,7 +2371,7 @@
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
    "pattern": "P03",
-   "text": "{sponsor} keeps the line open, but the visa waits another 12 hours.",
+   "text": "{sponsor} stays on, but the visa waits another 12 hours.",
    "args": [
     "sponsor"
    ]
@@ -2384,7 +2384,7 @@
   {
    "id": "sim.effect.sends_them_to_the_house",
    "pattern": "P03",
-   "text": "Sosā sends the patrol to the house you just left. It keeps him off you for less time, but costs nothing later."
+   "text": "Sosā sends the patrol to the empty house, which buys less time but costs nothing later."
   },
   {
    "id": "sim.opt.deny_it_you_are_at",
@@ -2394,7 +2394,7 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "Sosā believes you are on the coast and searches there. If any friend later talks, the lie costs you three exposure instead of two."
+   "text": "Sosā searches the coast, but if a friend talks later, the lie adds an extra point of exposure."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
@@ -2418,7 +2418,7 @@
   {
    "id": "sim.effect.crew_booking_waits_until_salek",
    "pattern": "P03",
-   "text": "The crew does nothing until {sponsor} has taken your call.",
+   "text": "Nothing books until {sponsor} takes your call.",
    "args": [
     "sponsor"
    ]
@@ -3741,7 +3741,7 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The crew books the flight to {city} now. You still have no visa for it, so if none comes you land with nothing.",
+   "text": "The crew books {city} now, but with no visa you could land to nothing.",
    "args": [
     "city"
    ]
@@ -3749,7 +3749,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} picks for you on a roll of {need} or better. A miss costs six hours of waiting.",
+   "text": "{place} picks on a roll of {need} or better, or you lose six hours.",
    "args": [
     "place",
     "need"
@@ -3875,7 +3875,7 @@
   {
    "id": "sim.effect.requires_sponsor_help",
    "pattern": "P03",
-   "text": "{sponsor} reaches her uncle, which confirms that Esmeralda expects you. It costs you another favor with {sponsor}.",
+   "text": "{sponsor} reaches her uncle and Esmeralda expects you, at the price of another favor.",
    "args": [
     "sponsor"
    ]
@@ -4125,12 +4125,12 @@
   {
    "id": "sim.effect.decoy_at_the_yard",
    "pattern": "P03",
-   "text": "Needs the decoy card. Nando drives the sedan past the gate and the men follow it, and your exposure drops by two."
+   "text": "Needs the decoy card. The men follow Nando's sedan and your exposure drops by two."
   },
   {
    "id": "sim.effect.break_word",
    "pattern": "P03",
-   "text": "You lose every card Gianlūka gave you, and he tells the inquiry where you are, so your exposure rises by two."
+   "text": "You lose every card Gianlūka gave you, and he tells Sosā where you are, so exposure rises by two."
   }
  ]
 }
