@@ -4302,6 +4302,313 @@
    "id": "over.close",
    "pattern": "P01",
    "text": "Close"
+  },
+  {
+   "id": "brief.where",
+   "pattern": "P08",
+   "text": "You are at {place}, {n} {stops} from the jet at Susana.",
+   "args": [
+    "place",
+    "n",
+    "stops"
+   ]
+  },
+  {
+   "id": "brief.stop",
+   "pattern": "P08",
+   "text": "stop"
+  },
+  {
+   "id": "brief.stops",
+   "pattern": "P08",
+   "text": "stops"
+  },
+  {
+   "id": "brief.where_final",
+   "pattern": "P08",
+   "text": "You are at Susana, where the jet leaves from."
+  },
+  {
+   "id": "brief.sosa_here",
+   "pattern": "P08",
+   "text": "Sosā is looking for you right here."
+  },
+  {
+   "id": "brief.sosa_behind",
+   "pattern": "P08",
+   "text": "Sosā is looking at {place}, {n} {stops} behind you.",
+   "args": [
+    "place",
+    "n",
+    "stops"
+   ]
+  },
+  {
+   "id": "brief.sosa_ahead",
+   "pattern": "P08",
+   "text": "Sosā is watching {place}, which is ahead of you on the route.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.held",
+   "pattern": "P08",
+   "text": "You have been stopped {n} times, and the third stop is house arrest.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.exposure",
+   "pattern": "P08",
+   "text": "Exposure is {n} of {max}, and at {max} Sosā's people stop you.",
+   "args": [
+    "n",
+    "max"
+   ]
+  },
+  {
+   "id": "brief.time",
+   "pattern": "P08",
+   "text": "You have {n} hours left before your immunity runs out on Tuesday at 2 p.m.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.nothing_yet",
+   "pattern": "P08",
+   "text": "nothing"
+  },
+  {
+   "id": "brief.need_jet_done",
+   "pattern": "P08",
+   "text": "The jet is ready at Susana."
+  },
+  {
+   "id": "brief.need_jet_todo",
+   "pattern": "P08",
+   "text": "The jet is not ready yet (so far: {now}).",
+   "args": [
+    "now"
+   ]
+  },
+  {
+   "id": "brief.need_visa_done",
+   "pattern": "P08",
+   "text": "The entry visa is issued."
+  },
+  {
+   "id": "brief.need_visa_todo",
+   "pattern": "P08",
+   "text": "The entry visa is not issued yet (so far: {now}).",
+   "args": [
+    "now"
+   ]
+  },
+  {
+   "id": "brief.need_rec_done",
+   "pattern": "P08",
+   "text": "Officials will meet you at the border."
+  },
+  {
+   "id": "brief.need_rec_todo",
+   "pattern": "P08",
+   "text": "Nobody will meet you at the border yet (so far: {now}).",
+   "args": [
+    "now"
+   ]
+  },
+  {
+   "id": "brief.call_for",
+   "pattern": "P08",
+   "text": "Use your one phone call on the {what}, because it takes hours to come through.",
+   "args": [
+    "what"
+   ]
+  },
+  {
+   "id": "brief.escape_goal",
+   "pattern": "P09",
+   "text": "To win, reach Susana with the jet ready and the visa issued before Tuesday at 2 p.m. Officials at the border make the crossing safer."
+  },
+  {
+   "id": "brief.flow_escape",
+   "pattern": "P09",
+   "text": "Each round you read the news, make one call, make one move and roll the die, and then Sosā takes a turn."
+  },
+  {
+   "id": "brief.h_round",
+   "pattern": "P02",
+   "text": "This round"
+  },
+  {
+   "id": "brief.h_fly",
+   "pattern": "P02",
+   "text": "To fly out"
+  },
+  {
+   "id": "brief.h_requests",
+   "pattern": "P02",
+   "text": "To stop her"
+  },
+  {
+   "id": "brief.start",
+   "pattern": "P01",
+   "text": "Start round {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.back",
+   "pattern": "P01",
+   "text": "Back to the round"
+  },
+  {
+   "id": "brief.again",
+   "pattern": "P01",
+   "text": "Briefing"
+  },
+  {
+   "id": "brief.gov_title",
+   "pattern": "P02",
+   "text": "The search for her"
+  },
+  {
+   "id": "brief.gov_intro",
+   "pattern": "P08",
+   "text": "{name} lost the election on Saturday, and the court has barred her from leaving the country.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "brief.gov_guess",
+   "pattern": "P08",
+   "text": "Your best guess is that she is at {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_report",
+   "pattern": "P08",
+   "text": "The latest report came in {age}: {text}",
+   "args": [
+    "age",
+    "text"
+   ]
+  },
+  {
+   "id": "brief.just_now",
+   "pattern": "P08",
+   "text": "just now"
+  },
+  {
+   "id": "brief.hours_old",
+   "pattern": "P08",
+   "text": "{n} hours ago",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.gov_no_report",
+   "pattern": "P08",
+   "text": "No report has come in yet."
+  },
+  {
+   "id": "brief.gov_minister",
+   "pattern": "P08",
+   "text": "By {time}, the minister wants a location from you.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "brief.gov_time",
+   "pattern": "P08",
+   "text": "Her immunity runs out in {n} hours, on Tuesday at 2 p.m.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.gov_ban_inhand",
+   "pattern": "P08",
+   "text": "The border posts have the travel ban."
+  },
+  {
+   "id": "brief.gov_ban_promised",
+   "pattern": "P08",
+   "text": "The travel ban is sent, but the border has not confirmed it."
+  },
+  {
+   "id": "brief.gov_ban_notyet",
+   "pattern": "P08",
+   "text": "The travel ban has not gone to the border."
+  },
+  {
+   "id": "brief.gov_hold_inhand",
+   "pattern": "P08",
+   "text": "Esmeralda has agreed to hold her at Susana."
+  },
+  {
+   "id": "brief.gov_hold_promised",
+   "pattern": "P08",
+   "text": "The embassy has asked Esmeralda to hold her."
+  },
+  {
+   "id": "brief.gov_hold_notyet",
+   "pattern": "P08",
+   "text": "Nobody has asked Esmeralda to hold her."
+  },
+  {
+   "id": "brief.gov_ladder",
+   "pattern": "P09",
+   "text": "You win outright if she is in custody, and you still stop her if she is in the country on Tuesday at 2 p.m."
+  },
+  {
+   "id": "brief.gov_goal",
+   "pattern": "P08",
+   "text": "Find her, and send Sosā's people to where she is before she reaches the jet at Susana."
+  },
+  {
+   "id": "brief.gov_tip_ban",
+   "pattern": "P08",
+   "text": "Ask for the travel ban at your desk, because it takes hours to reach the border."
+  },
+  {
+   "id": "brief.gov_tip_hold",
+   "pattern": "P08",
+   "text": "Ask the embassy for an Esmeraldan hold, because Susana is where she flies from."
+  },
+  {
+   "id": "brief.gov_tip_follow",
+   "pattern": "P08",
+   "text": "Send your order to the place the newest report points to."
+  },
+  {
+   "id": "brief.flow_gov",
+   "pattern": "P09",
+   "text": "Each round you read the reports, work the desk, send one order and see the roll, and then she moves."
+  },
+  {
+   "id": "brief.the_residence",
+   "pattern": "P08",
+   "text": "the residence"
+  },
+  {
+   "id": "brief.the_line",
+   "pattern": "P08",
+   "text": "the line"
+  },
+  {
+   "id": "brief.hour_old",
+   "pattern": "P08",
+   "text": "an hour ago"
   }
  ]
 }

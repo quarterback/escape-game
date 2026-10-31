@@ -53,7 +53,7 @@ const UI = (() => {
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
   function newRun(w, demo, isDaily, dest, seed) {
-    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    markSeen(); briefPos = -1; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
@@ -370,8 +370,9 @@ const UI = (() => {
     if (!s || s.over) return;
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
-    interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
     enterPhase(pendingEvent() ? 'news' : 'phone');
+    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
+    else showBrief();
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
@@ -379,6 +380,58 @@ const UI = (() => {
     if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
     if (Sfx.sting) Sfx.sting('phase');
     renderAll();
+  }
+  // ---- the round briefing: where things stand and what this round is for, before any button ------
+  let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
+  const P = (t) => `<p>${esc(t)}</p>`;
+  function briefEscape() {
+    const L = Data.LEVELS[s.pos], last = Data.LEVELS.length - 1, out = { story: [], need: [], goal: [] };
+    const at = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+    if (s.pos !== briefPos) out.story.push(L.arrive);
+    out.story.push(s.pos === last ? T('brief.where_final') : T('brief.where', { place: at(s.pos), n: last - s.pos, stops: last - s.pos === 1 ? T('brief.stop') : T('brief.stops') }));
+    const gap = s.pos - s.belief, bp = at(s.belief);
+    out.story.push(gap === 0 ? T('brief.sosa_here') : gap > 0 ? T('brief.sosa_behind', { place: bp, n: gap, stops: gap === 1 ? T('brief.stop') : T('brief.stops') }) : T('brief.sosa_ahead', { place: bp }));
+    if (s.hold) out.story.push(T('brief.held', { n: s.hold }));
+    out.story.push(T('brief.exposure', { n: s.exposure, max: Sim.EXPOSURE_LIMIT }));
+    out.story.push(T('brief.time', { n: Math.max(0, Sim.HOURS_TOTAL - s.hour) }));
+    const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage, words = (k) => st(k) ? A[k].stages[st(k)] : T('brief.nothing_yet');
+    const rows = [['aircraft', 4], ['permission', 2], ['reception', 3]];
+    const line = { aircraft: (d) => d ? T('brief.need_jet_done') : T('brief.need_jet_todo', { now: words('aircraft') }), permission: (d) => d ? T('brief.need_visa_done') : T('brief.need_visa_todo', { now: words('permission') }), reception: (d) => d ? T('brief.need_rec_done') : T('brief.need_rec_todo', { now: words('reception') }) };
+    out.need = rows.map(([k, full]) => ({ done: st(k) >= full, text: line[k](st(k) >= full) }));
+    out.goal.push(L.objective);
+    const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception']; // Nova Trentô and Salta are where Baca must get your name
+    const missing = order.map(k => rows.find(r => r[0] === k)).find(([k, full]) => st(k) < full && (k !== 'reception' || s.pos < 4));
+    if (missing && s.pos < last) out.goal.push(T('brief.call_for', { what: A[missing[0]].name.toLowerCase() }));
+    return out;
+  }
+  function briefGov() {
+    const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], goal: [] };
+    if (round === 1) out.story.push(T('brief.gov_intro', { name: Data.CHARACTERS[gov.target].name }));
+    out.story.push(T('brief.gov_guess', { place: v.suspectName }));
+    const r = v.reports[0]; out.story.push(r ? T('brief.gov_report', { age: r.age === 'just now' ? T('brief.just_now') : (c.hour - r.hour === 1 ? T('brief.hour_old') : T('brief.hours_old', { n: c.hour - r.hour })), text: r.text }) : T('brief.gov_no_report'));
+    if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.story.push(T('brief.gov_minister', { time: Sim.clockText(v.ministerBy) }));
+    out.story.push(T('brief.gov_time', { n: Math.max(0, Sim.HOURS_TOTAL - c.hour) }));
+    const ban = v.requests[0].state, hold = v.requests[1].state;
+    out.need.push({ done: ban === 'inhand', text: ban === 'inhand' ? T('brief.gov_ban_inhand') : ban === 'promised' ? T('brief.gov_ban_promised') : T('brief.gov_ban_notyet') });
+    out.need.push({ done: hold === 'inhand', text: hold === 'inhand' ? T('brief.gov_hold_inhand') : hold === 'promised' ? T('brief.gov_hold_promised') : T('brief.gov_hold_notyet') });
+    out.goal.push(T('brief.gov_goal'));
+    out.goal.push(ban === 'notyet' ? T('brief.gov_tip_ban') : hold === 'notyet' ? T('brief.gov_tip_hold') : T('brief.gov_tip_follow'));
+    return out;
+  }
+  function showBrief() {
+    if (!s || s.over) return;
+    const b = gov ? briefGov() : briefEscape();
+    if (!gov) briefPos = s.pos;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });
+    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].name;
+    $('b-story').innerHTML = b.story.map(P).join('');
+    $('b-needhead').textContent = gov ? T('brief.h_requests') : T('brief.h_fly');
+    $('b-needlead').textContent = gov ? T('brief.gov_ladder') : T('brief.escape_goal');
+    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span>${esc(n.text)}</span></li>`).join('');
+    $('b-goal').innerHTML = b.goal.map(P).join('');
+    $('b-flow').textContent = gov ? T('brief.flow_gov') : T('brief.flow_escape');
+    $('b-start').textContent = T('brief.start', { n: round });
+    $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   function interstitial(clock, title, sub) {
     const el = $('interstitial'); $('i-clock').textContent = clock; $('i-title').textContent = title; $('i-sub').textContent = sub;
@@ -652,9 +705,11 @@ const UI = (() => {
       if (creditsHad && creditsHad.theme) Sfx.theme(true); if (creditsHad && creditsHad.amb && Sfx.ambience) Sfx.ambience(creditsHad.amb.scene, creditsHad.amb.night); creditsHad = null;
       if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
-    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (!$('credits').hidden) closeCredits(); else if (!$('over').hidden && s && s.over) closeOver(); });
+    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (!$('credits').hidden) closeCredits(); else if (!$('brief').hidden) $('b-start').click(); else if (!$('over').hidden && s && s.over) closeOver(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
+    $('b-start').onclick = () => { Sfx.click(); $('brief').hidden = true; };
+    $('briefagain').onclick = () => { Sfx.click(); showBrief(); $('b-start').textContent = T('brief.back'); };
     $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
     $('copyreplay').onclick = () => { Sfx.click(); copyReplay(); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };

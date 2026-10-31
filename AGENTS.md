@@ -62,6 +62,10 @@ that kept coming back and the rule for each.
 
 ## Preserve the copy decisions
 
+Read [the briefing and results AAR](docs/aar-round-briefing-and-results.md)
+before changing the round briefing or either ending screen. Briefing lines are
+built from live state; the government card must never state her real position.
+
 Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,
 instructions, tutorial text or the start screen. It records the owner's
 Humanizer and plain-language requirements, the verification results and the

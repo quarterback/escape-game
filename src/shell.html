@@ -66,7 +66,7 @@
 </div>
 
 <main id="panels">
-  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol><p id="phasehint" aria-live="polite"></p></div>
+  <div id="phasebar" hidden><span class="round" id="round"></span><button id="briefagain" class="pill ghost">{{c:brief.again}}</button><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol><p id="phasehint" aria-live="polite"></p></div>
   <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">{{c:action.next}}</button><span id="coach-do" class="small">{{c:coach.do}}</span><button id="coach-leave">{{c:coach.leave}}</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
@@ -113,6 +113,7 @@
 </nav>
 </div>
 
+<div id="brief" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="bbox"><div class="bhead"><span class="bclock" id="b-clock"></span><span id="b-round"></span></div><h2 id="b-title"></h2><div id="b-story" class="bstory"></div><h3>{{c:brief.h_round}}</h3><div id="b-goal" class="bgoal"></div><h3 id="b-needhead"></h3><p id="b-needlead" class="blead"></p><ul id="b-need" class="bneed"></ul><p id="b-flow" class="small"></p><button id="b-start" class="primary"></button></div></div>
 <div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
 <div id="update" hidden><span>{{c:update.ready}}</span><button id="reload">{{c:update.reload}}</button></div>
 

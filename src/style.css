@@ -345,3 +345,20 @@ body.attract #title{background:transparent}
 body.attract .title-shade{background:linear-gradient(180deg,rgba(21,15,46,.35) 0%,rgba(21,15,46,.6) 40%,rgba(21,15,46,.9) 100%)}
 .title-about{margin:18px 0 0;font-size:16px}.title-about a{color:var(--soft);text-shadow:0 2px 8px #000}
 body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdrop-filter:blur(3px)}
+
+/* the round briefing */
+#brief{position:fixed;inset:0;z-index:31;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,8,24,.88);overflow-y:auto}#brief[hidden]{display:none}
+#brief .bbox{width:min(600px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:22px;background:var(--s1);border-radius:20px;box-shadow:0 0 0 2px var(--line2)}
+#brief .bhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;color:var(--soft);font-size:15px}
+#brief .bclock{font:400 30px/1 var(--font-clock);color:var(--gold)}
+#brief h2{margin:0;font:400 26px/1.2 var(--font-title);color:var(--ink)}
+#brief h3{margin:8px 0 0;font:400 17px/1.3 var(--font-title);color:var(--gold)}
+#brief .bstory p,#brief .bgoal p{margin:0 0 6px;font-size:17px;line-height:1.55}
+#brief .bgoal p:first-child{font:400 19px/1.45 var(--font-title)}
+#brief .bneed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+#brief .bneed li{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.45}
+#brief .tick{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--line2);display:grid;place-items:center;font-weight:700;color:#150F2E}
+#brief .done .tick{background:var(--mint);border-color:var(--mint)}
+#brief #b-start{align-self:stretch;margin-top:6px;min-height:52px;font-size:18px}
+#briefagain{min-height:36px;padding:0 12px;font-size:14px}
+#brief .blead{margin:0;font-size:16px;line-height:1.5;color:var(--soft)}
