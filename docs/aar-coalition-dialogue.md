@@ -6,7 +6,9 @@
 **Task or period under review:** First focused dialogue pass for the active Coalition game  
 **Accountable human (name or role):** Game owner  
 **Base commit:** [24d81a9](https://github.com/quarterback/escape-game/commit/24d81a990114dbf73262d625494778074fb7b7f4)  
-**Implementation branch:** `copy/coalition-character-dialogue`; PR details will be added after publication
+**Implementation commit:** [335ca90](https://github.com/quarterback/escape-game/commit/335ca90df44d2afdf601b0c0b7437dcb7255277b)  
+**Pull request:** [quarterback/escape-game#18](https://github.com/quarterback/escape-game/pull/18)  
+**Implementation branch:** `copy/coalition-character-dialogue`
 
 ## 1. Intent — what was supposed to happen
 
