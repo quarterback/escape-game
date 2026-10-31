@@ -2436,47 +2436,40 @@
   {
    "id": "gov.debrief.he_has_not_forgotten_the",
    "pattern": "P14",
-   "text": " He is angry.",
-   "role": "gov"
+   "text": " Over the run, he was angry with how you handled things."
   },
   {
    "id": "gov.debrief.your_handling_of_the_press",
    "pattern": "P14",
-   "text": " He is pleased.",
-   "role": "gov"
+   "text": " Over the run, he was pleased with how you handled things."
   },
   {
    "id": "gov.debrief.he_never_got_his_location",
    "pattern": "P14",
-   "text": "You never gave him a town.",
-   "role": "gov"
+   "text": "You never gave the minister a town."
   },
   {
    "id": "gov.debrief.you_asked_for_time_and",
    "pattern": "P14",
-   "text": "You asked him for time {times} and never named a town.",
+   "text": "You asked the minister for more time {times} and never named a town.",
    "args": [
     "times"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.you_gave_him_the_right",
    "pattern": "P14",
-   "text": "You gave him the right town.",
-   "role": "gov"
+   "text": "You told the minister the right town."
   },
   {
    "id": "gov.debrief.you_told_him_you_did",
    "pattern": "P14",
-   "text": "You told him you did not know.",
-   "role": "gov"
+   "text": "You told the minister you did not know where she was."
   },
   {
    "id": "gov.debrief.you_gave_him_a_town",
    "pattern": "P14",
-   "text": "You gave him the wrong town.",
-   "role": "gov"
+   "text": "You told the minister the wrong town."
   },
   {
    "id": "gov.report.where_she_is_instead",
@@ -3411,14 +3404,12 @@
   {
    "id": "gov.debrief.th_she_was",
    "pattern": "P02",
-   "text": "She was",
-   "role": "gov"
+   "text": "Where she was"
   },
   {
    "id": "gov.debrief.th_you_looked",
    "pattern": "P02",
-   "text": "You looked",
-   "role": "gov"
+   "text": "Where your search was aimed"
   },
   {
    "id": "gov.debrief.no_orders",
@@ -3954,14 +3945,12 @@
   {
    "id": "gov.debrief.k_on",
    "pattern": "P02",
-   "text": "On her",
-   "role": "gov"
+   "text": "Right town"
   },
   {
    "id": "gov.debrief.k_close",
    "pattern": "P02",
-   "text": "One stop off",
-   "role": "gov"
+   "text": "One town away"
   },
   {
    "id": "gov.debrief.k_decoy",
@@ -3972,24 +3961,21 @@
   {
    "id": "gov.debrief.k_lost",
    "pattern": "P02",
-   "text": "Lost her",
-   "role": "gov"
+   "text": "Wrong town"
   },
   {
    "id": "gov.debrief.trail_sum",
    "pattern": "P14",
-   "text": "On her in {on} of {total} checks",
+   "text": "Your search was aimed at the town she was in {on} of the {total} times you gave an order.",
    "args": [
     "on",
     "total"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.h_decided",
    "pattern": "P02",
-   "text": "What decided it",
-   "role": "gov"
+   "text": "What happened"
   },
   {
    "id": "gov.debrief.m_never",
@@ -4006,31 +3992,28 @@
   {
    "id": "gov.debrief.m_lost",
    "pattern": "P14",
-   "text": "{time}: you lost her at {pos}.",
+   "text": "{time}: she had moved on to {pos}, and your search was still aimed elsewhere.",
    "args": [
     "time",
     "pos"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.m_streak",
    "pattern": "P14",
-   "text": "{from} to {to}: you missed her.",
+   "text": "{from} to {to}: your search was never aimed at the town she was in.",
    "args": [
     "from",
     "to"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.m_streak_next",
    "pattern": "P14",
-   "text": "You missed her for the next {hours} hours.",
+   "text": "For the next {hours} hours, your search was never aimed at the town she was in.",
    "args": [
     "hours"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.m_decoy_one",
@@ -4050,12 +4033,11 @@
   {
    "id": "gov.debrief.m_found",
    "pattern": "P14",
-   "text": "{time}: you found her again in {place}.",
+   "text": "{time}: your search was aimed at her town again, {place}.",
    "args": [
     "time",
     "place"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.once",
@@ -4075,27 +4057,24 @@
   {
    "id": "gov.debrief.h_desk",
    "pattern": "P02",
-   "text": "Your desk",
-   "role": "gov"
+   "text": "Your orders"
   },
   {
    "id": "gov.debrief.desk_sum",
    "pattern": "P14",
-   "text": "{ok} of {total} orders delivered.",
+   "text": "{ok} of the {total} orders you gave worked.",
    "args": [
     "ok",
     "total"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.desk_failed",
    "pattern": "P14",
-   "text": "Failed: {list}.",
+   "text": "Orders that failed: {list}.",
    "args": [
     "list"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.h_hours",
@@ -4129,11 +4108,6 @@
    "id": "over.close",
    "pattern": "P01",
    "text": "Close"
-  },
-  {
-   "id": "brief.exposure",
-   "pattern": "P02",
-   "text": "exposure"
   },
   {
    "id": "brief.time",
@@ -4192,64 +4166,49 @@
    "text": "You lose"
   },
   {
-   "id": "over.why_gov_caught",
-   "pattern": "P14",
-   "text": "She got caught."
-  },
-  {
    "id": "over.why_gov_time",
    "pattern": "P14",
-   "text": "Her time ran out."
+   "text": "It is Tuesday at 2 p.m. Her immunity is gone, and she can no longer fly out."
   },
   {
    "id": "over.why_gov_escaped",
    "pattern": "P14",
-   "text": "She escaped."
+   "text": "She flew out of Esmeralda."
   },
   {
    "id": "over.why_out",
    "pattern": "P14",
-   "text": "You got out."
-  },
-  {
-   "id": "over.why_caught",
-   "pattern": "P14",
-   "text": "You got caught."
+   "text": "You flew out of Esmeralda."
   },
   {
    "id": "over.why_time",
    "pattern": "P14",
-   "text": "Your time ran out."
+   "text": "It is Tuesday at 2 p.m. Your immunity is gone, and you can no longer fly out."
   },
   {
    "id": "over.why_landed",
    "pattern": "P14",
-   "text": "You landed somewhere that won't take you."
+   "text": "The country you flew to would not take you and sent you back."
   },
   {
    "id": "over.why_deal",
    "pattern": "P14",
-   "text": "You took the deal."
+   "text": "You took the president's deal, conceded on camera and came home."
   },
   {
    "id": "brief.need_jet",
    "pattern": "P02",
-   "text": "Jet"
+   "text": "Your plane"
   },
   {
    "id": "brief.need_visa",
    "pattern": "P02",
-   "text": "Visa"
+   "text": "Entry visa"
   },
   {
    "id": "brief.need_reception",
    "pattern": "P02",
-   "text": "Officials at the border"
-  },
-  {
-   "id": "brief.hours_left",
-   "pattern": "P02",
-   "text": "hours left"
+   "text": "Esmeralda's government"
   },
   {
    "id": "brief.you",
@@ -4259,7 +4218,7 @@
   {
    "id": "brief.sosa",
    "pattern": "P02",
-   "text": "Sosā"
+   "text": "Sosā searches here"
   },
   {
    "id": "brief.jet",
@@ -4277,19 +4236,14 @@
    "text": "Esmeralda holds her"
   },
   {
-   "id": "brief.minister_deadline",
-   "pattern": "P02",
-   "text": "minister's deadline"
-  },
-  {
    "id": "brief.gov_search",
    "pattern": "P02",
-   "text": "Search"
+   "text": "Your search"
   },
   {
    "id": "brief.gov_last_seen",
    "pattern": "P02",
-   "text": "Last seen"
+   "text": "Newest report"
   },
   {
    "id": "brief.h_win",
@@ -4307,34 +4261,9 @@
    "text": "Asked."
   },
   {
-   "id": "brief.gov_seen_now",
-   "pattern": "P08",
-   "text": "She was last seen at {place} just now.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "brief.gov_seen_hour",
-   "pattern": "P08",
-   "text": "She was last seen at {place} an hour ago.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "brief.gov_seen_hours",
-   "pattern": "P08",
-   "text": "She was last seen at {place} {n} hours ago.",
-   "args": [
-    "place",
-    "n"
-   ]
-  },
-  {
    "id": "brief.gov_job_ban",
    "pattern": "P08",
-   "text": "Send the travel ban."
+   "text": "Circulate the travel ban. Once it is out, she has a harder time crossing the border."
   },
   {
    "id": "brief.gov_job_hold",
@@ -4344,7 +4273,7 @@
   {
    "id": "brief.gov_job_search",
    "pattern": "P08",
-   "text": "Search {place}.",
+   "text": "Search {place}, where the newest report puts her.",
    "args": [
     "place"
    ]
@@ -4352,12 +4281,128 @@
   {
    "id": "brief.gov_win",
    "pattern": "P08",
-   "text": "Keep her in the country until Tuesday at 2 p.m."
+   "text": "Stop her from flying out before Tuesday at 2 p.m."
   },
   {
    "id": "brief.escape_win",
    "pattern": "P08",
-   "text": "Get out of the country by Tuesday at 2 p.m."
+   "text": "Fly out of Susana before Tuesday at 2 p.m."
+  },
+  {
+   "id": "over.why_gov_arrest",
+   "pattern": "P14",
+   "text": "She is under house arrest."
+  },
+  {
+   "id": "over.why_gov_deal",
+   "pattern": "P14",
+   "text": "She took the president's deal, conceded on camera and came home."
+  },
+  {
+   "id": "over.why_gov_landed",
+   "pattern": "P14",
+   "text": "The country she flew to would not take her and sent her back."
+  },
+  {
+   "id": "over.why_arrest",
+   "pattern": "P14",
+   "text": "You are under house arrest."
+  },
+  {
+   "id": "brief.hours_escape",
+   "pattern": "P08",
+   "text": "Hours until Tuesday at 2 p.m. Then your immunity ends and you can no longer leave."
+  },
+  {
+   "id": "brief.hours_gov",
+   "pattern": "P08",
+   "text": "Hours until Tuesday at 2 p.m. Then her immunity ends and she can no longer leave."
+  },
+  {
+   "id": "brief.police_attention",
+   "pattern": "P08",
+   "text": "Police attention, {n} out of {max}. At {max} the police stop you, each stop is worse than the last, and the third is house arrest.",
+   "args": [
+    "n",
+    "max"
+   ]
+  },
+  {
+   "id": "brief.phone_suggest",
+   "pattern": "P08",
+   "text": "On the phone: {call}.",
+   "args": [
+    "call"
+   ]
+  },
+  {
+   "id": "brief.done_list",
+   "pattern": "P08",
+   "text": "Done: {list}.",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "brief.left_list",
+   "pattern": "P08",
+   "text": "Still needed: {list}.",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "brief.visa_note",
+   "pattern": "P08",
+   "text": "Without it, the country you land in may send you back."
+  },
+  {
+   "id": "brief.reception_note",
+   "pattern": "P08",
+   "text": "Each step makes the border and the takeoff easier."
+  },
+  {
+   "id": "brief.gov_report_now",
+   "pattern": "P08",
+   "text": "The newest report, which just came in, puts her at {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_report_hour",
+   "pattern": "P08",
+   "text": "The newest report, which came in an hour ago, puts her at {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_report_hours",
+   "pattern": "P08",
+   "text": "The newest report, which came in {n} hours ago, puts her at {place}.",
+   "args": [
+    "place",
+    "n"
+   ]
+  },
+  {
+   "id": "brief.gov_no_report",
+   "pattern": "P08",
+   "text": "No report has come in yet."
+  },
+  {
+   "id": "brief.gov_reports_caveat",
+   "pattern": "P08",
+   "text": "Reports can be late or false."
+  },
+  {
+   "id": "brief.minister_expects",
+   "pattern": "P08",
+   "text": "The minister expects a town by {time}.",
+   "args": [
+    "time"
+   ]
   }
  ]
 }

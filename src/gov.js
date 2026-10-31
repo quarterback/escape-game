@@ -293,7 +293,7 @@ const Gov = (() => {
       return Object.assign({ k }, t);
     });
   }
-  const KEY = () => ({ on: T('gov.debrief.k_on'), close: T('gov.debrief.k_close'), decoy: T('gov.debrief.k_decoy'), lost: T('gov.debrief.k_lost') });
+  const KEY = () => ({ on: T('gov.debrief.k_on'), close: T('gov.debrief.k_close'), decoy: T('gov.debrief.k_decoy'), lost: T('gov.debrief.k_lost') }); // decoy wording waits on the owner (open decision 2)
   function tier(c) { return c.over.win ? 'out' : (c.over.kind === 'clock' ? 'country' : 'custody'); }
   const EMOJI = { on: '\u{1F7E9}', close: '\u{1F7E8}', decoy: '\u{1F7EA}', lost: '⬛' };
   function shareGrid(g) {

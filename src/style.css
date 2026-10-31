@@ -363,10 +363,10 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 #brief .broute .stop{font-size:13px;line-height:1.25;color:var(--mute)}#brief .broute li.here .stop{color:var(--ink)}
 #brief .bpill{padding:2px 8px;border-radius:999px;font:400 12px/1.4 var(--font-title);color:#150F2E;white-space:nowrap}
 #brief .bpill.you{background:var(--gold)}#brief .bpill.sosa{background:var(--coral2)}#brief .bpill.jet,#brief .bpill.seen{background:var(--lav)}
-#brief .bstats{display:flex;gap:18px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-#brief .bstats>div{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px}#brief .bstats b{font:400 24px/1.1 var(--font-label);font-weight:400}#brief .bstats span{font-size:14px;color:var(--mute)}
+#brief .bstats{display:flex;flex-direction:column;gap:12px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#brief .bstats>div{display:flex;gap:14px;align-items:flex-start}#brief .bstats b{flex:none;min-width:64px;font:400 24px/1.2 var(--font-label);font-weight:400}#brief .bstats p{margin:0;font-size:16px;line-height:1.45;color:var(--soft);display:flex;flex-direction:column;gap:6px}
 #brief .segs{display:flex;gap:3px}#brief .segs i{flex:1;height:6px;border-radius:2px;background:var(--s4)}#brief .segs i.on{background:var(--coral2)}
-#brief .bjob{margin:0;padding:14px 16px;border-left:4px solid var(--gold);background:var(--s3);border-radius:0 14px 14px 0;font:400 21px/1.35 var(--font-title)}
+#brief .bjob{padding:14px 16px;border-left:4px solid var(--gold);background:var(--s3);border-radius:0 14px 14px 0;display:flex;flex-direction:column;gap:8px}#brief .bjob p{margin:0;font-size:17px;line-height:1.45;color:var(--soft)}#brief .bjob p:first-child{font:400 20px/1.35 var(--font-title);color:var(--ink)}
 #brief .blead{margin:0;font-size:18px;line-height:1.45}
 #brief .bneed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 #brief .bneed li{display:flex;gap:12px;align-items:flex-start}
