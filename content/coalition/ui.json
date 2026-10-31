@@ -3822,17 +3822,17 @@
   {
    "id": "map.title",
    "pattern": "P02",
-   "text": "Choose where you go"
+   "text": "Pick a country"
   },
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda will let you fly out of Susana but not stay. Pick where the jet goes."
+   "text": "Esmeralda lets you fly out of Susana. Nobody has said yes yet."
   },
   {
    "id": "map.here",
    "pattern": "P08",
-   "text": "Valdória. You are here."
+   "text": "Valdória, where you are"
   },
   {
    "id": "map.via",
@@ -3850,7 +3850,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "The visa comes during the run or not at all."
+   "text": "The visa comes later, or it never does."
   },
   {
    "id": "gov.debrief.taken_on_landing",

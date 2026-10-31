@@ -27,6 +27,30 @@ are all working as intended. Do not soften a rule because a harness win rate or
 a first-round screenshot looks harsh. A balance change needs the owner's words
 and a calibration before and after; see `docs/aar-hold-ladder-balance.md`.
 
+## Write microcopy like a person talks
+
+Owner, October 31, 2026, after six rewrites of one screen. These are the faults
+that kept coming back and the rule for each.
+
+- One idea per sentence. "Asks for your visa once you move the family accounts to
+  him" is three ideas chained; nobody says it. Write "He helps once the family
+  accounts are his."
+- Say who, then what they do, then the price, in that order, with a plain verb.
+  Name the concrete thing (the family accounts, a letter), never the abstraction
+  (terms, a price, a condition).
+- No false titles: never "Banker Amādū Salek". The name, then what they are in its
+  own clause or sentence.
+- No couplets: a second sentence that restates or explains the first is cut. The
+  content check (C15) fails the build on a two-sentence interface string.
+- No label-and-value rows ("Who asks", "The catch", "News waiting: …"). Write the
+  sentence.
+- AP style: figures from 10, words below; "2 p.m.", "noon", "midnight"; "Sept.",
+  "Oct."; no title case.
+- Read it aloud. If you take a breath, split it or cut it. A card line is under 12
+  words; a button is a verb phrase; a hint is one short sentence.
+- Never patch a flagged sentence. Throw it away and write the thought again from
+  nothing, then run the Humanizer rules and the checkers.
+
 ## Preserve the copy decisions
 
 Read [the copy AAR](docs/aar-coalition-copy.md) before editing narrative,
