@@ -63,7 +63,7 @@ const Sim = (() => {
     return s;
   }
   const ev = (type, data) => Object.assign({ type }, data);
-  const say = (events, who, text) => { if (text) events.push(ev('say', { who, text })); };
+  const say = (events, who, text, featured) => { if (text) events.push(ev('say', { who, text, featured: !!featured })); };
   const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * 6);
   function clockText(h) {
     const t = START_HOUR + h, day = [T('sim.day.saturday'), T('sim.day.sunday'), T('sim.day.monday'), T('sim.day.tuesday'), T('sim.day.wednesday')][Math.floor(t / 24)];
@@ -391,7 +391,10 @@ const Sim = (() => {
   }
   function apply(s, fx, events, a) {
     if (!fx) return;
-    say(events, 'narrator', fx.say);
+    if (a && a.id === 'decoy' && fx === a.success) say(events, 'nando', T('sim.line.nando_decoy_success'), true);
+    else if (a && a.id === 'help_host' && fx === a.success) say(events, 'host', T('sim.line.nona_truck_released'), true);
+    else if (a && a.id === 'help_host' && fx === a.fail) say(events, 'host', T('sim.line.nona_truck_late'), true);
+    else say(events, 'narrator', fx.say);
     if (fx.exposure) heat(s, fx.exposure, events);
     if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);
