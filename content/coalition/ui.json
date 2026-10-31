@@ -1368,7 +1368,7 @@
   {
    "id": "daily.done_note",
    "pattern": "P14",
-   "text": "{line}. Your first finish is the one we keep. You can play again.",
+   "text": "{line}. Try again?",
    "args": [
     "line"
    ]
@@ -1376,10 +1376,7 @@
   {
    "id": "daily.note",
    "pattern": "P08",
-   "text": "Everyone gets the same run today. You play {name}. You pick where to fly.",
-   "args": [
-    "name"
-   ]
+   "text": "Same run for everyone. Can you get out?"
   },
   {
    "id": "share.copied",
@@ -1609,7 +1606,7 @@
   {
    "id": "start.daily",
    "pattern": "P01",
-   "text": "Play today's run"
+   "text": "Today's daily run"
   },
   {
    "id": "start.tutorial",
@@ -4056,13 +4053,12 @@
   {
    "id": "daily.share",
    "pattern": "P14",
-   "text": "Coalition, {date}\n{line}. {held} {round} rounds. Exposure {exposure} of 10.\n{url}",
+   "text": "Coalition, {date}: {line}. {held} {round} rounds.\n{url}",
    "args": [
     "date",
     "line",
     "held",
     "round",
-    "exposure",
     "url"
    ]
   },
