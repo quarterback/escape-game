@@ -998,7 +998,7 @@
   {
    "id": "daily.out",
    "pattern": "P14",
-   "text": "Escaped after {hours} hours, round {round}",
+   "text": "Escaped after {hours} hrs, rd. {round}",
    "args": [
     "hours",
     "round"
@@ -1007,7 +1007,7 @@
   {
    "id": "daily.clock",
    "pattern": "P14",
-   "text": "Ran out of time on round {round}",
+   "text": "Ran out of time, rd. {round}",
    "args": [
     "round"
    ]
@@ -1015,7 +1015,7 @@
   {
    "id": "daily.deal",
    "pattern": "P14",
-   "text": "Took the deal on round {round}",
+   "text": "Took the deal, rd. {round}",
    "args": [
     "round"
    ]
@@ -1023,7 +1023,7 @@
   {
    "id": "daily.arrest",
    "pattern": "P14",
-   "text": "Caught on round {round}",
+   "text": "Caught, rd. {round}",
    "args": [
     "round"
    ]
@@ -4062,7 +4062,7 @@
   {
    "id": "daily.landed",
    "pattern": "P14",
-   "text": "Held on landing, round {round}",
+   "text": "Held on landing, rd. {round}",
    "args": [
     "round"
    ]
