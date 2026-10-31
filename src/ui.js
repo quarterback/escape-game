@@ -617,7 +617,7 @@ const UI = (() => {
     $('title-start').onclick = () => { stopAttract(); Sfx.unlock(); Sfx.theme(true); $('title').hidden = true; showStart(); };
   }
   function pwa() {
-    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
       navigator.serviceWorker.register('sw.js').then(reg => {
         const watch = (w) => { if (!w) return; w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) $('update').hidden = false; }); };
         watch(reg.waiting || reg.installing); reg.addEventListener('updatefound', () => watch(reg.installing));
