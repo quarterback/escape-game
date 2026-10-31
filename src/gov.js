@@ -134,7 +134,7 @@ const Gov = (() => {
   function view(g) {
     const c = g.c, age = (h) => { const d = c.hour - h; return d <= 0 ? 'just now' : `${d} h`; };
     return {
-      her: c.who === 'woman' ? 'her' : 'him', suspectName: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1),
+      her: c.who === 'woman' ? 'her' : 'him', suspectName: place(g.belief),
       lastReport: g.lastReportHour === null ? '' : age(g.lastReportHour) + (g.lastReportHour === c.hour ? '' : ' old'), ministerBy: g.ministerBy,
       levelName: [T('gov.scene.the_assignment_port_venla'), T('gov.scene.provincial_desks_santa_laura'), T('gov.scene.the_support_network_nova_trent'), T('gov.scene.the_freight_salta'), T('gov.scene.the_huhui_border'), T('gov.scene.susana_airfield')][g.belief],
       objective: [T('gov.scene.the_watched_convoy_splits_the'), T('gov.scene.reports_conflict_a_patrol_can'), T('gov.scene.someone_is_sheltering_her_your'), T('gov.scene.a_departure_window_is_approaching'), T('gov.scene.the_crossing_could_happen_before'), T('gov.scene.she_may_be_across_the')][g.belief],
