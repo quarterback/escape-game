@@ -33,7 +33,7 @@
   {
    "id": "scene.gov_goal",
    "pattern": "P08",
-   "text": "Stop {her} before",
+   "text": "stop {her} before",
    "args": [
     "her"
    ],
@@ -3204,7 +3204,7 @@
   {
    "id": "gov.preview.who_acts",
    "pattern": "P03",
-   "text": "Who acts: {who}",
+   "text": "by {who}",
    "args": [
     "who"
    ],
@@ -3213,7 +3213,7 @@
   {
    "id": "gov.preview.who_acts_esmeraldan_officials_on",
    "pattern": "P03",
-   "text": "Who acts: Esmeraldan officials, on your introduction",
+   "text": "by Esmeraldan officials, on your introduction",
    "role": "gov"
   },
   {
