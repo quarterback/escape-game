@@ -1,8 +1,8 @@
-// Coalition service worker, build 5bba309bd8.
+// Coalition service worker, build 9295f7f339.
 // Rules: a request never dies inside the worker. The page goes network first and falls back to the
 // cached copy, then to a short offline note; other files go cache first and fall back to the network.
 // Only the game page is treated as the app shell; about.html and anything else load as themselves.
-const CACHE = 'coalition-5bba309bd8';
+const CACHE = 'coalition-9295f7f339';
 const SHELL = ['index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 const OFFLINE = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coalition</title><body style="margin:0;background:#150F2E;color:#F6F1FF;font:18px/1.5 Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:24px"><div><p>Coalition could not load. Check the connection and try again.</p><p><a href="./" style="color:#FFC93C">Reload</a></p></div></body>';
 const isPage = (url) => { const p = new URL(url).pathname; return p.endsWith('/') || p.endsWith('/index.html'); };

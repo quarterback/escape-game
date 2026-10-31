@@ -1007,7 +1007,7 @@
   {
    "id": "daily.clock",
    "pattern": "P14",
-   "text": "{name} ran out of time",
+   "text": "{name} ran out of hours",
    "args": [
     "name"
    ]
@@ -1027,32 +1027,6 @@
    "args": [
     "name",
     "place"
-   ]
-  },
-  {
-   "id": "daily.share_one",
-   "pattern": "P14",
-   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} time. Round {round}. Exposure {exposure}.\n{url}",
-   "args": [
-    "date",
-    "line",
-    "holds",
-    "round",
-    "exposure",
-    "url"
-   ]
-  },
-  {
-   "id": "daily.share_many",
-   "pattern": "P14",
-   "text": "Coalition daily, {date}\n{line}.\nHeld {holds} times. Round {round}. Exposure {exposure}.\n{url}",
-   "args": [
-    "date",
-    "line",
-    "holds",
-    "round",
-    "exposure",
-    "url"
    ]
   },
   {
@@ -1394,7 +1368,7 @@
   {
    "id": "daily.done_note",
    "pattern": "P14",
-   "text": "{line}. Play again or share it.",
+   "text": "{line}. You can play it again. The first finish is the one that counts.",
    "args": [
     "line"
    ]
@@ -1402,7 +1376,7 @@
   {
    "id": "daily.note",
    "pattern": "P08",
-   "text": "Everyone plays the same run today, as {name}.",
+   "text": "One world for everyone today. You are {name}. Same dice, same people, same bought post. Where you fly is still yours to pick.",
    "args": [
     "name"
    ]
@@ -1595,7 +1569,7 @@
   {
    "id": "over.share",
    "pattern": "P01",
-   "text": "Share your result"
+   "text": "Share how it ended"
   },
   {
    "id": "over.again",
@@ -1635,7 +1609,7 @@
   {
    "id": "start.daily",
    "pattern": "P01",
-   "text": "Daily run"
+   "text": "Today's run"
   },
   {
    "id": "start.tutorial",
@@ -4055,6 +4029,51 @@
    "id": "about.world",
    "pattern": "P08",
    "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991. The countries stand on real ground. The story does not."
+  },
+  {
+   "id": "daily.held_never",
+   "pattern": "P14",
+   "text": "Never held"
+  },
+  {
+   "id": "daily.held_once",
+   "pattern": "P14",
+   "text": "Held once"
+  },
+  {
+   "id": "daily.held_twice",
+   "pattern": "P14",
+   "text": "Held twice"
+  },
+  {
+   "id": "daily.held_many",
+   "pattern": "P14",
+   "text": "Held {holds} times",
+   "args": [
+    "holds"
+   ]
+  },
+  {
+   "id": "daily.share",
+   "pattern": "P14",
+   "text": "Coalition, {date}\n{line}. {held}, {round} rounds, exposure {exposure} of 10.\n{url}",
+   "args": [
+    "date",
+    "line",
+    "held",
+    "round",
+    "exposure",
+    "url"
+   ]
+  },
+  {
+   "id": "daily.landed",
+   "pattern": "P14",
+   "text": "{name} landed at {city} and was taken on the apron",
+   "args": [
+    "name",
+    "city"
+   ]
   }
  ]
 }
