@@ -60,6 +60,11 @@ How to work under it:
 - **Player terms:** "police attention" (never "exposure", which the content
   check now rejects), "move" (never "approach"), "Deck" (never "Hand").
 - **Endings** read "You win" or "You lose", then the reason in a full sentence.
+- **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
+  appears with a unit of time, tell the player whose clock it is and what
+  happens when it runs out." The vocabulary is fixed: the escape deadline
+  (Tuesday 2 p.m.), when Sosā acts again, how long a move takes, and the chance
+  of success. Chance and duration are separate facts on separate lines.
 - **Budgets never beat meaning.** The checks cap buttons at six words and keep
   interface labels to one sentence. When an explanation does not fit, put it in
   the preview, the briefing or the help where there is room, or flag it. Never

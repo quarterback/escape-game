@@ -377,3 +377,6 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 #brief #b-start{align-self:stretch;margin-top:4px;min-height:54px;font-size:18px}
 #briefagain{min-height:36px;padding:0 12px;font-size:14px}
 .overbox .overwhy{font-size:20px;margin:6px 0 10px}
+
+/* chance and time on separate lines */
+.act .meta,.approach .meta{display:flex;flex-direction:column;gap:2px}.act .meta .hrs,.approach .meta .hrs{color:var(--soft);font-family:var(--font-body)}

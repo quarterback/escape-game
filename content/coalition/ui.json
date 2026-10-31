@@ -120,11 +120,6 @@
    "text": "Leave Esmeraldan airspace by"
   },
   {
-   "id": "scene.out_by",
-   "pattern": "P08",
-   "text": "out by"
-  },
-  {
    "id": "scene.sosa_here",
    "pattern": "P06",
    "text": "Sosā is searching here"
@@ -156,7 +151,7 @@
   {
    "id": "scene.next_move",
    "pattern": "P02",
-   "text": "Sosā moves next"
+   "text": "Sosā acts again"
   },
   {
    "id": "scene.next_in",
@@ -234,11 +229,11 @@
   {
    "id": "action.certain",
    "pattern": "P03",
-   "text": "Certain"
+   "text": "Guaranteed success"
   },
   {
    "id": "action.impossible",
-   "pattern": "P04",
+   "pattern": "P03",
    "text": "Cannot succeed"
   },
   {
@@ -1385,11 +1380,6 @@
    "text": "Pixel-art view of where you are now"
   },
   {
-   "id": "scene.left",
-   "pattern": "P05",
-   "text": "left,"
-  },
-  {
    "id": "scene.goal_label",
    "pattern": "P02",
    "text": "Goal"
@@ -2123,7 +2113,7 @@
   {
    "id": "sim.why.needs_a_card",
    "pattern": "P04",
-   "text": "This needs a card marked {card}.",
+   "text": "You need a card that gives you {card}.",
    "args": [
     "card"
    ]
@@ -2131,7 +2121,7 @@
   {
    "id": "sim.why.your_card_is_not_recognized",
    "pattern": "P04",
-   "text": "Your {card} card means nothing here",
+   "text": "The card you hold for {card} does not work here.",
    "args": [
     "card"
    ]
@@ -4481,6 +4471,93 @@
    "id": "arrangement.moves",
    "pattern": "P10",
    "text": "Your welcome in Esmeralda moves up one step"
+  },
+  {
+   "id": "scene.deadline_escape",
+   "pattern": "P02",
+   "text": "Escape deadline in {time}",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "scene.deadline_gov",
+   "pattern": "P02",
+   "text": "Her escape deadline in {time}",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "scene.deadline_when",
+   "pattern": "P02",
+   "text": "({when})",
+   "args": [
+    "when"
+   ]
+  },
+  {
+   "id": "action.chance",
+   "pattern": "P03",
+   "text": "Roll {need} or higher ({odds} chance)",
+   "args": [
+    "need",
+    "odds"
+   ]
+  },
+  {
+   "id": "action.takes",
+   "pattern": "P03",
+   "text": "Takes {hours} hours",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.takes_one",
+   "pattern": "P03",
+   "text": "Takes one hour"
+  },
+  {
+   "id": "action.done_by",
+   "pattern": "P03",
+   "text": ", done by {who}",
+   "args": [
+    "who"
+   ]
+  },
+  {
+   "id": "action.sosa_none",
+   "pattern": "P03",
+   "text": "Sosā does not act during these {hours} hours.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.sosa_once",
+   "pattern": "P03",
+   "text": "Sosā acts once during these {hours} hours.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.sosa_times",
+   "pattern": "P03",
+   "text": "Sosā acts {n} times during these {hours} hours.",
+   "args": [
+    "hours",
+    "n"
+   ]
+  },
+  {
+   "id": "sim.why.needs_step",
+   "pattern": "P04",
+   "text": "First you need this step: {step}.",
+   "args": [
+    "step"
+   ]
   }
  ]
 }

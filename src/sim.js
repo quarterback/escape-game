@@ -162,10 +162,12 @@ const Sim = (() => {
   function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && reaches(s, id)); }
   const heldTag = (s, tag) => s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag);
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
+  // a card kind in player words, never the internal tag
+  const kindWord = (tag) => { const w = ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag; return w[0].toLowerCase() + w.slice(1); };
   function needText(s, n) {
-    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? T('sim.why.your_card_is_not_recognized', { card: n.card }) : T('sim.why.needs_a_card', { card: n.card }));
-    if (n.night) return isNight(s) ? null : 'After 22:00.';
-    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs: ${D.ARRANGEMENTS[n.arr].stages[n.stage]}.`; }
+    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? T('sim.why.your_card_is_not_recognized', { card: kindWord(n.card) }) : T('sim.why.needs_a_card', { card: kindWord(n.card) }));
+    if (n.night) return isNight(s) ? null : T('need.night');
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : T('sim.why.needs_step', { step: D.ARRANGEMENTS[n.arr].stages[n.stage] }); }
     return null;
   }
   function approachList(s) {

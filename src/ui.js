@@ -89,11 +89,13 @@ const UI = (() => {
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
     const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
-    $('clock').textContent = short(s.hour); $('left').textContent = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) }); $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
+    const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
+    // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
+    $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
     const L = Data.LEVELS[s.pos];
     if (gov) {
       const v = Gov.view(gov);
-      $('goaltxt').textContent = T('scene.gov_goal', { her: v.her }); $('leftverb').textContent = T('scene.gov_goal', { her: v.her });
+      $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
       $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label');
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
@@ -102,7 +104,7 @@ const UI = (() => {
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
-    $('goaltxt').textContent = T('scene.goal'); $('leftverb').textContent = T('scene.out_by');
+    $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
     $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
     $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: placeName(s.belief) });
@@ -136,19 +138,24 @@ const UI = (() => {
   function dieFace(need) { const n = Math.max(1, Math.min(6, need)); return `<span class="die" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => `<i class="${PIPS[n].includes(i) ? 'p' : ''}"></i>`).join('')}</span>`; }
   // a bonus is named by the held cards that give it, never by the internal tag
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
-  const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).join(', ') || tagName(u.tag)).join(', ') }))}</span>` : '';
+  // chance of success and time taken are different facts, shown on separate lines
+  const chanceText = (a) => a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds });
+  const metaLine = (a) => `<span class="meta"><span class="nd">${esc(chanceText(a))}</span><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span></span>`;
+  // escape side: how many times Sosā acts during the move's own hours
+  const sosaDuring = (a) => { if (gov) return ''; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); const n = a.hours >= next ? 1 + Math.floor((a.hours - next) / Sim.ENEMY_EVERY) : 0; return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
+  const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `<span class="meta"><span class="nd">${a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span>` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
+    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span><span class="meta"><span class="nd">${a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span></span>${usesLabel(a)}</div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }

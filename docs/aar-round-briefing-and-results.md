@@ -249,3 +249,16 @@ both sides played to round three in the browser with no page errors. A
 click-through of the government demo in the browser stalls at the same step
 on `main` and on this branch, so it looks like a problem with the test
 harness rather than this change; it was not investigated further.
+
+**Clocks and odds (owner's screenshot, same day).** The scene header now reads
+"Escape deadline in 62 hours (Tue 2 p.m.)" (on the government side, "Her
+escape deadline in ..."), and Sosā's box reads "Sosā acts again in two hours".
+The owner suggested "Sosā searches again"; the code picks a random action every
+three hours (a search, a call trace, a checkpoint and others), so "acts" is the
+accurate word. Each move shows its chance and its time on separate lines
+("Guaranteed success", "Roll 2 or higher (5 in 6 chance)"; "Takes three
+hours"), the redundant "No roll needed" and "Takes 3 hours" preview lines are
+gone, and the selected move adds how many times Sosā acts during its hours.
+Requirement messages that were written into the code ("After 22:00.",
+"Needs: ...", "a card marked passage") now come from the catalog in player
+words. The night chip no longer repeats the locked move's reason.
