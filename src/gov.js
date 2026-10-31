@@ -119,7 +119,7 @@ const Gov = (() => {
       const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
+        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }

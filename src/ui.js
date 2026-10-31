@@ -412,7 +412,7 @@ const UI = (() => {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
-    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
+    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
     for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   function resultCard(card, r, nextLabel, next) {

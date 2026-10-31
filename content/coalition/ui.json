@@ -387,7 +387,7 @@
   {
    "id": "need.working",
    "pattern": "P05",
-   "text": "{stage}, {ally} is on it, due {time}",
+   "text": "{ally} is working on {stage}, due {time}.",
    "args": [
     "stage",
     "ally",
@@ -779,24 +779,24 @@
   {
    "id": "phase.done_desk",
    "pattern": "P01",
-   "text": "Done at the desk",
+   "text": "Finish at the desk",
    "role": "gov"
   },
   {
    "id": "phase.done_phone",
    "pattern": "P01",
-   "text": "Done with the phone"
+   "text": "Finish with the phone"
   },
   {
    "id": "phase.see_came_in",
    "pattern": "P01",
-   "text": "See what came in",
+   "text": "Read the new reports",
    "role": "gov"
   },
   {
    "id": "phase.see_sosa",
    "pattern": "P01",
-   "text": "See what Sosā did"
+   "text": "See Sosā's move"
   },
   {
    "id": "card.kind_news",
@@ -816,7 +816,7 @@
   {
    "id": "card.rung",
    "pattern": "P02",
-   "text": " · {rung} of three",
+   "text": "{rung} of three",
    "args": [
     "rung"
    ]
@@ -982,7 +982,7 @@
   {
    "id": "sum.exposure_rose",
    "pattern": "P10",
-   "text": "Exposure rose by {n} while time passed",
+   "text": "Exposure rose by {n}.",
    "args": [
     "n"
    ]
@@ -1068,7 +1068,7 @@
   {
    "id": "log.pressed_holds",
    "pattern": "P10",
-   "text": "Sosā presses {name}: {die} against {need}, holds",
+   "text": "Sosā presses {name}, who holds with {die} against {need}.",
    "args": [
     "name",
     "die",
@@ -1078,7 +1078,7 @@
   {
    "id": "log.pressed_breaks",
    "pattern": "P10",
-   "text": "Sosā presses {name}: {die} against {need}, breaks",
+   "text": "Sosā presses {name}, who breaks with {die} against {need}.",
    "args": [
     "name",
     "die",
@@ -1088,7 +1088,7 @@
   {
    "id": "log.ally_delivers",
    "pattern": "P10",
-   "text": "{name} rolls {die} against {need} and delivers",
+   "text": "{name} rolls {die} against {need} and delivers.",
    "args": [
     "name",
     "die",
@@ -1098,7 +1098,7 @@
   {
    "id": "log.ally_not_yet",
    "pattern": "P10",
-   "text": "{name} rolls {die} against {need}, not yet",
+   "text": "{name} rolls {die} against {need} and has not delivered yet.",
    "args": [
     "name",
     "die",
@@ -1237,7 +1237,7 @@
   {
    "id": "report.empty",
    "pattern": "P12",
-   "text": "No reports yet",
+   "text": "No reports yet.",
    "role": "gov"
   },
   {
@@ -1336,7 +1336,7 @@
   {
    "id": "start.demo_note",
    "pattern": "P13",
-   "text": "{name} walks you to the airfield, and then it is yours.",
+   "text": "{name} walks you to the airfield. The rest is yours.",
    "args": [
     "name"
    ]
@@ -1470,7 +1470,7 @@
   {
    "id": "log.heading",
    "pattern": "P02",
-   "text": "What happened"
+   "text": "The log"
   },
   {
    "id": "hand.heading",
@@ -2141,7 +2141,7 @@
   {
    "id": "sim.preview.your_cards_lower_it",
    "pattern": "P03",
-   "text": " Your cards lower it: "
+   "text": "Your cards lower it: "
   },
   {
    "id": "sim.preview.die_needs_or_more_in",
@@ -3145,7 +3145,7 @@
   {
    "id": "gov.preview.your_cards_lower_it",
    "pattern": "P03",
-   "text": " Your cards lower it: ",
+   "text": "Your cards lower it: ",
    "role": "gov"
   },
   {
@@ -3172,7 +3172,7 @@
   {
    "id": "gov.effect.honest_the_minister_briefs_the",
    "pattern": "P03",
-   "text": "Honest, and the minister briefs the papers himself",
+   "text": "The minister hears the truth and briefs the papers himself.",
    "role": "gov"
   },
   {
@@ -3184,7 +3184,7 @@
   {
    "id": "gov.effect.public_if_you_are_wrong",
    "pattern": "P03",
-   "text": "Public, and if you are wrong your own offices follow the wrong lead for hours",
+   "text": "It goes public, so a wrong town sends your offices after the wrong lead for hours.",
    "role": "gov"
   },
   {
@@ -3586,7 +3586,7 @@
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Answer a message or make one call, then tap Done with the phone."
+   "text": "Answer a message or make one call, then tap Finish with the phone."
   },
   {
    "id": "hint.move",
@@ -3596,7 +3596,7 @@
   {
    "id": "hint.roll",
    "pattern": "P08",
-   "text": "See how it went."
+   "text": "See how your move went."
   },
   {
    "id": "hint.sosa",
@@ -3612,7 +3612,7 @@
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Answer the minister or send one request, then tap Done at the desk.",
+   "text": "Answer the minister or send one request, then tap Finish at the desk.",
    "role": "gov"
   },
   {
@@ -3624,13 +3624,13 @@
   {
    "id": "hint.gov_roll",
    "pattern": "P08",
-   "text": "See how it went.",
+   "text": "See how your order went.",
    "role": "gov"
   },
   {
    "id": "hint.gov_sosa",
    "pattern": "P08",
-   "text": "Read what reached your desk.",
+   "text": "Read the reports on her move.",
    "role": "gov"
   },
   {
@@ -3662,7 +3662,7 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "Ask {sponsor} for the visa, on {sponsor}’s terms",
+   "text": "Ask {sponsor} for the visa on {sponsor}'s terms",
    "args": [
     "sponsor"
    ]
@@ -3670,7 +3670,7 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The crew books a flight to {city}. You still have no visa, so you may land with no one to receive you.",
+   "text": "The crew books a flight to {city}. You still have no visa. Nobody meets a plane without one.",
    "args": [
     "city"
    ]
@@ -3731,7 +3731,7 @@
   {
    "id": "sim.ledger.post_was_bought",
    "pattern": "P05",
-   "text": "The sergeant at the {post} had been paid, and you lost 12 hours finding out",
+   "text": "The sergeant at the {post} is paid off, and you lose 12 hours finding out.",
    "args": [
     "post"
    ]
@@ -3919,7 +3919,7 @@
   {
    "id": "about.p4",
    "pattern": "P08",
-   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three posts cross into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
+   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three crossings lead into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
   },
   {
    "id": "about.p5",
@@ -3929,7 +3929,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move takes a roll of one die, and a mistake pushes the Exposure count toward 10. At 10 Sosā's people stop you: questions the first time, house arrest the second, and the third time the run is over. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move takes a roll of one die, and a mistake pushes exposure toward 10. At 10, Sosā's people stop you. The first stop is questions, the second is a night at the station, and the third is house arrest. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
