@@ -998,35 +998,34 @@
   {
    "id": "daily.out",
    "pattern": "P14",
-   "text": "{name} got out {time}",
+   "text": "Escaped after {hours} hours, round {round}",
    "args": [
-    "name",
-    "time"
+    "hours",
+    "round"
    ]
   },
   {
    "id": "daily.clock",
    "pattern": "P14",
-   "text": "{name} ran out of time",
+   "text": "Ran out of time on round {round}",
    "args": [
-    "name"
+    "round"
    ]
   },
   {
    "id": "daily.deal",
    "pattern": "P14",
-   "text": "{name} took the deal",
+   "text": "Took the deal on round {round}",
    "args": [
-    "name"
+    "round"
    ]
   },
   {
    "id": "daily.arrest",
    "pattern": "P14",
-   "text": "{name} was put under house arrest in {place}",
+   "text": "Caught on round {round}",
    "args": [
-    "name",
-    "place"
+    "round"
    ]
   },
   {
@@ -1376,7 +1375,7 @@
   {
    "id": "daily.note",
    "pattern": "P08",
-   "text": "Same run for everyone. Can you get out?"
+   "text": "Can you get out?"
   },
   {
    "id": "share.copied",
@@ -4053,22 +4052,19 @@
   {
    "id": "daily.share",
    "pattern": "P14",
-   "text": "Coalition, {date}: {line}. {held} {round} rounds.\n{url}",
+   "text": "Coalition, {date}: {line}.\n{url}",
    "args": [
     "date",
     "line",
-    "held",
-    "round",
     "url"
    ]
   },
   {
    "id": "daily.landed",
    "pattern": "P14",
-   "text": "{name} landed in {city} and was held on the apron",
+   "text": "Held on landing, round {round}",
    "args": [
-    "name",
-    "city"
+    "round"
    ]
   },
   {

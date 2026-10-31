@@ -481,8 +481,8 @@ const UI = (() => {
   }
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
-  function outcomeLine(o) { const name = Data.CHARACTERS[who].short; return o.win ? T('daily.out', { name, time: apTime(s.hour) }) : o.kind === 'clock' ? T('daily.clock', { name }) : o.kind === 'deal' ? T('daily.deal', { name }) : o.kind === 'landed' ? T('daily.landed', { name, city: o.city }) : T('daily.arrest', { name, place: Data.LEVELS[s.pos].short }); }
-  function shareText() { const held = T(!s.holds ? 'daily.held_never' : s.holds === 1 ? 'daily.held_once' : s.holds === 2 ? 'daily.held_twice' : 'daily.held_many', { holds: s.holds }); return T('daily.share', { date: daily.label, line: outcomeLine(s.over), held, round, url: location.href.split('#')[0] }); }
+  function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
+  function shareText() { return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
