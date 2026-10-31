@@ -202,3 +202,50 @@ string to the code before writing it, and to flag what cannot be traced.
 **Checks:** content check 0 errors and 0 warnings; contract tests, both
 tutorials and pbbg-check pass; both calibrations are identical to before;
 both sides played to round three in the browser with no errors.
+
+## Final correction pass before merge
+
+Requested by the owner after reviewing PR #19.
+
+- **Old terms removed.** The government share text and the results lines no
+  longer say "checks" or "on her"; they say where your search was aimed
+  against the town she was in. "Commit" in the help and demo became "Try it",
+  matching the button. Demo steps name the real buttons ("Hire a plain car and
+  driver", "Search Santa Laura", "Duartē Albukerkē about the jet").
+- **AGENTS.md is consistent.** The difficulty note and the effect example no
+  longer use "exposure" as a player term, the "read it aloud" rule no longer
+  says to cut, and a new line says budgets never beat meaning. The README and
+  the pattern guide were updated to match.
+- **Arrangement and card terms traced and rewritten.**
+  - Aircraft is now "Jet", with steps "charter jet booked", "crew hired",
+    "fueled at Susana" and "ready to fly at Susana".
+  - Reception is now "Welcome in Esmeralda", with steps "Esmeralda expects you",
+    "Esmeralda's minister knows you are coming" and "Esmeraldan officials
+    waiting at a border post".
+  - Calls read "Call Duartē about the jet", "about your welcome in Esmeralda"
+    and "about your visa".
+  - "Passage card" is now "a way onto the freight", naming Holt's crate,
+    Theo's walk through the yard and Nonā Rosa's grandson.
+  - "Easier with" lists the actual cards that lower the roll instead of
+    internal card kinds, and card corners show a plain kind ("A way onto the
+    freight", "Political pull").
+- **Hang up.** "Finish with the phone" and "Finish at the desk" are now "Hang
+  up". One call already ended the phone step; one government request now ends
+  the desk step the same way, so the button only matters when the player
+  chooses not to call.
+- **Gameplay backlog.** `docs/design-issues.md` now opens with a prioritized
+  backlog in three tiers. One new item came from tracing the freight cards:
+  Nonā Rosa's grandson card is discarded on arrival at Salta, the only place it
+  works.
+- **Deployment.** The live site serves the current `main` build (build stamp
+  0f54d8c00c, matching commit 24d81a9), so the failing "Workers Builds" check
+  does not block deploys. Its logs need a Cloudflare dashboard login, which
+  this session does not have. The owner said not to pursue the previews.
+
+**Checks:** content check 0 errors and 0 warnings; contract tests, both
+tutorial replays and pbbg-check pass; the escape calibration output is
+identical to before this run and the government calibration is unchanged;
+both sides played to round three in the browser with no page errors. A
+click-through of the government demo in the browser stalls at the same step
+on `main` and on this branch, so it looks like a problem with the test
+harness rather than this change; it was not investigated further.

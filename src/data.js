@@ -43,11 +43,11 @@ const Data = (() => {
 
   // Continuing arrangements: ordered stages. A stage is a promise until the ally delivers.
   const ARRANGEMENTS = {
-    aircraft:   { name: 'Aircraft',    stages: ['none', 'charter found', 'crew confirmed', 'fueled at Susana', 'ready at Susana'],
+    aircraft:   { name: 'Jet',    stages: ['none', 'charter jet booked', 'crew hired', 'fueled at Susana', 'ready to fly at Susana'],
                   what: 'Call your sibling to find a charter, a crew, fuel and a place at Susana.' },
-    reception:  { name: 'Reception',   stages: ['none', 'Esmeralda expects you', 'minister informed', 'officials at the border'],
+    reception:  { name: 'Welcome in Esmeralda',   stages: ['none', 'Esmeralda expects you', "Esmeralda's minister knows you are coming", 'Esmeraldan officials waiting at a border post'],
                   what: "Baca has your name, and Vélez puts officials at the post to meet you." },
-    permission: { name: 'Entry visa',  stages: ['none', 'sponsor engaged', 'Entry visa issued'],
+    permission: { name: 'Entry visa',  stages: ['none', 'your sponsor has agreed to ask', 'entry visa issued'],
                   what: 'Your sponsor asks the ministry in the country you chose for a visa.' },
   };
 
@@ -147,7 +147,7 @@ const Data = (() => {
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
-          mods: { passage: 2 }, text: "Board between 10 p.m. and 5 a.m. with a passage card from Holt, Theo or Nonā Rosa's grandson.",
+          mods: { passage: 2 }, text: "Board between 10 p.m. and 5 a.m. with Holt's crate, Theo's walk through the yard or Nonā Rosa's grandson.",
           success: { say: 'The train pulls out at 12 past. Cold straw, then the sound of the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars. You miss the midnight and wait for the next.' } },
         { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,

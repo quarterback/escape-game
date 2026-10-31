@@ -227,22 +227,6 @@
    ]
   },
   {
-   "id": "action.uses_a",
-   "pattern": "P03",
-   "text": "a {tag} card",
-   "args": [
-    "tag"
-   ]
-  },
-  {
-   "id": "action.uses_an",
-   "pattern": "P03",
-   "text": "an {tag} card",
-   "args": [
-    "tag"
-   ]
-  },
-  {
    "id": "marker.night",
    "pattern": "P03",
    "text": "Night only"
@@ -298,12 +282,6 @@
    ]
   },
   {
-   "id": "phone.your_visa",
-   "pattern": "P01",
-   "text": "your visa",
-   "fragment": true
-  },
-  {
    "id": "action.call",
    "pattern": "P01",
    "text": "Call"
@@ -357,7 +335,7 @@
   {
    "id": "need.aircraft_ready",
    "pattern": "P05",
-   "text": "Aircraft ready"
+   "text": "The jet ready to fly at Susana"
   },
   {
    "id": "need.visa",
@@ -367,22 +345,22 @@
   {
    "id": "need.officials",
    "pattern": "P05",
-   "text": "Officials at the border"
+   "text": "Esmeraldan officials waiting at a border post"
   },
   {
    "id": "need.expects",
    "pattern": "P05",
-   "text": "Esmeralda expects you"
+   "text": "Esmeralda expecting you"
   },
   {
    "id": "need.crew",
    "pattern": "P05",
-   "text": "Crew confirmed"
+   "text": "A crew hired for the jet"
   },
   {
    "id": "need.charter",
    "pattern": "P05",
-   "text": "Charter found"
+   "text": "A charter jet booked"
   },
   {
    "id": "need.working",
@@ -418,8 +396,8 @@
   },
   {
    "id": "need.passage",
-   "pattern": "P05",
-   "text": "A passage card"
+   "pattern": "P04",
+   "text": "A way onto the freight"
   },
   {
    "id": "need.decoy",
@@ -433,8 +411,8 @@
   },
   {
    "id": "need.card",
-   "pattern": "P05",
-   "text": "A {tag} card",
+   "pattern": "P04",
+   "text": "A card of this kind: {tag}",
    "args": [
     "tag"
    ]
@@ -452,7 +430,7 @@
   {
    "id": "need.passage_from",
    "pattern": "P05",
-   "text": "Get one from Holt, Theo or Nonā Rosa's grandson"
+   "text": "Holt's crate, Theo's walk through the yard or Nonā Rosa's grandson gets you on"
   },
   {
    "id": "need.nobody",
@@ -743,13 +721,13 @@
   {
    "id": "phase.done_desk",
    "pattern": "P01",
-   "text": "Finish at the desk",
+   "text": "Hang up",
    "role": "gov"
   },
   {
    "id": "phase.done_phone",
    "pattern": "P01",
-   "text": "Finish with the phone"
+   "text": "Hang up"
   },
   {
    "id": "phase.see_came_in",
@@ -1454,7 +1432,7 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick a move under Here, read the odds, then tap **Commit**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move under Here, read the odds, then tap **Try it**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
   },
   {
    "id": "help.cards",
@@ -1658,7 +1636,7 @@
   {
    "id": "sim.end.a_car_meets_the_aircraft",
    "pattern": "P14",
-   "text": "A car meets the aircraft at {city}.",
+   "text": "A car meets the jet at {city}.",
    "args": [
     "city"
    ]
@@ -1696,7 +1674,7 @@
   {
    "id": "sim.inquiry.the_operator_withdraws_the_crew",
    "pattern": "P10",
-   "text": " The operator pulls the crew, and the aircraft drops back one stage."
+   "text": " The operator pulls the crew, and the jet drops back one step."
   },
   {
    "id": "sim.inquiry.nothing_new",
@@ -2059,7 +2037,7 @@
   {
    "id": "sim.preview.next_reply_in_hours_needs",
    "pattern": "P03",
-   "text": "{name} works on {stage} and answers in {k} hours, and it comes through on a roll of {turned} or better.",
+   "text": "{name} works on the next step, {stage}, and answers in {k} hours. It comes through on a roll of {turned} or better.",
    "args": [
     "stage",
     "k",
@@ -2070,7 +2048,7 @@
   {
    "id": "sim.label.call_about",
    "pattern": "P01",
-   "text": "Call {name} about the {what}",
+   "text": "Call {name} about {what}",
    "args": [
     "name",
     "what"
@@ -2161,7 +2139,7 @@
   {
    "id": "sim.effect.aircraft_preparations_stay_on_hold",
    "pattern": "P03",
-   "text": "Nothing changes, and the aircraft stays at its current stage."
+   "text": "Nothing changes, and the jet stays where it is in its preparations."
   },
   {
    "id": "sim.opt.ignore_it",
@@ -2223,7 +2201,7 @@
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
    "pattern": "P03",
-   "text": "Vélez pulls her officials, and reception drops back to \"Esmeralda expects you.\" You keep her card."
+   "text": "Vélez pulls her officials from the border post, and your welcome in Esmeralda drops back to \"Esmeralda expects you.\" You keep her card."
   },
   {
    "id": "sim.opt.refuse",
@@ -2291,7 +2269,7 @@
   {
    "id": "sim.effect.nothing_moves_until_you_call",
    "pattern": "P03",
-   "text": "Nothing moves until you call about reception again."
+   "text": "Nothing moves until you call about your welcome in Esmeralda again."
   },
   {
    "id": "sim.opt.wait",
@@ -2381,7 +2359,7 @@
   {
    "id": "sim.effect.crew_booking_waits_until_salek",
    "pattern": "P03",
-   "text": "The charter is found, and the crew waits until {sponsor} agrees to help with your visa.",
+   "text": "The charter jet is booked, and the crew waits until {sponsor} agrees to help with your visa.",
    "args": [
     "sponsor"
    ]
@@ -3167,8 +3145,7 @@
   {
    "id": "gov.report.an_aircraft_is_booked",
    "pattern": "P06",
-   "text": "An aircraft is booked.",
-   "role": "gov"
+   "text": "A jet is booked."
   },
   {
    "id": "gov.report.a_charter_to_layuna_is",
@@ -3481,7 +3458,7 @@
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Answer a message or make one call, then tap Finish with the phone."
+   "text": "Answer any messages first, then make your one call or tap Hang up; either one ends your time on the phone."
   },
   {
    "id": "hint.move",
@@ -3507,7 +3484,7 @@
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Answer the minister or send one request, then tap Finish at the desk.",
+   "text": "Answer the minister first, then send your one request or tap Hang up; either one ends your time at the desk.",
    "role": "gov"
   },
   {
@@ -3565,7 +3542,7 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The charter is found. Your next aircraft call can confirm the crew for {city}, and the visa is a separate request.",
+   "text": "The charter jet is booked. Your next call about the jet can hire a crew for {city}, and the visa is a separate request.",
    "args": [
     "city"
    ]
@@ -3573,7 +3550,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} picks the city for you on a roll of {need} or better. On a miss, you cannot call about the aircraft for six hours.",
+   "text": "{place} picks the city for you on a roll of {need} or better. On a miss, you cannot call about the jet for six hours.",
    "args": [
     "place",
     "need"
@@ -3953,7 +3930,7 @@
   {
    "id": "gov.debrief.k_decoy",
    "pattern": "P02",
-   "text": "Decoy",
+   "text": "A town a false report named",
    "role": "gov"
   },
   {
@@ -3978,13 +3955,13 @@
   {
    "id": "gov.debrief.m_never",
    "pattern": "P14",
-   "text": "You never had her: every check missed.",
+   "text": "Your search was never aimed at the town she was in.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.m_clean",
    "pattern": "P14",
-   "text": "You stayed on her the whole way.",
+   "text": "Your search was aimed at the town she was in every time you gave an order.",
    "role": "gov"
   },
   {
@@ -4016,13 +3993,13 @@
   {
    "id": "gov.debrief.m_decoy_one",
    "pattern": "P14",
-   "text": "A decoy from Nando cost you one check.",
+   "text": "Once, your search was aimed at a town a false report had named.",
    "role": "gov"
   },
   {
    "id": "gov.debrief.m_decoys",
    "pattern": "P14",
-   "text": "Nando's decoys cost you {n} checks.",
+   "text": "{n} times, your search was aimed at a town a false report had named.",
    "args": [
     "n"
    ],
@@ -4093,7 +4070,7 @@
   {
    "id": "gov.share",
    "pattern": "P14",
-   "text": "Coalition, ministry side. {result}.\n{grid}\nOn her in {on} of {total} checks.\n{url}",
+   "text": "Coalition, ministry side. {result}.\n{grid}\nYour search was aimed at the right town {on} of the {total} times you gave an order.\n{url}",
    "args": [
     "result",
     "grid",
@@ -4409,6 +4386,101 @@
    "args": [
     "signed"
    ]
+  },
+  {
+   "id": "arr.what_aircraft",
+   "pattern": "P08",
+   "text": "the jet"
+  },
+  {
+   "id": "arr.what_reception",
+   "pattern": "P08",
+   "text": "your welcome in Esmeralda"
+  },
+  {
+   "id": "arr.what_permission",
+   "pattern": "P08",
+   "text": "your visa"
+  },
+  {
+   "id": "tag.boat",
+   "pattern": "P02",
+   "text": "A boat"
+  },
+  {
+   "id": "tag.decoy",
+   "pattern": "P02",
+   "text": "Decoy cars"
+  },
+  {
+   "id": "tag.delay",
+   "pattern": "P02",
+   "text": "Delays the travel ban"
+  },
+  {
+   "id": "tag.document",
+   "pattern": "P02",
+   "text": "Travel papers"
+  },
+  {
+   "id": "tag.influence",
+   "pattern": "P02",
+   "text": "Political pull"
+  },
+  {
+   "id": "tag.information",
+   "pattern": "P02",
+   "text": "Inside information"
+  },
+  {
+   "id": "tag.introduction",
+   "pattern": "P02",
+   "text": "An introduction"
+  },
+  {
+   "id": "tag.operator",
+   "pattern": "P02",
+   "text": "Leverage on the charter operator"
+  },
+  {
+   "id": "tag.passage",
+   "pattern": "P02",
+   "text": "A way onto the freight"
+  },
+  {
+   "id": "tag.patrol",
+   "pattern": "P02",
+   "text": "Police patrol"
+  },
+  {
+   "id": "tag.permission",
+   "pattern": "P02",
+   "text": "Help with the visa"
+  },
+  {
+   "id": "tag.rail",
+   "pattern": "P02",
+   "text": "A rail yard contact"
+  },
+  {
+   "id": "tag.records",
+   "pattern": "P02",
+   "text": "Records access"
+  },
+  {
+   "id": "tag.vehicle",
+   "pattern": "P02",
+   "text": "A vehicle"
+  },
+  {
+   "id": "tag.watch",
+   "pattern": "P02",
+   "text": "The watch team"
+  },
+  {
+   "id": "arrangement.moves",
+   "pattern": "P10",
+   "text": "Your welcome in Esmeralda moves up one step"
   }
  ]
 }

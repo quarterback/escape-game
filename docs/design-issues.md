@@ -16,16 +16,44 @@ decisions are already applied.
 5. **The Jet marker sits at Susana before the plane is ready.**
 6. **Monday noon is not on the briefing.** Her passport is cancelled, the ban reaches every post and the first stop starts at the station.
 
-## Biggest problems the audit found
+## Gameplay backlog, in priority order
 
-- **Arrangement messages never appear.** `src/sim.js` compares against `s.arr[k].low`, which is never set, so every line in `STAGE_LINES` is skipped, including the only one that names the post where Esmeralda's officials wait.
-- **Climbing out of house arrest puts you back under house arrest.** The win adds 8 police attention to the reset value of 4; the next hour starts another third stop.
-- **The escape demo stays scripted after it ends.** Leftover dice and Sosā actions stay queued and `s.tutorial` stays set, so no police stops or news happen afterwards.
-- **Naming a town to the minister tells you whether she is there.** His reply differs, with no roll.
-- **"Call your contacts" at Nova Trentô can be repeated** and moves all three arrangements each time, with no ally, roll or check.
-- **"Help Nonā Rosa free the truck" leaves for Salta**, bypassing the "Esmeralda expects you" requirement.
-- **"Have Gianlūka ask for a delay" can never be chosen**: it needs a card tag no card has.
-- **Her police attention shows on the government side** in the round summary (the floating number is now hidden).
+Nothing here has been changed. Each item is a gameplay question for the owner.
+The copy pass only made the text describe what the code does today; where the
+code is wrong, the text now describes the wrong behavior honestly, and the fix
+belongs here.
+
+### Priority 1: the game breaks or contradicts itself
+
+1. **Arrangement messages never appear.** `src/sim.js` (stage function) compares against `s.arr[k].low`, which is never set, so every `STAGE_LINES` message is skipped, including the only one that names the border post where Esmeralda's officials wait. Likely fix: track the highest step reached and show the message the first time each step is reached.
+2. **Climbing out of house arrest returns you to house arrest.** The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
+3. **The escape demo stays scripted after it ends.** Leaving or finishing the demo keeps queued dice and Sosā actions and keeps `s.tutorial` set, so the rest of the run has no police stops and no news, and police attention stops at 9. The government demo clears its script; the escape demo does not.
+4. **Naming a town to the minister reveals her real position.** His reply differs depending on whether she is there, with no roll.
+5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta.
+6. **"Have Gianlūka ask for a delay" can never be chosen.** It needs a card kind no card has, and if it worked it would move the deadline 4 hours sooner while its line says the clerk grants two days.
+7. **"Call your contacts" at Nova Trentô can be repeated.** Each use moves all three arrangements one step with no ally, roll or check; twice on a Tarun run marks a visa as issued for a country that never agreed.
+8. **"Help Nonā Rosa free the truck" leaves for Salta on success**, which skips the "Esmeralda expects you" requirement on the road out.
+
+### Priority 2: names and labels promise something the rules do not do
+
+9. **The six open decisions above** (score measure, decoy cause, ban confirmation, the Esmeralda request, the Jet marker, Monday noon).
+10. **Following a report does not move the police.** It moves only where your next orders act; police attention on her rises only after an order that sends people there.
+11. **"Pay" moves cost nothing**, and "Lie low for an hour" is the same as waiting an hour.
+12. **Call previews show the wrong odds and hours.** They ignore the trust discount, the hour the call takes, the 2-hour delay after the family's "landed" story and Rāo's extra 6 hours.
+13. **Cards that do nothing.** The registry card can never be obtained ("Trace the call instead" is always disabled); the watch card and rail card lower no roll; minister standing only changes a results sentence.
+14. **Events that claim a block the rules do not apply.** The strike and blizzard texts describe a stopped freight and a closed post; neither is blocked. Several "leave" choices ("Slip out now", "Leave the car, take the river") do not move you.
+15. **Her police attention shows on the government side** in the round summary, and her jet's preparation step after a licence review. (The floating number is now hidden.)
+16. **The Esmeralda notices at Susana never clear** after Esmeralda agrees.
+
+### Priority 3: smaller mismatches
+
+17. The freight boards from 10 p.m. to 5 a.m., though the story says midnight.
+18. The vehicle bonus at Ālto Verdē can never apply; no vehicle card counts at the border.
+19. "A report held one day" never expires.
+20. Sponsor lines assume Salek ("her uncle, who banks with him"), and Sosā's Susana call says "your brother" for both characters.
+21. The Monday noon log line is fixed text, though summons and hearing events move the deadline.
+22. Ending epilogues are built but never shown (owner decision on endings), and the tutorial goal field is never displayed.
+23. Some player text is still built in `src/gov.js` instead of the catalog (report proof lines, "Needs {card}", age and odds fragments).
 
 ## Everything the audits recorded
 
