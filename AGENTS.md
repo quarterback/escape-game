@@ -40,8 +40,12 @@ that kept coming back and the rule for each.
   (terms, a price, a condition).
 - No false titles: never "Banker Amādū Salek". The name, then what they are in its
   own clause or sentence.
-- No couplets: a second sentence that restates or explains the first is cut. The
-  content check (C15) fails the build on a two-sentence interface string.
+- No couplets: a second sentence that restates the first is cut, and the content
+  check (C15) fails the build on one in a label, status or result. A second sentence
+  that adds a FACT stays, above all in an effect line. Owner, October 31, 2026, on
+  "The jet is back, but people notice": "What are you trying to say? Tell me." The
+  effect has to say what happens and why: "The crew comes back and the jet is ready
+  again, but paying them on the apron gets you seen, and your exposure rises by one."
 - No label-and-value rows ("Who asks", "The catch", "News waiting: …"). Write the
   sentence.
 - AP style: figures from 10, words below; "2 p.m.", "noon", "midnight"; "Sept.",

@@ -2198,7 +2198,7 @@
   {
    "id": "sim.effect.aircraft_preparations_stay_on_hold",
    "pattern": "P03",
-   "text": "The jet stays on hold"
+   "text": "The jet stays grounded until you deal with it."
   },
   {
    "id": "sim.opt.ignore_it",
@@ -2208,7 +2208,7 @@
   {
    "id": "sim.effect.requires_v_lez_s_card",
    "pattern": "P03",
-   "text": "Needs Vélez’s card, and the jet is back without a stir"
+   "text": "Needs Vélez's card. She calls the operator, the crew comes back, and nobody sees a thing."
   },
   {
    "id": "sim.opt.have_v_lez_call_the",
@@ -2218,7 +2218,7 @@
   {
    "id": "sim.effect.restores_the_aircraft_to_ready",
    "pattern": "P03",
-   "text": "The jet is back, but people notice"
+   "text": "The crew comes back and the jet is ready again, but paying them on the apron gets you seen, and your exposure rises by one."
   },
   {
    "id": "sim.opt.pay_the_crew_bonus",
@@ -2228,13 +2228,13 @@
   {
    "id": "sim.line.your_ministry_threatened_the_operator",
    "pattern": "P07",
-   "text": "\"Your ministry threatened the operator’s license. He wants Esmeraldan backing or a crew bonus.\"",
+   "text": "\"Valdória's ministry threatened the operator's license, so he has pulled the crew. He will fly if Esmeralda backs him, or if the crew gets a bonus.\"",
    "speaker": "pilot"
   },
   {
    "id": "sim.effect.nothing_changes",
    "pattern": "P03",
-   "text": "Nothing changes."
+   "text": "Nothing changes, and the story stays on the radio."
   },
   {
    "id": "sim.opt.hang_up",
@@ -2244,7 +2244,7 @@
   {
    "id": "sim.effect.an_hour_on_the_phone",
    "pattern": "P03",
-   "text": "An hour on the phone, and he skips his next move"
+   "text": "You keep Sosā on the line for an hour, and he skips his next move because he thinks you are wavering."
   },
   {
    "id": "sim.opt.keep_him_talking",
@@ -2260,7 +2260,7 @@
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
    "pattern": "P03",
-   "text": "Vélez pulls her people from the post, but her card still opens the tower"
+   "text": "Vélez pulls her officials from the post. Her card still opens the tower at Susana."
   },
   {
    "id": "sim.opt.refuse",
@@ -2270,7 +2270,7 @@
   {
    "id": "sim.effect.reception_stands_the_party_at",
    "pattern": "P03",
-   "text": "Reception holds, but the party at home will read it"
+   "text": "Your people at the post stay arranged. The party at home reads the statement."
   },
   {
    "id": "sim.opt.say_it",
@@ -2280,7 +2280,7 @@
   {
    "id": "sim.line.before_my_people_meet_you",
    "pattern": "P07",
-   "text": "\"Before my people meet you: you will say, on the record, that Esmeralda receives you as a guest. Not a government.\"",
+   "text": "\"Before my people meet you at the post, you will say, on the record, that Esmeralda receives you as a guest and not as a government. Agreed?\"",
    "speaker": "official"
   },
   {
@@ -2291,7 +2291,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you and his informant keeps talking"
+   "text": "Gianlūka stays with you, and his friend inside the inquiry keeps telling you where Sosā is looking."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2301,7 +2301,7 @@
   {
    "id": "sim.line.the_party_meets_tonight_send",
    "pattern": "P07",
-   "text": "\"The party meets tonight. Send your endorsement before midnight. You gave your word.\"",
+   "text": "\"The party meets tonight, and you gave your word. Send your endorsement before midnight.\"",
    "speaker": "aide"
   },
   {
@@ -2312,7 +2312,7 @@
   {
    "id": "sim.effect.nothing_changes_you_know_the",
    "pattern": "P03",
-   "text": "Nothing changes"
+   "text": "You board at midnight as planned, with the men still at the gate."
   },
   {
    "id": "sim.opt.midnight_it_is",
@@ -2328,7 +2328,7 @@
   {
    "id": "sim.effect.nothing_moves_until_you_call",
    "pattern": "P03",
-   "text": "Nothing moves until you call her yourself"
+   "text": "Nothing moves until you call her yourself."
   },
   {
    "id": "sim.opt.wait",
@@ -2346,12 +2346,15 @@
   {
    "id": "sim.effect.try_again_in_six_hours",
    "pattern": "P03",
-   "text": "Six hours, and your sibling tries again"
+   "text": "{sib} tries again in six hours, on a roll.",
+   "args": [
+    "sib"
+   ]
   },
   {
    "id": "sim.line.v_lez_is_not_answering",
    "pattern": "P07",
-   "text": "\"Vélez is not answering. I can try again, or ask {sponsor} to reach her uncle.\"",
+   "text": "\"Vélez is not picking up. I can keep trying, or {sponsor} could reach her uncle, who banks with him.\"",
    "args": [
     "sponsor"
    ],
@@ -2360,7 +2363,7 @@
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "You lose {sponsor} and the visa, but you can still fly without one",
+   "text": "{sponsor} hangs up for good. No visa will come, and you can still fly without one and take your chances on landing.",
    "args": [
     "sponsor"
    ]
@@ -2368,7 +2371,10 @@
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
    "pattern": "P03",
-   "text": "The visa waits 12 hours"
+   "text": "{sponsor} keeps the line open, but the visa waits another 12 hours.",
+   "args": [
+    "sponsor"
+   ]
   },
   {
    "id": "sim.opt.ask_for_a_week",
@@ -2378,7 +2384,7 @@
   {
    "id": "sim.effect.sends_them_to_the_house",
    "pattern": "P03",
-   "text": "They go to the house you just left, which buys less time but costs nothing later"
+   "text": "Sosā sends the patrol to the house you just left. It keeps him off you for less time, but costs nothing later."
   },
   {
    "id": "sim.opt.deny_it_you_are_at",
@@ -2388,7 +2394,7 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "Sosā believes the coast, until a friend turns and the lie costs you"
+   "text": "Sosā believes you are on the coast and searches there. If any friend later talks, the lie costs you three exposure instead of two."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
@@ -2398,7 +2404,7 @@
   {
    "id": "sim.line.radi_port_venla_we_hear",
    "pattern": "P07",
-   "text": "\"Rādiô Portô Venla. We hear you are on a yacht off the coast. Can you confirm?\"",
+   "text": "\"Rādiô Portô Venla here. We hear you are on a yacht off the coast. Can you confirm that?\"",
    "speaker": "press"
   },
   {
@@ -2412,7 +2418,7 @@
   {
    "id": "sim.effect.crew_booking_waits_until_salek",
    "pattern": "P03",
-   "text": "The crew waits until {sponsor} is in",
+   "text": "The crew does nothing until {sponsor} has taken your call.",
    "args": [
     "sponsor"
    ]
@@ -2428,7 +2434,7 @@
   {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"I found a jet, and it will be at Susana, but the crew will not book without a city. Do I give them one, or wait for the visa?\"",
+   "text": "\"I found a jet. It will be at Susana, but the crew will not book the flight until I give them a city. Do I tell them, or do we wait for the visa to come through?\"",
    "speaker": "sibling"
   },
   {
@@ -3735,13 +3741,17 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The crew can book, but there is no visa yet"
+   "text": "The crew books the flight to {city} now. You still have no visa for it, so if none comes you land with nothing.",
+   "args": [
+    "city"
+   ]
   },
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "Needs a {need} or better, or you lose six hours",
+   "text": "{place} picks for you on a roll of {need} or better. A miss costs six hours of waiting.",
    "args": [
+    "place",
     "need"
    ]
   },
@@ -3864,8 +3874,8 @@
   },
   {
    "id": "sim.effect.requires_sponsor_help",
-   "pattern": "P08",
-   "text": "Needs {sponsor}’s help. Confirms reception. You owe another favor.",
+   "pattern": "P03",
+   "text": "{sponsor} reaches her uncle, which confirms that Esmeralda expects you. It costs you another favor with {sponsor}.",
    "args": [
     "sponsor"
    ]
@@ -4111,6 +4121,16 @@
    "args": [
     "time"
    ]
+  },
+  {
+   "id": "sim.effect.decoy_at_the_yard",
+   "pattern": "P03",
+   "text": "Needs the decoy card. Nando drives the sedan past the gate and the men follow it, and your exposure drops by two."
+  },
+  {
+   "id": "sim.effect.break_word",
+   "pattern": "P03",
+   "text": "You lose every card Gianlūka gave you, and he tells the inquiry where you are, so your exposure rises by two."
   }
  ]
 }

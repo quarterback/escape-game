@@ -100,3 +100,7 @@ The repository already had the rules (AGENTS.md pointed at Humanizer and plain l
 - Owner reads the demo end to end on a phone. Any line that reads as a manual gets rewritten from nothing, not trimmed.
 - The next agent reads "Write microcopy like a person talks" in AGENTS.md before writing a single string, and writes the draft in that register rather than checking it afterward.
 - When a line matters, show it to the owner before it ships.
+
+## Addendum, same day: detail is not a couplet
+
+Owner, on the effect line "The jet is back, but people notice": "What are you trying to say? Tell me and I'll fix." Then, on my plain-English answer: "This is the kind of detail the user needs, not your annoying couplets." The one-sentence rule had cut the facts out of the effect lines along with the restatements. Every phone message now states the situation (who did what, and what it means for you) and every option's effect line says what happens and why: "The crew comes back and the jet is ready again, but paying them on the apron gets you seen, and your exposure rises by one." Nine messages, 27 effect lines, three sponsor demands. Two effect literals that had lived in `sim.js` moved into the catalog. C15 no longer covers effects and previews (P03); AGENTS.md says why. Calibration unchanged.

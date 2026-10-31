@@ -91,9 +91,9 @@ const Sim = (() => {
     // scripted arrivals: what the phone brings at each level
     if (s.pos === 0 && first) {
       msg(s, events, 'sibling', T('sim.line.jet_found_in_susana_the'), [
-        { id: 'confirm_dest', label: T('sim.opt.confirm_destination', { city: dest(s).city }), hours: 0, effect: T('sim.effect.crew_booking_can_proceed', { name: dest(s).name }) },
+        { id: 'confirm_dest', label: T('sim.opt.confirm_destination', { city: dest(s).city }), hours: 0, effect: T('sim.effect.crew_booking_can_proceed', { city: dest(s).city }) },
         { id: 'wait_sponsor', label: T('sim.opt.wait_until_salek_answers', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.crew_booking_waits_until_salek', { sponsor: sponsor(s).short }) },
-        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: D.PEOPLE.sibling.reliability }) },
+        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: D.PEOPLE.sibling.reliability, place: ch(s).sibling.short }) },
       ]);
     }
     if (s.pos === 1) {
@@ -114,7 +114,7 @@ const Sim = (() => {
     }
     if (s.pos === 2 && s.arr.reception.stage === 1) {
       msg(s, events, 'sibling', T('sim.line.v_lez_is_not_answering', { sponsor: sponsor(s).short }), [
-        { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: T('sim.effect.try_again_in_six_hours') },
+        { id: 'keep_calling', label: `${ch(s).sibling.short} keeps calling`, hours: 0, effect: T('sim.effect.try_again_in_six_hours', { sib: ch(s).sibling.short }) },
         { id: 'via_sponsor', label: T('sim.opt.ask_salek_to_reach_the', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.requires_sponsor_help', { sponsor: sponsor(s).short }) },
         { id: 'wait_velez', label: T('sim.opt.wait'), hours: 0, effect: T('sim.effect.nothing_moves_until_you_call') },
       ]);
@@ -122,12 +122,12 @@ const Sim = (() => {
     if (s.pos === 3) {
       msg(s, events, 'holt', T('sim.line.two_men_in_a_car'), [
         { id: 'go_midnight', label: T('sim.opt.midnight_it_is'), hours: 0, effect: T('sim.effect.nothing_changes_you_know_the') },
-        { id: 'send_decoy_yard', label: T('sim.opt.send_nando_past_the_gate'), hours: 0, effect: 'Needs the decoy card. The men follow the sedan; exposure drops.' },
+        { id: 'send_decoy_yard', label: T('sim.opt.send_nando_past_the_gate'), hours: 0, effect: T('sim.effect.decoy_at_the_yard') },
       ]);
       const c = s.commitments.find(x => x.to === 'aide' && x.kept === null);
       if (c) msg(s, events, 'aide', T('sim.line.the_party_meets_tonight_send'), [
         { id: 'keep_word', label: T('sim.opt.send_the_statement'), hours: 1, effect: T('sim.effect.keep_gianluka_s_support_and') },
-        { id: 'break_word', label: T('sim.opt.put_him_off'), hours: 0, effect: 'Lose Gianlūka’s cards. He reveals your location; exposure rises.' },
+        { id: 'break_word', label: T('sim.opt.put_him_off'), hours: 0, effect: T('sim.effect.break_word') },
       ]);
     }
     if (s.pos === 4 && s.commitments.some(x => x.to === 'official')) {
