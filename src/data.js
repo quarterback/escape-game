@@ -477,7 +477,7 @@ const Data = (() => {
   const RUMORS = [
     (n) => `Someone saw ${n} talking to a police car.`,
     (n) => `${n} asked twice which car you will take.`,
-    (n) => `${n} paid off a debt this morning. In cash.`,
+    (n) => `${n} paid off a debt this morning, in cash.`,
   ];
   return { DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();

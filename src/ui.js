@@ -14,7 +14,7 @@ const UI = (() => {
   const $ = (id) => document.getElementById(id);
   const T = Content.t, H = Content.html; // all player-facing wording comes from content/coalition/ui.json
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
-  const short = (h) => { const [d, t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t}`; };
+  const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
@@ -89,7 +89,7 @@ const UI = (() => {
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
     const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
-    $('clock').textContent = short(s.hour); $('left').textContent = `${hoursLeft} h`; $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
+    $('clock').textContent = short(s.hour); $('left').textContent = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: hoursLeft }); $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
     const L = Data.LEVELS[s.pos];
     if (gov) {
       const v = Gov.view(gov);
@@ -107,7 +107,7 @@ const UI = (() => {
     $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
     $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: Data.LEVELS[s.belief].short.toLowerCase() === Data.LEVELS[s.belief].short ? Data.LEVELS[s.belief].short : 'the ' + Data.LEVELS[s.belief].short.toLowerCase() });
     $('sosa-nextl').textContent = T('scene.next_move');
-    $('sosa-next').textContent = T('scene.next_in', { hours: Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)) });
+    { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: n }); }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: s.hold }) : T('scene.held_at');
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = ''; $('heat2').hidden = false;
@@ -473,12 +473,7 @@ const UI = (() => {
     return { key, seed: h >>> 0, who: (h >>> 0) % 2 ? 'man' : 'woman', label: `${AP_MONTHS[d.getMonth()]} ${d.getDate()}` };
   }
   const AP_MONTHS = T('daily.months').split('|'); // AP abbreviations, from the catalog
-  // AP style for a clock reading: "Monday at 9 a.m.", "Sunday at noon", "Saturday at 11 p.m."
-  function apTime(h) {
-    const [day, t] = Sim.clockText(h).split(' '); const hr = parseInt(t, 10);
-    const when = hr === 0 ? T('daily.midnight') : hr === 12 ? T('daily.noon') : `${hr % 12} ${hr < 12 ? 'a.m.' : 'p.m.'}`;
-    return T('daily.at', { day, when });
-  }
+  const apTime = (h) => T('daily.at', { when: Sim.clockText(h) });
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }

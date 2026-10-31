@@ -122,7 +122,7 @@
   {
    "id": "scene.out_by",
    "pattern": "P08",
-   "text": "Out by"
+   "text": "out by"
   },
   {
    "id": "scene.sosa_here",
@@ -161,7 +161,7 @@
   {
    "id": "scene.next_in",
    "pattern": "P05",
-   "text": "in {hours} h",
+   "text": "in {hours} hours",
    "args": [
     "hours"
    ]
@@ -177,7 +177,7 @@
   {
    "id": "scene.held_at",
    "pattern": "P05",
-   "text": "At 10 you are held."
+   "text": "Held at 10"
   },
   {
    "id": "scene.exposure",
@@ -1445,7 +1445,7 @@
   {
    "id": "scene.left",
    "pattern": "P05",
-   "text": "left."
+   "text": "left,"
   },
   {
    "id": "scene.goal_label",
@@ -1996,27 +1996,25 @@
   {
    "id": "sim.opt.cut_them_off",
    "pattern": "P01",
-   "text": "Cut them off"
+   "text": "Cut {first} off",
+   "args": [
+    "first"
+   ]
   },
   {
    "id": "sim.opt.test_them_quietly",
    "pattern": "P01",
-   "text": "Test them quietly"
+   "text": "Test {first} quietly",
+   "args": [
+    "first"
+   ]
   },
   {
    "id": "sim.opt.keep_trusting",
    "pattern": "P01",
-   "text": "Keep trusting {split}",
+   "text": "Trust {split}",
    "args": [
     "split"
-   ]
-  },
-  {
-   "id": "sim.title.a_rumor_about",
-   "pattern": "P10",
-   "text": "A rumor about {first}",
-   "args": [
-    "first"
    ]
   },
   {
@@ -4064,26 +4062,43 @@
   {
    "id": "daily.at",
    "pattern": "P14",
-   "text": "{day} at {when}",
+   "text": "{when}",
    "args": [
-    "day",
     "when"
    ]
-  },
-  {
-   "id": "daily.noon",
-   "pattern": "P14",
-   "text": "noon"
-  },
-  {
-   "id": "daily.midnight",
-   "pattern": "P14",
-   "text": "midnight"
   },
   {
    "id": "daily.months",
    "pattern": "P14",
    "text": "Jan.|Feb.|March|April|May|June|July|Aug.|Sept.|Oct.|Nov.|Dec."
+  },
+  {
+   "id": "sim.time.noon",
+   "pattern": "P05",
+   "text": "noon"
+  },
+  {
+   "id": "sim.time.midnight",
+   "pattern": "P05",
+   "text": "midnight"
+  },
+  {
+   "id": "scene.hours",
+   "pattern": "P05",
+   "text": "{n} hours",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "scene.hours_one",
+   "pattern": "P05",
+   "text": "1 hour"
+  },
+  {
+   "id": "scene.next_in_one",
+   "pattern": "P05",
+   "text": "in 1 hour"
   }
  ]
 }
