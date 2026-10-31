@@ -453,9 +453,11 @@ const Data = (() => {
       { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
     { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 }] /* before hour 30 */, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
-      { id: 'noted', label: 'Keep going', fx: { deadline: -10 } } ] },
+      { id: 'noted', label: 'Keep going', fx: { deadline: -10 } },
+      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'aide_word' }], fx: { deadline: -4, trust: { aide: -1 }, exposure: 1, say: 'The clerk grants two days. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
     { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios and the inquiry go quiet.', choices: [
-      { id: 'dark', label: 'Use the dark', fx: { exposure: -1, skipEnemy: true } } ] },
+      { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
+      { id: 'sit', label: 'Sit tight till the lights return', fx: { hours: 2, exposure: -1, say: 'Two hours in the dark. Nobody comes to the door.' } } ] },
   ];
   // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
   const HOLDS = {
@@ -475,7 +477,7 @@ const Data = (() => {
   const RUMORS = [
     (n) => `Someone saw ${n} talking to a police car.`,
     (n) => `${n} asked twice which car you will take.`,
-    (n) => `${n} paid off a debt this morning. In cash.`,
+    (n) => `${n} paid off a debt this morning, in cash.`,
   ];
   return { DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();

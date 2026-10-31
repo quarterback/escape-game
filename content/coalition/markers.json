@@ -1,47 +1,265 @@
 {
-  "contract": "coalition-content/0.5",
-  "about": "Wording for effect markers. Rules decide which marker appears and its arguments; this file decides the words. Both sides share one table.",
-  "markers": [
-    { "code": "roll.need", "pattern": "P03", "text": "Roll {need}+", "args": ["need"] },
-    { "code": "roll.win", "pattern": "P03", "text": "Win: {list}", "args": ["list"] },
-    { "code": "roll.fail", "pattern": "P03", "text": "Fail: {list}", "args": ["list"] },
-    { "code": "time.hours", "pattern": "P03", "text": "{hours} h", "args": ["hours"] },
-    { "code": "exposure.change", "pattern": "P03", "text": "Exposure {signed}", "args": ["signed"] },
-    { "code": "search.elsewhere", "pattern": "P03", "text": "Sosā looks elsewhere" },
-    { "code": "search.finds", "pattern": "P03", "text": "Sosā finds you" },
-    { "code": "search.loses_move", "pattern": "P03", "text": "Sosā loses a move" },
-    { "code": "search.at", "pattern": "P03", "text": "Search {place}", "args": ["place"] },
-    { "code": "card.gain", "pattern": "P03", "text": "Card: {card}", "args": ["card"] },
-    { "code": "card.lose_any", "pattern": "P03", "text": "Lose a card" },
-    { "code": "card.lose", "pattern": "P03", "text": "Lose: {card}", "args": ["card"] },
-    { "code": "trust.more", "pattern": "P03", "text": "{person} trusts you more", "args": ["person"] },
-    { "code": "trust.less", "pattern": "P03", "text": "{person} trusts you less", "args": ["person"] },
-    { "code": "trust.rely", "pattern": "P03", "text": "Rely on {person}", "args": ["person"] },
-    { "code": "trust.cut", "pattern": "P03", "text": "Cut off {person}", "args": ["person"] },
-    { "code": "trust.test", "pattern": "P03", "text": "Learn the truth" },
-    { "code": "arrangement.moves", "pattern": "P03", "text": "Reception moves" },
-    { "code": "deadline.sooner", "pattern": "P03", "text": "Deadline sooner" },
-    { "code": "deadline.later", "pattern": "P03", "text": "Deadline later" },
-    { "code": "rolls.easier", "pattern": "P03", "text": "Rolls here easier" },
-    { "code": "rolls.harder", "pattern": "P03", "text": "Rolls here harder" },
-    { "code": "hold.climb", "pattern": "P03", "text": "Held" },
-    { "code": "route.advance", "pattern": "P03", "text": "Reach the next stop" },
-    { "code": "run.ends", "pattern": "P03", "text": "Ends the run" },
-    { "code": "allies.slower", "pattern": "P03", "text": "Allies slower" },
-    { "code": "lead.real_in", "pattern": "P03", "text": "A real lead in {hours} h", "args": ["hours"] },
-    { "code": "lead.real_now", "pattern": "P03", "text": "A real lead now" },
-    { "code": "lead.false", "pattern": "P03", "text": "A false lead" },
-    { "code": "her.exposed", "pattern": "P03", "text": "Harder for her to hide" },
-    { "code": "her.warned", "pattern": "P03", "text": "Her side is warned" },
-    { "code": "her.slips", "pattern": "P03", "text": "Her plans slip {hours} h", "args": ["hours"] },
-    { "code": "line.harder", "pattern": "P03", "text": "Line harder to cross for {hours} h", "args": ["hours"] },
-    { "code": "ban.confirmed", "pattern": "P03", "text": "Ban confirmed at the post" },
-    { "code": "ban.lost", "pattern": "P03", "text": "Post loses the ban" },
-    { "code": "hold.esmeralda_moves", "pattern": "P03", "text": "Esmeralda moves on your hold" },
-    { "code": "orders.easier", "pattern": "P03", "text": "Orders easier for {hours} h", "args": ["hours"] },
-    { "code": "orders.harder", "pattern": "P03", "text": "Orders harder for {hours} h", "args": ["hours"] },
-    { "code": "minister.pleased", "pattern": "P03", "text": "Minister pleased" },
-    { "code": "minister.angry", "pattern": "P03", "text": "Minister angry" },
-    { "code": "minister.sooner", "pattern": "P03", "text": "Minister wants it {hours} h sooner", "args": ["hours"] }
-  ]
+ "contract": "coalition-content/0.5",
+ "about": "Wording for effect markers. Rules decide which marker appears and its arguments; this file decides the words. Both sides share one table.",
+ "markers": [
+  {
+   "code": "roll.need",
+   "pattern": "P03",
+   "text": "Roll {need}+",
+   "args": [
+    "need"
+   ]
+  },
+  {
+   "code": "roll.win",
+   "pattern": "P03",
+   "text": "Win: {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "code": "roll.fail",
+   "pattern": "P03",
+   "text": "Fail: {list}",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "code": "time.hours",
+   "pattern": "P03",
+   "text": "{hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "exposure.change",
+   "pattern": "P03",
+   "text": "Exposure {signed}",
+   "args": [
+    "signed"
+   ]
+  },
+  {
+   "code": "search.elsewhere",
+   "pattern": "P03",
+   "text": "Sosā looks elsewhere"
+  },
+  {
+   "code": "search.finds",
+   "pattern": "P03",
+   "text": "Sosā finds you"
+  },
+  {
+   "code": "search.loses_move",
+   "pattern": "P03",
+   "text": "Sosā loses a move"
+  },
+  {
+   "code": "search.at",
+   "pattern": "P03",
+   "text": "Search {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "code": "card.gain",
+   "pattern": "P03",
+   "text": "Card: {card}",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "code": "card.lose_any",
+   "pattern": "P03",
+   "text": "Lose a card"
+  },
+  {
+   "code": "card.lose",
+   "pattern": "P03",
+   "text": "Lose: {card}",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "code": "trust.more",
+   "pattern": "P03",
+   "text": "{person} trusts you more",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "code": "trust.less",
+   "pattern": "P03",
+   "text": "{person} trusts you less",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "code": "trust.rely",
+   "pattern": "P03",
+   "text": "Keeps {person}'s help",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "code": "trust.cut",
+   "pattern": "P03",
+   "text": "Loses {person}'s help",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "code": "trust.test",
+   "pattern": "P03",
+   "text": "Learn the truth"
+  },
+  {
+   "code": "arrangement.moves",
+   "pattern": "P03",
+   "text": "Reception moves"
+  },
+  {
+   "code": "deadline.sooner",
+   "pattern": "P03",
+   "text": "Deadline sooner"
+  },
+  {
+   "code": "deadline.later",
+   "pattern": "P03",
+   "text": "Deadline later"
+  },
+  {
+   "code": "rolls.easier",
+   "pattern": "P03",
+   "text": "Rolls here easier"
+  },
+  {
+   "code": "rolls.harder",
+   "pattern": "P03",
+   "text": "Rolls here harder"
+  },
+  {
+   "code": "hold.climb",
+   "pattern": "P03",
+   "text": "Held"
+  },
+  {
+   "code": "route.advance",
+   "pattern": "P03",
+   "text": "Reach the next stop"
+  },
+  {
+   "code": "run.ends",
+   "pattern": "P03",
+   "text": "Ends the run"
+  },
+  {
+   "code": "allies.slower",
+   "pattern": "P03",
+   "text": "Allies slower"
+  },
+  {
+   "code": "lead.real_in",
+   "pattern": "P03",
+   "text": "A real lead in {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "lead.real_now",
+   "pattern": "P03",
+   "text": "A real lead now"
+  },
+  {
+   "code": "lead.false",
+   "pattern": "P03",
+   "text": "A false lead"
+  },
+  {
+   "code": "her.exposed",
+   "pattern": "P03",
+   "text": "Harder for her to hide"
+  },
+  {
+   "code": "her.warned",
+   "pattern": "P03",
+   "text": "Her side is warned"
+  },
+  {
+   "code": "her.slips",
+   "pattern": "P03",
+   "text": "Her plans slip {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "line.harder",
+   "pattern": "P03",
+   "text": "Line harder to cross for {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "ban.confirmed",
+   "pattern": "P03",
+   "text": "Ban confirmed at the post"
+  },
+  {
+   "code": "ban.lost",
+   "pattern": "P03",
+   "text": "Post loses the ban"
+  },
+  {
+   "code": "hold.esmeralda_moves",
+   "pattern": "P03",
+   "text": "Esmeralda moves on your hold"
+  },
+  {
+   "code": "orders.easier",
+   "pattern": "P03",
+   "text": "Orders easier for {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "orders.harder",
+   "pattern": "P03",
+   "text": "Orders harder for {hours} h",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "minister.pleased",
+   "pattern": "P03",
+   "text": "Minister pleased"
+  },
+  {
+   "code": "minister.angry",
+   "pattern": "P03",
+   "text": "Minister angry"
+  },
+  {
+   "code": "minister.sooner",
+   "pattern": "P03",
+   "text": "Minister wants it {hours} h sooner",
+   "args": [
+    "hours"
+   ]
+  }
+ ]
 }

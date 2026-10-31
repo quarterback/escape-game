@@ -66,7 +66,8 @@ const Sim = (() => {
   const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * 6);
   function clockText(h) {
     const t = START_HOUR + h, day = [T('sim.day.saturday'), T('sim.day.sunday'), T('sim.day.monday'), T('sim.day.tuesday'), T('sim.day.wednesday')][Math.floor(t / 24)];
-    return `${day} ${String(t % 24).padStart(2, '0')}:00`;
+    const hr = t % 24, when = hr === 0 ? T('sim.time.midnight') : hr === 12 ? T('sim.time.noon') : `${hr % 12} ${hr < 12 ? 'a.m.' : 'p.m.'}`;
+    return `${day} ${when}`;
   }
   const level = (s) => D.LEVELS[s.pos];
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
@@ -293,10 +294,10 @@ const Sim = (() => {
     const e = s.event; if (!e) return null;
     let def, kind = e.kind;
     if (kind === 'hold') def = D.HOLDS[e.rung];
-    else if (kind === 'rumor') { const n = personName(s, e.who); def = { title: T('sim.title.a_rumor_about', { first: n.split(' ')[0] }), text: D.RUMORS[e.line](n), choices: [
-      { id: 'trust', label: T('sim.opt.keep_trusting', { split: n.split(' ')[0] }), fx: { doubt: e.who } },
-      { id: 'test', label: T('sim.opt.test_them_quietly'), fx: { hours: 2, test: e.who } },
-      { id: 'cut', label: T('sim.opt.cut_them_off'), fx: { cut: e.who } } ] }; }
+    else if (kind === 'rumor') { const n = personName(s, e.who); const first = n.split(' ')[0]; def = { title: n, text: D.RUMORS[e.line](first), choices: [
+      { id: 'trust', label: T('sim.opt.keep_trusting', { split: first }), fx: { doubt: e.who } },
+      { id: 'test', label: T('sim.opt.test_them_quietly', { first }), fx: { hours: 2, test: e.who } },
+      { id: 'cut', label: T('sim.opt.cut_them_off', { first }), fx: { cut: e.who } } ] }; }
     else def = D.EVENTS.find(x => x.id === e.id);
     return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, tags: fxTags(s, c.fx) }; }) };
   }

@@ -148,6 +148,14 @@ function check(pkg) {
     if (x.pattern === 'P13' && x.field === 'body') { const n = (x.text.match(/\b(Choose|Select|Press|Call|Tap)\b/g) || []).length; if (n > pol.budgets.P13.maxInstructions + 1) add('C13', 'warn', x.file, x.id, x.field, `${pol.budgets.P13.maxInstructions} instruction per step`, `${n} instructions`, 'Split the step or cut an instruction.'); }
   }
 
+  // C15: interface strings are one sentence (owner rule 2026-10-31, policy.budgets.interface)
+  if (pol.budgets.interface) {
+    const b = pol.budgets.interface, count = (t) => t.replace(/\{\w+\}/g, 'X').replace(/\n/g, ' ').trim().split(/(?<=[.!?])\s+/).filter(Boolean).length;
+    for (const e of pkg.ui.entries) {
+      const covered = b.patterns.includes(e.pattern) || (b.idPrefixes || []).some(p => e.id.startsWith(p));
+      if (covered && count(e.text) > b.maxSentences) add('C15', b.severity === 'warn' ? 'warning' : 'error', P + 'ui.json', e.id, 'text', 'one sentence', `${count(e.text)} sentences`, 'Cut the second sentence or fold it into the first.');
+    }
+  }
   // C13: objectives stay short (owner's budget in policy.budgets.P08)
   { const b = pol.budgets.P08, objs = D.LEVELS.map(L => ({ file: 'src/data.js', id: `level.${L.id}`, text: L.objective })).concat(pkg.ui.entries.filter(e => e.note === 'objective').map(e => ({ file: P + 'ui.json', id: e.id, text: e.text })));
     for (const o of objs) { const w = o.text.split(/\s+/).length, s = (o.text.match(/[.!?](\s|$)/g) || []).length;
