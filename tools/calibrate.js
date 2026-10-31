@@ -10,7 +10,7 @@ const N = parseInt(process.argv[2], 10) || 300;
 const DEST = (process.argv.find(a => a.startsWith('--dest=')) || '--dest=atlanta').slice(7); // which country the policy flies to
 const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0 };
 function play(seed, who) {
-  const s = Sim.newRun(seed, who, { dest: DEST }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
+  const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily') }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 800) {
     const A = Sim.actions(s);
     // dispatches and holds come first; take the choice whose markers look cheapest

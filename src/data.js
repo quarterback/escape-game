@@ -11,13 +11,13 @@ const Data = (() => {
              sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
              blurb: "A friend inside the inquiry warns her when the police move. Border guards know her face.",
              // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
-             hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], exposure: 1, faceKnown: true,
+             hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], handAlt: ['delay_report'], exposure: 1, faceKnown: true,
              edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
     man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
              sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
              blurb: "The family barges can carry him down the river. Police have watched his house since the count.",
              // Matēu has the family barges, but he has been watched since the count.
-             hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], exposure: 3, faceKnown: false,
+             hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], handAlt: ['delay_report'], exposure: 3, faceKnown: false,
              edge: 'Your family barges on the river', flaw: 'Watched since the count' },
   };
 

@@ -470,12 +470,19 @@ const UI = (() => {
     const d = new Date(), key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     let h = 2166136261; for (const c of 'coalition' + key) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
     const dayNum = Math.floor(new Date(key + 'T12:00:00').getTime() / 86400000);
-    return { key, seed: h >>> 0, who: dayNum % 2 ? 'man' : 'woman', label: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) };
+    return { key, seed: h >>> 0, who: (h >>> 0) % 2 ? 'man' : 'woman', label: `${AP_MONTHS[d.getMonth()]} ${d.getDate()}` };
+  }
+  const AP_MONTHS = T('daily.months').split('|'); // AP abbreviations, from the catalog
+  // AP style for a clock reading: "Monday at 9 a.m.", "Sunday at noon", "Saturday at 11 p.m."
+  function apTime(h) {
+    const [day, t] = Sim.clockText(h).split(' '); const hr = parseInt(t, 10);
+    const when = hr === 0 ? T('daily.midnight') : hr === 12 ? T('daily.noon') : `${hr % 12} ${hr < 12 ? 'a.m.' : 'p.m.'}`;
+    return T('daily.at', { day, when });
   }
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
-  function outcomeLine(o) { const name = Data.CHARACTERS[who].short; return o.win ? T('daily.out', { name, time: short(s.hour) }) : o.kind === 'clock' ? T('daily.clock', { name }) : o.kind === 'deal' ? T('daily.deal', { name }) : T('daily.arrest', { name, place: Data.LEVELS[s.pos].short }); }
-  function shareText() { return T(s.holds === 1 ? 'daily.share_one' : 'daily.share_many', { date: daily.label, line: outcomeLine(s.over), holds: s.holds || 0, round, exposure: s.exposure, url: location.href.split('#')[0] }); }
+  function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
+  function shareText() { return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -568,7 +575,7 @@ const UI = (() => {
     const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
     const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
-    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? T('daily.done_note', { line: done.line }) : T('daily.note', { name: Data.CHARACTERS[D.who].name });
+    $('daily-date').textContent = D.label; $('daily-note').textContent = done ? T('daily.done_note', { line: done.line }) : T('daily.note');
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
   }
