@@ -229,7 +229,7 @@
   {
    "id": "action.certain",
    "pattern": "P03",
-   "text": "Guaranteed success"
+   "text": "This move will succeed"
   },
   {
    "id": "action.impossible",
@@ -4594,6 +4594,16 @@
    "id": "action.her_during_one",
    "pattern": "P03",
    "text": "She keeps moving during this hour, and her moves can leave new reports."
+  },
+  {
+   "id": "log.no_roll",
+   "pattern": "P10",
+   "text": "No roll was needed, and the move succeeded."
+  },
+  {
+   "id": "result.no_roll",
+   "pattern": "P10",
+   "text": "Succeeded without a roll"
   }
  ]
 }

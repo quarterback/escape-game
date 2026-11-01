@@ -182,8 +182,9 @@ const Gov = (() => {
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
-    const die = o.need <= 1 ? 6 : roll(g), won = die >= o.need;
-    events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
+    // an order that needs 1 or less is not rolled: no die is drawn and no result is invented
+    const auto = o.need <= 1, die = auto ? null : roll(g), won = auto || die >= o.need;
+    events.push(ev('roll', auto ? { die: null, need: o.need, won, auto: true, bonus: o.bonusFrom } : { die, need: o.need, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {

@@ -26,7 +26,7 @@ Tutorial.start('escape');
 Tutorial.STEPS.forEach((st, i) => {
   if (st.allow.next) { console.log(`${String(i + 1).padStart(2)} read   ${st.title}   [${Sim.clockText(s.hour)}, level ${s.pos}, exposure ${s.exposure}]`); Tutorial.next(); return; }
   if (!actions[i]) throw new Error(`no action scripted for act step ${i + 1}`);
-  const r = actions[i](); const rolls = r.events.filter(e => e.type === 'roll').map(e => `${e.who || 'you'}:${e.die}/${e.need}${e.won ? '✓' : '✗'}`).join(' ');
+  const r = actions[i](); const rolls = r.events.filter(e => e.type === 'roll').map(e => (e.auto ? `${e.who || 'you'}:no roll` : `${e.who || 'you'}:${e.die}/${e.need}${e.won ? '✓' : '✗'}`)).join(' ');
   if (!Tutorial.check(st.done, s)) throw new Error(`step ${i + 1} "${st.title}" not done after its action`);
   if (!Tutorial.sync(s)) throw new Error(`tutorial did not advance at step ${i + 1}`);
   console.log(`${String(i + 1).padStart(2)} act    ${st.title}   [${Sim.clockText(s.hour)}, level ${s.pos}, exposure ${s.exposure}] ${rolls}`);

@@ -366,11 +366,12 @@ const Sim = (() => {
     if (!view.ok) return { ok: false, why: view.why };
     events.push(ev('attempt', { id: a.id, name: a.name }));
     if (a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post) {
-      events.push(ev('roll', { die: 6, need: 1, won: true, bonus: [] })); say(events, 'narrator', level(s).received.say); pass(s, level(s).received.hours, events); if (!s.over) advanceLevel(s, events); return finish(s, events);
+      events.push(ev('roll', { die: null, need: 1, won: true, auto: true, bonus: [] })); say(events, 'narrator', level(s).received.say); pass(s, level(s).received.hours, events); if (!s.over) advanceLevel(s, events); return finish(s, events);
     }
-    const die = view.need <= 1 ? 6 : roll(s);
-    const won = view.need > 6 ? false : die >= view.need;
-    events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
+    // a move that needs 1 or less is not rolled: no die is drawn and no result is invented
+    let won;
+    if (view.need <= 1) { won = true; events.push(ev('roll', { die: null, need: view.need, won, auto: true, bonus: view.bonusFrom })); }
+    else { const die = roll(s); won = view.need > 6 ? false : die >= view.need; events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom })); }
     apply(s, won ? a.success : a.fail, events, a);
     // the wrong person to trust: a compromised ally may sell the move
     if (a.with && s.people[a.with] && s.people[a.with].bad && !s.people[a.with].known && s._rng() < 0.6) {

@@ -135,6 +135,9 @@ const UI = (() => {
 
   // ---- Here: approaches with a die face -------------------------------------
   const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+  // no roll needed: a check mark, never a die face
+  function checkFace() { return `<span class="die sure" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>`; }
+  const moveFace = (a) => a.need <= 1 ? checkFace() : dieFace(a.need);
   function dieFace(need) { const n = Math.max(1, Math.min(6, need)); return `<span class="die" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => `<i class="${PIPS[n].includes(i) ? 'p' : ''}"></i>`).join('')}</span>`; }
   // a bonus is named by the held cards that give it, never by the internal tag
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
@@ -150,13 +153,13 @@ const UI = (() => {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `${moveFace(a)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${moveFace(a)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
@@ -367,7 +370,7 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid.startsWith('msg:')) { /* stay on the phone */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.lay_low'); result.title = T('result.lay_low_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.lay_low'); result.title = T('result.lay_low_title'); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
@@ -499,20 +502,22 @@ const UI = (() => {
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
     card.className = 'roll';
-    const out = r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
+    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
     const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
     card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b);
   }
   function sosaCard(card) {
     card.className = 'sosa';
+    // a move resolved without a roll skips the Roll step; its outcome opens this card instead
+    const auto = result && result.roll && result.roll.auto ? `<div class="automove"><span class="kind">${esc(result.kind)}</span>${result.title ? `<h3>${esc(result.title)}</h3>` : ''}<span class="outcome ok">${T('result.no_roll')}</span>${result.line ? `<p>${esc(result.line)}</p>` : ''}${result.mine.length ? mks(result.mine) : ''}</div>` : '';
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     // one exposure line for the whole round, with the reason, instead of one per batch of hours
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
     if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? (s.belief === s.pos ? 'sum.exposure_round_here' : 'sum.exposure_round') : 'sum.exposure_round_fell', { n: Math.abs(exp) }) });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
-    card.innerHTML = `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
+    card.innerHTML = auto + `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
@@ -566,7 +571,8 @@ const UI = (() => {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: e.name })), 'sys'); } }); break;
-        case 'roll': if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: e.bonus.join(', ') }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
+        case 'roll': if (!e.who && e.auto) { Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.no_roll')), 'roll'); } }); }
+                     else if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: e.bonus.join(', ') }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); // her number stays hidden on the government side Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
@@ -636,7 +642,7 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
     else if (sid.startsWith('msg:')) { /* stay at the desk */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
