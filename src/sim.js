@@ -10,6 +10,8 @@ const Sim = (() => {
   const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
   const hrsText = (n) => n === 1 ? T('scene.hours_one') : T('scene.hours', { n: num(n) }); // a duration in words for effect chips
   const M = (k, code, args) => C.marker(k, code, args);
+  // a chip inside a longer chip: lowercase only a common first word, never names (Sosā, Costamar, a person)
+  const chipLower = (t) => /^(You|Your|The|A|An|If|Takes|Passport|Moves|Her|Orders|Minister|Roll|Police|Search|Lose|Learn|Reach|Harder|Ban|Post)\b/.test(t) ? t[0].toLowerCase() + t.slice(1) : t;
   const T = (id, args) => C.t(id, args); // narrative and interface wording from content/coalition/ui.json
   // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
   function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
@@ -276,7 +278,7 @@ const Sim = (() => {
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
     const first = (id) => personName(s, id).split(' ')[0];
-    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need: tgt(need) })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need: tgt(need) })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => chipLower(x.t)).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.exposure) out.push(M(fx.exposure > 0 ? 'up' : 'down', 'exposure.change', { signed: (fx.exposure > 0 ? '+' : '') + fx.exposure }));
     if (fx.belief === 'away') out.push(M('down', 'search.elsewhere'));
