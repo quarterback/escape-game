@@ -10,7 +10,7 @@
     5,
     4,
     5,
-    6,
+    5,
     6,
     5,
     5,
@@ -130,7 +130,7 @@
      "id": "die",
      "kind": "read",
      "title": "Cards and the die",
-     "body": "Cards lower the number you need on the die. A card someone gave you is used up by the first move that uses it, whether the move works or not. Your own things, like your second passport, stay with you. The decoy convoy just used up Nando's cars and your friend in the inquiry. You are in Santa Laura now, and Sosā is still searching the residence.",
+     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up, and a card that gets you onto the freight is gone as soon as you move to another stop. You are in Santa Laura now, and Sosā is still searching the residence.",
      "goal": "See how cards change the roll",
      "highlight": [
       "#scene"
@@ -207,7 +207,7 @@
      "id": "nona_rosa",
      "kind": "act",
      "title": "Nonā Rosa needs something first",
-     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, untick **Use the party machine here** so Gianlūka's help is still yours at the border, then tap **Try it**. It takes three hours, she gives you the truck either way, and if it works her truck carries you on to Salta.",
+     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours, she gives you the truck either way, and if it works her truck carries you on to Salta.",
      "goal": "Earn help by helping",
      "highlight": [
       "#approaches"
@@ -265,7 +265,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "Onto the freight",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll, and this move uses it up. Never pay the yardmaster, because he takes the money, tells the yard who you are, and your police attention rises by two.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll. Never pay the yardmaster, because he takes the money, tells the yard who you are, and your police attention rises by two.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -283,7 +283,7 @@
      "id": "board_freight",
      "kind": "act",
      "title": "Onto the train",
-     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. With the crate, this move needs no roll and will succeed, and boarding uses the crate up.",
+     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. With the card, this move needs no roll and will succeed, and the card is gone once the train leaves Salta.",
      "goal": "Spend a card where it counts",
      "highlight": [
       "#approaches"
@@ -312,7 +312,7 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it, and the travel ban and your well-known face each make it one harder. If you kept the party machine at Nova Trentô, it lowers the roll here and is used up.",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it one harder.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
