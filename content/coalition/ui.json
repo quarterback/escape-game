@@ -4727,6 +4727,11 @@
     "text",
     "source"
    ]
+  },
+  {
+   "id": "phone.your_sibling",
+   "pattern": "P03",
+   "text": "your sibling"
   }
  ]
 }

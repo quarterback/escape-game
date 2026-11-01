@@ -70,7 +70,7 @@
      "id": "call_aircraft",
      "kind": "act",
      "title": "Call about the jet",
-     "body": "Tap **Duartē Albukerkē about the jet**, then **Call**. The call takes an hour, and his answer comes six hours after that.",
+     "body": "Tap **Your sibling about the jet**, then **Call**. The call takes an hour, and his answer comes six hours after that.",
      "goal": "Start an arrangement by phone",
      "highlight": [
       "#calls"
@@ -223,7 +223,7 @@
      "id": "call_reception",
      "kind": "act",
      "title": "Who meets you on the other side",
-     "body": "Tap **Duartē Albukerkē about your welcome in Costamar**, then **Call**. He can reach Rosario Vélez in Costamar, and when the third step of your welcome comes through, her officials wait for you at one border post.",
+     "body": "Tap **Your sibling about your welcome in Costamar**, then **Call**. He can reach Rosario Vélez in Costamar, and when the third step of your welcome comes through, her officials wait for you at one border post.",
      "goal": "Arrange reception across the line",
      "highlight": [
       "#calls"

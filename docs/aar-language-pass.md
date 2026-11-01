@@ -179,3 +179,7 @@ The renames went into player text, demos, the map label, the about page and the 
 - "Call your contacts" can mark the visa issued for a country that never accepts you.
 - The cancelled passport still shows "This cannot succeed" as its chance, because that roll cannot be won.
 - The stage messages never appear (backlog item 1).
+
+## Follow-up: "your sibling" (owner, Nov. 1, 2026)
+
+"Call your sibling instead of call Duartē, this way it works for either character." Calls to the sibling now read "Your sibling about the jet" on the call row, "Call your sibling about the jet" in disabled rows and in the log, and "Call your sibling about the jet next" in the briefing. The demo steps name the same row. Dialogue and narration still use the sibling's name.

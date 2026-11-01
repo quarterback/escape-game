@@ -19,6 +19,8 @@ const UI = (() => {
   const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
+  const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
 
   function log(whoId, text, cls) {
@@ -196,7 +198,7 @@ const UI = (() => {
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
-      const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
+      const label = c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
@@ -409,7 +411,7 @@ const UI = (() => {
     const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
     const calls = Sim.actions(s).calls.filter(c => c.ok);
     const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
-    if (call) { const label = T('phone.call_about', { name: pname(call.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[call.arr] }); out.job.push(T('brief.phone_suggest', { call: label })); }
+    if (call) { const label = T('phone.call_about', { name: callee(call.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[call.arr] }); out.job.push(T('brief.phone_suggest', { call: label })); }
     // two deadlines, each with its own consequence: the escape deadline, then the court's passport deadline
     out.stats = [
       { big: String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), text: T('brief.hours_escape') },
