@@ -42,7 +42,7 @@ const Data = (() => {
   };
 
   // The enemy. Inspector Valentīn Sosā, Interior Ministry. Each action is concrete and visible.
-  const ENEMY = { name: 'Inspector Valentīn Sosā', role: "head of the Interior Ministry's departure inquiry" };
+  const ENEMY = { name: 'Police inspector', role: "head of the Interior Ministry's departure inquiry" };
 
   // Continuing arrangements: ordered stages. A stage is a promise until the ally delivers.
   const ARRANGEMENTS = {
@@ -83,7 +83,7 @@ const Data = (() => {
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
     informant:    { name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
-                    text: "A clerk tells Gianlūka where Sosā is looking and who is on duty." },
+                    text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
   };
 
   // Levels. Each approach: needs (all must hold), dc (die needs dc or more after mods), mods (tag: bonus),
@@ -104,7 +104,7 @@ const Data = (() => {
         { id: 'partycar', with: 'aide', name: "The party's official car", hours: 1, dc: 2, needs: [{ card: 'influence' }],
           mods: {}, text: "Ride out in Gianlūka's official car. In return he wants your public word that he leads the party while you are gone.",
           success: { belief: 0, commit: 'aide', say: 'The flags get you through. Gianlūka reminds you, gently, what he asked for.' },
-          fail: { exposure: 1, commit: 'aide', say: 'The watch stops the car at the gate and tells Sosā whose car it is. You are still at the house.' } },
+          fail: { exposure: 1, commit: 'aide', say: 'The watch stops the car at the gate and reports whose car it is. You are still at the house.' } },
       ] },
     { id: 'road', name: 'The road south, Pedra Branca', short: 'Pedra Branca', scene: 'road',
       objective: 'Get from Pedra Branca to the colônia at Nova Trentô.',
@@ -125,7 +125,7 @@ const Data = (() => {
         { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [],
           mods: { delay: 2, decoy: 2 }, text: "Risk the posts in a car they know. Nando's spare sedans or a held report make it easier.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
-          fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and phone Sosā's people." } },
+          fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and report you." } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
       objective: "Get to Salta. The road opens once Costamar expects you, or after you free Nonā Rosa's truck.",
@@ -217,14 +217,14 @@ const Data = (() => {
   // gtext: the same action told to the government player, who never sees her side in the second person
   const ENEMY_ACTIONS = [
     { id: 'check_belief', w: 4, text: (lv) => `The police search ${lv}.` },
-    { id: 'circulate',    w: 3, once: true, gtext: () => 'The police send the travel ban to every post. From now on, police who stop her take her straight to the station, and every crossing she tries at the line is harder unless someone on her side has held the report back.', text: () => 'Sosā sends the travel ban to every post. From now on, if the police stop you, they take you straight to the station. Crossings at the line are also harder unless you hold "A report held one day."' },
+    { id: 'circulate',    w: 3, once: true, gtext: () => 'The police send the travel ban to every post. From now on, police who stop her take her straight to the station, and every crossing she tries at the line is harder unless someone on her side has held the report back.', text: () => 'The police send the travel ban to every post. From now on, if the police stop you, they take you straight to the station. Crossings at the line are also harder unless you hold "A report held one day."' },
     { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Portalba charter operator that its Valdórian license is under review.' },
-    { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
+    { id: 'press_ally',   w: 3, text: (who) => `The police call ${who} in for a conversation.` },
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, gtext: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold her if she appears. Unless Costamar's minister knows she is coming, her takeoff from Portalba is now harder, and the police at Portalba can stop her for questioning.", text: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear. Unless Costamar's minister knows you are coming, takeoff from Portalba is now harder. The police at Portalba can also stop you now." },
     { id: 'press_story',  w: 2, gtext: () => 'The ministry briefs the papers that she has already left the country.', text: () => 'The ministry briefs the papers that you have already left the country.' },
     { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours, every move there that needs a roll is harder.` },
     { id: 'trace',        w: 3, after: 4, gtext: () => 'The ministry traces her recent calls.', text: () => 'The ministry traces your recent calls.' },
-    { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `Sosā has ${who}'s calls monitored, and everything ${who} is arranging for her now takes four hours longer.`, text: (who) => `Sosā has ${who}'s calls monitored. The operator in Portalba goes quiet, and everything ${who} is arranging for you now takes four hours longer.` },
+    { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `The police monitor ${who}'s calls, and everything ${who} is arranging for her now takes four hours longer.`, text: (who) => `The police monitor ${who}'s calls. The operator in Portalba goes quiet, and everything ${who} is arranging for you now takes four hours longer.` },
   ];
 
   // ---- Where you could go. Three countries, one city each, from the kels canon (Lagoa Funda, Krasnomor); Almatau is a
@@ -263,7 +263,7 @@ const Data = (() => {
                 blurb: "Keep the candidate from flying out before Tuesday at 2 p.m. Past the border, your patrols need Costamar's agreement." };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
-    watch:     { name: 'The watch team', tag: 'watch', from: 'Inspector Sosā', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
+    watch:     { name: 'The watch team', tag: 'watch', from: 'The police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
     desk:      { name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
     operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
@@ -275,7 +275,7 @@ const Data = (() => {
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'The watch team tells you whether anyone is still in the house.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Move your search to ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you order a search or a checkpoint at the new stop.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban. From then on, police who stop her take her straight to the station. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
-    { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'Inspector Sosā', mods: {}, act: 'press_ally', text: 'Sosā questions one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
+    { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'the police inspector', mods: {}, act: 'press_ally', text: 'The police question one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
     { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that needs a roll is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
     { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
@@ -306,8 +306,8 @@ const Data = (() => {
       { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols go out at once, and the desk is stretched thin.' } },
       { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
       { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
-    { id: 'sosa_alone', title: 'Sosā wants to drive out himself', text: 'He wants to take two officers to {there} without telling the desk.', choices: [
-      { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'Sosā takes the unmarked car.' } },
+    { id: 'sosa_alone', title: 'The police inspector wants to drive out himself', text: 'He wants to take two officers to {there} without telling the desk.', choices: [
+      { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'The police inspector takes the unmarked car.' } },
       { id: 'keep_him', label: 'Keep him on the desk', fx: { dc: [-1, 6], say: 'He works the phones harder than anyone, in a sulk.' } } ] },
     { id: 'driver', after: 6, title: 'One of her drivers calls', text: 'A driver from her convoy wants a promise that he will not be charged.', choices: [
       { id: 'immunity', label: 'Promise him', fx: { minister: -1, lead: 3, say: 'He talks. The minister did not want promises made.' } },
@@ -343,7 +343,7 @@ const Data = (() => {
       { id: 'no_drone', label: 'Decline', fx: {} } ] },
     { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at 6 p.m. to promise that she will be found by Monday.', choices: [
       { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
-      { id: 'send_sosa', label: 'Send Sosā instead', fx: { dc: [1, 4], say: 'Sosā hates cameras. He takes it out on the desk.' } },
+      { id: 'send_sosa', label: 'Send the inspector instead', fx: { dc: [1, 4], say: 'The inspector hates cameras. He takes it out on the desk.' } },
       { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } } ] },
     { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says one of her family\'s phone numbers pinged a tower an hour ago.', choices: [
       { id: 'tower_now', label: 'Demand the tower now', fx: { hours: 2, roll: { need: 4, win: { lead: 0, say: 'The carrier sends the tower and a map.' }, lose: { warn: 1, say: 'The carrier tells its lawyers, who tell hers.' } } } },
@@ -370,7 +370,7 @@ const Data = (() => {
       { id: 'lawyer', label: "Send Gianlūka's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer argues at the gate for two hours.' } },
       { id: 'ignore', label: 'Keep the gate shut', fx: { exposure: 1 } } ] },
     { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
-      { id: 'speak', label: 'Speak on the steps', fx: { exposure: 3, trust: { aide: 1 }, card: 'delay_report', say: "The party loves the speech, and Sosā's people watch every minute of it." } },
+      { id: 'speak', label: 'Speak on the steps', fx: { exposure: 3, trust: { aide: 1 }, card: 'delay_report', say: "The party loves the speech, and the police watch every minute of it." } },
       { id: 'refuse', label: 'Refuse', fx: { trust: { aide: -1 }, say: 'Gianlūka goes quiet on the phone.' } } ] },
     // Pedra Branca
     { id: 'fuel', at: ['road'], title: 'Fuel is rationed', text: 'Every pump in Pedra Branca has a line and a police officer.', choices: [
@@ -424,7 +424,7 @@ const Data = (() => {
       { id: 'queue_pilgrims', label: 'Join the queue', fx: { mod: -1 } },
       { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2 } } ] },
     { id: 'blizzard', at: ['border'], title: 'A blizzard over the pass', text: "Snow is piling up at the post, and a smugglers' path runs over the ridge.", choices: [
-      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'You spend six hours in the snow, and the storm costs Sosā his next move.' } },
+      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'You spend six hours in the snow, and the storm costs the police their next move.' } },
       { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Costamar with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
     { id: 'dog_bark', at: ['border'], when: [{ ref: 'flag.dog', op: 'eq', value: true }], title: 'The dog barks at the post', text: 'The guards look up at the dog barking in your car.', choices: [
       { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },
@@ -452,7 +452,7 @@ const Data = (() => {
       { id: 'correct', label: 'Correct it', fx: { exposure: 1 } } ] },
     { id: 'bodyguard', at: null, title: 'An old bodyguard wants money', text: 'He knows your route. He will sell it tonight unless you pay.', choices: [
       { id: 'pay_guard', label: 'Pay him', fx: { exposure: 1 } },
-      { id: 'bluff', label: 'Call his bluff', fx: { roll: { need: 3, win: { say: 'He never calls anyone.' }, lose: { belief: 'here', exposure: 3, say: 'He calls Sosā, who now searches where you are.' } } } },
+      { id: 'bluff', label: 'Call his bluff', fx: { roll: { need: 3, win: { say: 'He never calls anyone.' }, lose: { belief: 'here', exposure: 3, say: 'He calls the police, who now search where you are.' } } } },
       { id: 'gianluka', label: 'Have Gianlūka handle him', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 } } } ] },
     { id: 'coffee', at: ['residence', 'road', 'colonia', 'salta'], title: 'A police car pulls in beside you', text: 'Two officers get out for coffee. One glances at your window.', choices: [
       { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },

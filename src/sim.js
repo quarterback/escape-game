@@ -80,7 +80,7 @@ const Sim = (() => {
   const ch = (s) => D.CHARACTERS[s.who];
   // how a person is named mid-sentence: the name people use for them, never a lone first word like "Nonā"
   const shortName = (s, id) => id === 'sponsor' ? sponsor(s).short : (D.PEOPLE[id] && D.PEOPLE[id].short) || personName(s, id).split(' ')[0];
-  const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : id === 'sponsor' ? sponsor(s).name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
+  const personName = (s, id) => id === 'enemy' ? D.ENEMY.name : id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : id === 'sponsor' ? sponsor(s).name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
   const personRole = (s, id) => id === 'sponsor' ? sponsor(s).role : (D.PEOPLE[id] || {}).role || '';
 
   // ---- messages (the phone) ---------------------------------
