@@ -247,6 +247,14 @@
    "text": "Cancel"
   },
   {
+   "id": "action.use_card",
+   "pattern": "P01",
+   "text": "Use {card} here",
+   "args": [
+    "card"
+   ]
+  },
+  {
    "id": "action.commit",
    "pattern": "P01",
    "text": "Try it"
@@ -331,6 +339,16 @@
    "args": [
     "name"
    ]
+  },
+  {
+   "id": "card.used_once",
+   "pattern": "P09",
+   "text": "It is gone once a move or a choice uses it."
+  },
+  {
+   "id": "card.yours_to_keep",
+   "pattern": "P09",
+   "text": "It is yours, and using it never uses it up."
   },
   {
    "id": "need.aircraft_ready",
@@ -882,6 +900,14 @@
    ]
   },
   {
+   "id": "sum.used",
+   "pattern": "P10",
+   "text": "You used up {name}",
+   "args": [
+    "name"
+   ]
+  },
+  {
    "id": "sum.reached",
    "pattern": "P10",
    "text": "You reached {place}",
@@ -1068,6 +1094,14 @@
    "id": "log.card_lost",
    "pattern": "P10",
    "text": "You lost {card}.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "log.card_used",
+   "pattern": "P10",
+   "text": "You used up {card}.",
    "args": [
     "card"
    ]
@@ -1440,7 +1474,7 @@
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "A card lowers the number you need on the die, or lets you try a move at all, but only at the stops listed under Where it counts. The party's cards stop working at the border, and some people only move for money."
+   "text": "A card lowers the number you need on the die, or lets you try a move at all, but only at the stops listed under Where it counts. A card someone gave you is used up by the first move or choice that uses it, and you can untick it in a move to keep it for later. Your own things, like your second passport, stay with you. The party's cards stop working at the border, and some people only move for money."
   },
   {
    "id": "help.rounds",
@@ -2147,6 +2181,22 @@
    "id": "sim.preview.escorted",
    "pattern": "P03",
    "text": "Esmeraldan officials are waiting for you at this post, so you cross without a roll."
+  },
+  {
+   "id": "sim.preview.uses_up",
+   "pattern": "P03",
+   "text": "This move uses up {card}, whether it works or not.",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "sim.preview.keeping",
+   "pattern": "P03",
+   "text": "You are keeping {card} for later, so it does not lower the number here.",
+   "args": [
+    "card"
+   ]
   },
   {
    "id": "sim.why.talked_to_the_inquiry",

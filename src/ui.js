@@ -8,6 +8,7 @@
    ============================================================ */
 'use strict';
 const UI = (() => {
+  let keepTags = []; // kinds of help the player holds back from the selected move
   let s = null, sel = null, who = 'woman', enemyLog = [], tab = 'here', gov = null, installEvt = null;
   // Phase turns (escape side): News, Phone, Move, Roll, Sosā. One call and one move per round.
   let phase = 'move', round = 1, phoneCalls = 0, movedThisRound = false, result = null, roundSum = { theirs: [], hours: 0 }, daily = null;
@@ -154,18 +155,24 @@ const UI = (() => {
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
     b.innerHTML = `${moveFace(a)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
-    b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
+    b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; keepTags = []; Sfx.select(); renderAll(); };
     return b;
+  }
+  // help someone gave you is used up by the move that uses it: one box per card the player may keep for later
+  function keepBoxes(a) {
+    if (!a.optional || !a.optional.length) return '';
+    return `<div class="usecards">${a.optional.map(o => `<label class="usecard"><input type="checkbox" data-tag="${esc(o.tag)}" ${o.kept ? '' : 'checked'}> ${esc(T('action.use_card', { card: inSentence(o.name) }))}</label>`).join('')}</div>`;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${moveFace(a)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
-    box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
+    box.innerHTML = `<div class="act">${moveFace(a)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p>${keepBoxes(a)}<ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; keepTags = []; renderAll(); };
+    box.querySelectorAll('.usecard input').forEach(i => i.onchange = () => { const t = i.dataset.tag; keepTags = keepTags.filter(x => x !== t).concat(i.checked ? [] : [t]); Sfx.select(); renderAll(); });
     return box;
   }
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
-    for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
+    for (const a0 of A.approaches) { const a = sel === a0.id && keepTags.length ? Sim.approachList(s, keepTags).find(x => x.id === a0.id) : a0; if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id, keepTags.length ? 'keep:' + keepTags.join(',') : undefined))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
     $('wait').disabled = !!s.over || !Tutorial.allowsWait() || phase !== 'move';
     // one tap for the hours until 10 p.m., shown only where a move here needs the dark
     const wd = A.waitDark; $('waitdark').hidden = !wd.ok; $('waitdark').disabled = !wd.ok || !!s.over || !Tutorial.allowsWait() || phase !== 'move';
@@ -205,9 +212,9 @@ const UI = (() => {
   }
 
   // ---- the hand: coloured cards -----------------------------------------------
-  function cardEl(c, here, from, state) {
+  function cardEl(c, here, from, state, note) {
     const d = document.createElement('article'); d.className = `card t-${c.tag}` + (here ? '' : ' far');
-    d.innerHTML = `<span class="tag">${esc(tagName(c.tag))}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p class="works"><b>${T('card.works_on')}</b> ${esc(c.works)}</p><p class="foot"><span>${esc(from)}</span><span class="st">${state}</span></p>`;
+    d.innerHTML = `<span class="tag">${esc(tagName(c.tag))}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p class="works"><b>${T('card.works_on')}</b> ${esc(c.works)}</p>${note ? `<p class="works">${esc(note)}</p>` : ''}<p class="foot"><span>${esc(from)}</span><span class="st">${state}</span></p>`;
     return d;
   }
   function cardState(c, id) {
@@ -218,7 +225,7 @@ const UI = (() => {
   }
   function renderHand() {
     const h = $('hand'); h.innerHTML = s.hand.length ? '' : `<p class="hint">${T('hand.empty')}</p>`;
-    for (const id of s.hand) { const c = Data.CARDS[id]; h.appendChild(cardEl(c, Sim.reaches(s, id), c.from === 'self' ? T('card.yours') : T('card.from', { name: pname(c.from) }), cardState(c, id))); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; h.appendChild(cardEl(c, Sim.reaches(s, id), c.from === 'self' ? T('card.yours') : T('card.from', { name: pname(c.from) }), cardState(c, id), T(c.from === 'self' ? 'card.yours_to_keep' : 'card.used_once'))); }
   }
 
   // ---- the route: one model, a rail on the phone and the board on desktop ------
@@ -365,7 +372,7 @@ const UI = (() => {
   function doCommit(id, opt) {
     Sfx.unlock(); const r = Sim.commit(s, id, opt);
     if (!r.ok) { Sfx.deny(); log('sys', r.why, 'sys'); return; }
-    Sfx.confirm(); sel = null; animate(r.events);
+    Sfx.confirm(); sel = null; keepTags = []; animate(r.events);
     if (Tutorial.active()) Render.enqueue({ dur: 10, start() { Tutorial.sync(s); renderAll(); } });
     const sid = String(id), sm = summarize(r.events, T('result.your_move'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
@@ -539,6 +546,7 @@ const UI = (() => {
         case 'exposure': if (after) expTheirs += e.delta; else expMine += e.delta; break;
         case 'card': bucket.push({ k: 'gain', t: T('sum.card', { name: e.name }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: e.name }) }); break;
+        case 'cardused': bucket.push({ k: 'lose', t: T('sum.used', { name: e.name }) }); break;
         case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: pname(e.who).split(' ')[0] }) }); break;
         case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
@@ -581,6 +589,7 @@ const UI = (() => {
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); log('sys', esc(T('log.gives', { name: pname(e.from), card: e.name })), 'sys'); } }); break;
         case 'cardlost': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.card_lost', { card: e.name })), 'sys'); } }); break;
+        case 'cardused': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.card_used', { card: inSentence(e.name) })), 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.owe', { name: pname(e.to), text: e.text })), 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
         case 'job': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.reply_by', { name: pname(e.ally), time: e.dueText })), 'sys'); } }); break;

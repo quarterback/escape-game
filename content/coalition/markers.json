@@ -87,6 +87,14 @@
    "text": "Lose a card"
   },
   {
+   "code": "card.uses_up",
+   "pattern": "P03",
+   "text": "Uses up {card}",
+   "args": [
+    "card"
+   ]
+  },
+  {
    "code": "card.lose",
    "pattern": "P03",
    "text": "You lose {card}",

@@ -386,3 +386,5 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 /* no roll needed: a check instead of a die */
 .die.sure{display:grid;place-items:center;background:var(--mint);color:#150F2E}
 .automove{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+
+.usecards{display:flex;flex-direction:column;gap:6px;margin:8px 0}.usecard{display:flex;align-items:center;gap:10px;font-size:16px;line-height:1.4;cursor:pointer}.usecard input{width:22px;height:22px;accent-color:var(--gold,#FFCB3B)}
