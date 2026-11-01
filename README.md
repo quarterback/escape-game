@@ -45,8 +45,9 @@ actions it helps. A party contact has influence in Valdória; that influence doe
 not carry into Esmeralda. Choices also create promises you may have to keep later.
 
 Money is available. The question is whether someone will accept it. Failed
-approaches can cost time or expose your location. The inquiry acts every three
-game hours; at exposure 10, its officers arrive. You have 72 game hours to escape.
+moves can cost time or give away where you are. Sosā's inquiry acts every three
+game hours, and when police attention reaches 10 the police stop you. You have 72
+game hours to escape.
 
 ## The inquiry
 
@@ -67,8 +68,8 @@ candidate in custody.
 Choose an action, inspect its requirements and chances, then commit. Time moves
 when you act, so you can read and think before deciding.
 
-On phones, switch between **Here**, **Phone**, **Route** and **Hand**. The Route
-board distinguishes help in hand, work promised and arrangements not started.
+On phones, switch between **Here**, **Phone**, **Route** and **Deck**. The Route
+board distinguishes help in your deck, work promised and arrangements not started.
 
 The game saves your run in the current browser after each move. Choose
 **Continue your run** on the start screen to resume. Saves do not sync across

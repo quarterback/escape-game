@@ -53,7 +53,7 @@ const UI = (() => {
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
   function newRun(w, demo, isDaily, dest, seed) {
-    markSeen(); gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    markSeen(); briefPos = -1; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
@@ -89,11 +89,13 @@ const UI = (() => {
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
     const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
-    $('clock').textContent = short(s.hour); $('left').textContent = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) }); $('deadline').textContent = deadline; $('deadline2').textContent = deadline;
+    const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
+    // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
+    $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
     const L = Data.LEVELS[s.pos];
     if (gov) {
       const v = Gov.view(gov);
-      $('goaltxt').textContent = T('scene.gov_goal', { her: v.her }); $('leftverb').textContent = T('scene.gov_goal', { her: v.her });
+      $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
       $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label');
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
@@ -102,10 +104,10 @@ const UI = (() => {
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
-    $('goaltxt').textContent = T('scene.goal'); $('leftverb').textContent = T('scene.out_by');
+    $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
     $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
-    $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: Data.LEVELS[s.belief].short.toLowerCase() === Data.LEVELS[s.belief].short ? Data.LEVELS[s.belief].short : 'the ' + Data.LEVELS[s.belief].short.toLowerCase() });
+    $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: placeName(s.belief) });
     $('sosa-nextl').textContent = T('scene.next_move');
     { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: Sim.num(n) }); }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: s.hold }) : T('scene.held_at');
@@ -134,18 +136,26 @@ const UI = (() => {
   // ---- Here: approaches with a die face -------------------------------------
   const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
   function dieFace(need) { const n = Math.max(1, Math.min(6, need)); return `<span class="die" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => `<i class="${PIPS[n].includes(i) ? 'p' : ''}"></i>`).join('')}</span>`; }
-  const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => T(/^[aeiou]/i.test(u.tag) ? 'action.uses_an' : 'action.uses_a', { tag: u.tag })).join(', ') }))}</span>` : '';
+  // a bonus is named by the held cards that give it, never by the internal tag
+  const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
+  // chance of success and time taken are different facts, shown on separate lines
+  const chanceText = (a) => a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds });
+  const metaLine = (a) => `<span class="meta"><span class="nd">${esc(chanceText(a))}</span><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span></span>`;
+  // escape side: how many times Sosā acts during the move's own hours
+  const sosaDuring = (a) => { if (gov) return ''; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); const n = a.hours >= next ? 1 + Math.floor((a.hours - next) / Sim.ENEMY_EVERY) : 0; return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
+  const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
+  const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `<span class="meta"><span class="nd">${a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span>` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
+    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span><span class="meta"><span class="nd">${a.need <= 1 ? T('action.certain') : a.need > 6 ? T('action.impossible') : a.need + '+'}</span>${a.need > 1 && a.need <= 6 ? ' ' + a.odds : ''} · <span class="hrs">${a.hours} h</span>${a.who ? ' · ' + esc(a.who) : ''}</span></span>${usesLabel(a)}</div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
@@ -161,7 +171,7 @@ const UI = (() => {
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span><small>${esc(o.ok ? o.effect : o.why)}</small>`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>${(o.ok ? o.effect : o.why) ? `<small>${esc(o.ok ? o.effect : o.why)}</small>` : ''}`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
@@ -182,7 +192,7 @@ const UI = (() => {
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
-      const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: arr === 'permission' ? T('phone.your_visa') : def.name.toLowerCase() }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
+      const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && phase === 'phone' && phoneCalls < 1, label));
     }
@@ -191,7 +201,7 @@ const UI = (() => {
   // ---- the hand: coloured cards -----------------------------------------------
   function cardEl(c, here, from, state) {
     const d = document.createElement('article'); d.className = `card t-${c.tag}` + (here ? '' : ' far');
-    d.innerHTML = `<span class="tag">${c.tag[0].toUpperCase() + c.tag.slice(1)}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p class="works"><b>${T('card.works_on')}</b> ${esc(c.works)}</p><p class="foot"><span>${esc(from)}</span><span class="st">${state}</span></p>`;
+    d.innerHTML = `<span class="tag">${esc(tagName(c.tag))}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p class="works"><b>${T('card.works_on')}</b> ${esc(c.works)}</p><p class="foot"><span>${esc(from)}</span><span class="st">${state}</span></p>`;
     return d;
   }
   function cardState(c, id) {
@@ -217,10 +227,10 @@ const UI = (() => {
         title = n.arr === 'reception' ? T(n.stage >= 3 ? 'need.officials' : 'need.expects') : n.arr === 'aircraft' ? T(n.stage >= 4 ? 'need.aircraft_ready' : n.stage >= 2 ? 'need.crew' : 'need.charter') : NEED_LABEL[n.arr] ? T(NEED_LABEL[n.arr]) : def.name;
         seen[key] = n.stage; out.push({ key, title, sub: '', state: '' }); const slot = out[out.length - 1];
         state = cur.stage >= n.stage ? 'inhand' : job ? 'promised' : 'notyet';
-        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { stage: def.stages[cur.stage], ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek', { sponsor: Sim.sponsor(s).short }) : def.what);
+        sub = state === 'inhand' ? def.stages[cur.stage][0].toUpperCase() + def.stages[cur.stage].slice(1) : state === 'promised' ? T('need.working', { ally: pname(job.ally), time: short(job.due) }) : (n.arr === 'reception' ? T(n.stage >= 3 ? 'need.velez' : 'need.baca') : n.arr === 'permission' ? T('need.salek', { sponsor: Sim.sponsor(s).short }) : def.what);
         slot.sub = sub; slot.state = state; continue; }
       else if (n.card) { if (n.card === 'decoy' || n.card === 'influence') continue; key = 'card' + n.card; const held = s.hand.find(id => Data.CARDS[id].tag === n.card); state = held ? 'inhand' : 'notyet';
-        title = n.card === 'document' ? T('need.passport') : n.card === 'passage' ? T('need.passage') : n.card === 'decoy' ? T('need.decoy') : n.card === 'influence' ? T('need.influence') : T('need.card', { tag: n.card });
+        title = n.card === 'document' ? T('need.passport') : n.card === 'passage' ? T('need.passage') : n.card === 'decoy' ? T('need.decoy') : n.card === 'influence' ? T('need.influence') : T('need.card', { tag: tagName(n.card) });
         sub = held ? T(n.card === 'document' ? 'need.passport_held' : 'need.in_hand') : T(n.card === 'passage' ? 'need.passage_from' : 'need.nobody'); }
       else if (n.night) { if (L.id === 'residence') continue; key = 'night'; title = T('need.night'); state = Sim.isNight(s) ? 'inhand' : 'notyet'; sub = T(Sim.isNight(s) ? 'need.is_night' : 'need.after'); }
       else continue;
@@ -270,12 +280,16 @@ const UI = (() => {
 
   function renderOver() {
     const o = $('over'); if (!s.over) { o.hidden = true; o.style.backgroundImage = ''; return; }
-    o.hidden = false; o.className = s.over.win ? 'win' : 'lose';
+    o.hidden = false; o.className = (gov ? !s.over.win : s.over.win) ? 'win' : 'lose'; // the ministry wins when she does not get out
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
-    $('overtitle').textContent = T(gov ? (s.over.win ? 'over.gov_win' : 'over.gov_stopped') : ({ out: 'over.out', arrest: 'over.arrest', clock: 'over.clock', deal: 'over.deal', landed: 'over.landed' })[s.over.kind] || (s.over.win ? 'over.out' : 'over.caught'));
-    $('overtext').innerHTML = gov ? Gov.debrief(gov) : esc(s.over.reason);
+    const won = gov ? !s.over.win : s.over.win;
+    $('overtitle').textContent = T(won ? 'over.win' : 'over.lose');
+    const k = s.over.kind;
+    const why = gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), landed: T('over.why_gov_landed'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
+      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), landed: T('over.why_landed'), deal: T('over.why_deal') })[k] || T('over.why_arrest');
+    $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : '');
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
-    $('share').hidden = !(daily && !gov);
+    $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
@@ -370,8 +384,9 @@ const UI = (() => {
     if (!s || s.over) return;
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
-    interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
     enterPhase(pendingEvent() ? 'news' : 'phone');
+    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
+    else showBrief();
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
@@ -379,6 +394,71 @@ const UI = (() => {
     if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
     if (Sfx.sting) Sfx.sting('phase');
     renderAll();
+  }
+  // ---- the round briefing: where things stand and what this round is for, before any button ------
+  let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
+  const P = (t) => `<p>${esc(t)}</p>`;
+  function briefEscape() {
+    const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: [] };
+    if (s.pos !== briefPos) out.story.push(L.arrive);
+    const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
+    const steps = (k, full) => { const done = A[k].stages.slice(1, st(k) + 1), left = A[k].stages.slice(st(k) + 1, full + 1); return [done.length ? T('brief.done_list', { list: done.join(', ') }) : '', left.length ? T('brief.left_list', { list: left.join(', ') }) : ''].filter(Boolean).join(' '); };
+    out.need = [
+      { k: 'aircraft', full: 4, name: T('brief.need_jet'), note: '' },
+      { k: 'permission', full: 2, name: T('brief.need_visa'), note: T('brief.visa_note') },
+      { k: 'reception', full: 3, name: T('brief.need_reception'), note: T('brief.reception_note') },
+    ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
+    out.job.push(L.objective);
+    const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
+    const calls = Sim.actions(s).calls.filter(c => c.ok);
+    const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
+    if (call) out.job.push(T('brief.phone_suggest', { call: call.name }));
+    out.stats = [
+      { big: String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), text: T('brief.hours_escape') },
+      { big: `${s.exposure}/${Sim.EXPOSURE_LIMIT}`, text: T('brief.police_attention', { n: s.exposure, max: Sim.EXPOSURE_LIMIT }), bar: [s.exposure, Sim.EXPOSURE_LIMIT] },
+    ];
+    out.marks = { 5: [['jet', T('brief.jet')]] };
+    out.marks[s.belief] = [['sosa', T('brief.sosa')]];
+    out.marks[s.pos] = [['you', T('brief.you')]].concat(s.belief === s.pos ? [['sosa', T('brief.sosa')]] : []);
+    if (s.pos === 5) out.marks[5] = out.marks[5].concat([['jet', T('brief.jet')]]);
+    return out;
+  }
+  function briefGov() {
+    const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: [] };
+    const r = v.reports[0];
+    out.story.push(r ? (c.hour - r.hour <= 0 ? T('brief.gov_report_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_report_hour', { place: placeName(r.at) }) : T('brief.gov_report_hours', { place: placeName(r.at), n: c.hour - r.hour })) : T('brief.gov_no_report'));
+    if (r) out.story.push(T('brief.gov_reports_caveat'));
+    const ban = v.requests[0].state, hold = v.requests[1].state;
+    out.need = [{ name: T('brief.gov_need_ban'), have: ban === 'inhand' ? 1 : 0, of: 1, done: ban === 'inhand', now: ban === 'promised' ? T('brief.gov_not_confirmed') : '' },
+      { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
+    out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
+    out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
+    if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push({ big: short(v.ministerBy), text: T('brief.minister_expects', { time: Sim.clockText(v.ministerBy) }) });
+    out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
+    if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
+    return out;
+  }
+  const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
+  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  function briefRoute(marks) {
+    return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+      const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
+      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Data.LEVELS.length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
+  }
+  function showBrief() {
+    if (!s || s.over) return;
+    const b = gov ? briefGov() : briefEscape();
+    if (!gov) briefPos = s.pos;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });
+    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].short;
+    $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
+    $('b-route').innerHTML = briefRoute(b.marks);
+    $('b-stats').innerHTML = b.stats.map(st => `<div><b>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
+    $('b-job').innerHTML = b.job.map(P).join('');
+    $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
+    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
+    $('b-start').textContent = T('brief.start', { n: round });
+    $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   function interstitial(clock, title, sub) {
     const el = $('interstitial'); $('i-clock').textContent = clock; $('i-title').textContent = title; $('i-sub').textContent = sub;
@@ -412,7 +492,7 @@ const UI = (() => {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
-    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
+    card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
     for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   function resultCard(card, r, nextLabel, next) {
@@ -479,7 +559,7 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : o.kind === 'landed' ? T('daily.landed', { round }) : T('daily.arrest', { round }); }
-  function shareText() { return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -487,7 +567,7 @@ const UI = (() => {
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: e.name })), 'sys'); } }); break;
         case 'roll': if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: e.bonus.join(', ') }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
-        case 'exposure': Render.float(Render.W * Render.SCALE / 2, 160, (e.delta > 0 ? '+' : '') + e.delta + ' exposure', e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
+        case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); // her number stays hidden on the government side Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); log('sys', esc(T('log.gives', { name: pname(e.from), card: e.name })), 'sys'); } }); break;
         case 'cardlost': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.card_lost', { card: e.name })), 'sys'); } }); break;
@@ -553,7 +633,7 @@ const UI = (() => {
     const sid = String(id), sm = summarize(r.events, T('result.your_order'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
-    else if (sid.startsWith('req:')) { phoneCalls += 1; if (!phoneUseful()) { phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } }
+    else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
     else if (sid.startsWith('msg:')) { /* stay at the desk */ }
     else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
@@ -637,6 +717,8 @@ const UI = (() => {
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
+    const closeOver = () => { Sfx.click(); $('over').hidden = true; saveRun(); showStart(); };
+    $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
@@ -652,9 +734,11 @@ const UI = (() => {
       if (creditsHad && creditsHad.theme) Sfx.theme(true); if (creditsHad && creditsHad.amb && Sfx.ambience) Sfx.ambience(creditsHad.amb.scene, creditsHad.amb.night); creditsHad = null;
       if (creditsFrom && creditsFrom.focus) creditsFrom.focus(); };
     $('credits-open').onclick = openCredits; $('start-credits').onclick = openCredits; $('credits-close').onclick = closeCredits;
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('credits').hidden) closeCredits(); });
+    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (!$('credits').hidden) closeCredits(); else if (!$('brief').hidden) $('b-start').click(); else if (!$('over').hidden && s && s.over) closeOver(); });
     $('daily').onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(null, false, true, d)); };
     $('phasedone').onclick = () => { Sfx.click(); enterPhase('move'); };
+    $('b-start').onclick = () => { Sfx.click(); $('brief').hidden = true; };
+    $('briefagain').onclick = () => { Sfx.click(); showBrief(); $('b-start').textContent = T('brief.back'); };
     $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
     $('copyreplay').onclick = () => { Sfx.click(); copyReplay(); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };

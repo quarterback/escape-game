@@ -177,7 +177,7 @@ description implies power the card does not have.
 **Player need:** Understand what happened and what changed.
 
 Require an event or outcome code. Allow a narrative response and a separate
-summary of disclosed state changes. Bind time lost, exposure changes and gained
+summary of disclosed state changes. Bind time lost, police attention changes and gained
 or spent cards from resolved events. Expected game failure uses this pattern.
 
 S2 informs message purpose. Coalition adaptation: a failed roll can advance the
@@ -273,7 +273,7 @@ Narrative may use past tense, dialogue may contain fragments and navigation may
 use nouns. Apply rules by pattern and context.
 
 Build a concept glossary before enabling C05. Suggested initial concepts include
-aircraft, entry visa, reception, exposure and inquiry. A glossary entry needs a
+the jet, entry visa, welcome in Esmeralda, police attention (the `exposure` variable) and inquiry. A glossary entry needs a
 concept ID, approved forms, scope and prohibited aliases. An NPC may use a colloquial
 term that system instructions avoid; record that exception explicitly.
 

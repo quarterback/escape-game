@@ -21,7 +21,7 @@
   {
    "id": "log.start_gov",
    "pattern": "P08",
-   "text": "{clock}. You are {name}, {title}. {target} lost on Saturday and the court has barred her from leaving, but the minister wants to know where she is.",
+   "text": "{clock}. You are {name}, {title}. {target} lost the election on Saturday, the court has barred her from leaving, and the minister wants to know where she is.",
    "args": [
     "clock",
     "name",
@@ -33,7 +33,7 @@
   {
    "id": "scene.gov_goal",
    "pattern": "P08",
-   "text": "stop {her} before",
+   "text": "keep {her} from flying out before",
    "args": [
     "her"
    ],
@@ -69,7 +69,7 @@
   {
    "id": "scene.minister_by",
    "pattern": "P08",
-   "text": "The minister wants a town by {time}.",
+   "text": "The minister wants a location by {time}.",
    "args": [
     "time"
    ],
@@ -78,7 +78,7 @@
   {
    "id": "scene.suspected",
    "pattern": "P02",
-   "text": "Likely stop",
+   "text": "Your search",
    "role": "gov"
   },
   {
@@ -120,19 +120,14 @@
    "text": "Leave Esmeraldan airspace by"
   },
   {
-   "id": "scene.out_by",
-   "pattern": "P08",
-   "text": "out by"
-  },
-  {
    "id": "scene.sosa_here",
    "pattern": "P06",
-   "text": "Sosā is looking here"
+   "text": "Sosā is searching here"
   },
   {
    "id": "scene.sosa_at",
    "pattern": "P06",
-   "text": "Sosā is looking at {place}",
+   "text": "Sosā is searching {place}",
    "args": [
     "place"
    ]
@@ -140,7 +135,7 @@
   {
    "id": "scene.sosa_right",
    "pattern": "P06",
-   "text": "He thinks {place}, and he is right",
+   "text": "He is searching {place}, and you are there",
    "args": [
     "place"
    ]
@@ -148,7 +143,7 @@
   {
    "id": "scene.sosa_wrong",
    "pattern": "P06",
-   "text": "He thinks {place}, but he is wrong",
+   "text": "He is searching {place}, and you are not there",
    "args": [
     "place"
    ]
@@ -156,7 +151,7 @@
   {
    "id": "scene.next_move",
    "pattern": "P02",
-   "text": "Next move"
+   "text": "Sosā acts again"
   },
   {
    "id": "scene.next_in",
@@ -169,7 +164,7 @@
   {
    "id": "scene.held_again",
    "pattern": "P05",
-   "text": "Held {hold} of three so far",
+   "text": "Police stop step {hold} of three",
    "args": [
     "hold"
    ]
@@ -177,17 +172,17 @@
   {
    "id": "scene.held_at",
    "pattern": "P05",
-   "text": "Held at 10"
+   "text": "The police stop you at 10."
   },
   {
    "id": "scene.exposure",
    "pattern": "P02",
-   "text": "Exposure"
+   "text": "Police attention"
   },
   {
    "id": "action.wait",
    "pattern": "P01",
-   "text": "Lie low for an hour"
+   "text": "Wait an hour"
   },
   {
    "id": "nav.phone",
@@ -221,25 +216,9 @@
   {
    "id": "action.uses",
    "pattern": "P03",
-   "text": "Uses {list}",
+   "text": "Easier with {list}",
    "args": [
     "list"
-   ]
-  },
-  {
-   "id": "action.uses_a",
-   "pattern": "P03",
-   "text": "a {tag} card",
-   "args": [
-    "tag"
-   ]
-  },
-  {
-   "id": "action.uses_an",
-   "pattern": "P03",
-   "text": "an {tag} card",
-   "args": [
-    "tag"
    ]
   },
   {
@@ -250,12 +229,12 @@
   {
    "id": "action.certain",
    "pattern": "P03",
-   "text": "Certain"
+   "text": "Guaranteed success"
   },
   {
    "id": "action.impossible",
-   "pattern": "P04",
-   "text": "No die can"
+   "pattern": "P03",
+   "text": "Cannot succeed"
   },
   {
    "id": "action.cancel",
@@ -265,7 +244,7 @@
   {
    "id": "action.commit",
    "pattern": "P01",
-   "text": "Commit"
+   "text": "Try it"
   },
   {
    "id": "phone.waiting",
@@ -283,7 +262,7 @@
   {
    "id": "phone.sibling_role",
    "pattern": "P05",
-   "text": "{rel}, arranging the aircraft",
+   "text": "{rel}, arranging the jet and your welcome",
    "args": [
     "rel"
    ]
@@ -296,12 +275,6 @@
     "name",
     "what"
    ]
-  },
-  {
-   "id": "phone.your_visa",
-   "pattern": "P01",
-   "text": "your visa",
-   "fragment": true
   },
   {
    "id": "action.call",
@@ -334,7 +307,7 @@
   {
    "id": "card.not_here",
    "pattern": "P09",
-   "text": "Means nothing here"
+   "text": "No longer counts"
   },
   {
    "id": "hand.empty",
@@ -357,7 +330,7 @@
   {
    "id": "need.aircraft_ready",
    "pattern": "P05",
-   "text": "Aircraft ready"
+   "text": "The jet ready to fly at Susana"
   },
   {
    "id": "need.visa",
@@ -367,29 +340,28 @@
   {
    "id": "need.officials",
    "pattern": "P05",
-   "text": "Officials at the border"
+   "text": "Esmeraldan officials waiting at a border post"
   },
   {
    "id": "need.expects",
    "pattern": "P05",
-   "text": "Esmeralda expects you"
+   "text": "Esmeralda expecting you"
   },
   {
    "id": "need.crew",
    "pattern": "P05",
-   "text": "Crew confirmed"
+   "text": "A crew hired for the jet"
   },
   {
    "id": "need.charter",
    "pattern": "P05",
-   "text": "Charter booked"
+   "text": "A charter jet booked"
   },
   {
    "id": "need.working",
    "pattern": "P05",
-   "text": "{stage}, {ally} is on it, due {time}",
+   "text": "{ally} answers by {time}.",
    "args": [
-    "stage",
     "ally",
     "time"
    ]
@@ -402,12 +374,12 @@
   {
    "id": "need.baca",
    "pattern": "P05",
-   "text": "Baca has your name"
+   "text": "Call your sibling to reach Vélez in Baca."
   },
   {
    "id": "need.salek",
    "pattern": "P05",
-   "text": "{sponsor} is asking the ministry",
+   "text": "Call {sponsor} about your visa.",
    "args": [
     "sponsor"
    ]
@@ -419,8 +391,8 @@
   },
   {
    "id": "need.passage",
-   "pattern": "P05",
-   "text": "A passage card"
+   "pattern": "P04",
+   "text": "A way onto the freight"
   },
   {
    "id": "need.decoy",
@@ -434,8 +406,8 @@
   },
   {
    "id": "need.card",
-   "pattern": "P05",
-   "text": "A {tag} card",
+   "pattern": "P04",
+   "text": "A card of this kind: {tag}",
    "args": [
     "tag"
    ]
@@ -448,12 +420,12 @@
   {
    "id": "need.in_hand",
    "pattern": "P05",
-   "text": "In your hand"
+   "text": "In your deck"
   },
   {
    "id": "need.passage_from",
    "pattern": "P05",
-   "text": "Holt or Theo, before midnight"
+   "text": "Holt's crate, Theo's walk through the yard or Nonā Rosa's grandson gets you on"
   },
   {
    "id": "need.nobody",
@@ -463,7 +435,7 @@
   {
    "id": "need.night",
    "pattern": "P05",
-   "text": "After dark"
+   "text": "Only at night, from 10 at night to 5 in the morning."
   },
   {
    "id": "need.is_night",
@@ -478,7 +450,7 @@
   {
    "id": "route.role_aircraft",
    "pattern": "P05",
-   "text": "arranging the aircraft"
+   "text": "arranging the jet and your welcome"
   },
   {
    "id": "route.role_visa",
@@ -488,7 +460,7 @@
   {
    "id": "who.unknown",
    "pattern": "P05",
-   "text": "Unknown"
+   "text": "Untested"
   },
   {
    "id": "who.cut",
@@ -498,27 +470,27 @@
   {
    "id": "who.talked",
    "pattern": "P05",
-   "text": "Talked"
+   "text": "Talked to Sosā"
   },
   {
    "id": "who.clean",
    "pattern": "P05",
-   "text": "Clean"
+   "text": "Tested and loyal"
   },
   {
    "id": "who.doubted",
    "pattern": "P05",
-   "text": "Doubted"
+   "text": "Rumored to talk"
   },
   {
    "id": "who.trusted",
    "pattern": "P05",
-   "text": "Trusted"
+   "text": "Trusts you"
   },
   {
    "id": "route.stops_here",
    "pattern": "P09",
-   "text": "{card} stops counting here",
+   "text": "{card} counts here for the last time",
    "args": [
     "card"
    ]
@@ -597,7 +569,7 @@
   {
    "id": "route.card_stops_line",
    "pattern": "P09",
-   "text": "{card} counts until the line",
+   "text": "{card} counts up to and at the line",
    "args": [
     "card"
    ]
@@ -621,41 +593,6 @@
    "id": "route.no_inquiry",
    "pattern": "P12",
    "text": "Sosā has not moved yet"
-  },
-  {
-   "id": "over.gov_win",
-   "pattern": "P14",
-   "text": "She got away"
-  },
-  {
-   "id": "over.gov_stopped",
-   "pattern": "P14",
-   "text": "You stopped her"
-  },
-  {
-   "id": "over.out",
-   "pattern": "P14",
-   "text": "You got out"
-  },
-  {
-   "id": "over.arrest",
-   "pattern": "P14",
-   "text": "House arrest"
-  },
-  {
-   "id": "over.clock",
-   "pattern": "P14",
-   "text": "Out of time"
-  },
-  {
-   "id": "over.deal",
-   "pattern": "P14",
-   "text": "You took the deal"
-  },
-  {
-   "id": "over.caught",
-   "pattern": "P14",
-   "text": "Caught"
   },
   {
    "id": "over.play_her",
@@ -685,7 +622,7 @@
   {
    "id": "result.lay_low_title",
    "pattern": "P10",
-   "text": "One hour out of sight"
+   "text": "One hour passes"
   },
   {
    "id": "result.your_order",
@@ -713,7 +650,7 @@
   {
    "id": "phase.reports",
    "pattern": "P02",
-   "text": "Reports"
+   "text": "News"
   },
   {
    "id": "phase.phone",
@@ -770,7 +707,7 @@
   {
    "id": "round.held",
    "pattern": "P02",
-   "text": "{place}, held {hold} of three",
+   "text": "{place}, with police stops at step {hold} of three",
    "args": [
     "place",
     "hold"
@@ -779,24 +716,24 @@
   {
    "id": "phase.done_desk",
    "pattern": "P01",
-   "text": "Done at the desk",
+   "text": "Hang up",
    "role": "gov"
   },
   {
    "id": "phase.done_phone",
    "pattern": "P01",
-   "text": "Done with the phone"
+   "text": "Hang up"
   },
   {
    "id": "phase.see_came_in",
    "pattern": "P01",
-   "text": "See what came in",
+   "text": "Read the new reports",
    "role": "gov"
   },
   {
    "id": "phase.see_sosa",
    "pattern": "P01",
-   "text": "See what Sosā did"
+   "text": "See what happened"
   },
   {
    "id": "card.kind_news",
@@ -811,12 +748,12 @@
   {
    "id": "card.kind_hold",
    "pattern": "P02",
-   "text": "They have you"
+   "text": "The police have you"
   },
   {
    "id": "card.rung",
    "pattern": "P02",
-   "text": " · {rung} of three",
+   "text": "Step {rung} of three",
    "args": [
     "rung"
    ]
@@ -839,7 +776,7 @@
   {
    "id": "result.rolled",
    "pattern": "P10",
-   "text": "Rolled {die}, needed {need}",
+   "text": "You rolled {die} and needed {need}",
    "args": [
     "die",
     "need"
@@ -889,7 +826,7 @@
   {
    "id": "sum.held_firm",
    "pattern": "P10",
-   "text": "held firm when Sosā leaned on them"
+   "text": "kept quiet when Sosā questioned them"
   },
   {
    "id": "sum.talked",
@@ -904,7 +841,7 @@
   {
    "id": "sum.not_yet",
    "pattern": "P10",
-   "text": "has nothing yet"
+   "text": "came up empty, so call again"
   },
   {
    "id": "sum.person",
@@ -950,7 +887,7 @@
   {
    "id": "sum.hold",
    "pattern": "P10",
-   "text": "{title} comes next",
+   "text": "The police stopped you: {title}, which you answer before your next move",
    "args": [
     "title"
    ]
@@ -958,7 +895,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "{title}, waiting under News",
+   "text": "{title} is waiting under News",
    "args": [
     "title"
    ]
@@ -974,7 +911,7 @@
   {
    "id": "sum.exposure",
    "pattern": "P10",
-   "text": "Exposure {signed}",
+   "text": "Police attention {signed}",
    "args": [
     "signed"
    ]
@@ -982,7 +919,7 @@
   {
    "id": "sum.exposure_rose",
    "pattern": "P10",
-   "text": "Exposure rose by {n} while time passed",
+   "text": "Police attention rose by {n} while the hours passed.",
    "args": [
     "n"
    ]
@@ -990,7 +927,7 @@
   {
    "id": "sum.exposure_fell",
    "pattern": "P10",
-   "text": "Exposure fell by {n} while time passed",
+   "text": "Police attention fell by {n} while the hours passed.",
    "args": [
     "n"
    ]
@@ -998,7 +935,7 @@
   {
    "id": "daily.out",
    "pattern": "P14",
-   "text": "Escaped after {hours} hrs, rd. {round}",
+   "text": "Escaped after {hours} hours in round {round}",
    "args": [
     "hours",
     "round"
@@ -1007,7 +944,7 @@
   {
    "id": "daily.clock",
    "pattern": "P14",
-   "text": "Ran out of time, rd. {round}",
+   "text": "Ran out of time in round {round}",
    "args": [
     "round"
    ]
@@ -1015,7 +952,7 @@
   {
    "id": "daily.deal",
    "pattern": "P14",
-   "text": "Took the deal, rd. {round}",
+   "text": "Took the president's deal in round {round}",
    "args": [
     "round"
    ]
@@ -1023,7 +960,7 @@
   {
    "id": "daily.arrest",
    "pattern": "P14",
-   "text": "Caught, rd. {round}",
+   "text": "Under house arrest in round {round}",
    "args": [
     "round"
    ]
@@ -1048,7 +985,7 @@
   {
    "id": "log.rolled_lowered",
    "pattern": "P10",
-   "text": "You rolled {die} and needed {need}, lowered by {list}.",
+   "text": "You rolled {die} and needed {need}, after your {list} cards lowered it.",
    "args": [
     "die",
     "need",
@@ -1068,7 +1005,7 @@
   {
    "id": "log.pressed_holds",
    "pattern": "P10",
-   "text": "Sosā presses {name}: {die} against {need}, holds",
+   "text": "Sosā questions {name}, who says nothing, because the die showed {die} and {need} or more would have made them talk.",
    "args": [
     "name",
     "die",
@@ -1078,7 +1015,7 @@
   {
    "id": "log.pressed_breaks",
    "pattern": "P10",
-   "text": "Sosā presses {name}: {die} against {need}, breaks",
+   "text": "Sosā questions {name}, who talks, because the die showed {die} and {need} or more makes them talk.",
    "args": [
     "name",
     "die",
@@ -1088,7 +1025,7 @@
   {
    "id": "log.ally_delivers",
    "pattern": "P10",
-   "text": "{name} rolls {die} against {need} and delivers",
+   "text": "{name} needed {need} and rolled {die}, so the step comes through.",
    "args": [
     "name",
     "die",
@@ -1098,7 +1035,7 @@
   {
    "id": "log.ally_not_yet",
    "pattern": "P10",
-   "text": "{name} rolls {die} against {need}, not yet",
+   "text": "{name} needed {need} and rolled {die}, so nothing comes of it and you have to call again.",
    "args": [
     "name",
     "die",
@@ -1151,7 +1088,7 @@
   {
    "id": "log.answer",
    "pattern": "P10",
-   "text": "You said {label}.",
+   "text": "You answered \"{label}\".",
    "args": [
     "label"
    ]
@@ -1159,7 +1096,7 @@
   {
    "id": "log.order",
    "pattern": "P10",
-   "text": "You sent {name}.",
+   "text": "You gave the order \"{name}\".",
    "args": [
     "name"
    ],
@@ -1176,7 +1113,7 @@
   {
    "id": "log.chose",
    "pattern": "P10",
-   "text": "You chose {label}.",
+   "text": "You chose \"{label}\".",
    "args": [
     "label"
    ]
@@ -1193,7 +1130,7 @@
   {
    "id": "log.tutorial_ended",
    "pattern": "P13",
-   "text": "Tutorial ended"
+   "text": "You left the demo and play on alone."
   },
   {
    "id": "action.send_order",
@@ -1237,7 +1174,7 @@
   {
    "id": "report.empty",
    "pattern": "P12",
-   "text": "No reports yet",
+   "text": "No reports yet.",
    "role": "gov"
   },
   {
@@ -1267,7 +1204,7 @@
   {
    "id": "gov.counts_valdoria",
    "pattern": "P09",
-   "text": "Counts in Valdória",
+   "text": "Counts at another stop in Valdória",
    "role": "gov"
   },
   {
@@ -1279,7 +1216,7 @@
   {
    "id": "gov.would_start",
    "pattern": "P09",
-   "text": "Would start at the line",
+   "text": "Would let your patrols act at Susana",
    "role": "gov"
   },
   {
@@ -1304,13 +1241,13 @@
   {
    "id": "route.may_be_here",
    "pattern": "P06",
-   "text": "She may be here",
+   "text": "You are searching here",
    "role": "gov"
   },
   {
    "id": "route.no_command",
    "pattern": "P04",
-   "text": "Your ministry does not command this tower",
+   "text": "Search, checkpoint and call-in orders here need Esmeralda's agreement",
    "role": "gov"
   },
   {
@@ -1322,7 +1259,7 @@
   {
    "id": "route.esm_intro",
    "pattern": "P09",
-   "text": "An Esmeraldan introduction would start at the line",
+   "text": "The Esmeraldan introduction lets your patrols act at Susana.",
    "role": "gov"
   },
   {
@@ -1336,7 +1273,7 @@
   {
    "id": "start.demo_note",
    "pattern": "P13",
-   "text": "{name} walks you to the airfield, and then it is yours.",
+   "text": "Play {name} with a coach as far as the airfield, then finish the run yourself.",
    "args": [
     "name"
    ]
@@ -1410,7 +1347,7 @@
   {
    "id": "menu.guided",
    "pattern": "P01",
-   "text": "Guided run"
+   "text": "Play the demo"
   },
   {
    "id": "menu.start",
@@ -1440,12 +1377,7 @@
   {
    "id": "scene.label",
    "pattern": "P02",
-   "text": "Pixel-art scene of the current level"
-  },
-  {
-   "id": "scene.left",
-   "pattern": "P05",
-   "text": "left,"
+   "text": "Pixel-art view of where you are now"
   },
   {
    "id": "scene.goal_label",
@@ -1465,17 +1397,17 @@
   {
    "id": "coach.leave",
    "pattern": "P01",
-   "text": "Leave"
+   "text": "Leave the demo"
   },
   {
    "id": "log.heading",
    "pattern": "P02",
-   "text": "What happened"
+   "text": "The log"
   },
   {
    "id": "hand.heading",
    "pattern": "P02",
-   "text": "Your hand"
+   "text": "Deck"
   },
   {
    "id": "hand.game",
@@ -1490,17 +1422,17 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick an approach under Here, read the odds, then commit. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move under Here, read the odds, then tap **Try it**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
   },
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "A card lowers the roll or opens a door, but only where its owner has pull. The party's word stops at the line, and some people only move for money."
+   "text": "A card lowers the number you need on the die, or lets you try a move at all, but only at the stops listed under Where it counts. The party's cards stop working at the border, and some people only move for money."
   },
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "A round is News, Phone, Move, Roll and then Sosā. At exposure 10 you are held, each hold is worse than the last, and the third is house arrest. Get out of Esmeraldan airspace inside 72 hours."
+   "text": "A round is News, Phone, Move, Roll and then Sosā. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Esmeraldan airspace inside 72 hours."
   },
   {
    "id": "help.ios",
@@ -1515,7 +1447,7 @@
   {
    "id": "route.legend_inhand",
    "pattern": "P05",
-   "text": "In hand"
+   "text": "Done"
   },
   {
    "id": "route.legend_promised",
@@ -1550,7 +1482,7 @@
   {
    "id": "tab.hand",
    "pattern": "P02",
-   "text": "Hand"
+   "text": "Deck"
   },
   {
    "id": "update.ready",
@@ -1595,7 +1527,7 @@
   {
    "id": "start.blurb",
    "pattern": "P08",
-   "text": "You lost the election, and the court will not let you leave Valdória. Your family has a jet waiting at Susana, across the border in Esmeralda, but nobody has agreed to take you in yet."
+   "text": "You lost the election, and the court will not let you leave Valdória. Your family has found a jet that can fly you out of Susana, across the border in Esmeralda, but nobody has agreed to take you in yet."
   },
   {
    "id": "start.continue_plain",
@@ -1694,7 +1626,7 @@
   {
    "id": "sim.end.a_car_meets_the_aircraft",
    "pattern": "P14",
-   "text": "A car meets the aircraft at {city}.",
+   "text": "A car meets the jet at {city}.",
    "args": [
     "city"
    ]
@@ -1702,12 +1634,12 @@
   {
    "id": "sim.inquiry.the_yacht_story_is_dead",
    "pattern": "P10",
-   "text": " The yacht story is dead, and the papers say so."
+   "text": " Your yacht story falls apart, and that costs you more."
   },
   {
    "id": "sim.inquiry.tells_them_where_you_were",
    "pattern": "P10",
-   "text": " {first} tells them where you were last seen.{yacht}",
+   "text": " {first} tells them where you are and stops helping you.{yacht}",
    "args": [
     "first",
     "yacht"
@@ -1732,17 +1664,17 @@
   {
    "id": "sim.inquiry.the_operator_withdraws_the_crew",
    "pattern": "P10",
-   "text": " The operator withdraws the crew until you reassure him."
+   "text": " The operator pulls the crew, and the jet drops back one step."
   },
   {
    "id": "sim.inquiry.nothing_new",
    "pattern": "P10",
-   "text": " Nothing new."
+   "text": " You made no calls in the last three hours, so they learn nothing."
   },
   {
    "id": "sim.inquiry.the_last_call_came_from",
    "pattern": "P10",
-   "text": " The last call came from where you are."
+   "text": " Your last call came from here, so Sosā now searches where you are."
   },
   {
    "id": "sim.inquiry.nobody_there_has_seen_you",
@@ -1795,7 +1727,7 @@
   {
    "id": "sim.inquiry.monday_noon_your_own_passport",
    "pattern": "P10",
-   "text": "Monday noon: your passport is cancelled and the ban is at every post."
+   "text": "The passport deadline has passed, so your own passport is cancelled, the travel ban is at every post, and any police stop now starts at the station."
   },
   {
    "id": "sim.line.think_about_it_i_will",
@@ -1863,7 +1795,7 @@
   {
    "id": "sim.say.gianluka_does_not_answer_again",
    "pattern": "P10",
-   "text": "Gianlūka does not answer again, and by afternoon the inquiry has a town and a street."
+   "text": "Gianlūka does not answer again, and the inquiry now knows where you are."
   },
   {
    "id": "sim.line.thank_you_sosa_s_people",
@@ -1942,7 +1874,7 @@
   {
    "id": "sim.why.not_something_you_can_do",
    "pattern": "P04",
-   "text": "Not here"
+   "text": "You cannot do that here."
   },
   {
    "id": "sim.why.answer_the_news_first",
@@ -1962,7 +1894,7 @@
   {
    "id": "sim.say.is_clean_and_offended_you",
    "pattern": "P10",
-   "text": "{name} is clean, and offended you asked.",
+   "text": "{name} is clean, and you can count on {name} now.",
    "args": [
     "name"
    ]
@@ -1970,7 +1902,7 @@
   {
    "id": "sim.say.was_working_for_sosa_you",
    "pattern": "P10",
-   "text": "{name} was working for Sosā, and you found out in time.",
+   "text": "{name} was working for Sosā, so you drop every card {name} gave you before it can hurt you.",
    "args": [
     "name"
    ]
@@ -2051,7 +1983,7 @@
   {
    "id": "sim.why.you_do_not_have_salek",
    "pattern": "P04",
-   "text": "Call {sponsor} about permission first.",
+   "text": "{sponsor} has to agree to help with your visa first.",
    "args": [
     "sponsor"
    ]
@@ -2059,7 +1991,7 @@
   {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "Call {sponsor} before you reach Susana",
+   "text": "It is too late to ask {sponsor} for a visa from Susana.",
    "args": [
     "sponsor"
    ]
@@ -2067,27 +1999,27 @@
   {
    "id": "sim.status.arrange_reception_through_your_sibling",
    "pattern": "P05",
-   "text": "Your sibling reaches Vélez, and Vélez reaches the border"
+   "text": "Your sibling gets Vélez to expect you, and later Vélez can put officials at one border post."
   },
   {
    "id": "sim.status.call_from_salta_to_request",
    "pattern": "P05",
-   "text": "From Salta you can ask for officials at the line"
+   "text": "You can ask Vélez for officials at the line once you reach Salta."
   },
   {
    "id": "sim.status.arrange_the_next_stage_charter",
    "pattern": "P05",
-   "text": "The jet still needs a charter, a crew, fuel and a place to wait"
+   "text": "Your sibling sets up the jet in steps: charter, crew, fuel, then ready at Susana."
   },
   {
    "id": "sim.why.not_answering",
    "pattern": "P04",
-   "text": "Not picking up"
+   "text": "Your sibling is not picking up."
   },
   {
    "id": "sim.why.name_a_destination_or_engage",
    "pattern": "P04",
-   "text": "Pick a country or call {sponsor} first",
+   "text": "Confirm the destination on the phone, or get {sponsor} to agree to help, first.",
    "args": [
     "sponsor"
    ]
@@ -2095,7 +2027,7 @@
   {
    "id": "sim.preview.next_reply_in_hours_needs",
    "pattern": "P03",
-   "text": "Next is {stage}, and {name} answers in {k} hours on a {turned} or better",
+   "text": "{name} works on the next step, {stage}, and answers in {k} hours. It comes through on a roll of {turned} or better.",
    "args": [
     "stage",
     "k",
@@ -2123,9 +2055,8 @@
   {
    "id": "sim.status.is_on_it",
    "pattern": "P05",
-   "text": "{arrangement}, {name} is on it",
+   "text": "{name} is working on it",
    "args": [
-    "arrangement",
     "name"
    ]
   },
@@ -2141,12 +2072,12 @@
   {
    "id": "sim.preview.your_cards_lower_it",
    "pattern": "P03",
-   "text": " Your cards lower it: "
+   "text": "Your cards lower that number:"
   },
   {
    "id": "sim.preview.die_needs_or_more_in",
    "pattern": "P03",
-   "text": "You need {need} or more, {need2} in six.{bonus}",
+   "text": "Roll {need} or higher to succeed, {need2} chances in six.{bonus}",
    "args": [
     "need",
     "need2",
@@ -2156,12 +2087,12 @@
   {
    "id": "sim.preview.cannot_succeed_with_your_current",
    "pattern": "P03",
-   "text": "Cannot work with the help you have"
+   "text": "This cannot succeed."
   },
   {
    "id": "sim.preview.succeeds_without_a_roll",
    "pattern": "P03",
-   "text": "No roll needed"
+   "text": "This works without a roll."
   },
   {
    "id": "sim.why.talked_to_the_inquiry",
@@ -2182,7 +2113,7 @@
   {
    "id": "sim.why.needs_a_card",
    "pattern": "P04",
-   "text": "You need a {card} card",
+   "text": "You need a card that gives you {card}.",
    "args": [
     "card"
    ]
@@ -2190,7 +2121,7 @@
   {
    "id": "sim.why.your_card_is_not_recognized",
    "pattern": "P04",
-   "text": "Your {card} card means nothing here",
+   "text": "The card you hold for {card} does not work here.",
    "args": [
     "card"
    ]
@@ -2198,7 +2129,7 @@
   {
    "id": "sim.effect.aircraft_preparations_stay_on_hold",
    "pattern": "P03",
-   "text": "The jet stays grounded until you deal with it."
+   "text": "Nothing changes, and the jet stays where it is in its preparations."
   },
   {
    "id": "sim.opt.ignore_it",
@@ -2208,7 +2139,7 @@
   {
    "id": "sim.effect.requires_v_lez_s_card",
    "pattern": "P03",
-   "text": "You need Vélez's card. She calls the operator, and the jet is ready again without anyone noticing."
+   "text": "Vélez calls the operator, and the jet is ready at Susana with nobody watching."
   },
   {
    "id": "sim.opt.have_v_lez_call_the",
@@ -2218,7 +2149,7 @@
   {
    "id": "sim.effect.restores_the_aircraft_to_ready",
    "pattern": "P03",
-   "text": "The jet is ready again. Paying the crew on the apron gets you noticed, and your exposure rises by one."
+   "text": "The jet is ready at Susana. Paying the crew on the apron gets you noticed, and your police attention rises by one."
   },
   {
    "id": "sim.opt.pay_the_crew_bonus",
@@ -2234,7 +2165,7 @@
   {
    "id": "sim.effect.nothing_changes",
    "pattern": "P03",
-   "text": "Nothing changes, and the story stays on the radio."
+   "text": "Nothing changes."
   },
   {
    "id": "sim.opt.hang_up",
@@ -2244,7 +2175,7 @@
   {
    "id": "sim.effect.an_hour_on_the_phone",
    "pattern": "P03",
-   "text": "You keep Sosā on the line for an hour. He thinks you are wavering and skips his next move."
+   "text": "You keep Sosā on the line for an hour, and he skips his next action."
   },
   {
    "id": "sim.opt.keep_him_talking",
@@ -2260,7 +2191,7 @@
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
    "pattern": "P03",
-   "text": "Vélez pulls her officials from the post. Her card still opens the tower."
+   "text": "Vélez pulls her officials from the border post, and your welcome in Esmeralda drops back to \"Esmeralda expects you.\" You keep her card."
   },
   {
    "id": "sim.opt.refuse",
@@ -2270,7 +2201,7 @@
   {
    "id": "sim.effect.reception_stands_the_party_at",
    "pattern": "P03",
-   "text": "Her people stay at the post. The party at home reads what you said."
+   "text": "Vélez's arrangements stay as they are."
   },
   {
    "id": "sim.opt.say_it",
@@ -2291,7 +2222,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, and his friend inside the inquiry keeps telling you where Sosā is looking."
+   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and Sosā's search moves to Santa Laura."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2312,7 +2243,7 @@
   {
    "id": "sim.effect.nothing_changes_you_know_the",
    "pattern": "P03",
-   "text": "You board at midnight. The men stay at the gate."
+   "text": "Nothing changes, and the men stay at the gate."
   },
   {
    "id": "sim.opt.midnight_it_is",
@@ -2328,7 +2259,7 @@
   {
    "id": "sim.effect.nothing_moves_until_you_call",
    "pattern": "P03",
-   "text": "Nothing moves until you call her yourself."
+   "text": "Nothing moves until you call about your welcome in Esmeralda again."
   },
   {
    "id": "sim.opt.wait",
@@ -2363,7 +2294,7 @@
   {
    "id": "sim.effect.lose_salek_and_his_line",
    "pattern": "P03",
-   "text": "{sponsor} hangs up for good, and no visa will come. You can still fly without one.",
+   "text": "{sponsor} hangs up for good, and you lose your sponsor's line to the ministry. No visa will come, but you can still fly without one.",
    "args": [
     "sponsor"
    ]
@@ -2371,7 +2302,7 @@
   {
    "id": "sim.effect.permission_stalls_twelve_hours_he",
    "pattern": "P03",
-   "text": "{sponsor} keeps the line open, but the visa waits another 12 hours.",
+   "text": "{sponsor} keeps helping, but a visa request already with {sponsor} takes 12 hours longer.",
    "args": [
     "sponsor"
    ]
@@ -2384,7 +2315,7 @@
   {
    "id": "sim.effect.sends_them_to_the_house",
    "pattern": "P03",
-   "text": "Sosā sends the patrol to the house you just left. It buys you less time, but it costs you nothing later."
+   "text": "Sosā's search goes back to the residence, your police attention stays the same, and nothing comes back on you later."
   },
   {
    "id": "sim.opt.deny_it_you_are_at",
@@ -2394,7 +2325,7 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "Sosā searches the coast instead of the road. If a friend later tells him the truth, the lie costs you one more point of exposure."
+   "text": "Sosā's search goes back to the residence, and your police attention drops by one. If one of your people later talks to Sosā, the lie adds one more point."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
@@ -2418,7 +2349,7 @@
   {
    "id": "sim.effect.crew_booking_waits_until_salek",
    "pattern": "P03",
-   "text": "The crew will not book until {sponsor} takes your call.",
+   "text": "The charter jet is booked, and the crew waits until {sponsor} agrees to help with your visa.",
    "args": [
     "sponsor"
    ]
@@ -2469,134 +2400,42 @@
    "role": "gov"
   },
   {
-   "id": "gov.debrief.none_every_report_was_true",
-   "pattern": "P14",
-   "text": "Every report was true as far as it went.",
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.he_has_not_forgotten_the",
    "pattern": "P14",
-   "text": " He has not forgotten the promises you made without him.",
-   "role": "gov"
+   "text": " Over the run, he was angry with how you handled things."
   },
   {
    "id": "gov.debrief.your_handling_of_the_press",
    "pattern": "P14",
-   "text": " Your handling of the press pleased him.",
-   "role": "gov"
+   "text": " Over the run, he was pleased with how you handled things."
   },
   {
    "id": "gov.debrief.he_never_got_his_location",
    "pattern": "P14",
-   "text": "He never got his location, and he has a new aide in mind.",
-   "role": "gov"
+   "text": "You never gave the minister a town."
   },
   {
    "id": "gov.debrief.you_asked_for_time_and",
    "pattern": "P14",
-   "text": "You asked for time {times} and never named a place. He has a new aide in mind.",
+   "text": "You asked the minister for more time {times} and never named a town.",
    "args": [
     "times"
-   ],
-   "role": "gov"
+   ]
   },
   {
    "id": "gov.debrief.you_gave_him_the_right",
    "pattern": "P14",
-   "text": "You gave him the right town. He took the credit, which is what you are for.",
-   "role": "gov"
+   "text": "You told the minister the right town."
   },
   {
    "id": "gov.debrief.you_told_him_you_did",
    "pattern": "P14",
-   "text": "You told him you did not know. He briefed the papers himself and remembers that you made him.",
-   "role": "gov"
+   "text": "You told the minister you did not know where she was."
   },
   {
    "id": "gov.debrief.you_gave_him_a_town",
    "pattern": "P14",
-   "text": "You gave him a town, he said it on television, and it was the wrong one. He does not say your name now.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.delivered_failed",
-   "pattern": "P14",
-   "text": "{w}: {ok} delivered, {no} failed.",
-   "args": [
-    "w",
-    "ok",
-    "no"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.it_was_one_of_nando",
-   "pattern": "P14",
-   "text": "{text} It was one of Nando's decoys.",
-   "args": [
-    "text"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.wrong",
-   "pattern": "P14",
-   "text": "Wrong",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.decoy",
-   "pattern": "P14",
-   "text": "Decoy",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.right",
-   "pattern": "P14",
-   "text": "Right",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.she_never_left_the_hearing",
-   "pattern": "P14",
-   "text": "{time}. She never left. The hearing proceeds without her in custody.",
-   "args": [
-    "time"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.sosa_s_people_reached_her",
-   "pattern": "P14",
-   "text": "Sosā's people reached her at {place} at {time}. She is in custody for the hearing.",
-   "args": [
-    "place",
-    "time"
-   ],
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.esmeralda_was_never_asked_in",
-   "pattern": "P14",
-   "text": "Esmeralda was never asked in time.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.esmeralda_acknowledged_your_hold_the",
-   "pattern": "P14",
-   "text": "Esmeralda acknowledged your hold. The tower never received it.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.the_jet_left_esmeraldan_airspace",
-   "pattern": "P14",
-   "text": "The jet left Esmeraldan airspace at {time}. {esmeralda_was_never_asked_in}",
-   "args": [
-    "time",
-    "esmeralda_was_never_asked_in"
-   ],
-   "role": "gov"
+   "text": "You told the minister the wrong town."
   },
   {
    "id": "gov.report.where_she_is_instead",
@@ -2736,7 +2575,7 @@
   {
    "id": "gov.report.her_side_knows_the_ban",
    "pattern": "P06",
-   "text": "Her side knows the ban is out.",
+   "text": "Her side knows about the ban.",
    "role": "gov"
   },
   {
@@ -2826,7 +2665,7 @@
   {
    "id": "gov.say.you_move_the_search_to",
    "pattern": "P10",
-   "text": "You move the search to {place}.",
+   "text": "Your next orders will act at {place}.",
    "args": [
     "place"
    ],
@@ -2914,55 +2753,55 @@
   {
    "id": "gov.status.no_one_here_your_ministry",
    "pattern": "P05",
-   "text": "No one here; your ministry does not command this tower",
+   "text": "You have no one in Esmeralda.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_a_name_at",
    "pattern": "P05",
-   "text": "Your people: a name at the interior ministry",
+   "text": "A name at the interior ministry takes your calls.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_the_border_post",
    "pattern": "P05",
-   "text": "Your people: the border post",
+   "text": "The border post works for you.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_a_railway_contact",
    "pattern": "P05",
-   "text": "Your people: a railway contact, not asked yet",
+   "text": "A railway contact here has not been asked yet.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_the_railway_contact",
    "pattern": "P05",
-   "text": "Your people: the railway contact",
+   "text": "Your railway contact works here.",
    "role": "gov"
   },
   {
    "id": "gov.status.no_one_here_yet",
    "pattern": "P05",
-   "text": "No one here yet.",
+   "text": "You have no one here yet.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_the_registry",
    "pattern": "P05",
-   "text": "Your people: the registry",
+   "text": "The registry works for you here.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_the_provincial_desk",
    "pattern": "P05",
-   "text": "Your people: the provincial desk and its patrol",
+   "text": "The provincial desk and its patrol work here.",
    "role": "gov"
   },
   {
    "id": "gov.status.your_people_the_watch_team",
    "pattern": "P05",
-   "text": "Your people: the watch team, Inspector Sosā",
+   "text": "The watch team and Inspector Sosā work here.",
    "role": "gov"
   },
   {
@@ -3022,7 +2861,7 @@
   {
    "id": "gov.scene.she_may_be_across_the",
    "pattern": "P08",
-   "text": "She may be across the border, where your ministry has little reach.",
+   "text": "This is Esmeralda. Searches, checkpoints and call-ins here need Esmeralda's agreement first.",
    "role": "gov",
    "note": "objective"
   },
@@ -3036,28 +2875,28 @@
   {
    "id": "gov.scene.a_departure_window_is_approaching",
    "pattern": "P08",
-   "text": "The freight leaves soon. Railway staff disagree about who is on it.",
+   "text": "The midnight freight leaves from here. The yardmaster knows who paid for passage.",
    "role": "gov",
    "note": "objective"
   },
   {
    "id": "gov.scene.someone_is_sheltering_her_your",
    "pattern": "P08",
-   "text": "Someone is sheltering her. Your source has conditions.",
+   "text": "You have no one in Nova Trentô. A patrol search is your best check.",
    "role": "gov",
    "note": "objective"
   },
   {
    "id": "gov.scene.reports_conflict_a_patrol_can",
    "pattern": "P08",
-   "text": "Reports conflict. A patrol can check one of them.",
+   "text": "Your patrol can search Santa Laura or close the road out.",
    "role": "gov",
    "note": "objective"
   },
   {
    "id": "gov.scene.the_watched_convoy_splits_the",
    "pattern": "P08",
-   "text": "The watched convoy splits, and the minister wants a location.",
+   "text": "Your watch team is on the house. The minister wants a location.",
    "role": "gov",
    "note": "objective"
   },
@@ -3118,13 +2957,13 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "Six hours, needs a three or more, and gives you the operator card",
+   "text": "The desk answers in six hours and needs a three or more. It gives you the operator card.",
    "role": "gov"
   },
   {
    "id": "gov.why.the_aviation_desk_opens_on",
    "pattern": "P04",
-   "text": "The aviation desk opens on Sunday.",
+   "text": "The aviation desk opens Saturday at 8 p.m.",
    "role": "gov"
   },
   {
@@ -3136,7 +2975,7 @@
   {
    "id": "gov.label.open_a_licence_review_on",
    "pattern": "P01",
-   "text": "Review the operator's licence",
+   "text": "Open a license review",
    "role": "gov"
   },
   {
@@ -3148,7 +2987,7 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "10 hours through Baca, needs a four or more, and if Esmeralda agrees her departure gets harder",
+   "text": "Baca answers in 10 hours and needs a four or more. If Esmeralda agrees, her takeoff gets harder and your patrols can act at Susana.",
    "role": "gov"
   },
   {
@@ -3172,7 +3011,7 @@
   {
    "id": "gov.preview.cannot_fail",
    "pattern": "P03",
-   "text": "Cannot fail.",
+   "text": "If it fails, nothing happens.",
    "role": "gov"
   },
   {
@@ -3187,7 +3026,7 @@
   {
    "id": "gov.preview.takes_hour_acts",
    "pattern": "P03",
-   "text": "Takes {hours} hour{s}, {who} acts",
+   "text": "Takes {hours} hour{s}. Done by {who}.",
    "args": [
     "hours",
     "s",
@@ -3198,7 +3037,7 @@
   {
    "id": "gov.preview.your_cards_lower_it",
    "pattern": "P03",
-   "text": " Your cards lower it: ",
+   "text": "Your cards lower it: ",
    "role": "gov"
   },
   {
@@ -3225,7 +3064,7 @@
   {
    "id": "gov.effect.honest_the_minister_briefs_the",
    "pattern": "P03",
-   "text": "Honest, and the minister briefs the papers himself",
+   "text": "The minister tells the papers she has fled. Her side relaxes, and the police move to a stop where she is not.",
    "role": "gov"
   },
   {
@@ -3235,15 +3074,9 @@
    "role": "gov"
   },
   {
-   "id": "gov.effect.public_if_you_are_wrong",
-   "pattern": "P03",
-   "text": "Public, and if you are wrong your own offices follow the wrong lead for hours",
-   "role": "gov"
-  },
-  {
    "id": "gov.opt.name_where_you_think_she",
    "pattern": "P01",
-   "text": "Name where you think she is",
+   "text": "Name the stop you are searching",
    "role": "gov"
   },
   {
@@ -3302,8 +3135,7 @@
   {
    "id": "gov.report.an_aircraft_is_booked",
    "pattern": "P06",
-   "text": "An aircraft is booked.",
-   "role": "gov"
+   "text": "A jet is booked."
   },
   {
    "id": "gov.report.a_charter_to_layuna_is",
@@ -3498,12 +3330,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.effect.the_minister_waits_he_remembers",
-   "pattern": "P03",
-   "text": "The minister waits and remembers asking",
-   "role": "gov"
-  },
-  {
    "id": "gov.opt.ask_for_six_hours",
    "pattern": "P01",
    "text": "Ask for six hours",
@@ -3535,12 +3361,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.debrief.h_where",
-   "pattern": "P02",
-   "text": "Where she was, and where you looked",
-   "role": "gov"
-  },
-  {
    "id": "gov.debrief.th_when",
    "pattern": "P02",
    "text": "When",
@@ -3549,31 +3369,17 @@
   {
    "id": "gov.debrief.th_she_was",
    "pattern": "P02",
-   "text": "She was",
-   "role": "gov"
+   "text": "Where she was"
   },
   {
    "id": "gov.debrief.th_you_looked",
    "pattern": "P02",
-   "text": "You looked",
-   "role": "gov"
+   "text": "Where your search was aimed"
   },
   {
    "id": "gov.debrief.no_orders",
    "pattern": "P12",
    "text": "You gave no orders.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.h_misled",
-   "pattern": "P02",
-   "text": "Reports that misled you",
-   "role": "gov"
-  },
-  {
-   "id": "gov.debrief.h_delivered",
-   "pattern": "P02",
-   "text": "Who delivered",
    "role": "gov"
   },
   {
@@ -3630,21 +3436,6 @@
    "text": "Your search team"
   },
   {
-   "id": "render.over_custody",
-   "pattern": "P14",
-   "text": "In custody"
-  },
-  {
-   "id": "render.over_out",
-   "pattern": "P14",
-   "text": "Out of Esmeraldan airspace"
-  },
-  {
-   "id": "render.over_inquiry",
-   "pattern": "P14",
-   "text": "The inquiry wins"
-  },
-  {
    "id": "menu.credits",
    "pattern": "P01",
    "text": "Credits"
@@ -3657,22 +3448,22 @@
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Answer a message or make one call, then tap Done with the phone."
+   "text": "Answer any messages first, then make your one call or tap Hang up; either one ends your time on the phone."
   },
   {
    "id": "hint.move",
    "pattern": "P08",
-   "text": "Pick one approach, or lie low for an hour."
+   "text": "Pick one move, or lie low for an hour."
   },
   {
    "id": "hint.roll",
    "pattern": "P08",
-   "text": "See how it went."
+   "text": "See how your move went."
   },
   {
    "id": "hint.sosa",
    "pattern": "P08",
-   "text": "See what the inquiry did."
+   "text": "See what Sosā and your allies did."
   },
   {
    "id": "hint.gov_news",
@@ -3683,7 +3474,7 @@
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Answer the minister or send one request, then tap Done at the desk.",
+   "text": "Answer the minister first, then send your one request or tap Hang up; either one ends your time at the desk.",
    "role": "gov"
   },
   {
@@ -3695,13 +3486,13 @@
   {
    "id": "hint.gov_roll",
    "pattern": "P08",
-   "text": "See how it went.",
+   "text": "See how your order went.",
    "role": "gov"
   },
   {
    "id": "hint.gov_sosa",
    "pattern": "P08",
-   "text": "Read what reached your desk.",
+   "text": "Read the reports on her move.",
    "role": "gov"
   },
   {
@@ -3733,7 +3524,7 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "Ask {sponsor} for the visa, on {sponsor}’s terms",
+   "text": "{sponsor} asks the ministry for your visa, and {sponsor} will want something back.",
    "args": [
     "sponsor"
    ]
@@ -3741,7 +3532,7 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The crew books a flight to {city}. You still have no visa, so you may land with no one to receive you.",
+   "text": "The charter jet is booked. Your next call about the jet can hire a crew for {city}, and the visa is a separate request.",
    "args": [
     "city"
    ]
@@ -3749,7 +3540,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} chooses for you. It takes a roll of {need} or better, and a miss costs six hours.",
+   "text": "{place} picks the city for you on a roll of {need} or better. On a miss, you cannot call about the jet for six hours.",
    "args": [
     "place",
     "need"
@@ -3772,7 +3563,7 @@
   {
    "id": "sim.ledger.promised",
    "pattern": "P05",
-   "text": "Promised {what} by {due}.",
+   "text": "Promised to reach \"{what}\" by {due}.",
    "args": [
     "what",
     "due"
@@ -3789,7 +3580,7 @@
   {
    "id": "sim.ledger.nothing_yet",
    "pattern": "P05",
-   "text": "Nothing on {what} yet",
+   "text": "Did not deliver \"{what}.\"",
    "args": [
     "what"
    ]
@@ -3797,12 +3588,12 @@
   {
    "id": "sim.ledger.still_considering",
    "pattern": "P05",
-   "text": "The ministry is still thinking"
+   "text": "The ministry is still thinking it over."
   },
   {
    "id": "sim.ledger.post_was_bought",
    "pattern": "P05",
-   "text": "The sergeant at the {post} had been paid, and you lost 12 hours finding out",
+   "text": "The sergeant at the {post} is paid off, and you lose 12 hours finding out.",
    "args": [
     "post"
    ]
@@ -3824,11 +3615,6 @@
    ]
   },
   {
-   "id": "over.landed",
-   "pattern": "P02",
-   "text": "Taken on landing"
-  },
-  {
    "id": "map.title",
    "pattern": "P02",
    "text": "Pick a country"
@@ -3836,7 +3622,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "The leader of Esmeralda has arranged safe passage if you can make it to the capital city, Susana."
+   "text": "Esmeralda will let you fly out from Susana airfield, once you cross the border to reach it."
   },
   {
    "id": "map.here",
@@ -3851,7 +3637,7 @@
   {
    "id": "map.choose",
    "pattern": "P01",
-   "text": "Fly to {name}",
+   "text": "Choose {name}",
    "args": [
     "name"
    ]
@@ -3859,23 +3645,12 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "You have a second passport to fly already. What you need to escape is a proper visa."
-  },
-  {
-   "id": "gov.debrief.taken_on_landing",
-   "pattern": "P14",
-   "text": "The jet left Susana at {time} and landed at {city}. {name} had never agreed to take her. She was held at the airport and handed back.",
-   "args": [
-    "time",
-    "city",
-    "name"
-   ],
-   "role": "gov"
+   "text": "Your second passport gets you on the plane. You also need an entry visa from the country you pick."
   },
   {
    "id": "sim.effect.requires_sponsor_help",
    "pattern": "P03",
-   "text": "{sponsor} reaches her uncle, and Esmeralda expects you. You owe {sponsor} another favor.",
+   "text": "{sponsor} reaches her uncle, and Vélez's minister hears about you. You get Vélez's card and spend your sponsor's line to the ministry.",
    "args": [
     "sponsor"
    ]
@@ -3891,7 +3666,7 @@
   {
    "id": "sum.exposure_round_here",
    "pattern": "P10",
-   "text": "Exposure rose by {n} this round because Sosā is looking where you are",
+   "text": "Police attention rose by {n} this round, and Sosā is searching where you are now",
    "args": [
     "n"
    ]
@@ -3899,7 +3674,7 @@
   {
    "id": "sum.exposure_round",
    "pattern": "P10",
-   "text": "Exposure rose by {n} this round.",
+   "text": "Police attention rose by {n} this round.",
    "args": [
     "n"
    ]
@@ -3907,7 +3682,7 @@
   {
    "id": "sum.exposure_round_fell",
    "pattern": "P10",
-   "text": "Exposure fell by {n} this round.",
+   "text": "Police attention fell by {n} this round.",
    "args": [
     "n"
    ]
@@ -3915,7 +3690,7 @@
   {
    "id": "over.save_run",
    "pattern": "P01",
-   "text": "Save this run"
+   "text": "Download this run"
   },
   {
    "id": "over.copy_replay",
@@ -3975,12 +3750,12 @@
   {
    "id": "about.p2",
    "pattern": "P08",
-   "text": "Your brother is abroad finding a jet, and no crew will book until he can tell them where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
+   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
   },
   {
    "id": "about.p3",
    "pattern": "P08",
-   "text": "Nando has driven you for 11 years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Three of these people have already talked to Sosā."
+   "text": "Nando has driven you for 11 years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Two of the people helping you already work for Sosā, and which two changes every run."
   },
   {
    "id": "about.road_h",
@@ -3990,17 +3765,17 @@
   {
    "id": "about.p4",
    "pattern": "P08",
-   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three posts cross into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
+   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three crossings lead into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
   },
   {
    "id": "about.p5",
    "pattern": "P08",
-   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter. Gannibal in Zaryanova, where Mirēlā Vosk wants you on the record with names. None of them has said yes. The visa comes while you run or it does not, and a jet that lands without one is met on the apron."
+   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter. Gannibal in Zaryanova, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, you are sent back."
   },
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move takes a roll of one die, and a mistake pushes the Exposure count toward 10. At 10 Sosā's people stop you: questions the first time, house arrest the second, and the third time the run is over. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move takes a roll of one die, and police attention climbs toward 10 while Sosā searches where you are. At 10 the police stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -4020,7 +3795,7 @@
   {
    "id": "about.p8",
    "pattern": "P08",
-   "text": "The demo is one scripted escape with a coach beside you, 20 steps. In the daily run everyone gets the same dice, so you and a friend can compare endings. It is one page that works offline once loaded and saves your run. It is hard on purpose, and one bad call on Saturday evening can end it before it starts, so when a 20-minute run ends you start another."
+   "text": "The demo is one scripted escape with a coach beside you, 20 steps, and there is a shorter one for the government side. In the daily run everyone starts from the same draw, so you and a friend can compare endings. It is one page that works offline once loaded and saves your run. It is hard on purpose, and one bad call on Saturday evening can end it before it starts, so when a 20-minute run ends you start another."
   },
   {
    "id": "about.world",
@@ -4063,7 +3838,7 @@
   {
    "id": "daily.landed",
    "pattern": "P14",
-   "text": "Held on landing, rd. {round}",
+   "text": "Sent back on landing in round {round}",
    "args": [
     "round"
    ]
@@ -4125,12 +3900,664 @@
   {
    "id": "sim.effect.decoy_at_the_yard",
    "pattern": "P03",
-   "text": "You need the decoy card. The men follow Nando's sedan, and your exposure drops by two."
+   "text": "You spend your two spare cars. The men follow Nando's sedan north, Sosā's search moves to Santa Laura, and your police attention drops by two."
   },
   {
    "id": "sim.effect.break_word",
    "pattern": "P03",
-   "text": "You lose every card Gianlūka gave you. He tells Sosā where you are, and your exposure rises by two."
+   "text": "You lose every card Gianlūka gave you. He tells Sosā where you are, and your police attention rises by two."
+  },
+  {
+   "id": "gov.debrief.k_on",
+   "pattern": "P02",
+   "text": "Right town"
+  },
+  {
+   "id": "gov.debrief.k_close",
+   "pattern": "P02",
+   "text": "One town away"
+  },
+  {
+   "id": "gov.debrief.k_decoy",
+   "pattern": "P02",
+   "text": "A town a false report named",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.k_lost",
+   "pattern": "P02",
+   "text": "Wrong town"
+  },
+  {
+   "id": "gov.debrief.trail_sum",
+   "pattern": "P14",
+   "text": "Your search was aimed at the town she was in {on} of the {total} times you gave an order.",
+   "args": [
+    "on",
+    "total"
+   ]
+  },
+  {
+   "id": "gov.debrief.h_decided",
+   "pattern": "P02",
+   "text": "What happened"
+  },
+  {
+   "id": "gov.debrief.m_never",
+   "pattern": "P14",
+   "text": "Your search was never aimed at the town she was in.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_clean",
+   "pattern": "P14",
+   "text": "Your search was aimed at the town she was in every time you gave an order.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_lost",
+   "pattern": "P14",
+   "text": "{time}: she had moved on to {pos}, and your search was still aimed elsewhere.",
+   "args": [
+    "time",
+    "pos"
+   ]
+  },
+  {
+   "id": "gov.debrief.m_streak",
+   "pattern": "P14",
+   "text": "{from} to {to}: your search was never aimed at the town she was in.",
+   "args": [
+    "from",
+    "to"
+   ]
+  },
+  {
+   "id": "gov.debrief.m_streak_next",
+   "pattern": "P14",
+   "text": "For the next {hours} hours, your search was never aimed at the town she was in.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "gov.debrief.m_decoy_one",
+   "pattern": "P14",
+   "text": "Once, your search was aimed at a town a false report had named.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_decoys",
+   "pattern": "P14",
+   "text": "{n} times, your search was aimed at a town a false report had named.",
+   "args": [
+    "n"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.m_found",
+   "pattern": "P14",
+   "text": "{time}: your search was aimed at her town again, {place}.",
+   "args": [
+    "time",
+    "place"
+   ]
+  },
+  {
+   "id": "gov.debrief.once",
+   "pattern": "P14",
+   "text": "once",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.n_times",
+   "pattern": "P14",
+   "text": "{n} times",
+   "args": [
+    "n"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.h_desk",
+   "pattern": "P02",
+   "text": "Your orders"
+  },
+  {
+   "id": "gov.debrief.desk_sum",
+   "pattern": "P14",
+   "text": "{ok} of the {total} orders you gave worked.",
+   "args": [
+    "ok",
+    "total"
+   ]
+  },
+  {
+   "id": "gov.debrief.desk_failed",
+   "pattern": "P14",
+   "text": "Orders that failed: {list}.",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "gov.debrief.h_hours",
+   "pattern": "P02",
+   "text": "Hour by hour",
+   "role": "gov"
+  },
+  {
+   "id": "gov.debrief.time_range",
+   "pattern": "P14",
+   "text": "{from} to {to}",
+   "args": [
+    "from",
+    "to"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.share",
+   "pattern": "P14",
+   "text": "Coalition, ministry side. {result}.\n{grid}\nYour search was aimed at the right town {on} of the {total} times you gave an order.\n{url}",
+   "args": [
+    "result",
+    "grid",
+    "on",
+    "total",
+    "url"
+   ]
+  },
+  {
+   "id": "over.close",
+   "pattern": "P01",
+   "text": "Close"
+  },
+  {
+   "id": "brief.time",
+   "pattern": "P08",
+   "text": "You have {n} hours left before your immunity runs out on Tuesday at 2 p.m.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.h_round",
+   "pattern": "P02",
+   "text": "This round"
+  },
+  {
+   "id": "brief.start",
+   "pattern": "P01",
+   "text": "Start round {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "brief.back",
+   "pattern": "P01",
+   "text": "Back to the round"
+  },
+  {
+   "id": "brief.again",
+   "pattern": "P01",
+   "text": "Briefing"
+  },
+  {
+   "id": "brief.gov_title",
+   "pattern": "P02",
+   "text": "The search"
+  },
+  {
+   "id": "brief.the_residence",
+   "pattern": "P08",
+   "text": "the residence"
+  },
+  {
+   "id": "brief.the_line",
+   "pattern": "P08",
+   "text": "the line"
+  },
+  {
+   "id": "over.win",
+   "pattern": "P14",
+   "text": "You win"
+  },
+  {
+   "id": "over.lose",
+   "pattern": "P14",
+   "text": "You lose"
+  },
+  {
+   "id": "over.why_gov_time",
+   "pattern": "P14",
+   "text": "It is Tuesday at 2 p.m. Her immunity is gone, and she can no longer fly out."
+  },
+  {
+   "id": "over.why_gov_escaped",
+   "pattern": "P14",
+   "text": "She flew out of Esmeralda."
+  },
+  {
+   "id": "over.why_out",
+   "pattern": "P14",
+   "text": "You flew out of Esmeralda."
+  },
+  {
+   "id": "over.why_time",
+   "pattern": "P14",
+   "text": "It is Tuesday at 2 p.m. Your immunity is gone, and you can no longer fly out."
+  },
+  {
+   "id": "over.why_landed",
+   "pattern": "P14",
+   "text": "The country you flew to would not take you and sent you back."
+  },
+  {
+   "id": "over.why_deal",
+   "pattern": "P14",
+   "text": "You took the president's deal, conceded on camera and came home."
+  },
+  {
+   "id": "brief.need_jet",
+   "pattern": "P02",
+   "text": "Your jet"
+  },
+  {
+   "id": "brief.need_visa",
+   "pattern": "P02",
+   "text": "Entry visa"
+  },
+  {
+   "id": "brief.need_reception",
+   "pattern": "P02",
+   "text": "Help from Esmeralda's government"
+  },
+  {
+   "id": "brief.you",
+   "pattern": "P02",
+   "text": "You"
+  },
+  {
+   "id": "brief.sosa",
+   "pattern": "P02",
+   "text": "Sosā searches here"
+  },
+  {
+   "id": "brief.jet",
+   "pattern": "P02",
+   "text": "Jet"
+  },
+  {
+   "id": "brief.gov_need_ban",
+   "pattern": "P02",
+   "text": "Travel ban"
+  },
+  {
+   "id": "brief.gov_need_hold",
+   "pattern": "P02",
+   "text": "Esmeralda holds her"
+  },
+  {
+   "id": "brief.gov_search",
+   "pattern": "P02",
+   "text": "Your search"
+  },
+  {
+   "id": "brief.gov_last_seen",
+   "pattern": "P02",
+   "text": "Newest report"
+  },
+  {
+   "id": "brief.h_win",
+   "pattern": "P02",
+   "text": "To win"
+  },
+  {
+   "id": "brief.gov_not_confirmed",
+   "pattern": "P05",
+   "text": "Not confirmed."
+  },
+  {
+   "id": "brief.gov_asked",
+   "pattern": "P05",
+   "text": "Asked."
+  },
+  {
+   "id": "brief.gov_job_ban",
+   "pattern": "P08",
+   "text": "Circulate the travel ban, and every border crossing she tries needs one more on the die."
+  },
+  {
+   "id": "brief.gov_job_hold",
+   "pattern": "P08",
+   "text": "Ask Esmeralda to hold her."
+  },
+  {
+   "id": "brief.gov_job_search",
+   "pattern": "P08",
+   "text": "Move your search to {place}, where the newest report comes from, and search there.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_win",
+   "pattern": "P08",
+   "text": "Stop her from flying out before Tuesday at 2 p.m."
+  },
+  {
+   "id": "brief.escape_win",
+   "pattern": "P08",
+   "text": "Fly out of Susana before Tuesday at 2 p.m."
+  },
+  {
+   "id": "over.why_gov_arrest",
+   "pattern": "P14",
+   "text": "She is under house arrest."
+  },
+  {
+   "id": "over.why_gov_deal",
+   "pattern": "P14",
+   "text": "She took the president's deal, conceded on camera and came home."
+  },
+  {
+   "id": "over.why_gov_landed",
+   "pattern": "P14",
+   "text": "The country she flew to would not take her and sent her back."
+  },
+  {
+   "id": "over.why_arrest",
+   "pattern": "P14",
+   "text": "You are under house arrest."
+  },
+  {
+   "id": "brief.hours_escape",
+   "pattern": "P08",
+   "text": "Hours until Tuesday at 2 p.m. Then your immunity ends and you can no longer leave."
+  },
+  {
+   "id": "brief.hours_gov",
+   "pattern": "P08",
+   "text": "Hours until Tuesday at 2 p.m. Then her immunity ends and she can no longer leave."
+  },
+  {
+   "id": "brief.police_attention",
+   "pattern": "P08",
+   "text": "Police attention is {n} out of {max}, and it rises while Sosā searches where you are. At {max} the police stop you, and each stop within 12 hours of the last is one step worse: questions, a night at the station, then house arrest.",
+   "args": [
+    "n",
+    "max"
+   ]
+  },
+  {
+   "id": "brief.phone_suggest",
+   "pattern": "P08",
+   "text": "The call that helps most now is {call}.",
+   "args": [
+    "call"
+   ]
+  },
+  {
+   "id": "brief.done_list",
+   "pattern": "P08",
+   "text": "These steps are done: {list}.",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "brief.left_list",
+   "pattern": "P08",
+   "text": "You still need these steps: {list}.",
+   "args": [
+    "list"
+   ]
+  },
+  {
+   "id": "brief.visa_note",
+   "pattern": "P08",
+   "text": "Without it you can still fly, but if the country you chose will not take you, it sends you back."
+  },
+  {
+   "id": "brief.reception_note",
+   "pattern": "P08",
+   "text": "The first step opens the road to Salta, the second cancels the extra takeoff trouble if Sosā has asked Esmeralda to hold you, and the third puts Vélez's officials at one border post."
+  },
+  {
+   "id": "brief.gov_report_now",
+   "pattern": "P08",
+   "text": "The newest report, which just came in, comes from {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_report_hour",
+   "pattern": "P08",
+   "text": "The newest report, which came in an hour ago, comes from {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_report_hours",
+   "pattern": "P08",
+   "text": "The newest report, which came in {n} hours ago, comes from {place}.",
+   "args": [
+    "place",
+    "n"
+   ]
+  },
+  {
+   "id": "brief.gov_no_report",
+   "pattern": "P08",
+   "text": "No report has come in yet."
+  },
+  {
+   "id": "brief.gov_reports_caveat",
+   "pattern": "P08",
+   "text": "Reports can be late or false."
+  },
+  {
+   "id": "brief.minister_expects",
+   "pattern": "P08",
+   "text": "The minister expects a town by {time}.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "float.police_attention",
+   "pattern": "P10",
+   "text": "{signed} police attention",
+   "args": [
+    "signed"
+   ]
+  },
+  {
+   "id": "arr.what_aircraft",
+   "pattern": "P08",
+   "text": "the jet"
+  },
+  {
+   "id": "arr.what_reception",
+   "pattern": "P08",
+   "text": "your welcome in Esmeralda"
+  },
+  {
+   "id": "arr.what_permission",
+   "pattern": "P08",
+   "text": "your visa"
+  },
+  {
+   "id": "tag.boat",
+   "pattern": "P02",
+   "text": "A boat"
+  },
+  {
+   "id": "tag.decoy",
+   "pattern": "P02",
+   "text": "Decoy cars"
+  },
+  {
+   "id": "tag.delay",
+   "pattern": "P02",
+   "text": "Delays the travel ban"
+  },
+  {
+   "id": "tag.document",
+   "pattern": "P02",
+   "text": "Travel papers"
+  },
+  {
+   "id": "tag.influence",
+   "pattern": "P02",
+   "text": "Political pull"
+  },
+  {
+   "id": "tag.information",
+   "pattern": "P02",
+   "text": "Inside information"
+  },
+  {
+   "id": "tag.introduction",
+   "pattern": "P02",
+   "text": "An introduction"
+  },
+  {
+   "id": "tag.operator",
+   "pattern": "P02",
+   "text": "Leverage on the charter operator"
+  },
+  {
+   "id": "tag.passage",
+   "pattern": "P02",
+   "text": "A way onto the freight"
+  },
+  {
+   "id": "tag.patrol",
+   "pattern": "P02",
+   "text": "Police patrol"
+  },
+  {
+   "id": "tag.permission",
+   "pattern": "P02",
+   "text": "Help with the visa"
+  },
+  {
+   "id": "tag.rail",
+   "pattern": "P02",
+   "text": "A rail yard contact"
+  },
+  {
+   "id": "tag.records",
+   "pattern": "P02",
+   "text": "Records access"
+  },
+  {
+   "id": "tag.vehicle",
+   "pattern": "P02",
+   "text": "A vehicle"
+  },
+  {
+   "id": "tag.watch",
+   "pattern": "P02",
+   "text": "The watch team"
+  },
+  {
+   "id": "arrangement.moves",
+   "pattern": "P10",
+   "text": "Your welcome in Esmeralda moves up one step"
+  },
+  {
+   "id": "scene.deadline_escape",
+   "pattern": "P02",
+   "text": "Escape deadline in {time}",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "scene.deadline_gov",
+   "pattern": "P02",
+   "text": "Her escape deadline in {time}",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "scene.deadline_when",
+   "pattern": "P02",
+   "text": "({when})",
+   "args": [
+    "when"
+   ]
+  },
+  {
+   "id": "action.chance",
+   "pattern": "P03",
+   "text": "Roll {need} or higher ({odds} chance)",
+   "args": [
+    "need",
+    "odds"
+   ]
+  },
+  {
+   "id": "action.takes",
+   "pattern": "P03",
+   "text": "Takes {hours} hours",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.takes_one",
+   "pattern": "P03",
+   "text": "Takes one hour"
+  },
+  {
+   "id": "action.done_by",
+   "pattern": "P03",
+   "text": ", done by {who}",
+   "args": [
+    "who"
+   ]
+  },
+  {
+   "id": "action.sosa_none",
+   "pattern": "P03",
+   "text": "Sosā does not act during these {hours} hours.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.sosa_once",
+   "pattern": "P03",
+   "text": "Sosā acts once during these {hours} hours.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "action.sosa_times",
+   "pattern": "P03",
+   "text": "Sosā acts {n} times during these {hours} hours.",
+   "args": [
+    "hours",
+    "n"
+   ]
+  },
+  {
+   "id": "sim.why.needs_step",
+   "pattern": "P04",
+   "text": "First you need this step: {step}.",
+   "args": [
+    "step"
+   ]
   },
   {
    "id": "sim.line.nando_decoy_success",

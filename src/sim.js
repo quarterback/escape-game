@@ -162,10 +162,12 @@ const Sim = (() => {
   function hasTag(s, tag) { return s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag && reaches(s, id)); }
   const heldTag = (s, tag) => s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === tag);
   function isNight(s) { const t = (START_HOUR + s.hour) % 24; return t >= 22 || t < 5; }
+  // a card kind in player words, never the internal tag
+  const kindWord = (tag) => { const w = ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag; return w[0].toLowerCase() + w.slice(1); };
   function needText(s, n) {
-    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? T('sim.why.your_card_is_not_recognized', { card: n.card }) : T('sim.why.needs_a_card', { card: n.card }));
-    if (n.night) return isNight(s) ? null : 'After 22:00.';
-    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : `Needs: ${D.ARRANGEMENTS[n.arr].stages[n.stage]}.`; }
+    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? T('sim.why.your_card_is_not_recognized', { card: kindWord(n.card) }) : T('sim.why.needs_a_card', { card: kindWord(n.card) }));
+    if (n.night) return isNight(s) ? null : T('need.night');
+    if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : T('sim.why.needs_step', { step: D.ARRANGEMENTS[n.arr].stages[n.stage] }); }
     return null;
   }
   function approachList(s) {
@@ -188,7 +190,7 @@ const Sim = (() => {
       const need = Math.max(1, dc - bonus);
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
+        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
     }
     return out;
   }
@@ -200,9 +202,9 @@ const Sim = (() => {
       const a = A[k], def = D.ARRANGEMENTS[k];
       if (a.stage >= def.stages.length - 1) return;
       const p = pending(k);
-      if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { arrangement: def.name, name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
+      if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
       if (s.event) whys.unshift(T('sim.why.answer_the_news_first'));
-      out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: personName(s, ally), what: def.name.toLowerCase() }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
+      out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
         preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally), turned: D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0) })] });
     };
     add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),

@@ -51,7 +51,7 @@
   <div id="scene" aria-label="{{c:scene.label}}"></div>
   <div class="shade top" aria-hidden="true"></div>
   <div class="shade bottom" aria-hidden="true"></div>
-  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span class="num" id="left"></span> {{c:scene.left}} <span id="leftverb">{{c:scene.out_by}}</span> <span class="mono gold" id="deadline"></span></span></div>
+  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span id="left"></span> <span class="mono gold" id="deadline"></span></span></div>
   <div id="goalbox"><span class="lbl">{{c:scene.goal_label}}</span><span class="txt"><span id="goaltxt">{{c:scene.goal}}</span> <span class="mono gold" id="deadline2"></span></span></div>
   <div id="sosa">
     <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">{{c:scene.sosa_here}}</span></span>
@@ -66,7 +66,7 @@
 </div>
 
 <main id="panels">
-  <div id="phasebar" hidden><span class="round" id="round"></span><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol><p id="phasehint" aria-live="polite"></p></div>
+  <div id="phasebar" hidden><span class="round" id="round"></span><button id="briefagain" class="pill ghost">{{c:brief.again}}</button><ol id="phases"><li data-ph="news">{{c:phase.news}}</li><li data-ph="phone">{{c:phase.phone}}</li><li data-ph="move">{{c:phase.move}}</li><li data-ph="roll">{{c:phase.roll}}</li><li data-ph="sosa">{{c:phase.sosa}}</li></ol><p id="phasehint" aria-live="polite"></p></div>
   <div id="coach" hidden><div class="step" id="coach-step"></div><h3 id="coach-title"></h3><div class="row"><button id="coach-next" class="primary">{{c:action.next}}</button><span id="coach-do" class="small">{{c:coach.do}}</span><button id="coach-leave">{{c:coach.leave}}</button></div><div id="coach-body"></div></div>
   <section class="tab" id="tab-here" data-tab="here">
     <span class="grab" aria-hidden="true"></span>
@@ -113,10 +113,11 @@
 </nav>
 </div>
 
+<div id="brief" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="bbox"><div class="bhead"><span class="bclock" id="b-clock"></span><span id="b-round"></span></div><h2 id="b-title"></h2><div id="b-story" class="bstory"></div><ol id="b-route" class="broute"></ol><div id="b-stats" class="bstats"></div><h3>{{c:brief.h_round}}</h3><div id="b-job" class="bjob"></div><h3>{{c:brief.h_win}}</h3><p id="b-needlead" class="blead"></p><ul id="b-need" class="bneed"></ul><button id="b-start" class="primary"></button></div></div>
 <div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
 <div id="update" hidden><span>{{c:update.ready}}</span><button id="reload">{{c:update.reload}}</button></div>
 
-<div id="over" hidden><div class="overbox"><h2 id="overtitle"></h2><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>{{c:over.share}}</button><button id="saverun" class="pill ghost">{{c:over.save_run}}</button><button id="copyreplay" class="pill ghost">{{c:over.copy_replay}}</button><button id="again" class="primary">{{c:over.again}}</button><button id="changewho">{{c:over.choose}}</button></div></div></div>
+<div id="over" hidden><div class="overbox"><div class="overhead"><h2 id="overtitle"></h2><button id="overclose" class="pill ghost">{{c:over.close}}</button></div><p id="overtext"></p><div class="row"><button id="share" class="primary" hidden>{{c:over.share}}</button><button id="saverun" class="pill ghost">{{c:over.save_run}}</button><button id="copyreplay" class="pill ghost">{{c:over.copy_replay}}</button><button id="again" class="primary">{{c:over.again}}</button><button id="changewho">{{c:over.choose}}</button></div></div></div>
 
 <div id="replaybadge" hidden>{{c:replay.badge}}</div>
 <div id="title"><div class="title-shade"></div><div class="title-box"><h1 class="title-word">{{c:title.word}}</h1><p class="title-line">{{c:title.line}}</p><button id="title-start">{{c:title.start}}</button><p class="title-about"><a href="about.html">{{c:title.about}}</a></p><p class="title-foot">{{c:title.foot}}</p></div></div>
