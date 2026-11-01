@@ -85,5 +85,23 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const T2 = JSON.parse(fs.readFileSync(path.join(R, 'content/coalition/tutorials.json'), 'utf8')); const dice = []; JSON.stringify(T2, (k, v) => { if (k === 'dice' && Array.isArray(v)) dice.push(...v); return v; });
   ok(dice.length > 5 && dice.every(d => Number.isInteger(d) && d >= 1 && d <= 20) && dice.some(d => d > 6), `C16 ${dice.length} scripted demo dice are 20-sided values`); }
 
+
+// ---- C04b: what the government player is told never carries her hidden state (owner, Nov. 1, 2026)
+{ const bad = []; let seen = 0;
+  for (let i = 0; i < 16; i++) { const g = Gov.newRun(700 + i, i % 2 ? 'man' : 'woman');
+    for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g); let r;
+      if (v.event) r = Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id);
+      else if (v.messages.length) r = Gov.commit(g, v.messages[0].id, v.messages[0].options[k % v.messages[0].options.length].id);
+      else { const o = v.orders.filter(o => o.ok); r = Gov.commit(g, o.length ? o[k % o.length].id : 'wait'); }
+      for (const e of (r.events || [])) { seen += 1;
+        if (['exposure', 'stage', 'card', 'cardlost', 'travel', 'betrayal', 'hold'].includes(e.type)) bad.push(`seed ${700 + i}: ${e.type} event`);
+        if (e.type === 'roll' && e.who && !e.pressed) bad.push(`seed ${700 + i}: her ally's roll`);
+        if ((e.type === 'enemy' || e.type === 'say') && /\b(you are(?! not told)|your (jet|last call|own|yacht)|find you|seen you|hold you)\b(?! not told)/i.test(e.text || '')) bad.push(`seed ${700 + i}: "${e.text.slice(0, 60)}"`); } } }
+  ok(!bad.length && seen > 200, `C04b government: ${seen} events carry none of her hidden state and never speak to her as "you"${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`); }
+// ---- C17: no code hidden behind a line comment (a comment swallowed a "break" twice on Nov. 1, 2026)
+{ const fs = require('fs'), hits = [];
+  for (const f of ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/render.js', 'src/tutorial.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { const c = l.indexOf(' // '); if (c >= 0 && /\b(break;|case '|Render\.enqueue\(|return [^;]*;)/.test(l.slice(c)) && !/['"`]/.test(l.slice(c).split(/break;|case '/)[0].slice(4, 6))) hits.push(`${f}:${i + 1}`); });
+  ok(!hits.length, `C17 no statement sits inside a line comment${hits.length ? ': ' + hits.slice(0, 4).join(', ') : ''}`); }
+
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

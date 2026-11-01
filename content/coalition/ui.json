@@ -1487,7 +1487,7 @@
   {
    "id": "sim.end.is_named_on_the_warrant",
    "pattern": "P14",
-   "text": "{name} is named on the warrant by Monday.",
+   "text": "{name} is named on the warrant too.",
    "args": [
     "name"
    ]
@@ -1513,7 +1513,7 @@
   {
    "id": "sim.end.talked_to_the_inquiry_will",
    "pattern": "P14",
-   "text": "{and} talked to the inquiry.",
+   "text": "{and} talked to the police.",
    "args": [
     "and"
    ]
@@ -1642,10 +1642,9 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, and Costamar has closed the airfield to you. {epilogue}",
+   "text": "It is {time}. Your immunity is gone, and Costamar has closed the airfield to you.",
    "args": [
-    "time",
-    "epilogue"
+    "time"
    ]
   },
   {
@@ -2635,7 +2634,7 @@
   {
    "id": "gov.inquiry.the_minister_names_on_the",
    "pattern": "P10",
-   "text": "The minister names {place} on the evening news and every desk in the province drives there.",
+   "text": "The minister names {place} on the evening news.",
    "args": [
     "place"
    ],
@@ -2644,17 +2643,10 @@
   {
    "id": "gov.line.i_will_say_so_at",
    "pattern": "P07",
-   "text": "\"{place}. I will say so at six.\"",
+   "text": "\"{place}. I will say so on the evening news.\"",
    "args": [
     "place"
    ],
-   "role": "gov",
-   "speaker": "minister"
-  },
-  {
-   "id": "gov.line.good_sosa_has_the_address",
-   "pattern": "P07",
-   "text": "\"Good. Sosā has the address. Do not lose her.\"",
    "role": "gov",
    "speaker": "minister"
   },
@@ -4054,12 +4046,12 @@
   {
    "id": "over.why_gov_escaped",
    "pattern": "P14",
-   "text": "She flew out of Costamar."
+   "text": "She flew out of Costamar before her immunity ran out."
   },
   {
    "id": "over.why_out",
    "pattern": "P14",
-   "text": "You flew out of Costamar."
+   "text": "You flew out of Costamar before your immunity ran out."
   },
   {
    "id": "over.why_time",
@@ -4069,7 +4061,7 @@
   {
    "id": "over.why_landed",
    "pattern": "P14",
-   "text": "The country you flew to would not take you and sent you back."
+   "text": "The country you flew to never agreed to take you, and its police hold you for Valdória."
   },
   {
    "id": "over.why_deal",
@@ -4172,7 +4164,7 @@
   {
    "id": "over.why_gov_arrest",
    "pattern": "P14",
-   "text": "She is under house arrest."
+   "text": "Police stops climbed to house arrest, and she did not get away."
   },
   {
    "id": "over.why_gov_deal",
@@ -4182,12 +4174,12 @@
   {
    "id": "over.why_gov_landed",
    "pattern": "P14",
-   "text": "The country she flew to would not take her and sent her back."
+   "text": "The country she flew to never agreed to take her, and its police hold her for Valdória."
   },
   {
    "id": "over.why_arrest",
    "pattern": "P14",
-   "text": "You are under house arrest."
+   "text": "Police stops climbed to house arrest, and you did not get away."
   },
   {
    "id": "brief.hours_escape",
@@ -4602,6 +4594,49 @@
    "text": "It counts for {what}",
    "args": [
     "what"
+   ]
+  },
+  {
+   "id": "over.what_happened",
+   "pattern": "P02",
+   "text": "What happened"
+  },
+  {
+   "id": "over.afterward",
+   "pattern": "P02",
+   "text": "Afterward"
+  },
+  {
+   "id": "gov.inquiry.found",
+   "pattern": "P03",
+   "text": " They find her and stop her."
+  },
+  {
+   "id": "gov.inquiry.close",
+   "pattern": "P03",
+   "text": " She has been there, and they are close."
+  },
+  {
+   "id": "gov.inquiry.not_seen",
+   "pattern": "P03",
+   "text": " Nobody there has seen her."
+  },
+  {
+   "id": "gov.inquiry.last_call",
+   "pattern": "P03",
+   "text": " Her last call came from here, so the police now search where she is."
+  },
+  {
+   "id": "gov.inquiry.no_calls",
+   "pattern": "P03",
+   "text": " She made no calls in the last three hours, so they learn nothing."
+  },
+  {
+   "id": "gov.inquiry.helper_talks",
+   "pattern": "P03",
+   "text": " {first} talks and stops helping her, and the police go where she is, but you are not told the place.",
+   "args": [
+    "first"
    ]
   }
  ]

@@ -214,16 +214,17 @@ const Data = (() => {
   };
 
   // Enemy actions. Picked by weight each enemy turn. Each is visible in the log and on the map.
+  // gtext: the same action told to the government player, who never sees her side in the second person
   const ENEMY_ACTIONS = [
     { id: 'check_belief', w: 4, text: (lv) => `The police search ${lv}.` },
-    { id: 'circulate',    w: 3, once: true, text: () => 'The police send the travel ban to the posts at the line, so every crossing there is harder unless you have "A report held one day."' },
+    { id: 'circulate',    w: 3, once: true, gtext: () => 'The police send the travel ban to the posts at the line, so every crossing she tries there is harder unless someone on her side has held the report back.', text: () => 'The police send the travel ban to the posts at the line, so every crossing there is harder unless you have "A report held one day."' },
     { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Portalba charter operator that its Valdórian license is under review.' },
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
-    { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear. Unless Costamar's minister knows you are coming, takeoff from Portalba is now harder. The police at Portalba can also stop you now." },
-    { id: 'press_story',  w: 2, text: () => 'The ministry briefs the papers that you have already left the country.' },
+    { id: 'ask_esmeralda',w: 2, once: true, after: 30, gtext: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold her if she appears. Unless Costamar's minister knows she is coming, her takeoff from Portalba is now harder, and the police at Portalba can stop her for questioning.", text: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear. Unless Costamar's minister knows you are coming, takeoff from Portalba is now harder. The police at Portalba can also stop you now." },
+    { id: 'press_story',  w: 2, gtext: () => 'The ministry briefs the papers that she has already left the country.', text: () => 'The ministry briefs the papers that you have already left the country.' },
     { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
-    { id: 'trace',        w: 3, after: 4, text: () => 'The ministry traces your recent calls.' },
-    { id: 'watch_sibling', w: 2, once: true, after: 9, text: (who) => `Sosā has ${who}'s calls monitored, so every answer your sibling has already promised you comes four hours later.` },
+    { id: 'trace',        w: 3, after: 4, gtext: () => 'The ministry traces her recent calls.', text: () => 'The ministry traces your recent calls.' },
+    { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `Sosā has ${who}'s calls monitored, so every answer her sibling has already promised her comes four hours later.`, text: (who) => `Sosā has ${who}'s calls monitored, so every answer your sibling has already promised you comes four hours later.` },
   ];
 
   // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Krasnomor); Almatau is a

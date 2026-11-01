@@ -344,7 +344,7 @@ const Sim = (() => {
     if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
     if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
     if (fx.rung !== undefined) s.hold = fx.rung;
-    if (fx.end) { s.over = { win: false, kind: fx.end.kind || 'arrest', reason: `${fx.end.reason} ${epilogue(s, false)}` }; events.push(ev('over', s.over)); return; }
+    if (fx.end) { const after = epilogue(s, false); s.over = { win: false, kind: fx.end.kind || 'arrest', story: fx.end.reason, after, reason: `${fx.end.reason} ${after}` }; events.push(ev('over', s.over)); return; }
     if (fx.hold) climbHold(s, events);
     if (fx.advance) advanceLevel(s, events);
     if (fx.hours) pass(s, fx.hours, events);
@@ -390,8 +390,8 @@ const Sim = (() => {
       s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); heat(s, 2, events); pass(s, a.hours + 12, events); return finish(s, events);
     }
     if (won && a.success.win) {
-      if (!dest(s).accepts) { say(events, 'narrator', a.success.say); s.over = { win: false, kind: 'landed', city: dest(s).city, reason: `${dest(s).landing} ${epilogue(s, false)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
-      s.over = { win: true, kind: 'out', reason: `${a.success.say} ${epilogue(s, true)}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+      if (!dest(s).accepts) { say(events, 'narrator', a.success.say); const after = epilogue(s, false); s.over = { win: false, kind: 'landed', city: dest(s).city, story: `${a.success.say} ${dest(s).landing}`, after, reason: `${dest(s).landing} ${after}` }; events.push(ev('over', s.over)); return { ok: true, events }; }
+      { const after = epilogue(s, true); s.over = { win: true, kind: 'out', story: a.success.say, after, reason: `${a.success.say} ${after}` }; } events.push(ev('over', s.over)); return { ok: true, events }; }
     pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events);
     if (won && !s.over) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
     return finish(s, events);
@@ -487,7 +487,7 @@ const Sim = (() => {
       if (s.hold > 0 && !s.event && s.hour - s.lastHoldAt >= 12) { s.hold -= 1; s.lastHoldAt = s.hour; }
       if (!s._manual && s.hour - s.lastEnemy >= ENEMY_EVERY) { s.lastEnemy = s.hour; enemyTurn(s, events); }
       if (s.exposure >= EXPOSURE_LIMIT) { if (s.tutorial) s.exposure = EXPOSURE_LIMIT - 1; else { s.exposure = 4; climbHold(s, events); } }
-      if (!s.over && s.hour >= HOURS_TOTAL) { s.over = { win: false, kind: 'clock', reason: T('sim.end.your_immunity_is_gone_a', { time: clockText(s.hour), epilogue: epilogue(s, false) }) }; events.push(ev('over', s.over)); }
+      if (!s.over && s.hour >= HOURS_TOTAL) { const story = T('sim.end.your_immunity_is_gone_a', { time: clockText(s.hour) }), after = epilogue(s, false); s.over = { win: false, kind: 'clock', story, after, reason: `${story} ${after}` }; events.push(ev('over', s.over)); }
       if (!s.over && !s.event && s.hour >= s.nextEventAt) { s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events); }
     }
   }
@@ -503,6 +503,9 @@ const Sim = (() => {
     else { ledger(s, j.ally, T('sim.ledger.nothing_yet', { what: D.ARRANGEMENTS[j.arr].stages[j.target] })); say(events, j.ally, j.ally === 'sibling' ? T('sim.line.nothing_yet_they_want_more') : j.ally === 'sponsor' ? T('sim.line.the_ministry_has_not_called') : T('sim.line.the_minister_has_other_guests')); }
   }
   function enemyTurn(s, events, forced) {
+    // the government side runs these actions by hand and sees them in its own voice, without her hidden state
+    const V = (mine, theirs) => T(s._manual ? theirs : mine);
+    const say3 = (p) => (s._manual && p.gtext) || p.text;
     let talked = false; // an ally gave up her location: an outcome, never read from the wording
     const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
     const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
@@ -512,15 +515,16 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 7) { text += T('sim.inquiry.they_find_you'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += T('sim.inquiry.they_are_close'); } else text += T('sim.inquiry.nobody_there_has_seen_you'); break; }
-      case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += T('sim.inquiry.the_last_call_came_from'); } else text += T('sim.inquiry.nothing_new'); break; }
-      case 'circulate': s.flags.restriction = true; text = pick.text(); break;
-      case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + T('sim.inquiry.the_operator_withdraws_the_crew'); } else text = pick.text(); break;
-      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
-      case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
-      case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }
-      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = pick.text(D.LEVELS[Math.max(0, s.belief)].short); break; }
-      case 'watch_sibling': { text = pick.text(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
+      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = say3(pick)(where); if (s.belief === s.pos) { if (s.exposure >= 7) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close'); } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
+      case 'trace': { text = say3(pick)(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += V('sim.inquiry.the_last_call_came_from', 'gov.inquiry.last_call'); } else text += V('sim.inquiry.nothing_new', 'gov.inquiry.no_calls'); break; }
+      case 'circulate': s.flags.restriction = true; text = say3(pick)(); break;
+      // her jet's progress stays hidden from the government side
+      case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = say3(pick)() + (s._manual ? '' : T('sim.inquiry.the_operator_withdraws_the_crew')); } else text = say3(pick)(); break;
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = say3(pick)(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += s._manual ? T('gov.inquiry.helper_talks', { first: personName(s, who).split(' ')[0] }) : T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
+      case 'ask_esmeralda': s.flags.asked = true; text = say3(pick)(); break;
+      case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = say3(pick)(); break; }
+      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(D.LEVELS[Math.max(0, s.belief)].short); break; }
+      case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked }));
     return text;
@@ -540,7 +544,7 @@ const Sim = (() => {
     const turned = Object.keys(s.people).filter(k => s.people[k].turned && k !== 'sponsor');
     if (win) out.push(s.arr.permission.stage >= 2 ? T('sim.end.a_car_meets_the_aircraft', { city: dest(s).city }) : T('sim.end.lets_the_jet_land', { name: dest(s).name }));
     if (!win) out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') }));
-    if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: s.holds }));
+    if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: num(s.holds) }));
     if (turned.length) out.push(T('sim.end.talked_to_the_inquiry_will', { and: turned.map(first).join(' and ') }));
     for (const c of s.commitments) {
       if (c.to === 'aide') out.push(c.kept === false ? T('sim.end.leads_the_party_now_and', { aide: first('aide') }) : c.kept ? T('sim.end.leads_the_party_in_your', { aide: first('aide') }) : T('sim.end.is_still_waiting_for_the', { aide: first('aide') }));
