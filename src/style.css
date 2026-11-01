@@ -393,3 +393,17 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 #tab-hand .menu2-h{margin-top:0}
 .waitact .die.wait,.actbox .die.wait{background:var(--lav);color:#1b1533}
 #b-win[hidden]{display:none}
+/* stop screens and the briefing: two numbers side by side, status rows that open for detail */
+#brief .bstats{flex-direction:row;gap:12px}
+#brief .bstats>div{flex:1;flex-direction:column;gap:4px}
+#brief .bstats b{font-size:28px;min-width:0}
+#brief .bstats p{font-size:15px;color:var(--soft)}
+#brief .bneed li.st{display:block}
+#brief .bneed li.st details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--s3)}
+#brief .bneed li.st summary{display:flex;justify-content:space-between;gap:12px;align-items:baseline;cursor:pointer;list-style:none;font-size:16px}
+#brief .bneed li.st summary::-webkit-details-marker{display:none}
+#brief .bneed li.st summary span{text-align:right;color:var(--soft)}
+#brief .bneed li.st.done summary span{color:var(--mint)}
+#brief .bneed li.st summary::after{content:"+";font-weight:700;color:var(--lav);margin-left:4px}
+#brief .bneed li.st details[open] summary::after{content:"–"}
+#brief .bneed li.st p{margin:8px 0 0;font-size:15px;line-height:1.5}

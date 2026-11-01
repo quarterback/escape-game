@@ -840,7 +840,7 @@
   {
    "id": "sosa.kind",
    "pattern": "P10",
-   "text": "While you moved"
+   "text": "Meanwhile"
   },
   {
    "id": "sosa.title",
@@ -936,7 +936,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "{title} is waiting under News",
+   "text": "News: {title}",
    "args": [
     "title"
    ]
@@ -3767,6 +3767,100 @@
    ]
   },
   {
+   "id": "enemy.short.check_belief",
+   "pattern": "P10",
+   "text": "Sosā's people search {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.check_belief_hit",
+   "pattern": "P10",
+   "text": "Sosā's people search {place}, where you are.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.trace",
+   "pattern": "P10",
+   "text": "The call trace finds nothing."
+  },
+  {
+   "id": "enemy.short.trace_hit",
+   "pattern": "P10",
+   "text": "The call trace finds where you are."
+  },
+  {
+   "id": "enemy.short.circulate",
+   "pattern": "P10",
+   "text": "The travel ban reaches every post."
+  },
+  {
+   "id": "enemy.short.lean_operator",
+   "pattern": "P10",
+   "text": "The ministry pressures your charter operator."
+  },
+  {
+   "id": "enemy.short.press_ally",
+   "pattern": "P10",
+   "text": "Sosā questions {name}, who says nothing.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "enemy.short.press_ally_talked",
+   "pattern": "P10",
+   "text": "Sosā questions {name}, who talks.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "enemy.short.ask_esmeralda",
+   "pattern": "P10",
+   "text": "Valdória asks Esmeralda to hold you."
+  },
+  {
+   "id": "enemy.short.press_story",
+   "pattern": "P10",
+   "text": "The papers report that you have left the country."
+  },
+  {
+   "id": "enemy.short.roadblock",
+   "pattern": "P10",
+   "text": "Police set a checkpoint at {place} for six hours.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.watch_sibling",
+   "pattern": "P10",
+   "text": "Sosā has {name}'s calls watched.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.attention_up_to",
+   "pattern": "P10",
+   "text": "Police attention rises to {n}.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.attention_down_to",
+   "pattern": "P10",
+   "text": "Police attention falls to {n}.",
+   "args": [
+    "n"
+   ]
+  },
+  {
    "id": "over.save_run",
    "pattern": "P01",
    "text": "Download this run"
@@ -4177,7 +4271,7 @@
   {
    "id": "brief.back",
    "pattern": "P01",
-   "text": "Back to the round"
+   "text": "Back to the game"
   },
   {
    "id": "brief.again",
@@ -4200,12 +4294,49 @@
   {
    "id": "brief.h_next",
    "pattern": "P02",
-   "text": "Next challenge"
+   "text": "Next"
   },
   {
    "id": "brief.go_on",
    "pattern": "P01",
    "text": "Keep going"
+  },
+  {
+   "id": "brief.time_left",
+   "pattern": "P02",
+   "text": "Time left"
+  },
+  {
+   "id": "brief.attention_short",
+   "pattern": "P02",
+   "text": "Police attention"
+  },
+  {
+   "id": "brief.stop_of",
+   "pattern": "P02",
+   "text": "Stop {n} of {total}",
+   "args": [
+    "n",
+    "total"
+   ]
+  },
+  {
+   "id": "brief.begin",
+   "pattern": "P01",
+   "text": "Start"
+  },
+  {
+   "id": "brief.not_started",
+   "pattern": "P05",
+   "text": "Not started"
+  },
+  {
+   "id": "brief.st_underway",
+   "pattern": "P05",
+   "text": "Underway: {step}",
+   "args": [
+    "step"
+   ]
   },
   {
    "id": "brief.gov_title",
@@ -4275,7 +4406,7 @@
   {
    "id": "brief.need_reception",
    "pattern": "P02",
-   "text": "Help from Esmeralda's government"
+   "text": "Esmeralda"
   },
   {
    "id": "brief.you",

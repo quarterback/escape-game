@@ -89,3 +89,15 @@ The owner reviewed screenshots and asked for less machinery on screen: no deck, 
 - **No deck.** The Deck tab is now Menu (the game menu it already held). The route no longer lists where cards count.
 
 Calibration, corrected harness, 300 runs: Atlanta 41.0% Teresā / 32.0% Matēu, Tarun 36.7% / 24.7%, Zaryanova 40.7% / 31.0%, daily 42.7% / 36.3%; government side 54.5% (she can no longer land somewhere that refuses her). Both demos play to the end in a phone-sized browser with no errors.
+
+## Second addendum: less explanation on the main screens
+
+The owner's principle: the first screen tells you what happened or what you can do; a second tap tells you why.
+
+- **Stop screens** read "Stop 2 of 6", "You made it to Santa Laura", the arrival line, the route, two numbers (time left, police attention) and "Next" with the stop's objective. The paragraphs about immunity and police stops are gone from them; Help keeps them.
+- **The briefing** (first turn and the Briefing button) shows the same short numbers, then one status row each for the jet, the visa and Esmeralda ("Not started", "Underway: crew hired", "Charter jet booked"). Each row opens on a tap to the full list of steps and what they do.
+- **Results** are short lines: "Six hours pass", then "Police attention rises to 6.", "Sosā's people search the residence, where you are.", "News: A police car pulls in beside you." Each of Sosā's actions has a one-line form; the full sentence stays in the log.
+- **Moves that need no roll are sure things** (calling your contacts, sleeping, taking the road to Salta). Checkpoints and earlier choices no longer turn them into rolls that fail with no explanation (design issue 24).
+- Not changed: "Pay the yardmaster" still says it cannot succeed; turning it into a trap needs its outcome written and tested first. There are no difficulty levels or d20 on this branch; those are in PR #25 on another branch.
+
+Calibration, corrected harness, 300 runs: Atlanta 41.3% / 31.7%, Tarun 36.3% / 25.0%, Zaryanova 40.7% / 30.7%, government side 54.5%.

@@ -193,7 +193,9 @@ const Sim = (() => {
       if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresā's face
       if (bonus) why.push(T('sim.preview.cards_lower_by', { n: num(bonus) }));
       // the officials Vélez placed walk you through: commit() takes this path before any roll
-      const need = escorted ? 1 : Math.max(1, dc - bonus);
+      const sure = a.dc <= 1; // calling contacts, sleeping, taking the road: no failure worth a roll
+      const need = escorted || sure ? 1 : Math.max(1, dc - bonus);
+      if (sure) why.length = 0;
       if (escorted) why.length = 0, why.push(T('sim.preview.escorted'));
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: escorted ? [] : used.map(u => u.tag), bonus: escorted ? [] : used, pay: !!a.pay,
@@ -504,7 +506,7 @@ const Sim = (() => {
     else { ledger(s, j.ally, T('sim.ledger.nothing_yet', { what: D.ARRANGEMENTS[j.arr].stages[j.target] })); say(events, j.ally, j.ally === 'sibling' ? T('sim.line.nothing_yet_they_want_more') : j.ally === 'sponsor' ? T('sim.line.the_ministry_has_not_called') : T('sim.line.the_minister_has_other_guests')); }
   }
   function enemyTurn(s, events, forced) {
-    let talked = false; // an ally gave up her location: an outcome, never read from the wording
+    let talked = false, pressed = null, traced = false; // an ally gave up her location: an outcome, never read from the wording
     const cands = D.ENEMY_ACTIONS.filter(a => !(a.once && s.flags.enemyDone[a.id]) && !(a.after && s.hour < a.after));
     const total = cands.reduce((n, a) => n + a.w, 0); let r = s._rng() * total, pick = cands[0];
     for (const a of cands) { r -= a.w; if (r <= 0) { pick = a; break; } }
@@ -514,16 +516,16 @@ const Sim = (() => {
     let text = '';
     switch (pick.id) {
       case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = pick.text(where); if (s.belief === s.pos) { if (s.exposure >= 7) { text += T('sim.inquiry.they_find_you'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += T('sim.inquiry.they_are_close'); } else text += T('sim.inquiry.nobody_there_has_seen_you'); break; }
-      case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += T('sim.inquiry.the_last_call_came_from'); } else text += T('sim.inquiry.nothing_new'); break; }
+      case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { traced = true; s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += T('sim.inquiry.the_last_call_came_from'); } else text += T('sim.inquiry.nothing_new'); break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + T('sim.inquiry.the_operator_withdraws_the_crew'); } else text = pick.text(); break;
-      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; pressed = who; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }
       case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = pick.text(D.LEVELS[Math.max(0, s.belief)].short); break; }
       case 'watch_sibling': { text = pick.text(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
-    events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked }));
+    events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked, who: pressed, hit: pick.id === 'trace' ? s.belief === s.pos && traced : pick.id === 'check_belief' ? s.belief === s.pos : undefined }));
     return text;
   }
   // The government side: run one named inquiry action now, and pass time without the automatic inquiry.

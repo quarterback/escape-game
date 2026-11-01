@@ -428,25 +428,33 @@ const UI = (() => {
     if (s.pos !== briefPos) { out.story.push(L.arrive); out.arrived = true; }
     const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
     const steps = (k, full) => { const done = A[k].stages.slice(1, st(k) + 1), left = A[k].stages.slice(st(k) + 1, full + 1); return [done.length ? T('brief.done_list', { list: done.join(', ') }) : '', left.length ? T('brief.left_list', { list: left.join(', ') }) : ''].filter(Boolean).join(' '); };
+    // one line of status each; the steps and what they do open on a tap
+    const status = (k, full) => { const cur = st(k), job = s.jobs.find(j => j.arr === k); return cur >= full ? cap(A[k].stages[full]) : job ? T('brief.st_underway', { step: A[k].stages[cur + 1] }) : cur ? cap(A[k].stages[cur]) : T('brief.not_started'); };
     out.need = [
       { k: 'aircraft', full: 4, name: T('brief.need_jet'), note: '' },
       { k: 'permission', full: 2, name: T('brief.need_visa'), note: T('brief.visa_note') },
       { k: 'reception', full: 3, name: T('brief.need_reception'), note: T('brief.reception_note') },
-    ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
+    ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, status: status(n.k, n.full), now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
     out.job.push(L.objective);
+    if (out.arrived && s.pos > 0) { out.stats = shortStats(); out.marks = routeMarks(); return out; } // a stop screen: what happened, where you stand, what is next
     const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
     const calls = Sim.actions(s).calls.filter(c => c.ok);
     const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
     if (call) out.job.push(T('brief.phone_suggest', { call: call.name }));
-    out.stats = [
-      { big: String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), text: T('brief.hours_escape') },
-      { big: `${s.exposure}/${Sim.EXPOSURE_LIMIT}`, text: T('brief.police_attention', { n: s.exposure, max: Sim.EXPOSURE_LIMIT }), bar: [s.exposure, Sim.EXPOSURE_LIMIT] },
-    ];
-    out.marks = { 5: [['jet', T('brief.jet')]] };
-    out.marks[s.belief] = [['sosa', T('brief.sosa')]];
-    out.marks[s.pos] = [['you', T('brief.you')]].concat(s.belief === s.pos ? [['sosa', T('brief.sosa')]] : []);
-    if (s.pos === 5) out.marks[5] = out.marks[5].concat([['jet', T('brief.jet')]]);
+    out.stats = shortStats(); out.marks = routeMarks();
     return out;
+  }
+  // the numbers alone; what they mean is in Help and opens from the top bar
+  const shortStats = () => [
+    { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
+    { big: `${s.exposure}/${Sim.EXPOSURE_LIMIT}`, text: T('brief.attention_short'), bar: [s.exposure, Sim.EXPOSURE_LIMIT] },
+  ];
+  function routeMarks() {
+    const m = { 5: [['jet', T('brief.jet')]] };
+    m[s.belief] = [['sosa', T('brief.sosa')]];
+    m[s.pos] = [['you', T('brief.you')]].concat(s.belief === s.pos ? [['sosa', T('brief.sosa')]] : []);
+    if (s.pos === 5) m[5] = m[5].concat([['jet', T('brief.jet')]]);
+    return m;
   }
   function briefGov() {
     const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: [] };
@@ -475,16 +483,18 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = milestone ? T('brief.milestone') : T('round.label', { n: round });
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: s.pos + 1, total: Data.LEVELS.length });
     $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Data.LEVELS[s.pos].short }) : Data.LEVELS[s.pos].short;
-    $('b-jobh').textContent = T(milestone ? 'brief.h_next' : 'brief.h_round'); $('b-win').hidden = milestone; // a milestone is a moment, not a checklist
+    $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
+    document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
     $('b-route').innerHTML = briefRoute(b.marks);
     $('b-stats').innerHTML = b.stats.map(st => `<div><b>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
     $('b-job').innerHTML = b.job.map(P).join('');
     $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
-    $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
-    $('b-start').textContent = gov || !b.arrived || s.pos === 0 ? T('brief.start', { n: round }) : T('brief.go_on');
+    if (!gov) $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'} st"><details><summary><b>${esc(n.name)}</b><span>${esc(n.status)}</span></summary>${n.now ? `<p>${esc(n.now)}</p>` : ''}</details></li>`).join('');
+    else $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
+    $('b-start').textContent = gov ? T('brief.start', { n: round }) : round <= 1 && s.pos === 0 ? T('brief.begin') : T(b.arrived ? 'brief.go_on' : 'brief.back');
     $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   function interstitial(clock, title, sub) {
@@ -531,18 +541,23 @@ const UI = (() => {
   }
   function sosaCard(card) {
     card.className = 'sosa';
-    // a move resolved without a roll skips the Roll step; its outcome opens this card instead
-    // your move and what happened while it took its hours, on one card
+    // what happened, in short lines: your move, then what changed while it took its hours. The full sentences are in the log.
     const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : '';
-    const auto = r ? `<div class="automove"><span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}</div>` : '';
+    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
-    // one exposure line for the whole round, with the reason, instead of one per batch of hours
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
-    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? (s.belief === s.pos ? 'sum.exposure_round_here' : 'sum.exposure_round') : 'sum.exposure_round_fell', { n: Math.abs(exp) }) });
+    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up_to' : 'sum.attention_down_to', { n: s.exposure }) });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
-    card.innerHTML = auto + `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3><ul class="rows">${rows}</ul>`;
+    card.innerHTML = head + `<ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
+  }
+  // one short line per thing Sosā did; the full sentence stays in the log
+  function enemyShort(e) {
+    const where = (i) => i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+    const id = ['enemy', 'short', e.id].join('.') + (e.hit ? '_hit' : '') + (e.talked ? '_talked' : '');
+    if (e.id === 'press_ally' && !e.who) return e.text; // nobody to question: the full line is short already
+    return Content.has(id) ? T(id, { place: where(e.belief), name: e.who ? pname(e.who) : pname('sibling') }) : e.text;
   }
   function summarize(events, kind, title) {
     const r = { kind, title, roll: null, line: '', mine: [], theirs: [], hours: 0 }; let after = false, expMine = 0, expTheirs = 0;
@@ -564,7 +579,7 @@ const UI = (() => {
         case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: pname(e.who).split(' ')[0] }) }); break;
         case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
-        case 'enemy': r.theirs.push({ k: 'enemy', t: e.text }); break;
+        case 'enemy': r.theirs.push({ k: 'enemy', t: gov ? e.text : enemyShort(e) }); break;
         case 'hold': r.theirs.push({ k: 'enemy', t: T('sum.hold', { title: e.title }) }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: T('sum.news', { title: e.title }) }); break;
         case 'message': r.theirs.push({ k: 'news', t: T('sum.message', { name: pname(e.from) }) }); break;
