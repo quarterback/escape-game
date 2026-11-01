@@ -180,18 +180,22 @@ const Sim = (() => {
       else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(T('sim.why.talked_to_the_inquiry', { name: personName(s, a.with) }));
       let bonus = 0; const used = [];
       for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
-      let dc = a.dc;
-      if (a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post) dc = 1;
-      if (L.border && s.flags.restriction && !hasTag(s, 'delay')) dc += 1; // the sheet is on the desk unless Gianlūka's contact held it
-    if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until) dc += 1;
-      if (L.final && s.flags.asked && s.arr.reception.stage < 2) dc += 2;
-      dc += s.mods[s.pos] || 0;
-      if (ch(s).faceKnown && L.border && a.id !== 'received') dc += 1; // every officer knows Teresā's face
-      if (a.id === 'own_passport' && s.flags.cancelled) dc = 7; // cancelled at Monday noon
-      const need = Math.max(1, dc - bonus);
+      // every change to the number the die needs is named in the preview, so nothing about the odds is hidden
+      let dc = a.dc; const why = [];
+      const escorted = !!(a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post);
+      if (L.border && s.flags.restriction && !hasTag(s, 'delay')) { dc += 1; why.push(T('sim.preview.harder_ban')); } // the sheet is on the desk unless Gianlūka's contact held it
+      if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until) { dc += 1; why.push(T('sim.preview.harder_checkpoint', { time: clockText(s.flags.roadblock.until) })); }
+      if (L.final && s.flags.asked && s.arr.reception.stage < 2) { dc += 2; why.push(T('sim.preview.harder_asked')); }
+      const news = s.mods[s.pos] || 0;
+      if (news) { dc += news; why.push(T(news > 0 ? 'sim.preview.harder_news' : 'sim.preview.easier_news', { n: num(Math.abs(news)) })); }
+      if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresā's face
+      if (bonus) why.push(T('sim.preview.cards_lower_by', { n: num(bonus) }));
+      // the officials Vélez placed walk you through: commit() takes this path before any roll
+      const need = escorted ? 1 : Math.max(1, dc - bonus);
+      if (escorted) why.length = 0, why.push(T('sim.preview.escorted'));
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
-        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
+        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: escorted ? [] : used.map(u => u.tag), bonus: escorted ? [] : used, pay: !!a.pay,
+        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need })].concat(why, [T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })]) });
     }
     return out;
   }
@@ -230,7 +234,11 @@ const Sim = (() => {
     return '';
   }
   const optionOk = (s, o) => !optionWhy(s, o) && !s.event;
-  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 } }; }
+  // hours from now until 10 p.m., when the night moves open
+  const hoursToDark = (s) => (22 - (START_HOUR + s.hour) % 24 + 24) % 24;
+  // waiting for dark is the same as lying low hour by hour: news or a police stop ends it, as it would block the next hour
+  function waitDark(s) { const night = level(s).approaches.some(a => a.needs.some(n => n.night)); return { kind: 'wait', id: 'wait_dark', hours: hoursToDark(s), ok: !s.over && !s.event && night && !isNight(s) }; }
+  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 }, waitDark: waitDark(s) }; }
 
   // ---- dispatches and holds: the News phase --------------------
   const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, s.pos === 0 ? 'the residence' : s.pos === 4 ? 'the line' : level(s).short);
@@ -358,6 +366,7 @@ const Sim = (() => {
     if (actionId.startsWith('evt:')) return resolveEvent(s, actionId.slice(4), events);
     if (s.event) return { ok: false, why: s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first') };
     if (actionId === 'wait') { pass(s, 1, events); return finish(s, events); }
+    if (actionId === 'wait_dark') { if (!waitDark(s).ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; while (!isNight(s) && !s.event && !s.over) pass(s, 1, events); return finish(s, events); }
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
     const a = level(s).approaches.find(x => x.id === actionId);

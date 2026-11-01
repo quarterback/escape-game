@@ -167,6 +167,8 @@ const UI = (() => {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
     for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
     $('wait').disabled = !!s.over || !Tutorial.allowsWait() || phase !== 'move';
+    // one tap for the hours until 10 p.m., shown only where a move here needs the dark
+    const wd = A.waitDark; $('waitdark').hidden = !wd.ok; $('waitdark').disabled = !wd.ok || !!s.over || !Tutorial.allowsWait() || phase !== 'move';
   }
 
   // ---- the phone: a thread, then calls --------------------------------------
@@ -370,7 +372,7 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid.startsWith('msg:')) { /* stay on the phone */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.lay_low'); result.title = T('result.lay_low_title'); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
@@ -482,7 +484,8 @@ const UI = (() => {
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '');
+    const wd = !gov && phase === 'move' && s && !s.over ? Sim.actions(s).waitDark : null;
+    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '') + (wd && wd.ok ? ' ' + T('hint.wait_dark', { hours: Sim.num(wd.hours), s: wd.hours === 1 ? '' : 's' }) + ' ' + sosaDuring({ hours: wd.hours }) : '');
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
     $('phasedone').hidden = phase !== 'phone';
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
@@ -605,7 +608,7 @@ const UI = (() => {
     for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, T('action.send_order'), () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move' && Tutorial.allowsApproach(a.id))); }
     const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>${T('nav.reports')}</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span>${r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: `<span class="mono">${r.age}</span>` })}</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>${T('report.proves')}</b><span>${esc(r.proves)}</span></span><span><b>${T('report.not_prove')}</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : `<p class="hint">${T('report.empty')}</p>`);
     box.appendChild(rep);
-    $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait();
+    $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait(); $('waitdark').hidden = true;
   }
   function renderGovPhone() {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';
@@ -723,6 +726,7 @@ const UI = (() => {
     Render.start({ onPick: (id) => { if (id !== 'self' && !gov && Data.PEOPLE[id]) log('sys', esc(T('log.person_role', { name: pname(id), role: gov ? Data.PEOPLE[id].role : Sim.personRole(s, id) })), 'sys'); } });
     document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { Sfx.click(); setTab(b.dataset.tab); });
     $('wait').onclick = () => gov ? doGov('wait') : doCommit('wait');
+    $('waitdark').onclick = () => { if (!gov) doCommit('wait_dark'); };
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
     const closeOver = () => { Sfx.click(); $('over').hidden = true; saveRun(); showStart(); };
     $('overclose').onclick = closeOver;

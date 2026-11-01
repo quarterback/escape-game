@@ -23,9 +23,10 @@ button.primary{font-family:var(--font-title);color:#06120A;background:var(--comm
 h1,h2,h3{font-family:var(--font-title);font-weight:400;margin:0}
 h2{font-size:25px;line-height:1.2}h3{font-size:18px;line-height:1.3}
 .h2row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.waits{display:flex;gap:8px;flex-wrap:wrap}#waitdark[hidden]{display:none}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font:400 14px/1.2 var(--font-title)}
 .chip.lav{background:var(--lav);color:#24103F}.chip.lav:empty{display:none}
-body.busy .act,body.busy #wait,body.busy .opt,body.busy .call{opacity:.55;pointer-events:none}
+body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .call{opacity:.55;pointer-events:none}
 
 /* frame: header (desktop) / scene / one scrolling panel / tab bar */
 #frame{display:flex;flex-direction:column;height:100dvh}

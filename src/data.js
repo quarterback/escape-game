@@ -173,7 +173,7 @@ const Data = (() => {
           success: { say: 'The guard turns the pages, looks at a sheet on the desk, and stamps it.' },
           fail: { exposure: 2, hours: 3, say: 'The guard reads the sheet first. You spend three hours in a cold room and come out on the Valdórian side.' } },
         { id: 'post_high', post: 'high', name: 'Take the Ālto Verdē road post', hours: 3, dc: 3, needs: [],
-          mods: { introduction: 2, vehicle: 1 }, text: "Three hours of switchbacks toward Baca. The post answers to the interior ministry, where Vélez works.",
+          mods: { introduction: 2 }, text: "Three hours of switchbacks toward Baca. The post answers to the interior ministry, where Vélez works.",
           success: { say: 'A long climb. The sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Baca is woken up.' } },
         { id: 'post_coast', post: 'coast', name: 'Pay the Punta Marēa crossing', hours: 2, dc: 4, needs: [], pay: true,

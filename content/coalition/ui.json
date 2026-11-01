@@ -185,6 +185,11 @@
    "text": "Wait an hour"
   },
   {
+   "id": "action.wait_dark",
+   "pattern": "P01",
+   "text": "Wait until dark"
+  },
+  {
    "id": "nav.phone",
    "pattern": "P02",
    "text": "The phone"
@@ -623,6 +628,14 @@
    "id": "result.lay_low_title",
    "pattern": "P10",
    "text": "One hour passes"
+  },
+  {
+   "id": "result.hours_pass",
+   "pattern": "P10",
+   "text": "{hours} hours pass",
+   "args": [
+    "hours"
+   ]
   },
   {
    "id": "result.your_order",
@@ -2070,18 +2083,12 @@
    ]
   },
   {
-   "id": "sim.preview.your_cards_lower_it",
-   "pattern": "P03",
-   "text": "Your cards lower that number:"
-  },
-  {
    "id": "sim.preview.die_needs_or_more_in",
    "pattern": "P03",
-   "text": "Roll {need} or higher to succeed, {need2} chances in six.{bonus}",
+   "text": "Roll {need} or higher to succeed, {need2} chances in six.",
    "args": [
     "need",
-    "need2",
-    "bonus"
+    "need2"
    ]
   },
   {
@@ -2093,6 +2100,58 @@
    "id": "sim.preview.succeeds_without_a_roll",
    "pattern": "P03",
    "text": "This works without a roll."
+  },
+  {
+   "id": "sim.preview.harder_ban",
+   "pattern": "P03",
+   "text": "The travel ban is on the desk at this post, and it raises the number you need by one. Holding \"A report held one day\" keeps it off the desk."
+  },
+  {
+   "id": "sim.preview.harder_checkpoint",
+   "pattern": "P03",
+   "text": "Police have a checkpoint here until {time}, and it raises the number you need by one.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "sim.preview.harder_asked",
+   "pattern": "P03",
+   "text": "Valdória has asked Esmeralda to hold you, and Esmeralda's minister does not know you are coming. That raises the number you need by two."
+  },
+  {
+   "id": "sim.preview.harder_news",
+   "pattern": "P03",
+   "text": "A choice you made earlier at this stop raises the number you need by {n}.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sim.preview.easier_news",
+   "pattern": "P03",
+   "text": "A choice you made earlier at this stop lowers the number you need by {n}.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sim.preview.harder_face",
+   "pattern": "P03",
+   "text": "Every border officer knows your face, and it raises the number you need by one."
+  },
+  {
+   "id": "sim.preview.cards_lower_by",
+   "pattern": "P03",
+   "text": "Your cards lower the number you need by {n}.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sim.preview.escorted",
+   "pattern": "P03",
+   "text": "Esmeraldan officials are waiting for you at this post, so you cross without a roll."
   },
   {
    "id": "sim.why.talked_to_the_inquiry",
@@ -3035,9 +3094,12 @@
    "role": "gov"
   },
   {
-   "id": "gov.preview.your_cards_lower_it",
+   "id": "gov.preview.cards_lower_by",
    "pattern": "P03",
-   "text": "Your cards lower it: ",
+   "text": "Your cards lower the number you need by {n}.",
+   "args": [
+    "n"
+   ],
    "role": "gov"
   },
   {
@@ -4563,6 +4625,15 @@
    "id": "hint.wait_sosa",
    "pattern": "P08",
    "text": "If you wait the hour, Sosā acts during it."
+  },
+  {
+   "id": "hint.wait_dark",
+   "pattern": "P08",
+   "text": "Night starts at 10 p.m., so waiting for it takes {hours} hour{s}, and news or a police stop ends the wait early.",
+   "args": [
+    "hours",
+    "s"
+   ]
   },
   {
    "id": "action.her_during",
