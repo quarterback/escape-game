@@ -4521,7 +4521,7 @@
   {
    "id": "action.done_by",
    "pattern": "P03",
-   "text": ", done by {who}",
+   "text": ", done {who}",
    "args": [
     "who"
    ]
@@ -4589,6 +4589,11 @@
    "pattern": "P07",
    "text": "\"It came back at dawn, late and dented. My cousin can still drive you to Salta.\"",
    "speaker": "host"
+  },
+  {
+   "id": "action.her_during_one",
+   "pattern": "P03",
+   "text": "She keeps moving during this hour, and her moves can leave new reports."
   }
  ]
 }
