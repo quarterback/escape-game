@@ -62,8 +62,12 @@ How to work under it:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card.
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
-  six-sided scale and `Data.DICE.target` converts them; show targets and
-  chances from the view, never a promise that a move will work.
+  six-sided scale and `Data.DICE.target` converts them. Owner, Nov. 1, 2026:
+  "Do not keep the chance! It goes! No roll anything, just let me see what I
+  rolled." Never show a target, a chance or a die badge before the player acts,
+  on moves, orders, calls or news choices. After the roll, show what was rolled
+  ("You rolled 14") and the outcome. Situation lines without numbers stay
+  ("A police checkpoint here makes this harder until 8 a.m.").
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
   place names and ARE NOT named after humans. Do not follow canon to do this, I
@@ -76,8 +80,7 @@ How to work under it:
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what
   happens when it runs out." The vocabulary is fixed: the escape deadline
-  (Tuesday 2 p.m.), when the police act again, how long a move takes, and the chance
-  of success. Chance and duration are separate facts on separate lines.
+  (Tuesday 2 p.m.), when the police act again, and how long a move takes.
 - **Budgets never beat meaning.** The checks cap buttons at six words and keep
   interface labels to one sentence. When an explanation does not fit, put it in
   the preview, the briefing or the help where there is room, or flag it. Never

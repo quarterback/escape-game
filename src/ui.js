@@ -143,11 +143,11 @@ const UI = (() => {
 
   // ---- Here: approaches with a die face -------------------------------------
   // the move's badge is a 20-sided die showing the number to roll; a move that cannot be won shows a cross
-  function dieFace(need) { return need == null ? '<span class="die none" aria-hidden="true"></span>' : `<span class="die d20" aria-hidden="true"><b>${need > 20 ? '✕' : need}</b></span>`; }
+  function dieFace() { return ''; } // no target number on a move card
   // a bonus is named by the held cards that give it, never by the internal tag
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
   // chance of success and time taken are different facts, shown on separate lines
-  const chanceText = (a) => a.noRoll ? '' : !a.pct ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds }); // every move rolls; the chance is shown, never a promise
+  const chanceText = () => ''; // owner, Nov. 1, 2026: no odds before you act; the result shows what you rolled
   const metaLine = (a, withSosa) => `<span class="meta">${chanceText(a) ? `<span class="nd">${esc(chanceText(a))}</span>` : ''}<span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
   const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
@@ -164,7 +164,7 @@ const UI = (() => {
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row">${a.ok && !s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T(a.ok && !s.over ? 'action.cancel' : 'action.close')}</button></div>`;
+    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x) => x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row">${a.ok && !s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T(a.ok && !s.over ? 'action.cancel' : 'action.close')}</button></div>`;
     if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
     requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons are always on screen box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
@@ -650,8 +650,8 @@ const UI = (() => {
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         // the card notice is a sentence, never a label and value
-        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;
-        case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: inSentence(e.name) }); toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
+        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; if (!(phase === 'sosa' || (phase === 'news' && result))) toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;
+        case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: inSentence(e.name) }); if (!(phase === 'sosa' || (phase === 'news' && result))) toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.owe', { name: pname(e.to), text: e.text })), 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
         case 'job': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.reply_by', { name: pname(e.ally), time: e.dueText })), 'sys'); } }); break;
