@@ -410,7 +410,7 @@ body.ringing #phoneh{color:var(--mint)}
 /* help notices: cards work in the background, so a short notice replaces the deck (owner, Oct. 31, 2026) */
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:28;width:min(92vw,440px);display:flex;flex-direction:column;gap:4px;padding:12px 16px;background:var(--s3);color:var(--ink);border-radius:16px;box-shadow:0 0 0 2px var(--mint),0 8px 24px rgba(0,0,0,.4);font:400 15px/1.35 var(--font-body)}
 #toast[hidden]{display:none}#toast b{font-weight:700}#toast span{color:var(--soft);font-size:14px}
-#toast.in{animation:tin .25s ease}@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+#toast.in{animation:tin .25s ease}@keyframes tin{from{transform:translate(-50%,10px)}to{transform:translate(-50%,0)}} /* movement only: the text stays at full contrast while it slides in */
 /* reaching a stop: its own screen, gone on its own after a few seconds */
 #stopscreen{position:fixed;inset:0;z-index:31;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg)}#stopscreen[hidden]{display:none}
 #stopscreen.in{animation:sfade 3.4s ease forwards}@keyframes sfade{0%{opacity:0}10%{opacity:1}85%{opacity:1}100%{opacity:0}}
