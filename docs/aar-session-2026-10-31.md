@@ -41,7 +41,7 @@ This record covers the whole session, as the owner asked. Each pull request also
 - [First-play stand-in playtest](playtests/first-play-proxy-findings.md): ten moments where a naive player stopped, misunderstood, skipped or tried something unsupported. It is labeled as a stand-in, not a human observation.
 - [First-play proposal](proposals/first-play.md): a guided first play that teaches by doing, with what changes in the code.
 - [World accessibility audit](proposals/world-accessibility.md): every proper noun, where it first appears, whether its role is explained, rename proposals with alternatives, and the order in which to introduce the world.
-- [Dice proposal](proposals/dice.md): no move needs less than a 2, and cards improve the odds but never remove the roll. Measured effect: escape win rate 35.0% to 31.8% (Teresā) and 34.4% to 32.4% (Matēu); she escapes on the government side 45.5% to 43.8%.
+- [Dice proposal](proposals/dice.md), revised after the owner asked for a bigger die and cards that are earned and spent. It proposes a d20 rolled on screen for every move (a 1 always fails, a 20 always succeeds), card bonuses from +2 to +6 that the player chooses to play and that are spent when played, and cards earned from choices. A throwaway prototype measured it: the d20 alone moves the escape win rate from 34.0% to 32.5% (Teresā); spending cards drops it to about 24%. The earning table is the open design decision.
 
 ## What went wrong, and what changed because of it
 

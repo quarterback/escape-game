@@ -78,6 +78,6 @@ These are sequencing and display changes. No rule changes.
 
 ## Questions for the owner
 
-1. Should the demo still choose the destination for the player, or should the first decision be the real choice?
+1. ~~Should the demo still choose the destination for the player?~~ Answered by the owner, Oct. 31, 2026: "Demo is prescriptive not suggestive but it's a guided run." The demo tells the player what to do at each step, and the player still makes each tap.
 2. Should the first run be the demo by default, with the normal run unlocked after it, or stay a separate button?
 3. When should Sosā first be named on the escape side: end of round 1 (proposed), or later?
