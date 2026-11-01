@@ -5,7 +5,7 @@
   {
    "code": "roll.need",
    "pattern": "P03",
-   "text": "Roll {need} or more",
+   "text": "Roll {need} or higher",
    "args": [
     "need"
    ]
@@ -29,7 +29,15 @@
   {
    "code": "time.hours",
    "pattern": "P03",
-   "text": "{hours} h",
+   "text": "Takes {hours}",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "code": "time.hour",
+   "pattern": "P03",
+   "text": "Takes {hours}",
    "args": [
     "hours"
    ]
@@ -171,7 +179,7 @@
   {
    "code": "lead.real_in",
    "pattern": "P03",
-   "text": "A true sighting, arriving in {hours} h",
+   "text": "A true sighting, arriving in {hours}",
    "args": [
     "hours"
    ]
@@ -199,7 +207,7 @@
   {
    "code": "her.slips",
    "pattern": "P03",
-   "text": "Her plans slip {hours} h",
+   "text": "Her plans slip by {hours}",
    "args": [
     "hours"
    ]
@@ -207,7 +215,7 @@
   {
    "code": "line.harder",
    "pattern": "P03",
-   "text": "The line is harder to cross for {hours} h",
+   "text": "The line is harder to cross for {hours}",
    "args": [
     "hours"
    ]
@@ -230,7 +238,7 @@
   {
    "code": "orders.easier",
    "pattern": "P03",
-   "text": "Orders easier for {hours} h",
+   "text": "Orders are easier for {hours}",
    "args": [
     "hours"
    ]
@@ -238,7 +246,7 @@
   {
    "code": "orders.harder",
    "pattern": "P03",
-   "text": "Orders harder for {hours} h",
+   "text": "Orders are harder for {hours}",
    "args": [
     "hours"
    ]
@@ -256,7 +264,7 @@
   {
    "code": "minister.sooner",
    "pattern": "P03",
-   "text": "Minister wants it {hours} h sooner",
+   "text": "The minister wants a town {hours} sooner",
    "args": [
     "hours"
    ]

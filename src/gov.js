@@ -11,6 +11,7 @@ const Gov = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
   const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
+  const hrsText = (n) => n === 1 ? T('scene.hours_one') : T('scene.hours', { n: S.num(n) }); // a duration in words for effect chips
   const M = (k, code, args) => C.marker(k, code, args);
   const T = (id, args) => C.t(id, args);
   const ev = (type, data) => Object.assign({ type }, data);
@@ -223,22 +224,22 @@ const Gov = (() => {
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push(M('roll', 'roll.need', { need: fx.roll.need })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', 'time.hours', { hours: fx.hours })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
-    if (fx.hours) out.push(M('time', 'time.hours', { hours: fx.hours }));
-    if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: fx.lead }) : M('gain', 'lead.real_now'));
+    if (fx.roll) { out.push(M('roll', 'roll.need', { need: fx.roll.need })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
+    if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: hrsText(fx.lead) }) : M('gain', 'lead.real_now'));
     if (fx.false) out.push(M('risk', 'lead.false'));
     if (fx.act === 'check_belief') out.push(M('gain', 'search.at', { place: place(g.belief) }));
     if (fx.press) out.push(M('gain', 'her.exposed'));
     if (fx.warn) out.push(M('lose', 'her.warned'));
-    if (fx.stall) out.push(M('gain', 'her.slips', { hours: fx.stall }));
-    if (fx.crossing) out.push(M('gain', 'line.harder', { hours: fx.crossing }));
+    if (fx.stall) out.push(M('gain', 'her.slips', { hours: hrsText(fx.stall) }));
+    if (fx.crossing) out.push(M('gain', 'line.harder', { hours: hrsText(fx.crossing) }));
     if (fx.ban) out.push(M('gain', 'ban.confirmed'));
     if (fx.unban) out.push(M('lose', 'ban.lost'));
     if (fx.holdup) out.push(M('gain', 'hold.esmeralda_moves'));
     if (fx.card) out.push(M('gain', 'card.gain', { card: D.GOV_CARDS[fx.card].name }));
-    if (fx.dc) out.push(M(fx.dc[0] < 0 ? 'gain' : 'lose', fx.dc[0] < 0 ? 'orders.easier' : 'orders.harder', { hours: fx.dc[1] }));
+    if (fx.dc) out.push(M(fx.dc[0] < 0 ? 'gain' : 'lose', fx.dc[0] < 0 ? 'orders.easier' : 'orders.harder', { hours: hrsText(fx.dc[1]) }));
     if (fx.minister) out.push(M(fx.minister > 0 ? 'gain' : 'lose', fx.minister > 0 ? 'minister.pleased' : 'minister.angry'));
-    if (fx.sooner) out.push(M('lose', 'minister.sooner', { hours: fx.sooner }));
+    if (fx.sooner) out.push(M('lose', 'minister.sooner', { hours: hrsText(fx.sooner) }));
     return out;
   }
   function eventView(g) {

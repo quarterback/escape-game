@@ -4521,7 +4521,7 @@
   {
    "id": "action.done_by",
    "pattern": "P03",
-   "text": ", done by {who}",
+   "text": ", done {who}",
    "args": [
     "who"
    ]
@@ -4560,6 +4560,19 @@
    ]
   },
   {
+   "id": "hint.wait_sosa",
+   "pattern": "P08",
+   "text": "If you wait the hour, Sosā acts during it."
+  },
+  {
+   "id": "action.her_during",
+   "pattern": "P03",
+   "text": "She keeps moving during these {hours} hours, and her moves can leave new reports.",
+   "args": [
+    "hours"
+   ]
+  },
+  {
    "id": "sim.line.nando_decoy_success",
    "pattern": "P07",
    "text": "\"They followed the decoy. The service lane is clear. Go now.\"",
@@ -4576,6 +4589,11 @@
    "pattern": "P07",
    "text": "\"It came back at dawn, late and dented. My cousin can still drive you to Salta.\"",
    "speaker": "host"
+  },
+  {
+   "id": "action.her_during_one",
+   "pattern": "P03",
+   "text": "She keeps moving during this hour, and her moves can leave new reports."
   }
  ]
 }
