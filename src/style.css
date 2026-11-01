@@ -393,3 +393,16 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
   #brief .broute .below{order:3}
   #brief .bpill{font-size:13px}
 }
+
+/* the last round, kept on screen until the next move; nothing to click through */
+#recap{margin:0 0 12px;padding:10px 14px;background:var(--s2);border-radius:14px}#recap[hidden]{display:none}
+#recap summary{cursor:pointer;color:var(--gold);font:400 15px/1.3 var(--font-title);min-height:36px;display:flex;align-items:center}
+#recap .recapbody{display:flex;flex-direction:column;gap:10px}#recap .recapbody h3{font-size:17px;margin:2px 0}#recap .kind{font-size:13px;color:var(--mute)}
+/* the police box is small: two short lines */
+#sosa{padding:4px 7px;max-width:calc(40% - 10px)}#sosa .name{font-size:12px}#sosa .row2,#sosa .row2 .num{font-size:11px}
+@media (max-width: 999px){#sosa .name svg{display:none}}
+/* the phone rings: the phone tab and the phone heading pulse while a call waits */
+@keyframes ringpulse{0%,100%{box-shadow:0 0 0 0 rgba(46,230,181,.0)}50%{box-shadow:0 0 0 6px rgba(46,230,181,.45)}}
+body.ringing #tabs [data-tab=phone]{animation:ringpulse 1s ease-in-out infinite;border-radius:12px;color:var(--mint)}
+body.ringing #phoneh{color:var(--mint)}
+@media(prefers-reduced-motion:reduce){body.ringing #tabs [data-tab=phone]{animation:none;box-shadow:0 0 0 3px var(--mint)}}

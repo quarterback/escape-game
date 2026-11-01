@@ -10,6 +10,8 @@
 const UI = (() => {
   let s = null, sel = null, who = 'woman', enemyLog = [], tab = 'here', gov = null, installEvt = null;
   // Phase turns (escape side): News, Phone, Move, Roll, Sosā. One call and one move per round.
+  let answered = false; // the phone was answered this round
+  let recap = null, newsRecap = null; // what the last round and the last news choice did, kept on screen until the next move
   let phase = 'move', round = 1, phoneCalls = 0, movedThisRound = false, result = null, roundSum = { theirs: [], hours: 0 }, daily = null;
   const $ = (id) => document.getElementById(id);
   const T = Content.t, H = Content.html; // all player-facing wording comes from content/coalition/ui.json
@@ -53,7 +55,7 @@ const UI = (() => {
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
   function newRun(w, demo, isDaily, dest, seed) {
-    markSeen(); briefPos = -1; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
@@ -65,7 +67,7 @@ const UI = (() => {
     animate(s._boot); renderAll(); startRound(true); saveRun();
   }
   function newGovRun(demo, seed) {
-    markSeen(); who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
+    markSeen(); recap = null; newsRecap = null; who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
     if (demo) { const G = Tutorial.RUNS.gov; gov = Gov.newRun(G.seed, 'woman', { dice: G.dice, events: G.eventQueue, tutorial: true }); Tutorial.start('gov'); }
     else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed); }
     s = gov.c; document.body.classList.add('gov');
@@ -195,7 +197,7 @@ const UI = (() => {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
-      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && phase === 'phone' && phoneCalls < 1, label));
+      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
   }
 
@@ -366,8 +368,8 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
-    else if (sid.startsWith('msg:')) { /* stay on the phone */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.lay_low'); result.title = T('result.lay_low_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('msg:')) { answered = true; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one answer ends the call; nobody hangs up
+    else { movedThisRound = true; recap = null; newsRecap = null; result = sm; if (sid === 'wait') { result.kind = T('result.lay_low'); result.title = T('result.lay_low_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
@@ -377,20 +379,22 @@ const UI = (() => {
   const PH_LABEL = { news: ['phase.news', 'phase.reports'], phone: ['phase.phone', 'phase.desk'], move: ['phase.move', 'phase.order'], roll: ['phase.roll', 'phase.roll'], sosa: ['phase.sosa', 'phase.her_move'] };
   const pendingEvent = () => gov ? Gov.view(gov).event : Sim.actions(s).event;
   function phoneUseful() {
-    if (gov) { const v = Gov.view(gov); return v.messages.some(m => m.options.some(o => Tutorial.allowsOption(o.id))) || (phoneCalls < 1 && v.calls.some(c => c.ok && Tutorial.allowsCall(c.id))); }
+    // the phone step exists only while the phone is ringing: an unanswered message
+    if (answered) return false;
+    if (gov) { const v = Gov.view(gov); return v.messages.some(m => m.options.some(o => Tutorial.allowsOption(o.id))); }
     const A = Sim.actions(s);
-    return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id))) || (phoneCalls < 1 && A.calls.some(c => c.ok && Tutorial.allowsCall(c.arr)));
+    return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id)));
   }
   function startRound(first) {
     if (!s || s.over) return;
     if (!first) round += 1;
-    phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
+    phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
-    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
-    else showBrief();
+    interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short); // a two second marker, never a screen to dismiss; the briefing is a reference behind its button
   }
   function enterPhase(p) {
     if (p === 'phone' && !phoneUseful()) p = 'move';
+    if (p === 'phone' && phase !== 'phone' && Render.ring) Render.ring(); // the phone rings on screen when a call is waiting
     phase = p; sel = null;
     if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
     if (Sfx.sting) Sfx.sting('phase');
@@ -476,6 +480,8 @@ const UI = (() => {
     $('phasebar').hidden = !on; document.body.classList.toggle('phased', on);
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
+      if ((phase === 'roll' || phase === 'sosa') && !replaying) { recap = { result, sum: roundSum, hours: roundSum.hours, at: s.hour }; startRound(false); return; }
+      if (phase === 'news' && result && result.from === 'news' && !replaying) { newsRecap = result; result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); return; }
       if (phase === 'move' && Tutorial.active() && !movedThisRound && phoneUseful()) phase = 'phone';
       if (phase === 'phone' && !phoneUseful()) phase = 'move';
       if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
@@ -484,18 +490,29 @@ const UI = (() => {
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '');
+    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '') + (phase === 'move' && !movedThisRound && phoneCalls < 1 && (gov ? Gov.view(gov).calls : Sim.actions(s).calls).some(c => c.ok) ? ' ' + T('hint.call_first') : '');
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
-    $('phasedone').hidden = phase !== 'phone';
+    document.body.classList.toggle('ringing', phase === 'phone');
+    $('phasedone').hidden = true; // one call or one answer ends the phone step; nobody has to hang up
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
     const was = card.dataset.ph; card.dataset.ph = phase;
     card.hidden = !showCard; $('herehead').hidden = showCard; $('approaches').hidden = showCard; $('lvlhead2').hidden = showCard;
     if (was !== phase) { $('tab-here').scrollTop = 0; $('tab-phone').scrollTop = 0; }
-    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, T(gov ? 'phase.see_came_in' : 'phase.see_sosa'), () => enterPhase('sosa')); else if (phase === 'sosa') sosaCard(card);
+    if (phase === 'news') newsCard(card); else if (phase === 'roll') resultCard(card, result, null, null); else if (phase === 'sosa') sosaCard(card);
+    renderRecap();
+  }
+  function renderRecap() {
+    const el = $('recap'); if (!el) return;
+    const parts = [];
+    if (recap) { const tmp = document.createElement('div'); if (recap.result) { resultCard(tmp, recap.result, null, null); parts.push(tmp.innerHTML); }
+      const t2 = document.createElement('div'); const keep = roundSum; roundSum = recap.sum; sosaCard(t2, true); roundSum = keep; parts.push(t2.innerHTML); }
+    if (newsRecap) { const t3 = document.createElement('div'); resultCard(t3, newsRecap, null, null); parts.push(t3.innerHTML); }
+    el.hidden = !parts.length || !s || !!s.over;
+    el.innerHTML = parts.length ? `<details open><summary>${T('recap.title')}</summary><div class="recapbody">${parts.join('')}</div></details>` : '';
   }
   const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold' };
   function newsCard(card) {
-    if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
+    if (result && result.from === 'news') { resultCard(card, result, null, null); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: v.rung }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
@@ -507,9 +524,9 @@ const UI = (() => {
     const out = r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
     const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
     card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
-    const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b);
+    if (next) { const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b); }
   }
-  function sosaCard(card) {
+  function sosaCard(card, quiet2) {
     card.className = 'sosa';
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     // one exposure line for the whole round, with the reason, instead of one per batch of hours
@@ -518,7 +535,6 @@ const UI = (() => {
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
-    const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
     const r = { kind, title, roll: null, line: '', mine: [], theirs: [], hours: 0 }; let after = false, expMine = 0, expTheirs = 0;
@@ -612,7 +628,7 @@ const UI = (() => {
     if (!v.messages.length) inbox.innerHTML = `<p class="hint">${T('desk.empty')}</p>`;
     for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => phase === 'phone' && Tutorial.allowsOption(o.id)));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, phase === 'phone' && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
+    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
   }
   function renderGovHand() {
     const h = $('hand'); h.innerHTML = '';
@@ -640,8 +656,8 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
-    else if (sid.startsWith('msg:')) { /* stay at the desk */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('msg:')) { answered = true; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; recap = null; newsRecap = null; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = 'roll'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
@@ -755,7 +771,9 @@ const UI = (() => {
     const toggleHelp = () => { $('helpbox').hidden = !$('helpbox').hidden; if (!$('helpbox').hidden) setTab('phone'); };
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
     document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
-    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
+    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b);
+      // once the dice and the hours have played out, move the round on without a click
+      if (!b && !s.over && !replaying && (phase === 'roll' || phase === 'sosa' || (phase === 'news' && result && result.from === 'news'))) renderAll(); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();
     if (replayFromHash()) return;

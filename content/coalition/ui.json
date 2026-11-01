@@ -122,12 +122,12 @@
   {
    "id": "scene.sosa_here",
    "pattern": "P06",
-   "text": "Sosā is searching here"
+   "text": "Police are searching where you are"
   },
   {
    "id": "scene.sosa_at",
    "pattern": "P06",
-   "text": "Sosā is searching {place}",
+   "text": "Police are searching {place}",
    "args": [
     "place"
    ]
@@ -151,7 +151,7 @@
   {
    "id": "scene.next_move",
    "pattern": "P02",
-   "text": "Sosā acts again"
+   "text": "Police act again"
   },
   {
    "id": "scene.next_in",
@@ -3448,7 +3448,7 @@
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Answer any messages first, then make your one call or tap Hang up; either one ends your time on the phone."
+   "text": "Your phone is ringing, so answer the call."
   },
   {
    "id": "hint.move",
@@ -3474,7 +3474,7 @@
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Answer the minister first, then send your one request or tap Hang up; either one ends your time at the desk.",
+   "text": "The minister is on the line, so answer him.",
    "role": "gov"
   },
   {
@@ -4183,7 +4183,7 @@
   {
    "id": "brief.sosa",
    "pattern": "P02",
-   "text": "Sosā searches here"
+   "text": "Police search here"
   },
   {
    "id": "brief.jet",
@@ -4610,6 +4610,16 @@
    "args": [
     "time"
    ]
+  },
+  {
+   "id": "recap.title",
+   "pattern": "P02",
+   "text": "What just happened"
+  },
+  {
+   "id": "hint.call_first",
+   "pattern": "P08",
+   "text": "You can make one call from the phone before you move."
   }
  ]
 }
