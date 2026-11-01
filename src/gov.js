@@ -122,6 +122,9 @@ const Gov = (() => {
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
       const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
+      // an order with nothing written for failure and a difficulty of 1 (watching the house, following a report) is a choice, not a chance
+      if (o.dc <= 1 && !o.fail) { out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need: null, ok: !why, why, text: o.text, who: T('gov.preview.who_acts', { who: o.who }), pay: false, odds: '', pct: 100, noRoll: true, bonus: [], bonusFrom: [],
+        preview: [o.text, T('sim.preview.no_roll'), T('gov.preview.takes_hour_acts', { who: o.who }), T('gov.preview.cannot_fail')] }); continue; }
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
         preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
@@ -198,9 +201,9 @@ const Gov = (() => {
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
-    // every order rolls the 20-sided die; cards lower the target but never remove the roll
-    const die = roll(g), won = wins(die, o.need);
-    events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
+    // every order with a failure rolls the 20-sided die; cards lower the target but never remove the roll
+    const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.need);
+    events.push(ev('roll', o.noRoll ? { die: null, need: null, won, auto: true, bonus: [] } : { die, need: o.need, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {

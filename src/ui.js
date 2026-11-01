@@ -32,7 +32,10 @@ const UI = (() => {
   }
 
   // ---- storage: first visit, saved run --------------------------------
-  const SEEN = 'coalition.seen', SAVE = 'coalition.run';
+  // Saves from the six-sided game cannot resume under the 20-sided die (a demo save kept its six-sided scripted dice),
+  // so runs save under a new key and the old one is cleared once.
+  const SEEN = 'coalition.seen', SAVE = 'coalition.run.d20';
+  try { localStorage.removeItem('coalition.run'); } catch (e) { /* storage blocked */ }
   const seen = () => { try { return !!localStorage.getItem(SEEN); } catch (e) { return true; } };
   const markSeen = () => { try { localStorage.setItem(SEEN, '1'); } catch (e) { /* storage blocked */ } };
   function saveRun() {

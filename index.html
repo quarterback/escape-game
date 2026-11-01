@@ -536,7 +536,10 @@ body.ringing #phoneh{color:var(--mint)}
 .sdots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));width:100%;margin:8px 0;padding:0;list-style:none;position:relative}
 .sdots li{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}.sdots i{width:14px;height:14px;border-radius:50%;background:var(--line)}
 .sdots li.past i{background:var(--mint)}.sdots li.now i{background:var(--gold);box-shadow:0 0 0 4px rgba(255,210,74,.3)}
-.sdots span{font-size:11px;line-height:1.15;color:var(--mute);text-align:center;overflow-wrap:anywhere;max-width:100%;padding:0 2px}.sdots li.now span{color:var(--ink)}
+.sdots span{font-size:14px;line-height:1.2;color:var(--mute);text-align:center;white-space:nowrap;padding:0 2px}
+/* six names at a readable 14px do not fit side by side on a phone: alternate them above and below the dots */
+.sdots li{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:18px 14px 18px;row-gap:6px;justify-items:center;overflow:visible}
+.sdots li i{grid-row:2}.sdots li span{grid-row:3}.sdots li:nth-child(even) span{grid-row:1}.sdots li.now span{color:var(--ink)}
 @media(prefers-reduced-motion:reduce){#toast.in,#stopscreen.in{animation:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
@@ -3283,7 +3286,7 @@ const Data = (() => {
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, gtext: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold her if she appears. Unless Costamar's minister knows she is coming, her takeoff from Portalba is now harder, and the police at Portalba can stop her for questioning.", text: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear. Unless Costamar's minister knows you are coming, takeoff from Portalba is now harder. The police at Portalba can also stop you now." },
     { id: 'press_story',  w: 2, gtext: () => 'The ministry briefs the papers that she has already left the country.', text: () => 'The ministry briefs the papers that you have already left the country.' },
-    { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
+    { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours, every move there that needs a roll is harder.` },
     { id: 'trace',        w: 3, after: 4, gtext: () => 'The ministry traces her recent calls.', text: () => 'The ministry traces your recent calls.' },
     { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `Sosā has ${who}'s calls monitored, so every answer her sibling has already promised her comes four hours later.`, text: (who) => `Sosā has ${who}'s calls monitored, so every answer your sibling has already promised you comes four hours later.` },
   ];
@@ -3335,7 +3338,7 @@ const Data = (() => {
     { id: 'follow', name: (lv, rep) => `Move your search to ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they are until a search, checkpoint or other police order sends them there.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: { records: 1 }, act: 'circulate', text: 'The travel ban goes to the posts at the line, so every crossing she tries there needs a higher roll. It does not close the border.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
     { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'Inspector Sosā', mods: { records: 1 }, act: 'press_ally', text: 'Sosā questions one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
-    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, everything she tries at that stop is harder to roll. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
+    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that needs a roll is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
     { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
@@ -4322,6 +4325,9 @@ const Gov = (() => {
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
       const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
+      // an order with nothing written for failure and a difficulty of 1 (watching the house, following a report) is a choice, not a chance
+      if (o.dc <= 1 && !o.fail) { out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need: null, ok: !why, why, text: o.text, who: T('gov.preview.who_acts', { who: o.who }), pay: false, odds: '', pct: 100, noRoll: true, bonus: [], bonusFrom: [],
+        preview: [o.text, T('sim.preview.no_roll'), T('gov.preview.takes_hour_acts', { who: o.who }), T('gov.preview.cannot_fail')] }); continue; }
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
         preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
@@ -4398,9 +4404,9 @@ const Gov = (() => {
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
-    // every order rolls the 20-sided die; cards lower the target but never remove the roll
-    const die = roll(g), won = wins(die, o.need);
-    events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
+    // every order with a failure rolls the 20-sided die; cards lower the target but never remove the roll
+    const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.need);
+    events.push(ev('roll', o.noRoll ? { die: null, need: null, won, auto: true, bonus: [] } : { die, need: o.need, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
@@ -5745,7 +5751,10 @@ const UI = (() => {
   }
 
   // ---- storage: first visit, saved run --------------------------------
-  const SEEN = 'coalition.seen', SAVE = 'coalition.run';
+  // Saves from the six-sided game cannot resume under the 20-sided die (a demo save kept its six-sided scripted dice),
+  // so runs save under a new key and the old one is cleared once.
+  const SEEN = 'coalition.seen', SAVE = 'coalition.run.d20';
+  try { localStorage.removeItem('coalition.run'); } catch (e) { /* storage blocked */ }
   const seen = () => { try { return !!localStorage.getItem(SEEN); } catch (e) { return true; } };
   const markSeen = () => { try { localStorage.setItem(SEEN, '1'); } catch (e) { /* storage blocked */ } };
   function saveRun() {
