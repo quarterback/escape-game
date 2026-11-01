@@ -1951,7 +1951,7 @@
   {
    "id": "sim.preview.next_reply_in_hours_needs",
    "pattern": "P03",
-   "text": "{name} works on the next step, {stage}, and answers in {k} hours. It comes through on a roll of {turned} or better.",
+   "text": "{name} works on the next step, {stage}, and answers in {k} hours. It comes through on a roll of {turned} or higher.",
    "args": [
     "stage",
     "k",
@@ -3448,7 +3448,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} picks the city for you on a roll of {need} or better. On a miss, you cannot call about the jet for six hours.",
+   "text": "{place} picks the city for you on a roll of {need} or higher. On a miss, you cannot call about the jet for six hours.",
    "args": [
     "place",
     "need"
@@ -4136,7 +4136,7 @@
   {
    "id": "brief.gov_job_ban",
    "pattern": "P08",
-   "text": "Circulate the travel ban, and every border crossing she tries needs one more on the die."
+   "text": "Circulate the travel ban, and every border crossing she tries needs a higher roll."
   },
   {
    "id": "brief.gov_job_hold",
@@ -4506,7 +4506,7 @@
   {
    "id": "brief.passport_deadline",
    "pattern": "P08",
-   "text": "Hours until the court's passport deadline, {time}. Then your own passport is cancelled, the travel ban is in force at the border, so every crossing needs one more on the die, and any police stop starts with a night at the station.",
+   "text": "Hours until the court's passport deadline, {time}. Then your own passport is cancelled, the travel ban is in force at the border, so every crossing needs a higher roll, and any police stop starts with a night at the station.",
    "args": [
     "time"
    ]
@@ -4514,7 +4514,7 @@
   {
    "id": "brief.passport_deadline_gov",
    "pattern": "P08",
-   "text": "Hours until the court's passport deadline, {time}. Then her own passport is cancelled, the travel ban is in force at the border, so every crossing she tries needs one more on the die, and any police stop starts with a night at the station.",
+   "text": "Hours until the court's passport deadline, {time}. Then her own passport is cancelled, the travel ban is in force at the border, so every crossing she tries needs a higher roll, and any police stop starts with a night at the station.",
    "args": [
     "time"
    ]

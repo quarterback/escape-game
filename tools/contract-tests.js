@@ -57,8 +57,8 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 // so every roll target, preview, news chip, computer decision and scripted demo is checked directly)
 { const fs = require('fs'), R = path.join(__dirname, '..');
   // 1. no six-sided arithmetic left in the game or its bots
-  const SIX = [/need\s*<=\s*\(?[56]\b/, /need\s*<=\s*\(\s*\w+\s*\?\s*[56]/, /need\s*>\s*6\b/, /need\s*<\s*7\b/, /_rng\(\)\s*\*\s*6\b/, /%\s*6\)\s*\]/, /\bin 6\b/, /chances in six/, /7\s*-\s*need/];
-  const files = ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/render.js', 'tools/calibrate.js', 'tools/gov-calibrate.js', 'tools/sample-run.js', 'content/coalition/ui.json', 'content/coalition/markers.json'];
+  const SIX = [/need\s*<=\s*\(?[56]\b/, /need\s*<=\s*\(\s*\w+\s*\?\s*[56]/, /need\s*>\s*6\b/, /need\s*<\s*7\b/, /_rng\(\)\s*\*\s*6\b/, /%\s*6\)\s*\]/, /\bin 6\b/, /chances in six/, /7\s*-\s*need/, /one more on the die/, /on a [1-6] or better/];
+  const files = ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/data.js', 'content/coalition/tutorials.json', 'src/render.js', 'tools/calibrate.js', 'tools/gov-calibrate.js', 'tools/sample-run.js', 'content/coalition/ui.json', 'content/coalition/markers.json'];
   const hits = []; for (const f of files) { if (!fs.existsSync(path.join(R, f))) continue; fs.readFileSync(path.join(R, f), 'utf8').split('\n').forEach((l, i) => { for (const re of SIX) if (re.test(l)) hits.push(`${f}:${i + 1} ${re}`); }); }
   ok(!hits.length, `C16 no six-sided rule is left in the game, catalog or bots${hits.length ? ': ' + hits.slice(0, 4).join('; ') : ''}`);
   // 2. every move and order shows the same target and chance it rolls, on the 20-sided scale

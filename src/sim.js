@@ -97,7 +97,7 @@ const Sim = (() => {
       msg(s, events, 'sibling', T('sim.line.jet_found_in_susana_the'), [
         { id: 'confirm_dest', label: T('sim.opt.confirm_destination', { city: dest(s).city }), hours: 0, effect: T('sim.effect.crew_booking_can_proceed', { city: dest(s).city }) },
         { id: 'wait_sponsor', label: T('sim.opt.wait_until_salek_answers', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.crew_booking_waits_until_salek', { sponsor: sponsor(s).short }) },
-        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: D.PEOPLE.sibling.reliability, place: ch(s).sibling.short }) },
+        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: tgt(D.PEOPLE.sibling.reliability), place: ch(s).sibling.short }) },
       ]);
     }
     if (s.pos === 1) {
@@ -211,7 +211,7 @@ const Sim = (() => {
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
       if (s.event) whys.unshift(T('sim.why.answer_the_news_first'));
       out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
-        preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally), turned: D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0) })] });
+        preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally), turned: Math.min(20, tgt(D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0) - (s.people[ally].trust >= 2 ? 1 : 0))) })] });
     };
     add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),
       T('sim.status.arrange_the_next_stage_charter'));
