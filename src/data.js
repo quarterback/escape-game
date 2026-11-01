@@ -1,8 +1,11 @@
 /* ============================================================
    COALITION data: levels, people, arrangements, cards, enemy actions.
    Plain tables. Names from quarterback/kels (world/names.md,
-   verdenese/, world/atlanta-lore.md); Esmeralda, Baca and Susana are
-   owner canon. Everything here is a prototype choice (docs/game-direction.md).
+   verdenese/, world/atlanta-lore.md). Place names were renamed by the owner on
+   Oct. 31, 2026 so every place sounds like a place and none is named after a
+   person: Costamar, Cerro Alto, Portalba, Pedra Branca, Altamira, Ardésia,
+   Nordavia, Krasnomor. The game, not the canon, decides names now.
+   Everything here is a prototype choice (docs/game-direction.md).
    ============================================================ */
 'use strict';
 const Data = (() => {
@@ -23,18 +26,18 @@ const Data = (() => {
 
   // Allies. reliability: the die result a delegated job needs (lower is better). where: level index they act from.
   const PEOPLE = {
-    sibling:  { role: 'arranging the jet and your welcome in Esmeralda from abroad', where: -1, reliability: 3 },
+    sibling:  { role: 'arranging the jet and your welcome in Costamar from abroad', where: -1, reliability: 3 },
     aide:     { name: 'Gianlūka Moretī', role: 'party chief of staff', where: 0, reliability: 3,
                 terms: 'He wants your public word that he leads the party in your absence.' },
     nando:    { name: 'Nando', role: 'your driver for 11 years', where: 0, reliability: 2 },
     sponsor:  { name: 'Your sponsor', role: 'the person asking a foreign ministry for your visa', where: -1, reliability: 4,
                 terms: '' },
     host:     { name: 'Nonā Rosa Trentinī', role: 'matriarch of the Nova Trentô colônia', where: 2, reliability: 2 },
-    official: { name: 'Rosario Vélez', role: "aide to Esmeralda's interior minister", where: 4, reliability: 4,
-                terms: 'She wants it understood that Esmeralda receives you as a guest, not as a government in exile.' },
+    official: { name: 'Rosario Vélez', role: "aide to Costamar's interior minister", where: 4, reliability: 4,
+                terms: 'She wants it understood that Costamar receives you as a guest, not as a government in exile.' },
     holt:     { name: 'Holt Greer', role: 'brakeman on the Huhūi freight', where: 3, reliability: 2 },
     theo:     { name: 'Theo Bascom', role: 'yard foreman in the Salta rail town', where: 3, reliability: 3 },
-    pilot:    { name: 'Capitān Olsēn', role: 'charter pilot, Susana', where: 5, reliability: 3 },
+    pilot:    { name: 'Capitān Olsēn', role: 'charter pilot, Portalba', where: 5, reliability: 3 },
     press:    { name: 'Rādiô Portô Venla', role: 'the station everyone in the capital has on', where: -1, reliability: 6 },
   };
 
@@ -43,10 +46,10 @@ const Data = (() => {
 
   // Continuing arrangements: ordered stages. A stage is a promise until the ally delivers.
   const ARRANGEMENTS = {
-    aircraft:   { name: 'Jet',    stages: ['none', 'charter jet booked', 'crew hired', 'fueled at Susana', 'ready to fly at Susana'],
-                  what: 'Call your sibling to find a charter, a crew, fuel and a place at Susana.' },
-    reception:  { name: 'Welcome in Esmeralda',   stages: ['none', 'Esmeralda expects you', "Esmeralda's minister knows you are coming", 'Esmeraldan officials waiting at a border post'],
-                  what: "Baca has your name, and Vélez puts officials at the post to meet you." },
+    aircraft:   { name: 'Jet',    stages: ['none', 'charter jet booked', 'crew hired', 'fueled at Portalba', 'ready to fly at Portalba'],
+                  what: 'Call your sibling to find a charter, a crew, fuel and a place at Portalba.' },
+    reception:  { name: 'Welcome in Costamar',   stages: ['none', 'Costamar expects you', "Costamar's minister knows you are coming", 'Costamaran officials waiting at a border post'],
+                  what: "Cerro Alto has your name, and Vélez puts officials at the post to meet you." },
     permission: { name: 'Entry visa',  stages: ['none', 'your sponsor has agreed to ask', 'entry visa issued'],
                   what: 'Your sponsor asks the ministry in the country you chose for a visa.' },
   };
@@ -57,17 +60,17 @@ const Data = (() => {
   const VALDORIA = ['residence', 'road', 'colonia', 'salta', 'border'], ESMERALDA = ['border', 'airfield'];
   const ALL = ['residence', 'road', 'colonia', 'salta', 'border', 'airfield'];
   const CARDS = {
-    decoy_cars:   { name: 'Two more cars like yours', tag: 'decoy', from: 'nando', reach: ['residence', 'road'], works: 'At the residence and on the road at Santa Laura.',
+    decoy_cars:   { name: 'Two more cars like yours', tag: 'decoy', from: 'nando', reach: ['residence', 'road'], works: 'At the residence and on the road at Pedra Branca.',
                     text: "Two matching sedans and two friends who will drive them the wrong way." },
     aide_word:    { name: 'The party machine', tag: 'influence', from: 'aide', reach: VALDORIA, works: 'Valdórian officials, up to and at the line.',
                     text: 'Gianlūka can get a mayor, a judge or a border post on the phone for you.' },
     truck:        { name: "The colônia's grape truck", tag: 'vehicle', from: 'host', reach: ['colonia', 'salta'], works: 'Getting help in the Salta rail yard.',
                     text: "A farm truck nobody looks at twice, and a cousin who drives it to Salta every week." },
-    passport:     { name: 'Your second passport', tag: 'document', from: 'self', reach: ESMERALDA, works: 'The Paso Huhūi post and the Susana departure.',
-                    text: "You have held it for years, and the travel ban lists only your other passport. It gets you through the Paso Huhūi post and helps your takeoff at Susana." },
-    intro_vel:    { name: "Rosario Vélez's card", tag: 'introduction', from: 'official', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, the Susana tower and the charter operator.',
+    passport:     { name: 'Your second passport', tag: 'document', from: 'self', reach: ESMERALDA, works: 'The Paso Huhūi post and the Portalba departure.',
+                    text: "You have held it for years, and the travel ban lists only your other passport. It gets you through the Paso Huhūi post and helps your takeoff at Portalba." },
+    intro_vel:    { name: "Rosario Vélez's card", tag: 'introduction', from: 'official', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, the Portalba tower and the charter operator.',
                     text: "Vélez's number and her word that the border post knows your name." },
-    delay_report: { name: 'A report held one day', tag: 'delay', from: 'aide', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Santa Laura and the line.',
+    delay_report: { name: 'A report held one day', tag: 'delay', from: 'aide', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.',
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Third boxcar. Straw inside. Holt leaves at midnight and does not wait." },
@@ -75,7 +78,7 @@ const Data = (() => {
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew and leaving without the visa.",
                     text: "A name that opens doors money alone does not. Your sponsor keeps count." },
-    barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Santa Laura.',
+    barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Pedra Branca.',
                     text: "The barges still run the river. The captains still owe your father." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
@@ -103,16 +106,16 @@ const Data = (() => {
           success: { belief: 0, commit: 'aide', say: 'The flags get you through. Gianlūka reminds you, gently, what he asked for.' },
           fail: { exposure: 1, commit: 'aide', say: 'The watch stops the car at the gate and tells Sosā whose car it is. You are still at the house.' } },
       ] },
-    { id: 'road', name: 'The road south, Santa Laura', short: 'Santa Laura', scene: 'road',
-      objective: 'Get from Santa Laura to the colônia at Nova Trentô.',
-      arrive: 'Santa Laura. The radio says you are on a yacht in Portô Venla.',
+    { id: 'road', name: 'The road south, Pedra Branca', short: 'Pedra Branca', scene: 'road',
+      objective: 'Get from Pedra Branca to the colônia at Nova Trentô.',
+      arrive: 'Pedra Branca. The radio says you are on a yacht in Portô Venla.',
       approaches: [
         { id: 'second_driver', with: 'nando', name: 'Hire a plain car and driver', hours: 2, dc: 3, needs: [], pay: true,
           mods: { information: 1 }, text: "Nando's cousin offers a taxi and his silence.",
           success: { say: 'You leave by taxi while Nando drives your sedan back north.' },
           fail: { exposure: 1, hours: 2, say: 'The cousin wants more money, then wants nothing to do with it. The attempt costs you four hours.' } },
         { id: 'siblings_driver', with: 'sibling', name: "Leave with your sibling's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
-          mods: { information: 1 }, text: 'Your sibling knows a man in Santa Laura. Once the charter is booked, he drives you to Nova Trentô.',
+          mods: { information: 1 }, text: 'Your sibling knows a man in Pedra Branca. Once the charter is booked, he drives you to Nova Trentô.',
           success: { say: 'He asks nothing and drives the back roads. The radio stays off.' },
           fail: { exposure: 1, hours: 1, say: 'He is late, then nervous, and you wait an hour on a side street while he decides.' } },
         { id: 'barge', name: 'Take a family barge upriver', hours: 3, dc: 2, needs: [{ card: 'boat' }], with: 'self',
@@ -125,7 +128,7 @@ const Data = (() => {
           fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and phone Sosā's people." } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
-      objective: 'Get Esmeralda to expect you, then take the road to Salta.',
+      objective: 'Get Costamar to expect you, then take the road to Salta.',
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative's truck was impounded this morning.",
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
@@ -133,13 +136,13 @@ const Data = (() => {
           success: { card: 'truck', trust: 'host' },
           fail: { card: 'truck', hours: 1 } },
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
-          mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Esmeralda and your visa each move one step.",
+          mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Costamar and your visa each move one step.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
         { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
           mods: {}, text: 'Rest for six hours. Your police attention drops by two while Sosā keeps searching.',
           success: { exposure: -2, say: 'You wake before the roosters. The house is quiet.' }, fail: { say: '' } },
         { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
-          mods: {}, text: "Once Esmeralda expects you, Nonā Rosa's cousin drives you up to Salta.",
+          mods: {}, text: "Once Costamar expects you, Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
@@ -164,8 +167,8 @@ const Data = (() => {
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: 'Cross into Esmeralda. One of the three posts works for Valdória.',
-      arrive: 'The passes. Three crossings lie within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Baca, and the Punta Marēa crossing toward the coast. Valdória has paid the guards at one of them to stop you.',
+      objective: 'Cross into Costamar. One of the three posts works for Valdória.',
+      arrive: 'The passes. Three crossings lie within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Cerro Alto, and the Punta Marēa crossing toward the coast. Valdória has paid the guards at one of them to stop you.',
       border: true,
       approaches: [
         { id: 'post_rail', post: 'rail', name: 'Cross at the Paso Huhūi post', hours: 1, dc: 4, needs: [{ card: 'document' }],
@@ -173,9 +176,9 @@ const Data = (() => {
           success: { say: 'The guard turns the pages, looks at a sheet on the desk, and stamps it.' },
           fail: { exposure: 2, hours: 3, say: 'The guard reads the sheet first. You spend three hours in a cold room and come out on the Valdórian side.' } },
         { id: 'post_high', post: 'high', name: 'Take the Ālto Verdē road post', hours: 3, dc: 3, needs: [],
-          mods: { introduction: 2, vehicle: 1 }, text: "Three hours of switchbacks toward Baca. The post answers to the interior ministry, where Vélez works.",
+          mods: { introduction: 2, vehicle: 1 }, text: "Three hours of switchbacks toward Cerro Alto. The post answers to the interior ministry, where Vélez works.",
           success: { say: 'A long climb. The sergeant at Ālto Verdē checks your passport and waves the car through.' },
-          fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Baca is woken up.' } },
+          fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
         { id: 'post_coast', post: 'coast', name: 'Pay the Punta Marēa crossing', hours: 2, dc: 4, needs: [], pay: true,
           mods: { delay: 2, information: 2 }, text: "The merchants' road to the coast. The guards here answer to the port, and the port takes money.",
           success: { exposure: 1, say: 'The barrier goes up. Nobody says thank you.' },
@@ -183,14 +186,14 @@ const Data = (() => {
       ],
       received: { id: 'received', name: "Walk to the people waiting", hours: 1, say: 'Rosario Vélez shakes your hand across the barrier. The guards on your side write nothing down.' },
       bought: { say: 'The sergeant reads your passport, walks into the hut and picks up the telephone. He keeps you waiting 12 hours, until a Valdórian liaison arrives. You are still on the Valdórian side of the line.' } },
-    { id: 'airfield', name: 'Susana airfield, Esmeralda', short: 'Susana', scene: 'airfield',
+    { id: 'airfield', name: 'Portalba airfield, Costamar', short: 'Portalba', scene: 'airfield',
       objective: "Board the jet.",
-      arrive: "Susana. The charter apron behind the port, Esmeraldan flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
+      arrive: "Portalba. The charter apron behind the port, Costamaran flags on the tower. They will let you leave from here and nothing more. Sosā has asked them to hold you.",
       final: true,
       approaches: [
         { id: 'depart', with: 'pilot', name: 'Board and depart', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 4 }, { arr: 'permission', stage: 2 }],
           mods: { introduction: 1, document: 1 }, text: 'Leave once the jet is ready and your visa is issued. The tower still has to clear you.',
-          success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Esmeraldan airspace." },
+          success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Costamaran airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you on the apron for two hours while a request from Valdória is read, and reread.' } },
         { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
           mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave without the visa. Your sponsor's line helps persuade him. If the country you picked never agreed to take you, you are held when you land.",
@@ -205,8 +208,8 @@ const Data = (() => {
 
   // Things people say when a stage is reached. who: speaker id.
   const STAGE_LINES = {
-    aircraft:   ['', 'I found a jet in Susana with 12 seats, and nobody has asked questions yet.', 'The crew is confirmed.', 'The fuel is paid, and the jet is moving into place.', 'The jet is ready at Susana.'],
-    reception:  ['', "I reached Rosario Vélez, the minister's aide in Baca. Esmeralda expects you, but Vélez has not answered since.", 'Vélez has spoken to her minister, and she has sent you her card for the Esmeraldan posts and the tower.', 'Esmeraldan officials will meet you at the {post}, and only there.'],
+    aircraft:   ['', 'I found a jet in Portalba with 12 seats, and nobody has asked questions yet.', 'The crew is confirmed.', 'The fuel is paid, and the jet is moving into place.', 'The jet is ready at Portalba.'],
+    reception:  ['', "I reached Rosario Vélez, the minister's aide in Cerro Alto. Costamar expects you, but Vélez has not answered since.", 'Vélez has spoken to her minister, and she has sent you her card for the Costamaran posts and the tower.', 'Costamaran officials will meet you at the {post}, and only there.'],
     permission: ['', '{sponsor} has taken your call and will speak to the ministry, on {sponsor}\'s terms.', 'The entry visa is issued. A car will meet the aircraft at {city}.'],
   };
 
@@ -214,54 +217,54 @@ const Data = (() => {
   const ENEMY_ACTIONS = [
     { id: 'check_belief', w: 4, text: (lv) => `Sosā's people search ${lv}.` },
     { id: 'circulate',    w: 3, once: true, text: () => 'Sosā sends the travel ban to the posts at the line, and every crossing there now needs one more on the die unless you hold "A report held one day."' },
-    { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Susana charter operator that its Valdórian license is under review.' },
+    { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Portalba charter operator that its Valdórian license is under review.' },
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
-    { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda, through its embassy in Baca, to hold you if you appear.' },
+    { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear.' },
     { id: 'press_story',  w: 2, text: () => 'The ministry briefs the papers that you have already left the country.' },
     { id: 'roadblock',    w: 2, after: 6, text: (lv) => `Police set a checkpoint on the road out of ${lv}. For the next six hours every move there is harder.` },
     { id: 'trace',        w: 3, after: 4, text: () => 'The ministry traces your recent calls.' },
-    { id: 'watch_sibling', w: 2, once: true, after: 9, text: (who) => `Sosā has ${who}'s calls monitored. The operator in Susana goes quiet for a while.` },
+    { id: 'watch_sibling', w: 2, once: true, after: 9, text: (who) => `Sosā has ${who}'s calls monitored. The operator in Portalba goes quiet for a while.` },
   ];
 
-  // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Gannibal); Almatau is a
-  // working name for Tarun's capital, which the canon leaves open. accepts: whether the country will take you.
-  // The player never sees accepts; the only tell is whether the visa ever arrives. Susana, in Esmeralda, is where you fly from.
+  // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Krasnomor); Almatau is a
+  // working name for Ardésia's capital, which the canon leaves open. accepts: whether the country will take you.
+  // The player never sees accepts; the only tell is whether the visa ever arrives. Portalba, in Costamar, is where you fly from.
   const DESTS = {
-    atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
+    atlanta:   { name: 'Altamira', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad and an old client of your family',
                             asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return.',
                             terms: 'He will speak to the ministry if you move the family accounts to his house.', slow: 0,
                             demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
                             kept: 'Salek now holds the family accounts.', broke: 'Salek tells his clients you broke your word.' },
                  landing: '' },
-    tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: false,
+    tarun:     { name: 'Ardésia', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: false,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
                             asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics.',
                             terms: 'He will write to the ministry if you give your word to keep out of politics while you are his guest.', slow: 6,
-                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
+                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Ardésia. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.', broke: 'Rāo tells the ministry you broke your word.' },
-                 landing: 'You land at Almatau at dawn. The flight plan was accepted; you were not. Tarun never agreed to take you, and the men at the foot of the stairs are police. A Valdórian liaison arrives by evening.' },
-    zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8, accepts: false,
-                 sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Gannibal with friends at the foreign ministry',
+                 landing: 'You land at Almatau at dawn. The flight plan was accepted; you were not. Ardésia never agreed to take you, and the men at the foot of the stairs are police. A Valdórian liaison arrives by evening.' },
+    zaryanova: { name: 'Nordavia', city: 'Krasnomor', lon: 131.9, lat: 43.1, hours: 8, accepts: false,
+                 sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Krasnomor with friends at the foreign ministry',
                             asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control.',
                             terms: 'She will take it to the ministry if you sign over mineral rights you do not control.', slow: 0,
                             demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so her visa answer comes through on a 3 or better. Word reaches home, and your police attention rises by one.', heat: 1 },
-                            kept: 'Your signature on the concessions is in Gannibal.', broke: 'Vosk tells the ministry you broke your word.' },
-                 landing: 'You land at Gannibal after eight hours. Officers wait on the apron. Zaryanova never agreed to take you. You are held at the airport until Valdória sends for you.' },
+                            kept: 'Your signature on the concessions is in Krasnomor.', broke: 'Vosk tells the ministry you broke your word.' },
+                 landing: 'You land at Krasnomor after eight hours. Officers wait on the apron. Nordavia never agreed to take you. You are held at the airport until Valdória sends for you.' },
   };
-  const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Susana', city: 'Esmeralda', lon: -79.9, lat: -2.2 } };
+  const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Portalba', city: 'Costamar', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
   const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',
-                blurb: "Keep the candidate from flying out before Tuesday at 2 p.m. Past the border, your patrols need Esmeralda's agreement." };
+                blurb: "Keep the candidate from flying out before Tuesday at 2 p.m. Past the border, your patrols need Costamar's agreement." };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
-    watch:     { name: 'The watch team', tag: 'watch', from: 'Inspector Sosā', reach: ['residence', 'road'], works: 'The residence and Santa Laura.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
-    desk:      { name: "The provincial desk's patrol", tag: 'patrol', from: 'The Santa Laura commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
+    watch:     { name: 'The watch team', tag: 'watch', from: 'Inspector Sosā', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
+    desk:      { name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
     registry:  { name: 'Registry access', tag: 'records', from: 'The civil registry', reach: VALDORIA, works: 'Any Valdórian desk that checks a name.', text: 'Who asked for what, and when. It never says where anyone is now.' },
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
-    operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Susana charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
-    esm_intro: { name: 'An Esmeraldan introduction', tag: 'introduction', from: 'The embassy in Baca', reach: ESMERALDA, works: 'Lets your search, checkpoint and call-in orders work at Susana.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
+    operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
+    esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
@@ -282,7 +285,7 @@ const Data = (() => {
   // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the
   // search), press (her exposure up), warn (her side learns something: her exposure down), stall (her bookings slip,
   // hours), crossing (the line is closed for n hours), ban (the ban is confirmed at the post), unban (the post loses it),
-  // holdup (the Esmeraldan request moves forward), dc (orders easier or harder: [delta, hours]), minister (+1 pleased,
+  // holdup (the Costamaran request moves forward), dc (orders easier or harder: [delta, hours]), minister (+1 pleased,
   // -1 angry), sooner (the minister's deadline moves up, hours), roll {need, win, lose}, say.
   const GOV_EVENTS = [
     { id: 'tipster', title: 'A caller wants money', text: 'A man says he drove her this morning. He wants cash before he says where.', choices: [
@@ -295,9 +298,9 @@ const Data = (() => {
       { id: 'spin', label: 'Tell the paper she has crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
     { id: 'judge', after: 4, title: 'The duty judge wants a hearing', text: 'He will not sign the order for the border post until a hearing tomorrow.', choices: [
       { id: 'wait_judge', label: 'Wait for the hearing', fx: { unban: true, say: 'The post keeps the old list for one more night.' } },
-      { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Santa Laura signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
+      { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Pedra Branca signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
       { id: 'around', label: 'Have the minister call the post', fx: { ban: true, minister: -1, warn: 1, say: 'The post confirms. Her lawyers call it irregular on the radio.' } } ] },
-    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Santa Laura, in Salta and on the coast road, all in the same hour.', choices: [
+    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Pedra Branca, in Salta and on the coast road, all in the same hour.', choices: [
       { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols go out at once, and the desk is stretched thin.' } },
       { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
       { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
@@ -314,8 +317,8 @@ const Data = (() => {
     { id: 'photo', title: 'A paper has a photo', text: 'Rādiô Portô Venla has a blurred photo of her at a gas station. They want to run it.', choices: [
       { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The station has a sign. The sign has a town on it.' } },
       { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } } ] },
-    { id: 'dinner', after: 6, title: 'Dinner at the Esmeraldan embassy', text: 'The ambassador invites you tonight. Three hours, and he likes to talk.', choices: [
-      { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: "Somewhere after the fish he promises to hurry Baca's answer." } },
+    { id: 'dinner', after: 6, title: 'Dinner at the Costamaran embassy', text: 'The ambassador invites you tonight. Three hours, and he likes to talk.', choices: [
+      { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: "Somewhere after the fish he promises to hurry Cerro Alto's answer." } },
       { id: 'deputy', label: 'Send your deputy', fx: { roll: { need: 5, win: { holdup: true, say: 'Your deputy is a better guest than you.' }, lose: { say: 'The ambassador talks about horses all night.' } } } },
       { id: 'decline', label: 'Decline', fx: {} } ] },
     { id: 'storm', after: 10, title: 'Snow at the Huhūi passes', text: 'The road service is closing the passes for the night.', choices: [
@@ -367,8 +370,8 @@ const Data = (() => {
     { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
       { id: 'speak', label: 'Speak on the steps', fx: { exposure: 3, trust: { aide: 1 }, card: 'delay_report', say: 'The party loves it. So does Sosā.' } },
       { id: 'refuse', label: 'Refuse', fx: { trust: { aide: -1 }, say: 'Gianlūka goes quiet on the phone.' } } ] },
-    // Santa Laura
-    { id: 'fuel', at: ['road'], title: 'Fuel is rationed', text: 'Every pump in Santa Laura has a line and a police officer.', choices: [
+    // Pedra Branca
+    { id: 'fuel', at: ['road'], title: 'Fuel is rationed', text: 'Every pump in Pedra Branca has a line and a police officer.', choices: [
       { id: 'queue', label: 'Wait in line', fx: { hours: 2, exposure: 1 } },
       { id: 'farmer', label: 'Buy from a farmer', fx: { roll: { need: 3, win: { hours: 1, say: '20 liters from a tractor shed.' }, lose: { hours: 2, exposure: 2, say: 'The farmer calls his nephew, who calls the radio.' } } } },
       { id: 'river', label: 'Leave the car, take the river', needs: [{ card: 'boat' }], fx: { mod: -1, say: 'The river has no pumps and no police.' } } ] },
@@ -420,14 +423,14 @@ const Data = (() => {
       { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2 } } ] },
     { id: 'blizzard', at: ['border'], title: 'A blizzard closes the pass', text: "The post is shut. A smugglers' path runs over the ridge.", choices: [
       { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'Six hours in the snow, and the storm costs Sosā half of them too.' } },
-      { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Esmeralda with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
+      { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Costamar with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
     { id: 'dog_bark', at: ['border'], when: [{ ref: 'flag.dog', op: 'eq', value: true }], title: 'The dog barks at the post', text: 'The guards look up at the dog barking in your car.', choices: [
       { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },
-      { id: 'give_dog', label: 'Give the dog to a trucker', fx: { trust: { sibling: -1 }, say: 'Your daughter does not speak to you until Esmeralda.' } } ] },
-    { id: 'esm_press', at: ['border'], title: 'Cameras across the line', text: 'Someone told the press in Baca. Cameras wait on the far side.', choices: [
-      { id: 'speak_esm', label: 'Speak to them', fx: { exposure: 2, stage: { reception: 1 }, say: 'Esmeralda sees you. So does Valdória.' } },
+      { id: 'give_dog', label: 'Give the dog to a trucker', fx: { trust: { sibling: -1 }, say: 'Your daughter does not speak to you until Costamar.' } } ] },
+    { id: 'esm_press', at: ['border'], title: 'Cameras across the line', text: 'Someone told the press in Cerro Alto. Cameras wait on the far side.', choices: [
+      { id: 'speak_esm', label: 'Speak to them', fx: { exposure: 2, stage: { reception: 1 }, say: 'Costamar sees you. So does Valdória.' } },
       { id: 'cover', label: 'Cover your face', fx: {} } ] },
-    // Susana
+    // Portalba
     { id: 'crew_double', at: ['airfield'], title: 'The crew wants double', text: "The operator's insurer called. The pilot wants twice the fee or a guarantee.", choices: [
       { id: 'pay_double', label: 'Pay double', fx: { exposure: 1 } },
       { id: 'guarantee', label: 'Have your sponsor guarantee it', needs: [{ card: 'permission' }], fx: { trust: { sponsor: -1 }, say: 'It goes on what you owe your sponsor.' } },
@@ -437,7 +440,7 @@ const Data = (() => {
       { id: 'short', label: 'Risk the short route', fx: { mod: 1, say: 'The pilot files it anyway. The tower will look twice.' } } ] },
     { id: 'goodbye_post', at: ['airfield'], title: 'A goodbye online', text: 'Your daughter posted a photo from the airfield lounge. It is everywhere.', choices: [
       { id: 'takedown', label: 'Get it taken down', fx: { roll: { need: 4, win: {}, lose: { exposure: 3 } } } },
-      { id: 'stand', label: 'Let it stand', fx: { exposure: 2, flag: { asked: true }, say: 'Valdória asks Esmeralda to hold you within the hour.' } } ] },
+      { id: 'stand', label: 'Let it stand', fx: { exposure: 2, flag: { asked: true }, say: 'Valdória asks Costamar to hold you within the hour.' } } ] },
     { id: 'rival_deal', at: ['airfield', 'border'], title: 'The president calls', text: 'Concede on camera, come home, and the case quietly closes.', choices: [
       { id: 'take_deal', label: 'Take the deal', fx: { end: { kind: 'deal', reason: 'You concede on camera at noon. The case closes quietly. The party never forgives you.' } } },
       { id: 'hang_up', label: 'Hang up', fx: {} } ] },

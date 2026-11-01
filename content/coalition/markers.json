@@ -134,7 +134,7 @@
   {
    "code": "arrangement.moves",
    "pattern": "P03",
-   "text": "Your welcome in Esmeralda moves up one step"
+   "text": "Your welcome in Costamar moves up one step"
   },
   {
    "code": "deadline.sooner",
@@ -233,7 +233,7 @@
   {
    "code": "hold.esmeralda_moves",
    "pattern": "P03",
-   "text": "Esmeralda moves on your hold"
+   "text": "Costamar moves on your hold"
   },
   {
    "code": "orders.easier",

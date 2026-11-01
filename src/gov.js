@@ -115,7 +115,7 @@ const Gov = (() => {
       if (o.id === 'rail_ask' && g.hand.includes('rail')) continue;
       let bonus = 0; const used = [];
       for (const tag in o.mods) if (m[tag]) { bonus += o.mods[tag]; used.push({ tag, bonus: o.mods[tag] }); }
-      // across the line your ministry commands nothing: a search or a checkpoint in Esmeralda needs the hold
+      // across the line your ministry commands nothing: a search or a checkpoint in Costamar needs the hold
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);

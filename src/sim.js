@@ -44,7 +44,7 @@ const Sim = (() => {
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
     for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false, doubt: false, cut: false, known: false, bad: false };
     s._rngState = seed >>> 0; attachRng(s);
-    // the final boss: one Esmeraldan post has taken Valdória's money, and Vélez's people cover one of the others
+    // the final boss: one Costamaran post has taken Valdória's money, and Vélez's people cover one of the others
     s.boughtPost = opts.tutorial ? 'coast' : POST_IDS[Math.floor(s._rng() * 3)];
     s.escortPost = POST_IDS.filter(x => x !== s.boughtPost)[Math.floor(s._rng() * 2)];
     // Two people on the ground are secretly working for the inquiry. Which two changes every run.
@@ -265,7 +265,7 @@ const Sim = (() => {
   function climbHold(s, events) {
     if (s.tutorial || s.over) return;
     let r = s.hold + 1; if (s.flags.cancelled && s.hold === 0) r = 2; // after Monday noon the first hold is a station, not a roadside
-    // Jurisdiction: across the line a Valdórian court holds nobody. Esmeralda questions you only once Sosā has asked it to, and never climbs past that.
+    // Jurisdiction: across the line a Valdórian court holds nobody. Costamar questions you only once Sosā has asked it to, and never climbs past that.
     if (s.pos >= ESMERALDA_FROM) { if (!s.flags.asked) return; r = 1; }
     s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos; s.lastHoldAt = s.hour;
     s.event = { kind: 'hold', rung: s.hold };
@@ -382,7 +382,7 @@ const Sim = (() => {
       const p = s.people[a.with]; p.known = true; p.turned = true; s.belief = s.pos; heat(s, 3, events); events.push(ev('belief', { belief: s.belief }));
       say(events, 'narrator', T('sim.say.sold_you_out_sosa_knows', { name: personName(s, a.with) })); events.push(ev('betrayal', { who: a.with }));
     }
-    // the final boss: the Valdórian side lets you through and the bought Esmeraldan post detains you anyway
+    // the final boss: the Valdórian side lets you through and the bought Costamaran post detains you anyway
     if (won && a.post && a.post === s.boughtPost) {
       say(events, 'narrator', level(s).bought.say); ledger(s, 'official', T('sim.ledger.post_was_bought', { post: postName(a.post) }));
       s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); heat(s, 2, events); pass(s, a.hours + 12, events); return finish(s, events);

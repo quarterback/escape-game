@@ -11,7 +11,7 @@ const s = Sim.newRun(Tutorial.SEED, Tutorial.WHO, { dice: Tutorial.DICE, enemy: 
 const must = (r, what) => { if (!r.ok) throw new Error(`${what}: ${r.why}`); return r; };
 const msgId = () => { const m = Sim.actions(s).messages[0]; if (!m) throw new Error('no message at hour ' + s.hour); return m.id; };
 const actions = { // keyed by step id, so adding or removing a reading step never shifts the script
-  answer_brother: () => must(Sim.commit(s, msgId(), 'confirm_dest'), 'name Atlanta'),
+  answer_brother: () => must(Sim.commit(s, msgId(), 'confirm_dest'), 'name Altamira'),
   call_aircraft: () => must(Sim.commit(s, 'call:aircraft'), 'call aircraft'),
   leave_house: () => must(Sim.commit(s, 'decoy'), 'decoy'),
   call_sponsor: () => must(Sim.commit(s, 'call:permission'), 'call permission'),

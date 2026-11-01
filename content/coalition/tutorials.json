@@ -117,7 +117,7 @@
      "id": "die",
      "kind": "read",
      "title": "Cards and the die",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up, and a card that gets you onto the freight is gone as soon as you move to another stop. You are in Santa Laura now, and Sosā is still searching the residence.",
+     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up, and a card that gets you onto the freight is gone as soon as you move to another stop. You are in Pedra Branca now, and Sosā is still searching the residence.",
      "goal": "See how cards change the roll",
      "highlight": [
       "#scene"
@@ -137,7 +137,7 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in, and calling him agrees to his price: the family accounts move to his bank.",
+     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Altamira to let you in, and calling him agrees to his price: the family accounts move to his bank.",
      "goal": "Accept terms by calling",
      "highlight": [
       "#calls"
@@ -223,7 +223,7 @@
      "id": "call_reception",
      "kind": "act",
      "title": "Who meets you on the other side",
-     "body": "Tap **Duartē Albukerkē about your welcome in Esmeralda**, then **Call**. He can reach Rosario Vélez in Esmeralda, and after enough calls her officials wait for you at one border post.",
+     "body": "Tap **Duartē Albukerkē about your welcome in Costamar**, then **Call**. He can reach Rosario Vélez in Costamar, and after enough calls her officials wait for you at one border post.",
      "goal": "Arrange reception across the line",
      "highlight": [
       "#calls"
@@ -287,7 +287,7 @@
      "id": "border",
      "kind": "read",
      "title": "The line",
-     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two.",
+     "body": "Three posts cross into Costamar, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two.",
      "goal": "Know what the three posts mean",
      "highlight": [
       "#approaches"
@@ -314,8 +314,8 @@
     {
      "id": "airfield",
      "kind": "read",
-     "title": "Susana",
-     "body": "You made it across. Esmeralda lets you fly out of Susana and nothing more, and your party's cards do not count in this country. Get the jet ready and the visa issued, then board. Tap **Finish** to play the rest on your own.",
+     "title": "Portalba",
+     "body": "You made it across. Costamar lets you fly out of Portalba and nothing more, and your party's cards do not count in this country. Get the jet ready and the visa issued, then board. Tap **Finish** to play the rest on your own.",
      "goal": "Play the airfield alone",
      "highlight": [
       "#board",
@@ -384,9 +384,9 @@
     {
      "id": "hold",
      "kind": "act",
-     "title": "Ask Esmeralda now",
+     "title": "Ask Costamar now",
      "goal": "Start a slow request before you need it",
-     "body": "Your orders stop at the border, but Esmeralda can hold her for you. The embassy takes 10 hours to answer, so pick **Ask Esmeralda to hold her**, then **Send**.",
+     "body": "Your orders stop at the border, but Costamar can hold her for you. The embassy takes 10 hours to answer, so pick **Ask Costamar to hold her**, then **Send**.",
      "highlight": [
       "#calls"
      ],
@@ -469,7 +469,7 @@
      "kind": "act",
      "title": "Act on the lead",
      "goal": "Move the search to the newest report",
-     "body": "The plates were real. Follow the report to point your search at Santa Laura, then tap **Search Santa Laura**, because following a report puts nobody on the ground.",
+     "body": "The plates were real. Follow the report to point your search at Pedra Branca, then tap **Search Pedra Branca**, because following a report puts nobody on the ground.",
      "highlight": [
       "#approaches"
      ],

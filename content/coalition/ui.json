@@ -117,7 +117,7 @@
   {
    "id": "scene.goal",
    "pattern": "P08",
-   "text": "Leave Esmeraldan airspace by"
+   "text": "Leave Costamaran airspace by"
   },
   {
    "id": "scene.sosa_here",
@@ -289,7 +289,7 @@
   {
    "id": "need.aircraft_ready",
    "pattern": "P05",
-   "text": "The jet ready to fly at Susana"
+   "text": "The jet ready to fly at Portalba"
   },
   {
    "id": "need.visa",
@@ -299,12 +299,12 @@
   {
    "id": "need.officials",
    "pattern": "P05",
-   "text": "Esmeraldan officials waiting at a border post"
+   "text": "Costamaran officials waiting at a border post"
   },
   {
    "id": "need.expects",
    "pattern": "P05",
-   "text": "Esmeralda expecting you"
+   "text": "Costamar expecting you"
   },
   {
    "id": "need.crew",
@@ -333,7 +333,7 @@
   {
    "id": "need.baca",
    "pattern": "P05",
-   "text": "Call your sibling to reach Vélez in Baca."
+   "text": "Call your sibling to reach Vélez in Cerro Alto."
   },
   {
    "id": "need.salek",
@@ -480,7 +480,7 @@
   {
    "id": "route.esmeralda",
    "pattern": "P02",
-   "text": "Esmeralda"
+   "text": "Costamar"
   },
   {
    "id": "route.inquiry_here",
@@ -1176,19 +1176,19 @@
   {
    "id": "route.no_command",
    "pattern": "P04",
-   "text": "Search, checkpoint and call-in orders here need Esmeralda's agreement",
+   "text": "Search, checkpoint and call-in orders here need Costamar's agreement",
    "role": "gov"
   },
   {
    "id": "route.ask_esm",
    "pattern": "P04",
-   "text": "Ask Esmeralda to hold her",
+   "text": "Ask Costamar to hold her",
    "role": "gov"
   },
   {
    "id": "route.esm_intro",
    "pattern": "P09",
-   "text": "The Esmeraldan introduction lets your patrols act at Susana.",
+   "text": "The Costamaran introduction lets your patrols act at Portalba.",
    "role": "gov"
   },
   {
@@ -1356,7 +1356,7 @@
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "A round is News, Phone, Move, Roll and then Sosā. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Esmeraldan airspace inside 72 hours."
+   "text": "A round is News, Phone, Move, Roll and then Sosā. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Costamaran airspace inside 72 hours."
   },
   {
    "id": "help.ios",
@@ -1451,7 +1451,7 @@
   {
    "id": "start.blurb",
    "pattern": "P08",
-   "text": "You lost the election, and the court will not let you leave Valdória. Your family has found a jet that can fly you out of Susana, across the border in Esmeralda, but nobody has agreed to take you in yet."
+   "text": "You lost the election, and the court will not let you leave Valdória. Your family has found a jet that can fly you out of Portalba, across the border in Costamar, but nobody has agreed to take you in yet."
   },
   {
    "id": "start.continue_plain",
@@ -1521,7 +1521,7 @@
   {
    "id": "sim.end.baca_reads_your_refusal_as",
    "pattern": "P14",
-   "text": "Baca has closed its guest room to you."
+   "text": "Cerro Alto has closed its guest room to you."
   },
   {
    "id": "sim.end.is_still_waiting_for_the",
@@ -1642,7 +1642,7 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, and Esmeralda has closed the airfield to you. {epilogue}",
+   "text": "{time}. Your immunity is gone, and Costamar has closed the airfield to you. {epilogue}",
    "args": [
     "time",
     "epilogue"
@@ -1724,7 +1724,7 @@
   {
    "id": "sim.line.thank_you_sosa_s_people",
    "pattern": "P07",
-   "text": "\"Thank you. Sosā's people are in Santa Laura tonight, by the way. Not here.\"",
+   "text": "\"Thank you. Sosā's people are in Pedra Branca tonight, by the way. Not here.\"",
    "speaker": "aide"
   },
   {
@@ -1767,7 +1767,7 @@
   {
    "id": "sim.line.i_have_a_name_in",
    "pattern": "P07",
-   "text": "\"I have a name in Baca. Give me six hours.\"",
+   "text": "\"I have a name in Cerro Alto. Give me six hours.\"",
    "speaker": "ally"
   },
   {
@@ -1915,7 +1915,7 @@
   {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "It is too late to ask {sponsor} for a visa from Susana.",
+   "text": "It is too late to ask {sponsor} for a visa from Portalba.",
    "args": [
     "sponsor"
    ]
@@ -1933,7 +1933,7 @@
   {
    "id": "sim.status.arrange_the_next_stage_charter",
    "pattern": "P05",
-   "text": "Your sibling sets up the jet in steps: charter, crew, fuel, then ready at Susana."
+   "text": "Your sibling sets up the jet in steps: charter, crew, fuel, then ready at Portalba."
   },
   {
    "id": "sim.why.not_answering",
@@ -2053,7 +2053,7 @@
   {
    "id": "sim.effect.requires_v_lez_s_card",
    "pattern": "P03",
-   "text": "Vélez calls the operator, and the jet is ready at Susana with nobody watching."
+   "text": "Vélez calls the operator, and the jet is ready at Portalba with nobody watching."
   },
   {
    "id": "sim.opt.have_v_lez_call_the",
@@ -2063,7 +2063,7 @@
   {
    "id": "sim.effect.restores_the_aircraft_to_ready",
    "pattern": "P03",
-   "text": "The jet is ready at Susana. Paying the crew on the apron gets you noticed, and your police attention rises by one."
+   "text": "The jet is ready at Portalba. Paying the crew on the apron gets you noticed, and your police attention rises by one."
   },
   {
    "id": "sim.opt.pay_the_crew_bonus",
@@ -2073,7 +2073,7 @@
   {
    "id": "sim.line.your_ministry_threatened_the_operator",
    "pattern": "P07",
-   "text": "\"Valdória's ministry threatened the operator's license, so he has pulled the crew. He will fly if Esmeralda backs him, or if the crew gets a bonus.\"",
+   "text": "\"Valdória's ministry threatened the operator's license, so he has pulled the crew. He will fly if Costamar backs him, or if the crew gets a bonus.\"",
    "speaker": "pilot"
   },
   {
@@ -2105,7 +2105,7 @@
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
    "pattern": "P03",
-   "text": "Vélez pulls her officials from the border post, and your welcome in Esmeralda drops back to \"Esmeralda expects you.\" You keep her card."
+   "text": "Vélez pulls her officials from the border post, and your welcome in Costamar drops back to \"Costamar expects you.\" You keep her card."
   },
   {
    "id": "sim.opt.refuse",
@@ -2125,7 +2125,7 @@
   {
    "id": "sim.line.before_my_people_meet_you",
    "pattern": "P07",
-   "text": "\"Before my people meet you at the post, you will say, on the record, that Esmeralda receives you as a guest and not as a government. Agreed?\"",
+   "text": "\"Before my people meet you at the post, you will say, on the record, that Costamar receives you as a guest and not as a government. Agreed?\"",
    "speaker": "official"
   },
   {
@@ -2136,7 +2136,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and Sosā's search moves to Santa Laura."
+   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and Sosā's search moves to Pedra Branca."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2173,7 +2173,7 @@
   {
    "id": "sim.effect.nothing_moves_until_you_call",
    "pattern": "P03",
-   "text": "Nothing moves until you call about your welcome in Esmeralda again."
+   "text": "Nothing moves until you call about your welcome in Costamar again."
   },
   {
    "id": "sim.opt.wait",
@@ -2279,7 +2279,7 @@
   {
    "id": "sim.line.jet_found_in_susana_the",
    "pattern": "P07",
-   "text": "\"I found a jet. It will be at Susana, but the crew will not book the flight until I give them a city. Do I tell them, or do we wait for the visa to come through?\"",
+   "text": "\"I found a jet. It will be at Portalba, but the crew will not book the flight until I give them a city. Do I tell them, or do we wait for the visa to come through?\"",
    "speaker": "sibling"
   },
   {
@@ -2469,14 +2469,14 @@
   {
    "id": "gov.line.baca_says_it_is_a",
    "pattern": "P07",
-   "text": "\"Baca says it is a judicial matter. Ask again with more.\"",
+   "text": "\"Cerro Alto says it is a judicial matter. Ask again with more.\"",
    "role": "gov",
    "speaker": "embassy"
   },
   {
    "id": "gov.line.esmeralda_will_hold_her_if",
    "pattern": "P07",
-   "text": "\"Esmeralda will hold her if she appears. The interior ministry gave us a name to call.\"",
+   "text": "\"Costamar will hold her if she appears. The interior ministry gave us a name to call.\"",
    "role": "gov",
    "speaker": "embassy"
   },
@@ -2667,7 +2667,7 @@
   {
    "id": "gov.status.no_one_here_your_ministry",
    "pattern": "P05",
-   "text": "You have no one in Esmeralda.",
+   "text": "You have no one in Costamar.",
    "role": "gov"
   },
   {
@@ -2727,19 +2727,19 @@
   {
    "id": "gov.status.asked_through_the_embassy_in",
    "pattern": "P05",
-   "text": "Asked through the embassy in Baca, not answered",
+   "text": "Asked through the embassy in Cerro Alto, not answered",
    "role": "gov"
   },
   {
    "id": "gov.status.esmeralda_has_agreed_to_hold",
    "pattern": "P05",
-   "text": "Esmeralda has agreed to hold her.",
+   "text": "Costamar has agreed to hold her.",
    "role": "gov"
   },
   {
    "id": "gov.status.esmeraldan_hold",
    "pattern": "P05",
-   "text": "Esmeraldan hold",
+   "text": "Costamaran hold",
    "role": "gov"
   },
   {
@@ -2775,7 +2775,7 @@
   {
    "id": "gov.scene.she_may_be_across_the",
    "pattern": "P08",
-   "text": "This is Esmeralda. Searches, checkpoints and call-ins here need Esmeralda's agreement first.",
+   "text": "This is Costamar. Searches, checkpoints and call-ins here need Costamar's agreement first.",
    "role": "gov",
    "note": "objective"
   },
@@ -2803,7 +2803,7 @@
   {
    "id": "gov.scene.reports_conflict_a_patrol_can",
    "pattern": "P08",
-   "text": "Your patrol can search Santa Laura or close the road out.",
+   "text": "Your patrol can search Pedra Branca or close the road out.",
    "role": "gov",
    "note": "objective"
   },
@@ -2817,7 +2817,7 @@
   {
    "id": "gov.scene.susana_airfield",
    "pattern": "P08",
-   "text": "Susana airfield",
+   "text": "Portalba airfield",
    "role": "gov"
   },
   {
@@ -2841,7 +2841,7 @@
   {
    "id": "gov.scene.provincial_desks_santa_laura",
    "pattern": "P08",
-   "text": "Provincial desks, Santa Laura",
+   "text": "Provincial desks, Pedra Branca",
    "role": "gov"
   },
   {
@@ -2901,13 +2901,13 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Baca answers in 10 hours and needs a four or more. If Esmeralda agrees, her takeoff gets harder and your patrols can act at Susana.",
+   "text": "Cerro Alto answers in 10 hours and needs a four or more. If Costamar agrees, her takeoff gets harder and your patrols can act at Portalba.",
    "role": "gov"
   },
   {
    "id": "gov.status.esmeralda_has_agreed",
    "pattern": "P05",
-   "text": "Esmeralda has agreed.",
+   "text": "Costamar has agreed.",
    "role": "gov"
   },
   {
@@ -2919,7 +2919,7 @@
   {
    "id": "gov.label.ask_esmeralda_to_hold_her",
    "pattern": "P01",
-   "text": "Ask Esmeralda to hold her",
+   "text": "Ask Costamar to hold her",
    "role": "gov"
   },
   {
@@ -2960,13 +2960,13 @@
   {
    "id": "gov.preview.who_acts_esmeraldan_officials_on",
    "pattern": "P03",
-   "text": "by Esmeraldan officials, on your introduction",
+   "text": "by Costamaran officials, on your introduction",
    "role": "gov"
   },
   {
    "id": "gov.why.your_ministry_does_not_command",
    "pattern": "P04",
-   "text": "Ask Esmeralda to hold her first",
+   "text": "Ask Costamar to hold her first",
    "role": "gov"
   },
   {
@@ -3048,7 +3048,7 @@
   {
    "id": "gov.report.a_charter_to_layuna_is",
    "pattern": "P06",
-   "text": "A charter to {city} is booked out of Susana.",
+   "text": "A charter to {city} is booked out of Portalba.",
    "role": "gov",
    "args": [
     "city"
@@ -3063,7 +3063,7 @@
   {
    "id": "gov.report.a_charter_at_susana_is",
    "pattern": "P06",
-   "text": "A charter at Susana is filing for {city}.",
+   "text": "A charter at Portalba is filing for {city}.",
    "role": "gov",
    "args": [
     "city"
@@ -3126,13 +3126,13 @@
   {
    "id": "gov.report.a_car_from_the_capital",
    "pattern": "P06",
-   "text": "A car from the capital is in Santa Laura.",
+   "text": "A car from the capital is in Pedra Branca.",
    "role": "gov"
   },
   {
    "id": "gov.report.a_plain_car_with_capital",
    "pattern": "P06",
-   "text": "A plain car with capital plates was seen at the Santa Laura square.",
+   "text": "A plain car with capital plates was seen at the Pedra Branca square.",
    "role": "gov"
   },
   {
@@ -3186,7 +3186,7 @@
   {
    "id": "gov.report.a_red_sedan_took_the",
    "pattern": "P06",
-   "text": "A red sedan took the south road toward Santa Laura.",
+   "text": "A red sedan took the south road toward Pedra Branca.",
    "role": "gov"
   },
   {
@@ -3210,7 +3210,7 @@
   {
    "id": "gov.name.the_embassy_in_baca",
    "pattern": "P02",
-   "text": "The embassy in Baca",
+   "text": "The embassy in Cerro Alto",
    "role": "gov"
   },
   {
@@ -3222,7 +3222,7 @@
   {
    "id": "gov.name.the_santa_laura_desk",
    "pattern": "P02",
-   "text": "The Santa Laura desk",
+   "text": "The Pedra Branca desk",
    "role": "gov"
   },
   {
@@ -3530,7 +3530,7 @@
   {
    "id": "map.sub",
    "pattern": "P08",
-   "text": "Esmeralda will let you fly out from Susana airfield, once you cross the border to reach it."
+   "text": "Costamar will let you fly out from Portalba airfield, once you cross the border to reach it."
   },
   {
    "id": "map.here",
@@ -3540,7 +3540,7 @@
   {
    "id": "map.via",
    "pattern": "P08",
-   "text": "Susana, where you fly from"
+   "text": "Portalba, where you fly from"
   },
   {
    "id": "map.choose",
@@ -3658,7 +3658,7 @@
   {
    "id": "about.p2",
    "pattern": "P08",
-   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
+   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Costamar's interior minister, can have people waiting at the border if Cerro Alto gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
   },
   {
    "id": "about.p3",
@@ -3673,12 +3673,12 @@
   {
    "id": "about.p4",
    "pattern": "P08",
-   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three crossings lead into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
+   "text": "South through Pedra Branca, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three crossings lead into Costamar there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Portalba, a charter apron behind the port, and a pilot who flies where the flight plan says."
   },
   {
    "id": "about.p5",
    "pattern": "P08",
-   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter. Gannibal in Zaryanova, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, you are sent back."
+   "text": "Where it says is the first thing you decide. Lāyūna in Altamira, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Ardésia, where a magistrate named Dēvan Rāo answers by letter. Krasnomor in Nordavia, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, you are sent back."
   },
   {
    "id": "about.p6",
@@ -3693,7 +3693,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Santa Laura desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
+   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
   },
   {
    "id": "about.start_h",
@@ -3708,7 +3708,7 @@
   {
    "id": "about.world",
    "pattern": "P08",
-   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991, and they stand on real ground."
+   "text": "Valdória, Costamar, Altamira, Ardésia and Nordavia are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991, and they stand on real ground."
   },
   {
    "id": "daily.held_never",
@@ -3808,7 +3808,7 @@
   {
    "id": "sim.effect.decoy_at_the_yard",
    "pattern": "P03",
-   "text": "You spend your two spare cars. The men follow Nando's sedan north, Sosā's search moves to Santa Laura, and your police attention drops by two."
+   "text": "You spend your two spare cars. The men follow Nando's sedan north, Sosā's search moves to Pedra Branca, and your police attention drops by two."
   },
   {
    "id": "sim.effect.break_word",
@@ -4046,12 +4046,12 @@
   {
    "id": "over.why_gov_escaped",
    "pattern": "P14",
-   "text": "She flew out of Esmeralda."
+   "text": "She flew out of Costamar."
   },
   {
    "id": "over.why_out",
    "pattern": "P14",
-   "text": "You flew out of Esmeralda."
+   "text": "You flew out of Costamar."
   },
   {
    "id": "over.why_time",
@@ -4081,7 +4081,7 @@
   {
    "id": "brief.need_reception",
    "pattern": "P02",
-   "text": "Help from Esmeralda's government"
+   "text": "Help from Costamar's government"
   },
   {
    "id": "brief.you",
@@ -4106,7 +4106,7 @@
   {
    "id": "brief.gov_need_hold",
    "pattern": "P02",
-   "text": "Esmeralda holds her"
+   "text": "Costamar holds her"
   },
   {
    "id": "brief.gov_search",
@@ -4141,7 +4141,7 @@
   {
    "id": "brief.gov_job_hold",
    "pattern": "P08",
-   "text": "Ask Esmeralda to hold her."
+   "text": "Ask Costamar to hold her."
   },
   {
    "id": "brief.gov_job_search",
@@ -4159,7 +4159,7 @@
   {
    "id": "brief.escape_win",
    "pattern": "P08",
-   "text": "Fly out of Susana before Tuesday at 2 p.m."
+   "text": "Fly out of Portalba before Tuesday at 2 p.m."
   },
   {
    "id": "over.why_gov_arrest",
@@ -4232,7 +4232,7 @@
   {
    "id": "brief.reception_note",
    "pattern": "P08",
-   "text": "The first step opens the road to Salta, the second cancels the extra takeoff trouble if Sosā has asked Esmeralda to hold you, and the third puts Vélez's officials at one border post."
+   "text": "The first step opens the road to Salta, the second cancels the extra takeoff trouble if Sosā has asked Costamar to hold you, and the third puts Vélez's officials at one border post."
   },
   {
    "id": "brief.gov_report_now",
@@ -4293,7 +4293,7 @@
   {
    "id": "arr.what_reception",
    "pattern": "P08",
-   "text": "your welcome in Esmeralda"
+   "text": "your welcome in Costamar"
   },
   {
    "id": "arr.what_permission",
@@ -4378,7 +4378,7 @@
   {
    "id": "arrangement.moves",
    "pattern": "P10",
-   "text": "Your welcome in Esmeralda moves up one step"
+   "text": "Your welcome in Costamar moves up one step"
   },
   {
    "id": "scene.deadline_escape",
