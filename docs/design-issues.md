@@ -26,7 +26,7 @@ belongs here.
 ### Priority 1: the game breaks or contradicts itself
 
 1. **Arrangement messages never appear.** `src/sim.js` (stage function) compares against `s.arr[k].low`, which is never set, so every `STAGE_LINES` message is skipped, including the only one that names the border post where Esmeralda's officials wait. Likely fix: track the highest step reached and show the message the first time each step is reached.
-2. **Climbing out of house arrest returns you to house arrest.** The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
+2. **Fixed Nov. 1, 2026:** ~~Climbing out of house arrest returns you to house arrest.~~ The climb now adds 4 police attention instead of 8 (see `tools/house-arrest-check.js`). Original note: The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
 3. **The escape demo stays scripted after it ends.** Leaving or finishing the demo keeps queued dice and Sosā actions and keeps `s.tutorial` set, so the rest of the run has no police stops and no news, and police attention stops at 9. The government demo clears its script; the escape demo does not.
 4. **Naming a town to the minister reveals her real position.** His reply differs depending on whether she is there, with no roll.
 5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta.
@@ -44,6 +44,18 @@ belongs here.
 14. **Events that claim a block the rules do not apply.** The strike and blizzard texts describe a stopped freight and a closed post; neither is blocked. Several "leave" choices ("Slip out now", "Leave the car, take the river") do not move you.
 15. **Her police attention shows on the government side** in the round summary, and her jet's preparation step after a licence review. (The floating number is now hidden.)
 16. **The Esmeralda notices at Susana never clear** after Esmeralda agrees.
+
+26. **Police attention reports disagree within a round.** The move chip, the round summary and the bar can show three different changes (stand-in playtest, moment 6). The summary mixes hourly drift with move effects.
+27. **Holt says "Midnight" whatever the hour.** The freight boards from 10 p.m. to 5 a.m., but his lines say midnight even at 3 a.m. (stand-in playtest, moment 7).
+28. **The demo locks message answers** while the hint tells the player to answer them (stand-in playtest, moment 4).
+
+29. **Fixed Nov. 1, 2026:** ~~"Have Gianlūka ask for a delay" could never be chosen.~~ The news choice asked for a card by its id (`aide_word`) instead of its kind (`influence`), so it never matched and the greyed button showed the code ("You need a card that gives you aide_word"). It now asks for the influence kind, like the other Gianlūka choices.
+30. **Two moves still tell the player they cannot work.** "Pay the yardmaster" says "This cannot succeed" in its own text, and the cancelled passport shows the same line. The owner's rule is never to tell the player in advance what will work. These are candidates for the trap side quests in [proposals/next-mechanics.md](proposals/next-mechanics.md), so they are left for that decision.
+31. **Withdrawn Nov. 1, 2026.** The government side looked easier with the 20-sided die (37.5% escapes) only because the computer-played candidate still skipped targets above 6. After the fix she escapes 46.5% of runs, against 48.5% before the die changed.
+32. **Three moves are not rolled.** Calling contacts and sleeping at Nonā Rosa's, and taking the road to Salta once it is arranged, have no failure written for them, so they stay choices instead of chances. The escort waiting at a border post is also not rolled. Say whether these should roll; each would need a failure outcome written.
+
+33. **Fixed Nov. 1, 2026:** ~~"Call your contacts" at Nonā Rosa's is far stronger than anything else, and keeps claiming progress after it stops making any.** Each use takes three hours, is never rolled, and moves the jet, the welcome in Esmeralda and the visa one step each. Four uses finish almost every arrangement without waiting for a single reply. After that it is still offered and still says "all three arrangements have moved one step" while nothing changes. Measured Nov. 1, 2026: the calibration bot loses many runs by repeating it; a bot that uses it only while it helps, then leaves, wins 56% (Teresā) and 39% (Matēu) instead of about 30%. Decide what one use should buy, and stop offering it once nothing is left to move.~~ The owner said to fix it. It can now be used once per run; it is not offered when every arrangement it moves is already done; and when only some can move, the result names the ones that did.
+34. **Fixed Nov. 1, 2026:** ~~The calibration bot plays Nova Trentô badly, so today's "about 30%" understates what a sensible player wins. A bot that simply takes the road when it can wins 46% (Teresā) and 37% (Matēu). Fix the bot, and item 33, before calibrating the difficulty presets.~~ The bot now takes moves that leave a stop first, as the government side's candidate already did. With both fixes it wins 46.7% (Teresā) and 42.3% (Matēu): above the owner's one in four to one in three, which is a decision for the difficulty presets.
 
 ### Priority 3: smaller mismatches
 

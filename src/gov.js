@@ -11,6 +11,7 @@ const Gov = (() => {
   const D = (typeof Data !== 'undefined') ? Data : require('./data.js');
   const S = (typeof Sim !== 'undefined') ? Sim : require('./sim.js');
   const C = (typeof Content !== 'undefined') ? Content : require('./content.js');
+  const kindWord = (tag) => { const w = ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag; return w[0].toLowerCase() + w.slice(1); }; // card kinds in player words
   const hrsText = (n) => n === 1 ? T('scene.hours_one') : T('scene.hours', { n: S.num(n) }); // a duration in words for effect chips
   const M = (k, code, args) => C.marker(k, code, args);
   const T = (id, args) => C.t(id, args);
@@ -42,7 +43,8 @@ const Gov = (() => {
     g._boot = events; return g;
   }
   function attach(g) { g._rng = function () { let a = (g._rngState + 0x6D2B79F5) | 0; g._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return g; }
-  const roll = (g) => (g._dice && g._dice.length) ? g._dice.shift() : 1 + Math.floor(g._rng() * 6);
+  const roll = (g) => (g._dice && g._dice.length) ? g._dice.shift() : 1 + Math.floor(g._rng() * D.DICE.sides);
+  const tgt = (n6) => D.DICE.target(n6), wins = (d, t) => D.DICE.wins(d, t);
   const personName = (g, id) => ({ minister: T('gov.name.the_minister'), watch: T('gov.name.the_watch_team'), desk: T('gov.name.the_santa_laura_desk'), rail: T('gov.name.the_railway_contact'), embassy: T('gov.name.the_embassy_in_baca'), aviation: T('gov.name.the_aviation_desk'), enemy: T('gov.name.inspector_sosa'), press: T('gov.name.radi_port_venla') })[id] || S.personName(g.c, id);
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
@@ -62,7 +64,7 @@ const Gov = (() => {
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && a.need <= (found ? 6 : 5)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.need <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
     apps.sort((a, b) => exits(a) - exits(b) || a.need - b.need);
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
@@ -117,10 +119,10 @@ const Gov = (() => {
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
-      const need = Math.max(1, o.dc - bonus + (abroad ? 1 : 0) + dcm);
+      const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
-        odds: need <= 1 ? 'certain' : `${7 - need} in 6`, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('gov.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
+        odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
+        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
@@ -182,7 +184,8 @@ const Gov = (() => {
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
-    const die = o.need <= 1 ? 6 : roll(g), won = die >= o.need;
+    // every order rolls the 20-sided die; cards lower the target but never remove the roll
+    const die = roll(g), won = wins(die, o.need);
     events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
@@ -202,9 +205,9 @@ const Gov = (() => {
   function done(g, events) {
     // resolve requests that came due
     for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j); const d = roll(g);
-      if (j.job === 'hold') { const ok = d >= 4; g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); S.enemyAct(g.c, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
-      if (j.job === 'operator') { const ok = d >= 3; g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); }
-      if (j.job === 'ban') { const ok = d >= 2; g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? T('gov.line.the_post_confirms_the_sergeant') : T('gov.line.the_sergeant_is_off_shift') })); } }
+      if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); S.enemyAct(g.c, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
+      if (j.job === 'operator') { const ok = wins(d, tgt(3)); g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); }
+      if (j.job === 'ban') { const ok = wins(d, tgt(2)); g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? T('gov.line.the_post_confirms_the_sergeant') : T('gov.line.the_sergeant_is_off_shift') })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
     else if (!g.event && g.c.hour >= g.nextEventAt) drawEvent(g, events);
     return { ok: true, events };
@@ -224,7 +227,7 @@ const Gov = (() => {
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push(M('roll', 'roll.need', { need: fx.roll.need })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { out.push(M('roll', 'roll.need', { need: tgt(fx.roll.need) })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: hrsText(fx.lead) }) : M('gain', 'lead.real_now'));
     if (fx.false) out.push(M('risk', 'lead.false'));
@@ -262,7 +265,7 @@ const Gov = (() => {
   }
   function applyFx(g, fx, events) {
     if (!fx) return; const c = g.c;
-    if (fx.roll) { const die = roll(g), won = die >= fx.roll.need; events.push(ev('roll', { die, need: fx.roll.need, won })); applyFx(g, Object.assign({ hours: fx.hours }, won ? fx.roll.win : fx.roll.lose), events); return; }
+    if (fx.roll) { const t = tgt(fx.roll.need), die = roll(g), won = wins(die, t); events.push(ev('roll', { die, need: t, won })); applyFx(g, Object.assign({ hours: fx.hours }, won ? fx.roll.win : fx.roll.lose), events); return; }
     if (fx.say) events.push(ev('say', { who: 'narrator', text: fx.say }));
     if (fx.card && !g.hand.includes(fx.card)) g.hand.push(fx.card);
     if (fx.lose) g.hand = g.hand.filter(x => x !== fx.lose);

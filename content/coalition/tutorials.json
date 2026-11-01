@@ -6,20 +6,7 @@
    "side": "escape",
    "who": "woman",
    "seed": 11,
-   "dice": [
-    5,
-    4,
-    5,
-    5,
-    6,
-    5,
-    5,
-    6,
-    5,
-    5,
-    6,
-    5
-   ],
+   "dice": [16, 14, 11, 17, 15, 18, 14, 14, 18, 14, 14, 18, 14, 14, 18, 14],
    "enemy": [
     "circulate",
     "press_story",
@@ -140,7 +127,7 @@
      "id": "inquiry_acts",
      "kind": "read",
      "title": "Sosā moves too",
-     "body": "Every three hours Sosā does something. This time he sent the travel ban to every post, so each border crossing needs one more on the die unless you hold a card that delays the report.",
+     "body": "Every three hours Sosā does something. This time he sent the travel ban to every post, so each border crossing needs a higher roll unless you hold a card that delays the report.",
      "goal": "See the inquiry act on a schedule",
      "highlight": [
       "#sosa"
@@ -225,10 +212,9 @@
      "id": "relationships",
      "kind": "read",
      "title": "People give you cards",
-     "body": "You are in Salta now, and Nonā Rosa's truck is a card in your deck that helps your roll here. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
+     "body": "You are in Salta now, and Nonā Rosa's truck helps your roll here. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
-      "#hand",
       "#board",
       "#rail"
      ]
@@ -283,7 +269,7 @@
      "id": "board_freight",
      "kind": "act",
      "title": "Onto the train",
-     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. The card makes the roll certain, and it is gone once the train leaves Salta.",
+     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. The card is gone once the train leaves Salta.",
      "goal": "Spend a card where it counts",
      "highlight": [
       "#approaches"
@@ -301,18 +287,17 @@
      "id": "border",
      "kind": "read",
      "title": "The line",
-     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and crossing there is certain.",
+     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two.",
      "goal": "Know what the three posts mean",
      "highlight": [
-      "#approaches",
-      "#hand"
+      "#approaches"
      ]
     },
     {
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it one harder.",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it harder.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
@@ -330,12 +315,11 @@
      "id": "airfield",
      "kind": "read",
      "title": "Susana",
-     "body": "You made it across. Esmeralda lets you fly out of Susana and nothing more, and your party cards do not count in this country. Get the jet ready and the visa issued, then board. Tap **Finish** to play the rest on your own.",
+     "body": "You made it across. Esmeralda lets you fly out of Susana and nothing more, and your party's cards do not count in this country. Get the jet ready and the visa issued, then board. Tap **Finish** to play the rest on your own.",
      "goal": "Play the airfield alone",
      "highlight": [
       "#board",
-      "#rail",
-      "#hand"
+      "#rail"
      ]
     }
    ]
@@ -344,12 +328,7 @@
    "id": "gov",
    "side": "gov",
    "seed": 7,
-   "dice": [
-    5,
-    5,
-    4,
-    5
-   ],
+   "dice": [14, 14, 16, 11, 14],
    "events": true,
    "eventQueue": [
     "sightings"
@@ -443,7 +422,7 @@
      "kind": "read",
      "title": "A report is not proof",
      "goal": "Judge a report by what it proves",
-     "body": "She moved while your order ran. Tap **Read the new reports**. Each report says what it proves and what it does not, and a car leaving a house is not her in the car.",
+     "body": "She moved while your order ran, and the new reports are at the top of your screen. Each report says what it proves and what it does not, and a car leaving a house is not her in the car.",
      "highlight": [
       "#phasecard"
      ]

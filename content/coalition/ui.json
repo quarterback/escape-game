@@ -122,12 +122,12 @@
   {
    "id": "scene.sosa_here",
    "pattern": "P06",
-   "text": "Sosā is searching here"
+   "text": "Police are searching where you are"
   },
   {
    "id": "scene.sosa_at",
    "pattern": "P06",
-   "text": "Sosā is searching {place}",
+   "text": "Police are searching {place}",
    "args": [
     "place"
    ]
@@ -135,7 +135,7 @@
   {
    "id": "scene.sosa_right",
    "pattern": "P06",
-   "text": "He is searching {place}, and you are there",
+   "text": "Police are searching {place}, and you are there",
    "args": [
     "place"
    ]
@@ -143,7 +143,7 @@
   {
    "id": "scene.sosa_wrong",
    "pattern": "P06",
-   "text": "He is searching {place}, and you are not there",
+   "text": "Police are searching {place}, and you are somewhere else",
    "args": [
     "place"
    ]
@@ -151,7 +151,7 @@
   {
    "id": "scene.next_move",
    "pattern": "P02",
-   "text": "Sosā acts again"
+   "text": "Police act again"
   },
   {
    "id": "scene.next_in",
@@ -227,11 +227,6 @@
    "text": "Night only"
   },
   {
-   "id": "action.certain",
-   "pattern": "P03",
-   "text": "Guaranteed success"
-  },
-  {
    "id": "action.impossible",
    "pattern": "P03",
    "text": "Cannot succeed"
@@ -287,45 +282,9 @@
    "text": "Where it counts"
   },
   {
-   "id": "card.counts_here",
-   "pattern": "P09",
-   "text": "Counts here"
-  },
-  {
-   "id": "card.counts_at",
-   "pattern": "P09",
-   "text": "Counts at {place}",
-   "args": [
-    "place"
-   ]
-  },
-  {
    "id": "place.the_line",
    "pattern": "P09",
    "text": "the line"
-  },
-  {
-   "id": "card.not_here",
-   "pattern": "P09",
-   "text": "No longer counts"
-  },
-  {
-   "id": "hand.empty",
-   "pattern": "P12",
-   "text": "Nobody has given you a card yet."
-  },
-  {
-   "id": "card.yours",
-   "pattern": "P09",
-   "text": "Yours"
-  },
-  {
-   "id": "card.from",
-   "pattern": "P09",
-   "text": "From {name}",
-   "args": [
-    "name"
-   ]
   },
   {
    "id": "need.aircraft_ready",
@@ -985,7 +944,7 @@
   {
    "id": "log.rolled_lowered",
    "pattern": "P10",
-   "text": "You rolled {die} and needed {need}, after your {list} cards lowered it.",
+   "text": "You rolled {die} and needed {need}, after {list} lowered it.",
    "args": [
     "die",
     "need",
@@ -1045,7 +1004,7 @@
   {
    "id": "log.gives",
    "pattern": "P10",
-   "text": "{name} gives you {card}.",
+   "text": "New from {name}: {card}.",
    "args": [
     "name",
     "card"
@@ -1054,7 +1013,7 @@
   {
    "id": "log.card_lost",
    "pattern": "P10",
-   "text": "You lost {card}.",
+   "text": "Lost: {card}.",
    "args": [
     "card"
    ]
@@ -1187,36 +1146,6 @@
    "id": "action.send",
    "pattern": "P01",
    "text": "Send",
-   "role": "gov"
-  },
-  {
-   "id": "gov.counts_here",
-   "pattern": "P09",
-   "text": "Counts where you are looking",
-   "role": "gov"
-  },
-  {
-   "id": "gov.counts_abroad",
-   "pattern": "P09",
-   "text": "Counts across the line",
-   "role": "gov"
-  },
-  {
-   "id": "gov.counts_valdoria",
-   "pattern": "P09",
-   "text": "Counts at another stop in Valdória",
-   "role": "gov"
-  },
-  {
-   "id": "gov.not_yours",
-   "pattern": "P09",
-   "text": "Not yet yours",
-   "role": "gov"
-  },
-  {
-   "id": "gov.would_start",
-   "pattern": "P09",
-   "text": "Would let your patrols act at Susana",
    "role": "gov"
   },
   {
@@ -1407,12 +1336,7 @@
   {
    "id": "hand.heading",
    "pattern": "P02",
-   "text": "Deck"
-  },
-  {
-   "id": "hand.game",
-   "pattern": "P02",
-   "text": "Game"
+   "text": "Menu"
   },
   {
    "id": "phone.calls",
@@ -1427,7 +1351,7 @@
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "A card lowers the number you need on the die, or lets you try a move at all, but only at the stops listed under Where it counts. The party's cards stop working at the border, and some people only move for money."
+   "text": "People give you cards: a car, a contact, a favor. A card lowers the number you need on the die, or lets you try a move at all, at the stops where it counts. Cards work on their own whenever they count, and a short notice tells you when one helps. The party's cards stop working at the border, and some people only move for money."
   },
   {
    "id": "help.rounds",
@@ -1482,7 +1406,7 @@
   {
    "id": "tab.hand",
    "pattern": "P02",
-   "text": "Deck"
+   "text": "Menu"
   },
   {
    "id": "update.ready",
@@ -2070,17 +1994,12 @@
    ]
   },
   {
-   "id": "sim.preview.your_cards_lower_it",
-   "pattern": "P03",
-   "text": "Your cards lower that number:"
-  },
-  {
    "id": "sim.preview.die_needs_or_more_in",
    "pattern": "P03",
-   "text": "Roll {need} or higher to succeed, {need2} chances in six.{bonus}",
+   "text": "Roll {need} or higher on the 20-sided die to succeed, a {pct}% chance.{bonus}",
    "args": [
     "need",
-    "need2",
+    "pct",
     "bonus"
    ]
   },
@@ -2088,11 +2007,6 @@
    "id": "sim.preview.cannot_succeed_with_your_current",
    "pattern": "P03",
    "text": "This cannot succeed."
-  },
-  {
-   "id": "sim.preview.succeeds_without_a_roll",
-   "pattern": "P03",
-   "text": "This works without a roll."
   },
   {
    "id": "sim.why.talked_to_the_inquiry",
@@ -3035,12 +2949,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.preview.your_cards_lower_it",
-   "pattern": "P03",
-   "text": "Your cards lower it: ",
-   "role": "gov"
-  },
-  {
    "id": "gov.preview.who_acts",
    "pattern": "P03",
    "text": "by {who}",
@@ -3448,7 +3356,7 @@
   {
    "id": "hint.phone",
    "pattern": "P08",
-   "text": "Answer any messages first, then make your one call or tap Hang up; either one ends your time on the phone."
+   "text": "Your phone is ringing, so answer the call."
   },
   {
    "id": "hint.move",
@@ -3474,7 +3382,7 @@
   {
    "id": "hint.gov_phone",
    "pattern": "P08",
-   "text": "Answer the minister first, then send your one request or tap Hang up; either one ends your time at the desk.",
+   "text": "The minister is on the line, so answer him.",
    "role": "gov"
   },
   {
@@ -4183,7 +4091,7 @@
   {
    "id": "brief.sosa",
    "pattern": "P02",
-   "text": "Sosā searches here"
+   "text": "Police search here"
   },
   {
    "id": "brief.jet",
@@ -4609,6 +4517,66 @@
    "text": "Hours until the court's passport deadline, {time}. Then her own passport is cancelled, the travel ban is in force at the border, so every crossing she tries needs one more on the die, and any police stop starts with a night at the station.",
    "args": [
     "time"
+   ]
+  },
+  {
+   "id": "recap.title",
+   "pattern": "P02",
+   "text": "What just happened"
+  },
+  {
+   "id": "hint.call_first",
+   "pattern": "P08",
+   "text": "You can make one call from the phone before you move."
+  },
+  {
+   "id": "log.no_roll",
+   "pattern": "P10",
+   "text": "No roll was needed, and the move went through."
+  },
+  {
+   "id": "result.no_roll",
+   "pattern": "P10",
+   "text": "Went through without a roll"
+  },
+  {
+   "id": "dice.needs",
+   "pattern": "P03",
+   "text": "needs {need}",
+   "args": [
+    "need"
+   ]
+  },
+  {
+   "id": "sim.preview.no_roll",
+   "pattern": "P03",
+   "text": "There is no roll for this."
+  },
+  {
+   "id": "stop.step",
+   "pattern": "P03",
+   "text": "Stop {n} of {total}",
+   "args": [
+    "n",
+    "total"
+   ]
+  },
+  {
+   "id": "sim.why.already_done",
+   "pattern": "P04",
+   "text": "You have already done this."
+  },
+  {
+   "id": "sim.why.nothing_left_to_move",
+   "pattern": "P04",
+   "text": "Everything these calls could move is already done."
+  },
+  {
+   "id": "sim.say.calls_moved_some",
+   "pattern": "P03",
+   "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
+   "args": [
+    "list"
    ]
   }
  ]

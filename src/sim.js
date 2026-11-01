@@ -64,7 +64,8 @@ const Sim = (() => {
   }
   const ev = (type, data) => Object.assign({ type }, data);
   const say = (events, who, text, featured) => { if (text) events.push(ev('say', { who, text, featured: !!featured })); };
-  const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * 6);
+  const roll = (s) => (s._dice && s._dice.length) ? s._dice.shift() : 1 + Math.floor(s._rng() * D.DICE.sides);
+  const tgt = (n6) => D.DICE.target(n6), wins = (d, t) => D.DICE.wins(d, t);
   function clockText(h) {
     const t = START_HOUR + h, day = [T('sim.day.saturday'), T('sim.day.sunday'), T('sim.day.monday'), T('sim.day.tuesday'), T('sim.day.wednesday')][Math.floor(t / 24)];
     const hr = t % 24, when = hr === 0 ? T('sim.time.midnight') : hr === 12 ? T('sim.time.noon') : `${hr % 12} ${hr < 12 ? 'a.m.' : 'p.m.'}`;
@@ -175,6 +176,8 @@ const Sim = (() => {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
+      if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
+      else if (a.success && a.success.advance && !a.success.advance.some(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1)) whys.push(T('sim.why.nothing_left_to_move'));
       if (s.event) whys.unshift(s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first'));
       if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(T('sim.why.you_cut_off', { name: personName(s, a.with) }));
       else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(T('sim.why.talked_to_the_inquiry', { name: personName(s, a.with) }));
@@ -188,10 +191,10 @@ const Sim = (() => {
       dc += s.mods[s.pos] || 0;
       if (ch(s).faceKnown && L.border && a.id !== 'received') dc += 1; // every officer knows Teresā's face
       if (a.id === 'own_passport' && s.flags.cancelled) dc = 7; // cancelled at Monday noon
-      const need = Math.max(1, dc - bonus);
+      const need = tgt(dc - bonus), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
-        odds: need <= 1 ? 'certain' : need > 6 ? 'impossible' : `${7 - need} in 6`, need, dc, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
-        preview: [a.text, need <= 1 ? T('sim.preview.succeeds_without_a_roll') : need > 6 ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, need2: 7 - need, bonus: used.length ? ' ' + T('sim.preview.your_cards_lower_it') + used.map(u => `${u.tag} ${u.bonus}`).join(', ') + '.' : '' }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
+        odds: a.noRoll ? '' : pct ? `${pct}%` : 'impossible', pct, need, dc, noRoll: !!a.noRoll, bonusFrom: used.map(u => u.tag), bonus: used, pay: !!a.pay,
+        preview: [a.text, a.noRoll ? T('sim.preview.no_roll') : !pct ? T('sim.preview.cannot_succeed_with_your_current') : T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })] });
     }
     return out;
   }
@@ -273,7 +276,7 @@ const Sim = (() => {
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
     const first = (id) => personName(s, id).split(' ')[0];
-    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need: tgt(need) })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.exposure) out.push(M(fx.exposure > 0 ? 'up' : 'down', 'exposure.change', { signed: (fx.exposure > 0 ? '+' : '') + fx.exposure }));
     if (fx.belief === 'away') out.push(M('down', 'search.elsewhere'));
@@ -320,7 +323,7 @@ const Sim = (() => {
     if (!fx || s.over) return;
     if (fx.roll) {
       const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0);
-      const die = roll(s), won = die >= need; events.push(ev('roll', { die, need, won }));
+      const t = tgt(need), die = roll(s), won = wins(die, t); events.push(ev('roll', { die, need: t, won }));
       applyFx(s, won ? fx.roll.win : fx.roll.lose, events); return;
     }
     say(events, 'narrator', fx.say);
@@ -365,12 +368,14 @@ const Sim = (() => {
     const view = approachList(s).find(x => x.id === actionId);
     if (!view.ok) return { ok: false, why: view.why };
     events.push(ev('attempt', { id: a.id, name: a.name }));
+    if (a.once) { s.flags.onceDone = s.flags.onceDone || {}; s.flags.onceDone[a.id] = true; }
     if (a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post) {
-      events.push(ev('roll', { die: 6, need: 1, won: true, bonus: [] })); say(events, 'narrator', level(s).received.say); pass(s, level(s).received.hours, events); if (!s.over) advanceLevel(s, events); return finish(s, events);
+      events.push(ev('roll', { die: null, need: 1, won: true, auto: true, escort: true, bonus: [] })); say(events, 'narrator', level(s).received.say); pass(s, level(s).received.hours, events); if (!s.over) advanceLevel(s, events); return finish(s, events);
     }
-    const die = view.need <= 1 ? 6 : roll(s);
-    const won = view.need > 6 ? false : die >= view.need;
-    events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom }));
+    // every move rolls the 20-sided die, except the few with no failure written; cards lower the target but never remove the roll
+    let won;
+    if (a.noRoll) { won = true; events.push(ev('roll', { die: null, need: null, won, auto: true, bonus: [] })); }
+    else { const die = roll(s); won = wins(die, view.need); events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom })); }
     apply(s, won ? a.success : a.fail, events, a);
     // the wrong person to trust: a compromised ally may sell the move
     if (a.with && s.people[a.with] && s.people[a.with].bad && !s.people[a.with].known && s._rng() < 0.6) {
@@ -394,7 +399,11 @@ const Sim = (() => {
     if (a && a.id === 'decoy' && fx === a.success) say(events, 'nando', T('sim.line.nando_decoy_success'), true);
     else if (a && a.id === 'help_host' && fx === a.success) say(events, 'host', T('sim.line.nona_truck_released'), true);
     else if (a && a.id === 'help_host' && fx === a.fail) say(events, 'host', T('sim.line.nona_truck_late'), true);
-    else say(events, 'narrator', fx.say);
+    else {
+      // a move that advances arrangements says only what really moved
+      const movable = fx.advance ? fx.advance.filter(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1) : null;
+      say(events, 'narrator', movable && movable.length < fx.advance.length ? T('sim.say.calls_moved_some', { list: movable.map(k => D.ARRANGEMENTS[k].name).join(', ') }) : fx.say);
+    }
     if (fx.exposure) heat(s, fx.exposure, events);
     if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);
@@ -439,7 +448,7 @@ const Sim = (() => {
     switch (o.id) {
       case 'confirm_dest': s.flags.destination = true; stage(s, 'aircraft', 1, events); say(events, 'sibling', T('sim.line.city_i_will_tell_the', { city: dest(s).city })); break;
       case 'wait_sponsor': stage(s, 'aircraft', 1, events); say(events, 'sibling', T('sim.line.then_call_salek_soon_the', { sponsor: sponsor(s).short })); break;
-      case 'delegate_sibling': stage(s, 'aircraft', 1, events); { const d = roll(s); const good = d >= D.PEOPLE.sibling.reliability; events.push(ev('roll', { die: d, need: D.PEOPLE.sibling.reliability, won: good, who: 'sibling' })); if (good) { s.flags.destination = true; say(events, 'sibling', T('sim.line.i_told_them_city_do', { city: dest(s).city })); } else { s.jobs.push({ arr: 'aircraft', ally: 'sibling', target: 1, due: s.hour + 6, stall: true }); say(events, 'sibling', T('sim.line.i_could_not_decide_for')); } } break;
+      case 'delegate_sibling': stage(s, 'aircraft', 1, events); { const d = roll(s), t = tgt(D.PEOPLE.sibling.reliability); const good = wins(d, t); events.push(ev('roll', { die: d, need: t, won: good, who: 'sibling' })); if (good) { s.flags.destination = true; say(events, 'sibling', T('sim.line.i_told_them_city_do', { city: dest(s).city })); } else { s.jobs.push({ arr: 'aircraft', ally: 'sibling', target: 1, due: s.hour + 6, stall: true }); say(events, 'sibling', T('sim.line.i_could_not_decide_for')); } } break;
       case 'keep_calling': s.jobs.push({ arr: 'reception', ally: 'sibling', target: 2, due: s.hour + 6 }); break;
       case 'via_sponsor': stage(s, 'reception', 2, events); lose(s, 'sponsor_line', events); s.used.push('sponsor_line'); say(events, 'sponsor', T('sim.line.her_uncle_banks_with_me')); break;
       case 'wait_velez': break;
@@ -484,8 +493,8 @@ const Sim = (() => {
     s.jobs = s.jobs.filter(x => x !== j);
     if (j.stall) return;
     const rel = D.PEOPLE[j.ally].reliability + (s.people[j.ally].turned ? 6 : 0) - (s.people[j.ally].trust >= 2 ? 1 : 0);
-    const d = roll(s), good = d >= rel;
-    events.push(ev('roll', { die: d, need: rel, won: good, who: j.ally }));
+    const d = roll(s), t = tgt(rel), good = wins(d, t);
+    events.push(ev('roll', { die: d, need: t, won: good, who: j.ally }));
     if (good) { if (j.arr === 'aircraft' && j.target === 2 && !s.flags.destination && s.arr.permission.stage < 1) { say(events, 'sibling', T('sim.line.the_crew_will_not_confirm')); return; }
       if (j.arr === 'permission' && j.target === 2 && !dest(s).accepts) { ledger(s, j.ally, T('sim.ledger.still_considering')); say(events, 'sponsor', T('sim.line.they_are_still_considering')); return; }
       ledger(s, j.ally, T('sim.ledger.delivered', { what: D.ARRANGEMENTS[j.arr].stages[j.target] })); stage(s, j.arr, j.target, events); if (j.arr === 'permission' && j.target === 1) s.flags.destination = true; }
@@ -505,7 +514,7 @@ const Sim = (() => {
       case 'trace': { text = pick.text(); if (s.hour - s.calledAt <= 3) { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += T('sim.inquiry.the_last_call_came_from'); } else text += T('sim.inquiry.nothing_new'); break; }
       case 'circulate': s.flags.restriction = true; text = pick.text(); break;
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = pick.text() + T('sim.inquiry.the_operator_withdraws_the_crew'); } else text = pick.text(); break;
-      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s); const holds = d <= 3 + s.people[who].trust; events.push(ev('roll', { die: d, need: 4 + s.people[who].trust, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = pick.text(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = pick.text(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = pick.text(); break; }
       case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = pick.text(D.LEVELS[Math.max(0, s.belief)].short); break; }

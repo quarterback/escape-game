@@ -74,12 +74,12 @@ body.busy .act,body.busy #wait,body.busy .opt,body.busy .call{opacity:.55;pointe
 .act{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;background:var(--s3);color:var(--ink);border:0;border-radius:16px;font-family:var(--font-body);min-height:64px}
 .act.no{background:var(--s1);color:var(--soft);cursor:not-allowed}.act.off{opacity:.3;pointer-events:none}
 .act.sel{box-shadow:0 0 0 3px var(--gold)}
-.die{flex:none;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:40px;height:40px;padding:5px;background:var(--gold);border-radius:10px}
-.die i{display:block}.die i.p{width:7px;height:7px;border-radius:50%;background:var(--bg);align-self:center;justify-self:center}
-.act.no .die{background:var(--line)}.act.sure .die{background:var(--mint)}.act.hard .die{background:var(--coral)}
+.die{flex:none;display:grid;place-items:center;width:40px;height:44px;background:var(--gold);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.die b{font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--bg)}
+.die.none{background:none}.act.no .die{background:var(--line)}.act.hard .die{background:var(--coral)}
 .act .body{flex:1;display:flex;flex-direction:column;min-width:0}
 .act .nm{font:400 17px/1.3 var(--font-title)}
-.act .meta{font-size:14px;color:var(--mute);line-height:1.4}.act .meta .nd{font-family:var(--font-mono);color:var(--gold)}.act.sure .meta .nd{color:var(--mint)}.act .meta .hrs{font-family:var(--font-mono);color:var(--ink)}
+.act .meta{font-size:14px;color:var(--mute);line-height:1.4}.act .meta .nd{font-family:var(--font-mono);color:var(--gold)}.act .meta .hrs{font-family:var(--font-mono);color:var(--ink)}
 .act .why{display:block;font-size:14px;color:var(--mute);line-height:1.4}
 .uses{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--mint);color:#0E2A24;font-size:13px;line-height:1;white-space:nowrap}
 .actbox{display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--s3);border-radius:16px;box-shadow:0 0 0 3px var(--gold)}
@@ -231,7 +231,7 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
   #tab-route{grid-column:1/3;padding:12px 0 56px}
   h2{font-size:28px}
   #approaches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#approaches .actbox,#approaches .reports,#approaches h2{grid-column:1/-1}
-  .act{padding:16px 18px}.die{width:44px;height:44px;padding:6px}.die i.p{width:8px;height:8px}.act .nm{font-size:18px}.act .meta{font-size:15px}
+  .act{padding:16px 18px}.die{width:44px;height:48px}.die b{font-size:18px}.act .nm{font-size:18px}.act .meta{font-size:15px}
   #hand{display:flex;gap:18px;padding:8px 0 12px}.card{flex:1;min-height:320px;padding:18px}.card h3{font-size:22px}.card p{font-size:16px}.card .works,.card .foot{font-size:14px}
   .card:nth-child(odd){transform:rotate(-2deg)}.card:nth-child(even){transform:rotate(2deg) translateY(6px)}
   .msg .bubble,.msg .opts{margin-left:56px}
@@ -393,3 +393,31 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
   #brief .broute .below{order:3}
   #brief .bpill{font-size:13px}
 }
+
+/* the last round, kept on screen until the next move; nothing to click through */
+#recap{margin:0 0 12px;padding:10px 14px;background:var(--s2);border-radius:14px}#recap[hidden]{display:none}
+#recap summary{cursor:pointer;color:var(--gold);font:400 15px/1.3 var(--font-title);min-height:36px;display:flex;align-items:center}
+#recap .recapbody{display:flex;flex-direction:column;gap:10px}#recap .recapbody h3{font-size:17px;margin:2px 0}#recap .kind{font-size:13px;color:var(--mute)}
+/* the police box is small: two short lines */
+#sosa{padding:4px 7px;max-width:calc(40% - 10px)}#sosa .name{font-size:12px}#sosa .row2,#sosa .row2 .num{font-size:11px}
+@media (max-width: 999px){#sosa .name svg{display:none}}
+/* the phone rings: the phone tab and the phone heading pulse while a call waits */
+@keyframes ringpulse{0%,100%{box-shadow:0 0 0 0 rgba(46,230,181,.0)}50%{box-shadow:0 0 0 6px rgba(46,230,181,.45)}}
+body.ringing #tabs [data-tab=phone]{animation:ringpulse 1s ease-in-out infinite;border-radius:12px;color:var(--mint)}
+body.ringing #phoneh{color:var(--mint)}
+@media(prefers-reduced-motion:reduce){body.ringing #tabs [data-tab=phone]{animation:none;box-shadow:0 0 0 3px var(--mint)}}
+/* help notices: cards work in the background, so a short notice replaces the deck (owner, Oct. 31, 2026) */
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:28;width:min(92vw,440px);display:flex;flex-direction:column;gap:4px;padding:12px 16px;background:var(--s3);color:var(--ink);border-radius:16px;box-shadow:0 0 0 2px var(--mint),0 8px 24px rgba(0,0,0,.4);font:400 15px/1.35 var(--font-body)}
+#toast[hidden]{display:none}#toast b{font-weight:700}#toast span{color:var(--soft);font-size:14px}
+#toast.in{animation:tin .25s ease}@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+/* reaching a stop: its own screen, gone on its own after a few seconds */
+#stopscreen{position:fixed;inset:0;z-index:31;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg)}#stopscreen[hidden]{display:none}
+#stopscreen.in{animation:sfade 3.4s ease forwards}@keyframes sfade{0%{opacity:0}10%{opacity:1}85%{opacity:1}100%{opacity:0}}
+#stopscreen .sbox{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;max-width:520px;width:100%}
+#stopscreen .sclock{color:var(--gold);font-size:15px}#stopscreen .sstep{color:var(--mint);font:700 14px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase}
+#stopscreen b{font:400 30px/1.15 var(--font-title)}#stopscreen p{margin:0;color:var(--soft);font-size:16px;line-height:1.4}
+.sdots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));width:100%;margin:8px 0;padding:0;list-style:none;position:relative}
+.sdots li{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}.sdots i{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.sdots li.past i{background:var(--mint)}.sdots li.now i{background:var(--gold);box-shadow:0 0 0 4px rgba(255,210,74,.3)}
+.sdots span{font-size:11px;line-height:1.15;color:var(--mute);text-align:center;overflow-wrap:anywhere;max-width:100%;padding:0 2px}.sdots li.now span{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){#toast.in,#stopscreen.in{animation:none}}

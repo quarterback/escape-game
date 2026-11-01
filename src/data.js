@@ -132,13 +132,13 @@ const Data = (() => {
           mods: { influence: 2 }, text: "Spend three hours getting the cooperative's truck released. If it works, her cousin drives you to Salta in it.",
           success: { card: 'truck', trust: 'host' },
           fail: { card: 'truck', hours: 1 } },
-        { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, needs: [],
+        { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
           mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Esmeralda and your visa each move one step.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
-        { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, needs: [],
+        { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
           mods: {}, text: 'Rest for six hours. Your police attention drops by two while Sosā keeps searching.',
           success: { exposure: -2, say: 'You wake before the roosters. The house is quiet.' }, fail: { say: '' } },
-        { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, needs: [{ arr: 'reception', stage: 1 }],
+        { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
           mods: {}, text: "Once Esmeralda expects you, Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
@@ -454,7 +454,7 @@ const Data = (() => {
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
     { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 }] /* before hour 30 */, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
       { id: 'noted', label: 'Keep going', fx: { deadline: -10 } },
-      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'aide_word' }], fx: { deadline: -4, trust: { aide: -1 }, exposure: 1, say: 'The clerk moves your hearing up four hours instead of 10. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
+      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { deadline: -4, trust: { aide: -1 }, exposure: 1, say: 'The clerk moves your hearing up four hours instead of 10. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
     { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios and the inquiry go quiet.', choices: [
       { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
       { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, say: 'Two hours in the dark. Nobody comes to the door.' } } ] },
@@ -470,7 +470,8 @@ const Data = (() => {
       { id: 'embassy', label: '{sib} calls an embassy', fx: { roll: { need: 4, win: { hours: 4, say: 'A diplomat calls the station chief. You are released.' }, lose: { hours: 10, lose: 'best', say: 'Nobody important answers until morning, and they keep your second passport.' } } } },
       { id: 'walk_out', label: 'Walk out at shift change', fx: { roll: { need: 5, win: { hours: 1, exposure: 3, say: 'Nobody stops a person walking like they belong.' }, lose: { hold: 1 } } } } ] },
     3: { title: 'House arrest', text: 'The court placed you under house arrest. Two officers sit outside the door.', choices: [
-      { id: 'climb', label: 'Climb out at the shift change', fx: { roll: { need: 5, decoy: 1, win: { hours: 2, exposure: 8, rung: 2, say: 'Over the back wall, into a car that was not there yesterday.' }, lose: { end: { reason: 'The officers catch you on the wall. The hearing is Monday. You will be there.' } } } } },
+      // a stop resets police attention to 4, so +4 leaves her at 8, two below the next stop (owner bug report, Nov. 1, 2026: +8 hit 10 and re-arrested her within the hour)
+      { id: 'climb', label: 'Climb out at the shift change', fx: { roll: { need: 5, decoy: 1, win: { hours: 2, exposure: 4, rung: 2, say: 'Over the back wall, into a car that was not there yesterday.' }, lose: { end: { reason: 'The officers catch you on the wall. The hearing is Monday. You will be there.' } } } } },
       { id: 'accept', label: 'Accept it', fx: { end: { reason: 'You sit by the window and watch the officers change shifts. The hearing is Monday.' } } } ] },
   };
   // Rumors: a hint about who might be selling you out. Sometimes it is wrong.
@@ -479,6 +480,21 @@ const Data = (() => {
     (n) => `${n} asked twice which car you will take.`,
     (n) => `${n} paid off a debt this morning, in cash.`,
   ];
-  return { DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
+  // Moves marked once can be made one time per run (owner decision, Nov. 1, 2026: four unrolled
+  // "Call your contacts" finished almost every arrangement and kept claiming progress after).
+  // A move that advances arrangements is only offered while one of them can still move.
+  // Moves marked noRoll (resting, phoning from a safe house, a ride already arranged) have no
+  // failure written for them, so they are choices, not chances: they are never rolled.
+  // One 20-sided die for every other roll (owner decision, Nov. 1, 2026: "20 sided").
+  // Difficulties stay written on the old six-sided scale and are converted to the
+  // 20-sided target with the same chance: 2→4, 3→8, 4→11, 5→14, 6→18. A 1 always
+  // fails and a 20 always succeeds; a difficulty above 6 (a cancelled passport) cannot be won.
+  const DICE = {
+    sides: 20,
+    target: (n6) => n6 > 6 ? 21 : Math.min(20, Math.max(2, Math.round(21 - 20 * (7 - n6) / 6))),
+    wins: (d, t) => t <= 20 && (d === 20 || (d !== 1 && d >= t)),
+    chance: (t) => t > 20 ? 0 : (21 - Math.max(2, t)) * 5, // percent
+  };
+  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

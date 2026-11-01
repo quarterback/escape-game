@@ -27,7 +27,7 @@ function play(seed, who) {
     // best approach: highest odds among ok ones, certain first; never the impossible
     // never repeat an approach whose only product is a card already in hand (the harness used to pay Holt five times)
     const L = Data.LEVELS[s.pos];
-    const apps = A.approaches.filter(a => a.ok && a.need <= 6).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => a.need - b.need);
+    const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.pct > 0)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => ((Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(a.id)) - (Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(b.id))) || a.need - b.need); // moves that leave the stop first, as the government side's candidate already plays (owner bug report, Nov. 1, 2026: the bot sat at Nonā Rosa's)
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { used.push(`${s.pos}:${apps[0].id}`); (apps[0].bonusFrom || []).forEach(t => cards[t] = (cards[t] || 0) + 1); Sim.commit(s, apps[0].id); if (s.pos !== lastPos) { lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour); lastPos = s.pos; lastHour = s.hour; } continue; }
     Sim.commit(s, 'wait');
   }
