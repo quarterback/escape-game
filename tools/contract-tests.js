@@ -9,15 +9,18 @@ const path = require('path'), { execFileSync } = require('child_process');
 global.Data = require('../src/data.js'); const Sim = require('../src/sim.js'), Gov = require('../src/gov.js');
 let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'}  ${msg}`); if (!cond) fails += 1; };
 
+// ---- C03 (20-sided die): a 1 always fails, a 20 always succeeds, and targets keep the six-sided odds
+{ const W = Data.DICE.wins, t = Data.DICE.target, odds = [2, 3, 4, 5, 6].map(n => [n, Math.round((7 - n) / 6 * 100), Data.DICE.chance(t(n))]);
+  ok(!W(1, 2) && W(20, 20) && !W(20, 21) && t(1) === 2 && t(7) === 21 && odds.every(([, a, b]) => Math.abs(a - b) <= 5), `C03 dice: natural 1 and 20 rules hold, and every target is within 5 points of its old chance (${odds.map(o => o[1] + '→' + o[2]).join(', ')})`); }
 // ---- C03: every approach's displayed need is the need its roll uses, at every stop, on both candidates
 { let checked = 0, wrong = [];
   for (const who of ['woman', 'man']) for (let pos = 0; pos < Data.LEVELS.length; pos++) for (const night of [14, 22]) {
     const base = Sim.newRun(77, who); base.pos = pos; base.hour = night - 14 + 24; base.event = null; base.nextEventAt = 999;
-    for (const a of Sim.actions(base).approaches.filter(a => a.ok && a.need >= 2 && a.need <= 6)) {
+    for (const a of Sim.actions(base).approaches.filter(a => a.ok && !a.noRoll && a.need >= 2 && a.need <= 20)) {
       for (const die of [a.need, a.need - 1]) {
         const s = Sim.restore(Sim.serialize(base)); s._dice = [die]; s.nextEventAt = 999;
         const r = Sim.commit(s, a.id); const roll = r.events.find(e => e.type === 'roll' && !e.who); checked += 1;
-        if (!roll || roll.need !== a.need || roll.won !== (die >= a.need)) wrong.push(`${who} ${Data.LEVELS[pos].short} ${a.id}: shown ${a.need}+, rolled ${roll && roll.need}`);
+        if (!roll || roll.need !== a.need || roll.won !== Data.DICE.wins(die, a.need)) wrong.push(`${who} ${Data.LEVELS[pos].short} ${a.id}: shown ${a.need}+, rolled ${roll && roll.need}`);
       }
     }
   }
@@ -28,7 +31,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   ok(after.hours === h0 + 3 && after.preview.join(' ').includes(String(h0 + 3)), `C03 escape: changing ${a.id} from ${h0} to ${h0 + 3} hours changes the button and the preview without editing text`); }
 { let checked = 0, wrong = [];
   for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13;
-    for (const o of Gov.view(g).orders.filter(o => o.ok && o.need >= 2 && o.need <= 6)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.need]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || roll.need !== o.need || !roll.won) wrong.push(`${o.id}: shown ${o.need}, rolled ${roll && roll.need}`); } }
+    for (const o of Gov.view(g).orders.filter(o => o.ok && o.need >= 2 && o.need <= 20)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.need]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || roll.need !== o.need || !roll.won) wrong.push(`${o.id}: shown ${o.need}, rolled ${roll && roll.need}`); } }
   ok(!wrong.length && checked > 0, `C03 government: ${checked} orders roll against the need they show${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
 
 // ---- C04: hidden state never reaches the government view

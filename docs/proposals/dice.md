@@ -1,6 +1,33 @@
 # Proposal: a real die and cards you earn and spend
 
-**Status:** proposal for the owner; not implemented. It replaces the earlier "minimum roll of 2" proposal.
+**Status:** the 20-sided die is built (branch `claude/d20-and-stops`). Spending cards and the earning table are set aside by the owner's decision below. It replaces the earlier "minimum roll of 2" proposal.
+
+## Owner decisions (Oct. 31 to Nov. 1, 2026)
+
+- **The die:** "20 sided".
+- **Win rate:** "winning at a rate of 1/4th to 1/3rd is okay with me", or difficulty levels (see [next-mechanics.md](next-mechanics.md)).
+- **Cards:** "make them automatically deployed when the situation calls for it ... if you have it it gets used, if you don't it's not an option."
+- **Cards become a background mechanic:** "cards become a background simulation mechanic, not a player-facing decision system ... Show earned help as a brief notification when it matters, rather than asking the player to inspect a collection." He called this "a deliberate simplification for the current game, not a permanent decision about how cards should work."
+
+## What was built
+
+- **Every roll uses a 20-sided die:** moves, orders, news choices, allies' replies and the police questioning an ally.
+- **A 1 always fails and a 20 always succeeds.** A move whose difficulty is above the old scale (the cancelled passport, paying the yardmaster) still cannot succeed.
+- **Difficulties are still written on the six-sided scale in `src/data.js`** and are converted when rolled (`Data.DICE.target`), so every target keeps its old chance within 5 points: 2→4, 3→8, 4→11, 5→14, 6→18.
+- **Cards work as before.** A held card lowers the target at every stop where it counts, for as long as you hold it, and is never spent by a roll. Cards no longer remove the roll; the lowest target is 2.
+- **Moves show "Roll 11 or higher (50% chance)"** and a 20-sided badge with the target. The die tumbles on screen and shows the number.
+- **Three moves are not rolled,** because no failure is written for them: calling contacts and sleeping at Nonā Rosa's, and the road to Salta once arranged. They say "There is no roll for this." See backlog item 32.
+- **The Deck is gone from the phone.** The tab is now Menu, holding the game buttons. A short notice appears when someone gives you a card, when you lose one, and when one makes a roll easier.
+
+Measured with the calibration bots (escape: 300 runs per candidate; government: 200 runs):
+
+| | Before | After |
+|---|---|---|
+| Teresā escapes | 32.0% | 30.3% |
+| Matēu escapes | 31.3% | 27.7% |
+| Government side, her escape rate | 48.5% | 37.5% |
+
+The rest of this file is the original proposal, kept for the record.
 
 **Owner's requests:**
 - Oct. 31, 2026: "Every move should resolve through a visible die roll... Cards should improve the player's chances, but should not silently bypass the mechanic."

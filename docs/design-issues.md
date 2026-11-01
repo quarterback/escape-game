@@ -49,6 +49,11 @@ belongs here.
 27. **Holt says "Midnight" whatever the hour.** The freight boards from 10 p.m. to 5 a.m., but his lines say midnight even at 3 a.m. (stand-in playtest, moment 7).
 28. **The demo locks message answers** while the hint tells the player to answer them (stand-in playtest, moment 4).
 
+29. **Fixed Nov. 1, 2026:** ~~"Have Gianlūka ask for a delay" could never be chosen.~~ The news choice asked for a card by its id (`aide_word`) instead of its kind (`influence`), so it never matched and the greyed button showed the code ("You need a card that gives you aide_word"). It now asks for the influence kind, like the other Gianlūka choices.
+30. **Two moves still tell the player they cannot work.** "Pay the yardmaster" says "This cannot succeed" in its own text, and the cancelled passport shows the same line. The owner's rule is never to tell the player in advance what will work. These are candidates for the trap side quests in [proposals/next-mechanics.md](proposals/next-mechanics.md), so they are left for that decision.
+31. **The government side got easier with the 20-sided die.** The calibration bot's quarry escapes 37.5% of runs, down from 48.5%, because her formerly certain moves can now fail on a 1. The escape side stays inside the owner's range (30.3% for Teresā, 27.7% for Matēu). Difficulty levels are the proposed way to tune each side.
+32. **Three moves are not rolled.** Calling contacts and sleeping at Nonā Rosa's, and taking the road to Salta once it is arranged, have no failure written for them, so they stay choices instead of chances. The escort waiting at a border post is also not rolled. Say whether these should roll; each would need a failure outcome written.
+
 ### Priority 3: smaller mismatches
 
 24. **Cancelling her own passport does nothing by itself.** `src/sim.js` checks a move called `own_passport` that does not exist; only the travel ban and the station stop change at the passport deadline.
