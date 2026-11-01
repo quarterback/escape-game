@@ -74,7 +74,7 @@ const Data = (() => {
     yard_walk:    { name: 'Theo walks you through', tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
-                    text: "Your sponsor's name opens doors that money alone does not. Your sponsor keeps count." },
+                    text: "Your sponsor's name opens doors that money alone does not." },
     barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Santa Laura.',
                     text: "The barges still run the river. The captains still owe your father." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
@@ -207,7 +207,7 @@ const Data = (() => {
   const STAGE_LINES = {
     aircraft:   ['', 'I found a jet in Susana with 12 seats, and nobody has asked questions yet.', 'The crew is confirmed.', 'The fuel is paid, and the jet is moving into place.', 'The jet is ready at Susana.'],
     reception:  ['', "I reached Rosario Vélez, the minister's aide in Baca. Esmeralda expects you, but Vélez has not answered since.", 'Vélez has spoken to her minister, and she has sent you her card for the Esmeraldan posts and the tower.', 'Esmeraldan officials will meet you at the {post}, and only there.'],
-    permission: ['', '{sponsor} has taken your call and will speak to the ministry, on {sponsor}\'s terms.', 'The entry visa is issued. A car will meet the aircraft at {city}.'],
+    permission: ['', '{sponsor} has taken your call and will speak to the ministry.', 'The entry visa is issued. A car will meet the aircraft at {city}.'],
   };
 
   // Enemy actions. Picked by weight each enemy turn. Each is visible in the log and on the map.
@@ -224,32 +224,33 @@ const Data = (() => {
   ];
 
   // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Gannibal); Almatau is a
-  // working name for Tarun's capital, which the canon leaves open. accepts: whether the country will take you.
-  // Owner, November 1, 2026: the country the player picks is the right one for that run, so every country accepts.
+  // working name for Tarun's capital, which the canon leaves open.
+  // Owner, November 1, 2026: the country the player picks is the right one for that run; every country takes you.
   // The choice is between sponsors: Salek wants the accounts, Rāo is six hours slower, Vosk's deal raises police attention.
+  // A sponsor's demand is optional (owner, November 1, 2026): agreeing improves the visa odds, refusing keeps the usual odds.
   // Susana, in Esmeralda, is where you fly from.
   const DESTS = {
-    atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
+    atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad and an old client of your family',
-                            asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return.',
-                            terms: 'He will speak to the ministry if you move the family accounts to his house.', slow: 0,
+                            asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return, and agreeing makes the visa more likely.',
+                            wants: 'the family accounts moved to his bank',
+                            terms: 'He wants the family accounts moved to his bank.', slow: 0,
                             demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
-                            kept: 'Salek now holds the family accounts.', broke: 'Salek tells his clients you broke your word.' },
-                 landing: '' },
-    tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: true,
+                            kept: 'Salek now holds the family accounts.' } },
+    tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
-                            asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics.',
-                            terms: 'He will write to the ministry if you give your word to keep out of politics while you are his guest.', slow: 6,
+                            asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics. Agreeing makes the visa more likely.',
+                            wants: 'your word that you will stay out of politics',
+                            terms: 'He wants your word that you will stay out of politics while you are his guest.', slow: 6,
                             demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
-                            kept: 'Rāo has your word that you are out of politics.', broke: 'Rāo tells the ministry you broke your word.' },
-                 landing: 'You land at Almatau at dawn. Tarun accepted the flight plan but never agreed to take you. The men at the foot of the stairs are police. A Valdórian liaison arrives by evening.' },
-    zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8, accepts: true,
+                            kept: 'Rāo has your word that you are out of politics.' } },
+    zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8,
                  sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Gannibal with friends at the foreign ministry',
-                            asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control.',
-                            terms: 'She will take it to the ministry if you sign over mineral rights you do not control.', slow: 0,
+                            asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes the visa more likely.',
+                            wants: 'mineral rights you do not control',
+                            terms: 'She wants mineral rights you do not control.', slow: 0,
                             demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so her visa answer comes through on a 3 or better. Word reaches home, and your police attention rises by one.', heat: 1 },
-                            kept: 'Your signature on the concessions is in Gannibal.', broke: 'Vosk tells the ministry you broke your word.' },
-                 landing: 'You land at Gannibal after eight hours. Officers wait on the apron. Zaryanova never agreed to take you. You are held at the airport until Valdória sends for you.' },
+                            kept: 'Your signature on the concessions is in Gannibal.' } },
   };
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Susana', city: 'Esmeralda', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
@@ -268,7 +269,7 @@ const Data = (() => {
   const GOV_ORDERS = [
     { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and her police attention is 7 or higher, they stop her. Police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'The watch team tells you whether anyone is still in the house.', where: [0, 1] },
-    { id: 'follow', name: (lv, rep) => `Follow the latest report: ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you send one.' },
+    { id: 'follow', name: (lv, rep) => `Follow the latest report: ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you order a search or a checkpoint at the new stop.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban. From then on, police who stop her take her straight to the station. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
     { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'Inspector Sosā', mods: {}, act: 'press_ally', text: 'Sosā questions one of her helpers. If the helper talks, the police go to where she is and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
     { id: 'roadblock', name: (lv) => `Checkpoint on the road out of ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For six hours, everything she tries at that stop needs one more on the die.', fail: 'The checkpoint stands on the wrong road.' },
@@ -311,7 +312,7 @@ const Data = (() => {
     { id: 'strike', after: 8, title: 'The rail union walks out', text: 'Salta yard workers strike at midnight.', choices: [
       { id: 'let_strike', label: 'Let the strike stand', fx: { stall: 4, minister: -1, say: "Her helpers' answers come four hours late. The minister hates strikes." } },
       { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } } ] },
-    { id: 'photo', title: 'A paper has a photo', text: 'Rādiô Portô Venla has a blurred photo of her at a gas station. They want to run it.', choices: [
+    { id: 'photo', title: 'A paper has a photo', text: 'A newspaper has a blurred photo of her at a gas station, and it wants to run it.', choices: [
       { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The station has a sign. The sign has a town on it.' } },
       { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } } ] },
     { id: 'dinner', after: 6, title: 'Dinner at the Esmeraldan embassy', text: 'The ambassador invites you to dinner tonight. Dinner takes three hours, and he likes to talk.', choices: [
@@ -336,7 +337,7 @@ const Data = (() => {
     { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch one road all night. The general wants a signature.', choices: [
       { id: 'sign', label: 'Sign for it', fx: { dc: [-1, 8], minister: -1, say: 'The drone goes up. The minister reads about it in the morning.' } },
       { id: 'no_drone', label: 'Decline', fx: {} } ] },
-    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at six, promising she will be found by Monday.', choices: [
+    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at 6 p.m. to promise that she will be found by Monday.', choices: [
       { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
       { id: 'send_sosa', label: 'Send Sosā instead', fx: { dc: [1, 4], say: 'Sosā hates cameras. He takes it out on the desk.' } },
       { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } } ] },
@@ -419,7 +420,7 @@ const Data = (() => {
       { id: 'queue_pilgrims', label: 'Join the queue', fx: { mod: -1 } },
       { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2 } } ] },
     { id: 'blizzard', at: ['border'], title: 'A blizzard closes the pass', text: "The post is shut. A smugglers' path runs over the ridge.", choices: [
-      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'Six hours in the snow, and the storm costs Sosā half of them too.' } },
+      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'You spend six hours in the snow, and the storm costs Sosā his next move.' } },
       { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Esmeralda with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
     { id: 'dog_bark', at: ['border'], when: [{ ref: 'flag.dog', op: 'eq', value: true }], title: 'The dog barks at the post', text: 'The guards look up at the dog barking in your car.', choices: [
       { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },

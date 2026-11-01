@@ -1759,7 +1759,7 @@
   {
    "id": "sim.end.your_immunity_is_gone_a",
    "pattern": "P14",
-   "text": "{time}. Your immunity is gone, and Esmeralda has closed the airfield to you. {epilogue}",
+   "text": "{time}. You ran out of time, and your immunity is gone. {epilogue}",
    "args": [
     "time",
     "epilogue"
@@ -1787,18 +1787,6 @@
    "id": "sim.say.the_sedan_rolls_past_the",
    "pattern": "P10",
    "text": "The sedan crawls past the gate and the car follows it north while Nando waves without looking."
-  },
-  {
-   "id": "sim.line.then_we_have_nothing_to",
-   "pattern": "P07",
-   "text": "\"Then we have nothing to discuss. Good luck with the pilot.\"",
-   "speaker": "sponsor"
-  },
-  {
-   "id": "sim.line.a_week_i_am_not",
-   "pattern": "P07",
-   "text": "\"A week. I am not a patient man, but I am a curious one.\"",
-   "speaker": "sponsor"
   },
   {
    "id": "sim.line.good_the_ministry_will_hear",
@@ -2284,6 +2272,20 @@
    "text": "Refuse"
   },
   {
+   "id": "sim.effect.refuse_demand",
+   "pattern": "P03",
+   "text": "{sponsor} still asks the ministry for your visa, at the usual odds.",
+   "args": [
+    "sponsor"
+   ]
+  },
+  {
+   "id": "sim.line.as_you_wish",
+   "pattern": "P07",
+   "text": "\"As you wish. I will still ask the ministry, but do not expect me to push.\"",
+   "speaker": "sponsor"
+  },
+  {
    "id": "sim.effect.reception_stands_the_party_at",
    "pattern": "P03",
    "text": "Vélez's arrangements stay as they are."
@@ -2375,27 +2377,6 @@
     "sponsor"
    ],
    "speaker": "sibling"
-  },
-  {
-   "id": "sim.effect.lose_salek_and_his_line",
-   "pattern": "P03",
-   "text": "{sponsor} hangs up for good, and you lose your sponsor's line to the ministry. No visa will come, but you can still fly without one.",
-   "args": [
-    "sponsor"
-   ]
-  },
-  {
-   "id": "sim.effect.permission_stalls_twelve_hours_he",
-   "pattern": "P03",
-   "text": "{sponsor} keeps helping, but a visa request already with {sponsor} takes 12 hours longer.",
-   "args": [
-    "sponsor"
-   ]
-  },
-  {
-   "id": "sim.opt.ask_for_a_week",
-   "pattern": "P01",
-   "text": "Ask for a week"
   },
   {
    "id": "sim.effect.sends_them_to_the_house",
@@ -3096,7 +3077,7 @@
   {
    "id": "gov.preview.on_failure",
    "pattern": "P03",
-   "text": "On failure: {fail}",
+   "text": "If the order fails, {fail}",
    "args": [
     "fail"
    ],
@@ -3528,19 +3509,9 @@
    "text": "Pick a response."
   },
   {
-   "id": "hint.phone",
-   "pattern": "P08",
-   "text": "Answer any messages first, then make your one call or tap Hang up; either one ends your time on the phone."
-  },
-  {
    "id": "hint.move",
    "pattern": "P08",
    "text": "Pick one move, or lie low for an hour."
-  },
-  {
-   "id": "hint.roll",
-   "pattern": "P08",
-   "text": "See how your move went."
   },
   {
    "id": "hint.sosa",
@@ -3554,21 +3525,9 @@
    "role": "gov"
   },
   {
-   "id": "hint.gov_phone",
-   "pattern": "P08",
-   "text": "Answer the minister first, then send your one request or tap Hang up; either one ends your time at the desk.",
-   "role": "gov"
-  },
-  {
    "id": "hint.gov_move",
    "pattern": "P08",
    "text": "Give one order, or wait an hour.",
-   "role": "gov"
-  },
-  {
-   "id": "hint.gov_roll",
-   "pattern": "P08",
-   "text": "See how your order went.",
    "role": "gov"
   },
   {
@@ -3606,9 +3565,10 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "{sponsor} asks the ministry for your visa, and {sponsor} will want something back.",
+   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, though agreeing is optional and only makes the visa more likely.",
    "args": [
-    "sponsor"
+    "sponsor",
+    "wants"
    ]
   },
   {
@@ -3637,12 +3597,6 @@
    ]
   },
   {
-   "id": "sim.line.they_are_still_considering",
-   "pattern": "P07",
-   "text": "\"The ministry says they are still considering. These things take time, they tell me.\"",
-   "speaker": "sponsor"
-  },
-  {
    "id": "sim.ledger.promised",
    "pattern": "P05",
    "text": "Promised to reach \"{what}\" by {due}.",
@@ -3666,11 +3620,6 @@
    "args": [
     "what"
    ]
-  },
-  {
-   "id": "sim.ledger.still_considering",
-   "pattern": "P05",
-   "text": "The ministry is still thinking it over."
   },
   {
    "id": "sim.ledger.post_was_bought",
@@ -3712,11 +3661,6 @@
    "text": "Valdória, where you are"
   },
   {
-   "id": "map.via",
-   "pattern": "P08",
-   "text": "Susana, where you fly from"
-  },
-  {
    "id": "map.choose",
    "pattern": "P01",
    "text": "Choose {name}",
@@ -3746,25 +3690,9 @@
    ]
   },
   {
-   "id": "sum.exposure_round_here",
-   "pattern": "P10",
-   "text": "Police attention rose by {n} this round, and Sosā is searching where you are now.",
-   "args": [
-    "n"
-   ]
-  },
-  {
    "id": "sum.exposure_round",
    "pattern": "P10",
    "text": "Police attention rose by {n} this round.",
-   "args": [
-    "n"
-   ]
-  },
-  {
-   "id": "sum.exposure_round_fell",
-   "pattern": "P10",
-   "text": "Police attention fell by {n} this round.",
    "args": [
     "n"
    ]
@@ -3889,11 +3817,6 @@
    "text": "Play"
   },
   {
-   "id": "about.back",
-   "pattern": "P01",
-   "text": "Back to the game"
-  },
-  {
    "id": "title.about",
    "pattern": "P01",
    "text": "About the game"
@@ -3976,30 +3899,7 @@
   {
    "id": "about.world",
    "pattern": "P08",
-   "text": "Valdória, Esmeralda, Atlanta, Tarun and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991, and they stand on real ground."
-  },
-  {
-   "id": "daily.held_never",
-   "pattern": "P14",
-   "text": "Never held."
-  },
-  {
-   "id": "daily.held_once",
-   "pattern": "P14",
-   "text": "Held once."
-  },
-  {
-   "id": "daily.held_twice",
-   "pattern": "P14",
-   "text": "Held twice."
-  },
-  {
-   "id": "daily.held_many",
-   "pattern": "P14",
-   "text": "Held {holds} times.",
-   "args": [
-    "holds"
-   ]
+   "text": "Valdória, Esmeralda, Atlanta, Tarun, and Zaryanova are countries of the Nelosphere, Ron Bronson's fictional world, written since 1991, and the game's map places them on the real globe."
   },
   {
    "id": "daily.share",
@@ -4009,14 +3909,6 @@
     "date",
     "line",
     "url"
-   ]
-  },
-  {
-   "id": "daily.landed",
-   "pattern": "P14",
-   "text": "Sent back on landing in round {round}",
-   "args": [
-    "round"
    ]
   },
   {
@@ -4282,11 +4174,6 @@
    "text": "Read the briefing"
   },
   {
-   "id": "brief.milestone",
-   "pattern": "P02",
-   "text": "Milestone reached"
-  },
-  {
    "id": "brief.made_it",
    "pattern": "P02",
    "text": "You made it to {place}",
@@ -4385,11 +4272,6 @@
    "id": "over.why_time",
    "pattern": "P14",
    "text": "It is Tuesday at 2 p.m. Your immunity is gone, and you can no longer fly out."
-  },
-  {
-   "id": "over.why_landed",
-   "pattern": "P14",
-   "text": "The country you flew to would not take you and sent you back."
   },
   {
    "id": "over.why_deal",
@@ -4500,33 +4382,14 @@
    "text": "She took the president's deal, conceded on camera, and came home."
   },
   {
-   "id": "over.why_gov_landed",
-   "pattern": "P14",
-   "text": "The country she flew to would not take her and sent her back."
-  },
-  {
    "id": "over.why_arrest",
    "pattern": "P14",
    "text": "You are under house arrest."
   },
   {
-   "id": "brief.hours_escape",
-   "pattern": "P08",
-   "text": "Hours until Tuesday at 2 p.m. Then your immunity ends and you can no longer leave."
-  },
-  {
    "id": "brief.hours_gov",
    "pattern": "P08",
    "text": "Hours until Tuesday at 2 p.m. Then her immunity ends and she can no longer leave."
-  },
-  {
-   "id": "brief.police_attention",
-   "pattern": "P08",
-   "text": "Police attention is {n} out of {max}, and it rises while Sosā searches where you are. At {max} the police stop you, and each stop within 12 hours of the last is one step worse: questions, a night at the station, then house arrest.",
-   "args": [
-    "n",
-    "max"
-   ]
   },
   {
    "id": "brief.phone_suggest",

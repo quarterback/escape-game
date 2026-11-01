@@ -239,3 +239,13 @@ Every player-facing string (1,483) was checked against Humanizer, AP style and t
 34. **About page:** "they stand on real ground" is unclear.
 35. **The blizzard line** "the storm costs Sosā half of them too" should say plainly that Sosā loses his next move.
 36. **Dead strings:** sum.exposure_round_here and brief.hours_escape are no longer used.
+
+**Decided November 1, 2026 (owner), and done:**
+- 28: Money stays out of the game. Paying is a narrative choice, not a tracked resource.
+- 29 and 30: A sponsor's demand is optional and improves the visa odds. Refusing now keeps the sponsor asking at the usual odds (it used to end the visa), "Ask for a week" is gone, and calling a sponsor no longer counts as agreeing. The map, the call preview and the first visa step say what each sponsor wants.
+- 31: The time-out ending says you ran out of time.
+- 32: The landing endings, their daily and ledger lines, the country-accepts flag and its code are removed. Winning, running out of time, house arrest and the president's deal are unchanged.
+- 33: "If the order fails, ..."; the photo is a newspaper's; the press conference is at 6 p.m.; the follow order says the police stay until you order a search or a checkpoint at the new stop; the demo says every desk in the province drives there.
+- 34: The About page says the game's map places the countries on the real globe.
+- 35: The blizzard costs Sosā his next move.
+- 36: Removed 13 strings no code reaches, after checking for IDs built at runtime.

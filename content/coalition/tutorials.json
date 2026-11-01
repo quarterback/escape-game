@@ -150,8 +150,8 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in. When you call him, you agree to move the family accounts to his bank.",
-     "goal": "Agree to Salek's deal by calling",
+     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in. Later he asks for the family accounts. Agreeing makes the visa more likely, and if you refuse he still asks at the usual odds.",
+     "goal": "Ask a sponsor for your visa",
      "highlight": [
       "#calls"
      ],
@@ -386,7 +386,7 @@
      "kind": "act",
      "title": "The minister wants a town",
      "goal": "Answer a message without guessing",
-     "body": "If you name the wrong town, the minister announces it on the news, your offices drive there, and it counts against you at the end. Pick **Ask for six hours**.",
+     "body": "If you name the wrong town, the minister announces it on the news, every desk in the province drives there, and it counts against you at the end. Pick **Ask for six hours**.",
      "highlight": [
       "#inbox"
      ],
