@@ -14,7 +14,7 @@ decisions are already applied.
 3. **Confirming the travel ban changes nothing.** The ban works as soon as the Circulate order succeeds; confirmation only changes the label. Make the ban work only once confirmed, or merge the two states.
 4. **"Esmeralda holds her" does not hold her.** It makes her takeoff harder and allows one Esmeraldan police stop. Change the mechanic or the name.
 5. **The Jet marker sits at Susana before the plane is ready.**
-6. **Monday noon is not on the briefing.** Her passport is cancelled, the ban reaches every post and the first stop starts at the station.
+6. **Monday noon is not on the briefing.** Her passport is cancelled, the ban reaches every post and the first stop starts at the station. **Resolved November 1, 2026:** Monday noon is gone. Its two effects now come with the travel ban ([aar-fix-in-place](aar-fix-in-place.md)).
 
 ## Gameplay backlog, in priority order
 
@@ -29,8 +29,8 @@ belongs here.
 2. **Climbing out of house arrest returns you to house arrest.** The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
 3. **The escape demo stays scripted after it ends.** Leaving or finishing the demo keeps queued dice and Sosā actions and keeps `s.tutorial` set, so the rest of the run has no police stops and no news, and police attention stops at 9. The government demo clears its script; the escape demo does not.
 4. **Naming a town to the minister reveals her real position.** His reply differs depending on whether she is there, with no roll.
-5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta.
-6. **"Have Gianlūka ask for a delay" can never be chosen.** It needs a card kind no card has, and if it worked it would move the deadline 4 hours sooner while its line says the clerk grants two days.
+5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta. **Resolved November 1, 2026:** a way onto the freight is dropped only when you leave the stop where it counts.
+6. **"Have Gianlūka ask for a delay" can never be chosen.** It needs a card kind no card has, and if it worked it would move the deadline 4 hours sooner while its line says the clerk grants two days. **Resolved November 1, 2026:** it now needs the party machine. With Monday noon gone, it holds the court's travel ban order back instead of moving a deadline.
 7. **"Call your contacts" at Nova Trentô can be repeated.** Each use moves all three arrangements one step with no ally, roll or check; twice on a Tarun run marks a visa as issued for a country that never agreed.
 8. **"Help Nonā Rosa free the truck" leaves for Salta on success**, which skips the "Esmeralda expects you" requirement on the road out.
 
@@ -40,7 +40,7 @@ belongs here.
 10. **Following a report does not move the police.** It moves only where your next orders act; police attention on her rises only after an order that sends people there.
 11. **"Pay" moves cost nothing**, and "Lie low for an hour" is the same as waiting an hour.
 12. **Call previews show the wrong odds and hours.** They ignore the trust discount, the hour the call takes, the 2-hour delay after the family's "landed" story and Rāo's extra 6 hours.
-13. **Cards that do nothing.** The registry card can never be obtained ("Trace the call instead" is always disabled); the watch card and rail card lower no roll; minister standing only changes a results sentence.
+13. **Cards that do nothing.** The registry card can never be obtained ("Trace the call instead" is always disabled); the watch card and rail card lower no roll; minister standing only changes a results sentence. **Partly resolved November 1, 2026:** the registry card, its choice and its bonuses are removed. The watch and rail cards still lower no roll; they are the sources of reports.
 14. **Events that claim a block the rules do not apply.** The strike and blizzard texts describe a stopped freight and a closed post; neither is blocked. Several "leave" choices ("Slip out now", "Leave the car, take the river") do not move you.
 15. **Her police attention shows on the government side** in the round summary, and her jet's preparation step after a licence review. (The floating number is now hidden.)
 16. **The Esmeralda notices at Susana never clear** after Esmeralda agrees.
@@ -48,10 +48,10 @@ belongs here.
 ### Priority 3: smaller mismatches
 
 17. The freight boards from 10 p.m. to 5 a.m., though the story says midnight.
-18. The vehicle bonus at Ālto Verdē can never apply; no vehicle card counts at the border.
+18. The vehicle bonus at Ālto Verdē can never apply; no vehicle card counts at the border. **Resolved November 1, 2026:** removed.
 19. "A report held one day" never expires.
 20. Sponsor lines assume Salek ("her uncle, who banks with him"), and Sosā's Susana call says "your brother" for both characters.
-21. The Monday noon log line is fixed text, though summons and hearing events move the deadline.
+21. The Monday noon log line is fixed text, though summons and hearing events move the deadline. **Resolved November 1, 2026:** the line and the deadline are gone.
 22. Ending epilogues are built but never shown (owner decision on endings), and the tutorial goal field is never displayed.
 23. Some player text is still built in `src/gov.js` instead of the catalog (report proof lines, "Needs {card}", age and odds fragments).
 
@@ -65,7 +65,7 @@ belongs here.
 - "Leave with Duartē's driver" (data.js:114) is hard-coded; Matēu's sibling is Līviā.
 - "Pay" moves (second_driver, crate, buy_seat, post_coast, fuel_now) set `pay: true`, and nothing reads it (sim.js:190). Paying costs nothing.
 - "Lie low for an hour" (action.wait) passes one hour, the same as waiting (sim.js:357). Nothing lowers police attention or hides you.
-- "Uses {list}" (action.uses) suggests a card is spent. Card bonuses never spend the card (sim.js:159).
+- "Uses {list}" (action.uses) suggests a card is spent. Card bonuses never spend the card (sim.js:159). **Resolved November 1, 2026:** help from other people is now used up by the move that uses it, so the label is true for those cards.
 - The call preview "on a {turned} or better" (sim.js:206) ignores the trust discount (sim.js:480). The sibling starts at trust 2, so his real need is 2 while the screen says 3. "Answers in {k} hours" ignores the hour the call takes, the +2 when your family went dark, and Rāo's +6 (sim.js:422).
 - need.working (ui.js:220) prints the current stage, not the one being worked on, and prints "none" at stage 0.
 - Pending call label (ui.js:185) puts `def.name: ` in front of sim.status.is_on_it, which already starts with the arrangement: "Aircraft: Aircraft, Duartē Albukerkē is on it".
@@ -94,7 +94,7 @@ belongs here.
 - Never shown: map.via, sim.label.lie_low_one_hour, LEVELS.border.received.name, ARRANGEMENTS.reception.what, ARRANGEMENTS.permission.what, need.officials, need.velez, need.crew, need.decoy, need.influence.
 - Unreachable outcomes: board.fail, buy_seat.success, work_phone.fail, sleep.fail, leave.fail; DESTS tarun and zaryanova "kept" lines (those runs cannot win).
 - Turning ARRANGEMENTS.*.name into a proper noun would break, because call labels lowercase it (sim.js:205, ui.js:185).
-- Hidden roll changes are never explained in the preview: +1 at the line under the travel ban, +1 at a checkpoint, +2 at takeoff when Esmeralda was asked, and +1 at the line for Teresā (sim.js:182-186). The player sees only the final number and the card discounts.
+- Hidden roll changes are never explained in the preview: +1 at the line under the travel ban, +1 at a checkpoint, +2 at takeoff when Esmeralda was asked, and +1 at the line for Teresā (sim.js:182-186). The player sees only the final number and the card discounts. **Resolved November 1, 2026:** the preview names each change and the amount.
 
 ### Escape side: news, police stops, Sosā and endings
 
@@ -216,3 +216,12 @@ belongs here.
 - **Card names mid sentence.** sum.card, sum.lost, log.gives and log.card_lost insert names like "The party machine" and "Two more cars like yours" with their capital (src/ui.js:519-520, 560-561); ui.js already has inSentence() for this and uses it only on the route.
 - **The tutorial goal field is never rendered** (src/ui.js renderCoach shows step, title and body).
 - Open decisions already recorded and left alone here: FLAG-3 (gov.confirm title, body, goal; brief.gov_need_ban; brief.gov_not_confirmed), FLAG-4 (gov.hold title and body; brief.gov_need_hold; brief.gov_asked; brief.gov_job_hold; about.p7), FLAG-5 (brief.jet).
+
+## Found November 1, 2026, while fixing the game in place
+
+See [aar-fix-in-place.md](aar-fix-in-place.md). Each item is the owner's call.
+
+24. **A move with no roll can still fail silently.** "Call your contacts", "Sleep" and "Take the road to Salta" need a 1. A checkpoint or an earlier choice raises that to 2, and their failure line is empty, so the player sees a failed roll and no explanation (data.js, the colônia moves).
+25. **Changing which country accepts you each run needs a way to change destination.** The destination is fixed in `newRun`, and the visa for a country that refuses you never arrives. Randomizing which country accepts would leave two runs in three unwinnable from the first screen. Not done.
+26. **Two kinds of help still work without being used up.** Holding "A report held one day" keeps the travel ban off the desk at the line, and holding Nando's cars makes the house-arrest climb easier. Neither is used up by that. Decide whether passive help should be spent too.
+27. **Where should the escape sit?** With the corrected harness, the simple policy wins 27.0% as Teresā and 24.7% as Matēu, down from 43.7% and 37.0% at the start of the session. The hold ladder AAR named about 40% as the target. The harness spends every card at once, so a player who keeps help back should do better.
