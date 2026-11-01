@@ -183,3 +183,12 @@ The renames went into player text, demos, the map label, the about page and the 
 ## Follow-up: "your sibling" (owner, Nov. 1, 2026)
 
 "Call your sibling instead of call Duartē, this way it works for either character." Calls to the sibling now read "Your sibling about the jet" on the call row, "Call your sibling about the jet" in disabled rows and in the log, and "Call your sibling about the jet next" in the briefing. The demo steps name the same row. Dialogue and narration still use the sibling's name.
+
+## Third round, Nov. 1, 2026: the last three
+
+**Owner's instruction:** fix "Call your contacts" so it cannot issue a visa for a destination that refuses the player; keep "This cannot succeed" for the cancelled passport, since success is impossible, and never show on screen where anything will succeed; make the existing progress messages appear through the current result card.
+
+- **"Call your contacts"** now obeys the rules an ally's reply already follows (`canMove` in `src/sim.js`): the visa is issued only by a country that accepts you, and the crew confirms only once the jet has a city. The move is offered only while something can move, and its result names what moved. Calibration is unchanged for accepting destinations (46.7% and 42.3%); to a refusing country, nobody wins before or after, as the rules intend.
+- **"This cannot succeed"** stays on the cancelled passport and on paying the yardmaster, because those rolls cannot be won. The yardmaster's move text no longer forecasts the outcome (changed in the second round); its chance line, which is live game state, still shows.
+- **Progress messages.** The messages written for each arrangement step play whenever the step moves forward, and the result card shows them: the sibling speaks for the jet and the welcome, the narrator reports the visa. Before, the code compared against a value that was never set, so none ever played.
+- Checks: content check 0 errors; contract tests, both demos, pbbg-check pass; a phone-width browser run showed the sibling's jet line on screen.

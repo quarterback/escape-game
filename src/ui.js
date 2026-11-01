@@ -571,7 +571,7 @@ const UI = (() => {
         case 'deadline': if (!gov && e.delta) bucket.push({ k: e.delta < 0 ? 'lose' : 'gain', t: T(e.delta < 0 ? 'sum.deadline_sooner' : 'sum.deadline_later', { n: Sim.num(Math.abs(e.delta)) }) }); break;
         case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
-        case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
+        case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: e.text }); break;
         case 'hold': r.theirs.push({ k: 'enemy', t: T('sum.hold', { title: e.title }) }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: e.id === 'rumor' ? T('sum.news_rumor', { name: e.title }) : T('sum.news', { title: e.title }) }); break;

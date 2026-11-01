@@ -4557,12 +4557,12 @@
   {
    "id": "sim.why.nothing_left_to_move",
    "pattern": "P04",
-   "text": "Everything these calls could move is already done."
+   "text": "These calls cannot move anything right now."
   },
   {
    "id": "sim.say.calls_moved_some",
    "pattern": "P03",
-   "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
+   "text": "Three hours later, these arrangements have moved one step: {list}. The others did not move.",
    "args": [
     "list"
    ]
@@ -4732,6 +4732,15 @@
    "id": "phone.your_sibling",
    "pattern": "P03",
    "text": "your sibling"
+  },
+  {
+   "id": "sum.stage_said",
+   "pattern": "P10",
+   "text": "{who} says, \"{line}\"",
+   "args": [
+    "who",
+    "line"
+   ]
   }
  ]
 }
