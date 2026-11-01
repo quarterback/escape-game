@@ -129,7 +129,7 @@ Every display-only change was measured before and after and matched to the digit
 - **A test run on a swapped page.** The agent stashed its changes to calibrate the old build while a browser check was running. The page changed under the check, so the run was repeated.
 - **A comment that ate code.** An inline comment commented out the end of a line. The build's parse check stopped it before any commit.
 - **A file left out of a commit.** `about.html` was rebuilt but not staged, and was committed a minute later.
-- **Pushing to a merged branch.** The police box commits were pushed after the owner had merged #30, without checking. The branch was restarted from main with those commits carried over for the new PR.
+- **Pushing to a merged branch.** The police box commits were pushed after the owner had merged #30, without checking. Restarting the branch from main needed a force push, which was refused, so main was merged into the branch instead. The new PR shows only the work after #30.
 - **A question the owner declined.** The agent asked one question through the question dialog. The owner prefers direct action, so the agent stopped asking and recorded the owner's words instead.
 
 ## 5. Consequence
