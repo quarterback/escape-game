@@ -192,7 +192,8 @@ const Render = (() => {
     X.ui = new PIXI.Container(); app.stage.addChild(X.ui);
     const shadow = { color: 0x150f2e, distance: 2, blur: 0, alpha: 1, angle: Math.PI / 2 };
     X.die = new PIXI.Container(); X.dieBox = new PIXI.Graphics(); X.dieNeed = new PIXI.Text({ text: '', style: { fontFamily: FONT, fontSize: 18, fill: 0xf6f1ff, dropShadow: shadow } });
-    X.dieNeed.anchor.set(0.5, 0); X.die.addChild(X.dieBox, X.dieNeed); X.die.visible = false; X.ui.addChild(X.die);
+    X.dieNum = new PIXI.Text({ text: '', style: { fontFamily: FONT, fontSize: 28, fill: 0x150f2e } }); X.dieNum.anchor.set(0.5, 0.5);
+    X.dieNeed.anchor.set(0.5, 0); X.die.addChild(X.dieBox, X.dieNum, X.dieNeed); X.die.visible = false; X.ui.addChild(X.die);
     X.tip = new PIXI.Container(); X.tipBox = new PIXI.Graphics(); X.tipText = new PIXI.Text({ text: '', style: { fontFamily: FONT, fontSize: 18, fill: 0xffffff } });
     X.tip.addChild(X.tipBox, X.tipText); X.tip.visible = false; X.ui.addChild(X.tip); X.tipFor = null;
     X.det = new PIXI.Container(); X.detBox = new PIXI.Graphics(); X.detText = new PIXI.Text({ text: '', style: { fontFamily: FONT, fontSize: 24, fill: 0x2a0610 } });
@@ -291,14 +292,15 @@ const Render = (() => {
   }
   function drawDie(now) {
     const d = view.die; X.die.visible = !!d; if (!d) return;
-    const k = Math.min(1, d.t * 3), settled = k >= 1, face = settled ? d.die : 1 + (Math.floor(now / 70) % 6);
-    const box = X.dieBox, S = 56, col = settled ? (d.won ? 0x3bd15e : 0xff4d6d) : 0xf6f1ff;
-    box.clear().roundRect(-S / 2 + 4, -S / 2 + 6, S, S, 10).fill({ color: 0x000000, alpha: 0.35 }).roundRect(-S / 2, -S / 2, S, S, 10).fill(col);
-    const P = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] }[face];
-    for (const [x, y] of P) box.rect(x * 14 - 4, y * 14 - 4, 8, 8).fill(0x150f2e);
+    const k = Math.min(1, d.t * 3), settled = k >= 1, face = settled ? d.die : 1 + (Math.floor(now / 50) % 20);
+    const box = X.dieBox, S = 64, col = settled ? (d.won ? 0x3bd15e : 0xff4d6d) : 0xf6f1ff;
+    // a 20-sided die drawn as a hexagon with its number in the middle
+    const hex = (ox, oy) => [0, -S / 2, S / 2, -S / 4, S / 2, S / 4, 0, S / 2, -S / 2, S / 4, -S / 2, -S / 4].map((v, i) => v + (i % 2 ? oy : ox));
+    box.clear().poly(hex(4, 6)).fill({ color: 0x000000, alpha: 0.35 }).poly(hex(0, 0)).fill(col);
+    X.dieNum.text = String(face);
     const pop = settled ? 1 + 0.18 * Math.max(0, 1 - (d.t - 1 / 3) * 6) : 1;
     X.die.position.set(CW / 2, CH / 2 - 34); X.die.rotation = settled ? 0 : Math.sin(now / 45) * 0.35; X.die.scale.set(pop);
-    X.dieNeed.text = `needs ${d.need}`; X.dieNeed.position.set(0, S / 2 + 10);
+    X.dieNeed.text = T('dice.needs', { need: d.need }); X.dieNeed.position.set(0, S / 2 + 10);
   }
   function drawFloats(dt) {
     for (const f of view.floats) {
@@ -346,7 +348,7 @@ const Render = (() => {
     if (view.fade > 0) { ctx.fillStyle = `rgba(8,8,14,${0.92 * view.fade})`; ctx.fillRect(0, 0, CW, CH); }
     ctx.font = `22px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
     for (const fl of view.floats) { ctx.fillStyle = fl.color; ctx.fillText(fl.text, fl.x, fl.y - (fl.t / fl.life) * 36); }
-    if (view.die) { const d = view.die, k = Math.min(1, d.t * 3), face = k < 1 ? 1 + (Math.floor(now / 70) % 6) : d.die; ctx.fillStyle = k < 1 ? '#f6f1ff' : d.won ? '#3bd15e' : '#ff4d6d'; ctx.fillRect(CW / 2 - 28, CH / 2 - 62, 56, 56); ctx.fillStyle = '#150f2e'; ctx.font = `28px ${FONT}`; ctx.textBaseline = 'middle'; ctx.fillText(String(face), CW / 2, CH / 2 - 34); ctx.font = `18px ${FONT}`; ctx.fillStyle = '#f6f1ff'; ctx.fillText(`needs ${d.need}`, CW / 2, CH / 2 + 12); }
+    if (view.die) { const d = view.die, k = Math.min(1, d.t * 3), face = k < 1 ? 1 + (Math.floor(now / 50) % 20) : d.die; ctx.fillStyle = k < 1 ? '#f6f1ff' : d.won ? '#3bd15e' : '#ff4d6d'; ctx.fillRect(CW / 2 - 28, CH / 2 - 62, 56, 56); ctx.fillStyle = '#150f2e'; ctx.font = `28px ${FONT}`; ctx.textBaseline = 'middle'; ctx.fillText(String(face), CW / 2, CH / 2 - 34); ctx.font = `18px ${FONT}`; ctx.fillStyle = '#f6f1ff'; ctx.fillText(T('dice.needs', { need: d.need }), CW / 2, CH / 2 + 12); }
     if (view.detain && view.detain.k > 0.5) { const t = T(DETAIN_TEXT[view.detain.kind] || DETAIN_TEXT.questioned), vb = visibleBox(X.c2); ctx.font = `24px ${FONT}`; const w = ctx.measureText(t).width + 36, cx = (vb.x0 + vb.x1) / 2; ctx.fillStyle = '#ff7a90'; ctx.fillRect(cx - w / 2, CH * 0.3 - 24, w, 48); ctx.fillStyle = '#2a0610'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, CH * 0.3); }
     const h = !busy() ? hover : null;
     if (h) { ctx.font = `18px ${FONT}`; const w = ctx.measureText(h.label).width + 20, vb = visibleBox(X.c2), tx = Math.min(vb.x1 - w - 8, Math.max(vb.x0 + 8, h.x + h.w / 2 - w / 2)), ty = Math.max(vb.y0 + 6, h.y - 44); ctx.fillStyle = 'rgba(12,12,20,0.95)'; ctx.fillRect(tx, ty, w, 34); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(h.label, tx + 10, ty + 17); }

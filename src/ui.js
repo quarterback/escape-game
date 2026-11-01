@@ -10,7 +10,7 @@
 const UI = (() => {
   let s = null, sel = null, who = 'woman', enemyLog = [], tab = 'here', gov = null, installEvt = null;
   // Phase turns (escape side): News, Phone, Move, Roll, Sosā. One call and one move per round.
-  let answered = false; // the phone was answered this round
+  let answered = false, lastStop = -1; // the phone was answered this round
   let recap = null, newsRecap = null; // what the last round and the last news choice did, kept on screen until the next move
   let phase = 'move', round = 1, phoneCalls = 0, movedThisRound = false, result = null, roundSum = { theirs: [], hours: 0 }, daily = null;
   const $ = (id) => document.getElementById(id);
@@ -44,7 +44,7 @@ const UI = (() => {
   function resumeRun() {
     const r = savedRun(); if (!r) return false;
     who = r.who; enemyLog = r.log || []; sel = null; Sfx.theme(false);
-    if (r.gov) { gov = Gov.restore(r.gov); s = gov.c; } else { gov = null; s = Sim.restore(r.s); }
+    if (r.gov) { gov = Gov.restore(r.gov); s = gov.c; } else { gov = null; s = Sim.restore(r.s); } lastStop = s.pos;
     if (r.tut >= 0) { Tutorial.start(r.tutId || (gov ? 'gov' : 'escape')); while (Tutorial.index() < r.tut) Tutorial.forward(); } else Tutorial.stop();
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = (r.lines || []).join(''); $('start').hidden = true; document.body.classList.toggle('gov', !!gov);
@@ -56,6 +56,7 @@ const UI = (() => {
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
   function newRun(w, demo, isDaily, dest, seed) {
     markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
+    lastStop = -1; // the first stop gets its screen too
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
@@ -83,8 +84,8 @@ const UI = (() => {
     if (!s) return;
     renderScene(); renderCoach(); renderPhase();
     if (Sfx.ambience) Sfx.ambience(s.over ? null : Data.LEVELS[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
-    if (gov) { renderGovHere(); renderGovPhone(); renderGovHand(); renderGovRoute(); }
-    else { renderHere(); renderPhone(); renderHand(); renderRoute(); }
+    if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
+    else { renderHere(); renderPhone(); renderRoute(); }
     renderOver(); document.body.classList.toggle('busy', Render.busy());
   }
 
@@ -136,12 +137,12 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
-  function dieFace(need) { const n = Math.max(1, Math.min(6, need)); return `<span class="die" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => `<i class="${PIPS[n].includes(i) ? 'p' : ''}"></i>`).join('')}</span>`; }
+  // the move's badge is a 20-sided die showing the number to roll; a move that cannot be won shows a cross
+  function dieFace(need) { return need == null ? '<span class="die none" aria-hidden="true"></span>' : `<span class="die d20" aria-hidden="true"><b>${need > 20 ? '✕' : need}</b></span>`; }
   // a bonus is named by the held cards that give it, never by the internal tag
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
   // chance of success and time taken are different facts, shown on separate lines
-  const chanceText = (a) => a.need <= 1 ? '' : a.need > 6 ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds }); // no promise of success before the move
+  const chanceText = (a) => a.noRoll ? '' : !a.pct ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds }); // every move rolls; the chance is shown, never a promise
   const metaLine = (a, withSosa) => `<span class="meta">${chanceText(a) ? `<span class="nd">${esc(chanceText(a))}</span>` : ''}<span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
   const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
@@ -149,16 +150,16 @@ const UI = (() => {
   const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
-    const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && a.need <= 1 ? ' sure' : '') + (a.ok && a.need > 6 ? ' hard' : '');
+    const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && !a.pct ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.succeeds_without_a_roll') && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter(x => x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
@@ -202,21 +203,6 @@ const UI = (() => {
   }
 
   // ---- the hand: coloured cards -----------------------------------------------
-  function cardEl(c, here, from, state) {
-    const d = document.createElement('article'); d.className = `card t-${c.tag}` + (here ? '' : ' far');
-    d.innerHTML = `<span class="tag">${esc(tagName(c.tag))}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p class="works"><b>${T('card.works_on')}</b> ${esc(c.works)}</p><p class="foot"><span>${esc(from)}</span><span class="st">${state}</span></p>`;
-    return d;
-  }
-  function cardState(c, id) {
-    if (Sim.reaches(s, id)) return T('card.counts_here');
-    const first = Data.LEVELS.findIndex(L => c.reach.includes(L.id));
-    if (first > s.pos) return T('card.counts_at', { place: first === 4 ? T('place.the_line') : Data.LEVELS[first].short });
-    return T('card.not_here');
-  }
-  function renderHand() {
-    const h = $('hand'); h.innerHTML = s.hand.length ? '' : `<p class="hint">${T('hand.empty')}</p>`;
-    for (const id of s.hand) { const c = Data.CARDS[id]; h.appendChild(cardEl(c, Sim.reaches(s, id), c.from === 'self' ? T('card.yours') : T('card.from', { name: pname(c.from) }), cardState(c, id))); }
-  }
 
   // ---- the route: one model, a rail on the phone and the board on desktop ------
   const NEED_LABEL = { aircraft: 'need.aircraft_ready', reception: null, permission: 'need.visa' };
@@ -390,6 +376,7 @@ const UI = (() => {
     if (!first) round += 1;
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
+    if (!gov && !s.hold && s.pos !== lastStop) { lastStop = s.pos; stopScreen(s.pos); return; } // a new stop gets its own screen instead of the round marker
     interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short); // a two second marker, never a screen to dismiss; the briefing is a reference behind its button
   }
   function enterPhase(p) {
@@ -469,6 +456,27 @@ const UI = (() => {
     $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
     $('b-start').textContent = T('brief.start', { n: round });
     $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
+  }
+  // cards work in the background: no collection to manage, a short notice when help arrives, leaves or changes a roll (owner, Oct. 31, 2026)
+  const helpNames = (tags) => tags.map(tag => cardsFor(tag).map(inSentence).join(', ') || inSentence(tagName(tag))).join(', ');
+  function toast(main, sub) {
+    const el = $('toast'); toast.q = toast.q || []; toast.q.push([main, sub]);
+    if (!el.hidden) return;
+    const next = () => { const it = toast.q.shift(); if (!it) { el.hidden = true; return; } $('t-main').textContent = it[0]; $('t-sub').textContent = it[1]; $('t-sub').hidden = !it[1]; el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); toast.t = setTimeout(next, 3200); };
+    el.onclick = () => { clearTimeout(toast.t); next(); };
+    next();
+  }
+  // reaching a stop is its own moment: which stop of how many, the route so far, and what this stop asks of you; it leaves on its own
+  function stopScreen(pos) {
+    const L = Data.LEVELS[pos], el = $('stopscreen');
+    $('s-clock').textContent = short(s.hour);
+    $('s-step').textContent = T('stop.step', { n: pos + 1, total: Data.LEVELS.length });
+    $('s-title').textContent = L.name;
+    $('s-dots').innerHTML = Data.LEVELS.map((x, i) => `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-goal').textContent = L.objective || '';
+    el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
+    clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
+    el.onclick = () => { el.hidden = true; };
   }
   function interstitial(clock, title, sub) {
     const el = $('interstitial'); $('i-clock').textContent = clock; $('i-title').textContent = title; $('i-sub').textContent = sub;
@@ -588,12 +596,12 @@ const UI = (() => {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: e.name })), 'sys'); } }); break;
         case 'roll': if (!e.who && e.auto) { Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.no_roll')), 'roll'); } }); }
-                     else if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: e.bonus.join(', ') }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
+                     else if (!e.who) { Render.dice(e.die, e.need, e.won); Render.enqueue({ dur: 10, start() { Sfx.dice(); if (e.bonus && e.bonus.length) toast(T('action.uses', { list: helpNames(e.bonus) })); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); // her number stays hidden on the government side Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
-        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); log('sys', esc(T('log.gives', { name: pname(e.from), card: e.name })), 'sys'); } }); break;
-        case 'cardlost': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.card_lost', { card: e.name })), 'sys'); } }); break;
+        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); toast(t, (Data.CARDS[e.id] || {}).works ? `${T('card.works_on')}: ${Data.CARDS[e.id].works}` : ''); log('sys', esc(t), 'sys'); } }); break;
+        case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: e.name }); toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.owe', { name: pname(e.to), text: e.text })), 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
         case 'job': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.reply_by', { name: pname(e.ally), time: e.dueText })), 'sys'); } }); break;
@@ -630,11 +638,6 @@ const UI = (() => {
     for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => phase === 'phone' && Tutorial.allowsOption(o.id)));
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
-  }
-  function renderGovHand() {
-    const h = $('hand'); h.innerHTML = '';
-    for (const id of gov.hand) { const c = Data.GOV_CARDS[id]; const here = c.reach.includes(Data.LEVELS[gov.belief].id); h.appendChild(cardEl(c, here, c.from, T(here ? 'gov.counts_here' : c.reach.includes('airfield') && !c.reach.includes('residence') ? 'gov.counts_abroad' : 'gov.counts_valdoria'))); }
-    if (!gov.hand.includes('esm_intro')) { const c = Data.GOV_CARDS.esm_intro; h.appendChild(cardEl(c, false, T('gov.not_yours'), T('gov.would_start'))); }
   }
   function renderGovRoute() {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
