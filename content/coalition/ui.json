@@ -216,7 +216,7 @@
   {
    "id": "action.uses",
    "pattern": "P03",
-   "text": "This roll is easier with {list}",
+   "text": "Easier with {list}",
    "args": [
     "list"
    ]
@@ -718,14 +718,6 @@
    "text": "Failed"
   },
   {
-   "id": "result.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die}",
-   "args": [
-    "die"
-   ]
-  },
-  {
    "id": "result.done",
    "pattern": "P10",
    "text": "Done"
@@ -917,23 +909,6 @@
    ]
   },
   {
-   "id": "log.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die}.",
-   "args": [
-    "die"
-   ]
-  },
-  {
-   "id": "log.rolled_lowered",
-   "pattern": "P10",
-   "text": "You rolled {die}, and {list} made it easier.",
-   "args": [
-    "die",
-    "list"
-   ]
-  },
-  {
    "id": "log.success",
    "pattern": "P10",
    "text": "It worked."
@@ -962,19 +937,17 @@
   {
    "id": "log.ally_delivers",
    "pattern": "P10",
-   "text": "{name} rolled {die}, and the step comes through.",
+   "text": "{name} comes through, and the step moves forward.",
    "args": [
-    "name",
-    "die"
+    "name"
    ]
   },
   {
    "id": "log.ally_not_yet",
    "pattern": "P10",
-   "text": "{name} rolled {die}, and nothing comes of it, so you have to call again.",
+   "text": "{name} has nothing yet, so you have to call again.",
    "args": [
-    "name",
-    "die"
+    "name"
    ]
   },
   {
@@ -1965,14 +1938,6 @@
    "args": [
     "hours",
     "s"
-   ]
-  },
-  {
-   "id": "sim.preview.die_needs_or_more_in",
-   "pattern": "P03",
-   "text": "{bonus}",
-   "args": [
-    "bonus"
    ]
   },
   {
@@ -4476,21 +4441,6 @@
    "id": "hint.call_first",
    "pattern": "P08",
    "text": "You can make one call from the phone before you move."
-  },
-  {
-   "id": "log.no_roll",
-   "pattern": "P10",
-   "text": "No roll was needed, and the move went through."
-  },
-  {
-   "id": "result.no_roll",
-   "pattern": "P10",
-   "text": "Went through without a roll"
-  },
-  {
-   "id": "sim.preview.no_roll",
-   "pattern": "P03",
-   "text": "There is no roll for this."
   },
   {
    "id": "stop.step",

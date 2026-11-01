@@ -214,3 +214,11 @@ I had kept "This cannot succeed" on two moves because it was true. That was the 
 **Checks:** content check 0 errors; all contract tests, both demos, the house arrest check and pbbg-check pass. Calibration is identical to the digit (46.7%, 42.3%, 46.5%), which is the proof this touched nothing but what the player sees. A phone-width run read correctly end to end.
 
 **What went wrong:** I put a trailing `//` comment on a line with a closing brace for the third time this week. The build's parse step caught it before C17 could. The rule for me is now simple: comments go on their own line, always.
+
+## Fifth round, Nov. 1, 2026: no leftover mechanics talk
+
+**Owner:** "Get rid of 'the die decides it' or any superfluous language against the rules."
+
+"The die decides it" was a placeholder where a number used to be. So were "There is no roll for this", "No roll was needed" and "Went through without a roll". None told the player anything about the story or what changed. All gone. The result card shows Success, Failed, Done or Turned back, and the log says "It worked." or "It failed." The die on the table already shows its number, so the prose no longer repeats it. The helper notice reads "Easier with a friend in the inquiry." Ally replies say what happened ("Duartē comes through, and the step moves forward"). Demo titles and goals no longer mention the die.
+
+**What went wrong, and it mattered.** Removing the news chip moved calibration by a point (46.7% to 47.7%). The test bot *and the computer-played candidate on the government side* were scoring news choices by counting display chips, so a label was carrying a rule. Both now read the fact from the view (`rolls`), and calibration is back to the digit: 46.7%, 42.3%, 46.5%. Test C19 fails the build if any bot reads a roll from a chip again. I also put a trailing comment on a code line for the fourth time; the parse step caught it. Comments go above the line, with no exceptions.

@@ -116,7 +116,7 @@
     {
      "id": "die",
      "kind": "read",
-     "title": "Cards and the die",
+     "title": "Cards",
      "body": "Cards make moves easier, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and Sosā is still searching the residence.",
      "goal": "See how cards help a move",
      "highlight": [
@@ -298,7 +298,7 @@
      "kind": "act",
      "title": "The rail post",
      "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
-     "goal": "Read how the ban changes a roll",
+     "goal": "See what the ban costs you at the line",
      "highlight": [
       "#approaches"
      ],
@@ -498,7 +498,7 @@
      "kind": "read",
      "title": "The rest is yours",
      "goal": "Play on without the guide",
-     "body": "From here the die and the news are no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
+     "body": "From here the game is no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
      "highlight": [
       "#approaches",
       "#calls"

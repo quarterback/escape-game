@@ -3,11 +3,6 @@
  "about": "Wording for effect markers. Rules decide which marker appears and its arguments; this file decides the words. Both sides share one table.",
  "markers": [
   {
-   "code": "roll.need",
-   "pattern": "P03",
-   "text": "The die decides it"
-  },
-  {
    "code": "roll.win",
    "pattern": "P03",
    "text": "If it works: {list}",

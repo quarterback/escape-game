@@ -112,5 +112,11 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   for (let i = 0; i < 4; i++) { const s = Sim.newRun(950 + i, 'woman'); s.flags.cancelled = true; for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p; for (const a of Sim.actions(s).approaches) if (!a.noRoll && (a.need > 20 || a.pct <= 0 || /impossible|cannot/i.test(a.odds + a.preview.join(' ')))) hits.push(`${a.id}: need ${a.need}, ${a.odds}`); } }
   ok(!hits.length, `C18 no text or move view tells the player an outcome in advance${hits.length ? ': ' + hits.slice(0, 4).join('; ') : ''}`); }
 
+
+// ---- C19: the bots and the computer-played candidate decide from facts, never from display chips (a removed chip moved calibration on Nov. 1, 2026)
+{ const fs = require('fs'), hits = [];
+  for (const f of ['src/gov.js', 'tools/calibrate.js', 'tools/sample-run.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { if (/\.tags\.reduce\([^)]*\broll\b/.test(l) || /\btags\.(some|find)\([^)]*(roll|need)/.test(l)) hits.push(`${f}:${i + 1}`); });
+  ok(!hits.length, `C19 no bot reads a roll from a display chip${hits.length ? ': ' + hits.join(', ') : ''}`); }
+
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);
