@@ -140,7 +140,7 @@ const Sim = (() => {
       ]);
     }
     if (s.pos === 5) {
-      msg(s, events, 'enemy', T('sim.line.inspector_sosa_come_back_for'), [
+      msg(s, events, 'enemy', T('sim.line.inspector_sosa_come_back_for', { rel: ch(s).sibling.rel }), [
         { id: 'sosa_talk', label: T('sim.opt.keep_him_talking'), hours: 1, effect: T('sim.effect.an_hour_on_the_phone') },
         { id: 'sosa_hang', label: T('sim.opt.hang_up'), hours: 0, effect: T('sim.effect.nothing_changes') },
       ]);

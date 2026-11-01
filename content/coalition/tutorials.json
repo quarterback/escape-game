@@ -55,7 +55,7 @@
      "id": "phases",
      "kind": "read",
      "title": "A round",
-     "body": "Each turn, answer anyone who calls, make up to one call, then make one move. When it is done you see what happened while it took its hours, including what Sosā did.",
+     "body": "Each turn, answer anyone who calls, make up to one call, then make one move. When the move is done, you see what happened during the hours it took, including what Sosā did.",
      "goal": "Know what a turn is",
      "highlight": [
       "#approaches"
@@ -140,7 +140,7 @@
      "id": "inquiry_acts",
      "kind": "read",
      "title": "Sosā moves too",
-     "body": "Every three hours Sosā does something. This time he sent the travel ban to every post, so any police stop now starts at the station, and each border crossing needs one more on the die unless you hold a card that delays the report.",
+     "body": "Every three hours, Sosā does something. This time he sent the travel ban to every post. If the police stop you now, they take you straight to the station. Each border crossing also needs a roll one higher, unless you hold a card that delays the report.",
      "goal": "See the inquiry act on a schedule",
      "highlight": [
       "#sosa"
@@ -150,8 +150,8 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in, and calling him agrees to his price: the family accounts move to his bank.",
-     "goal": "Accept terms by calling",
+     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in. When you call him, you agree to move the family accounts to his bank.",
+     "goal": "Agree to Salek's deal by calling",
      "highlight": [
       "#calls"
      ],
@@ -207,7 +207,7 @@
      "id": "nona_rosa",
      "kind": "act",
      "title": "Nonā Rosa needs something first",
-     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours, she gives you the truck either way, and if it works her truck carries you on to Salta.",
+     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours. She gives you the truck either way, and if it works, her truck also carries you on to Salta.",
      "goal": "Earn help by helping",
      "highlight": [
       "#approaches"
@@ -225,7 +225,7 @@
      "id": "relationships",
      "kind": "read",
      "title": "People give you cards",
-     "body": "You are in Salta now, and Nonā Rosa's truck now helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
+     "body": "You are in Salta now. Nonā Rosa's truck helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
       "#board",
@@ -236,7 +236,7 @@
      "id": "call_reception",
      "kind": "act",
      "title": "Who meets you on the other side",
-     "body": "Tap **Duartē Albukerkē about your welcome in Esmeralda**, then **Call**. He can reach Rosario Vélez in Esmeralda, and after enough calls her officials wait for you at one border post.",
+     "body": "Tap **Duartē Albukerkē about your welcome in Esmeralda**, then **Call**. He can reach Rosario Vélez in Esmeralda. Each call that comes through moves your welcome one step, and at the third step her officials wait for you at one border post.",
      "goal": "Arrange reception across the line",
      "highlight": [
       "#calls"
@@ -264,7 +264,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "Onto the freight",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll. Never pay the yardmaster, because he takes the money, tells the yard who you are, and your police attention rises by two.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll. Never pay the yardmaster. He takes the money and tells the yard who you are, and your police attention rises by two.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -310,7 +310,7 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it one harder.",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it, and the party machine lowers the number you need. The travel ban and your well-known face each raise it by one.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
@@ -376,7 +376,7 @@
      "kind": "read",
      "title": "A round",
      "goal": "Know what a turn is",
-     "body": "Each turn, answer the minister, send up to one request, then give one order. When it is done you see what came back while it took its hours.",
+     "body": "Each turn, answer the minister, send up to one request, then give one order. When the order is done, you see what came back during the hours it took.",
      "highlight": [
       "#approaches"
      ]
@@ -440,7 +440,7 @@
      "kind": "read",
      "title": "A report is not proof",
      "goal": "Judge a report by what it proves",
-     "body": "She moved while your order ran. Tap **Read the new reports**. Each report says what it proves and what it does not, and a car leaving a house is not her in the car.",
+     "body": "She moved while your order ran. Tap **Read the new reports**. Each report says what it proves and what it does not. A car leaving a house does not prove she is in the car.",
      "highlight": [
       "#phasecard"
      ]
@@ -449,7 +449,7 @@
      "id": "news",
      "kind": "act",
      "title": "Things happen at the ministry",
-     "goal": "Weigh a choice by its tags",
+     "goal": "Weigh a choice by what it costs and brings",
      "body": "Every five hours something lands on your desk, and each choice lists what it costs and what it can bring. A real lead adds a report from where she really is, and a false lead adds one from a stop where she is not. When the card opens, pick **Check the one that gave plates**.",
      "highlight": [
       "#phasecard"
@@ -487,7 +487,7 @@
      "kind": "act",
      "title": "Act on the lead",
      "goal": "Move the search to the newest report",
-     "body": "The plates were real. Follow the report to point your search at Santa Laura, then tap **Search Santa Laura**, because following a report puts nobody on the ground.",
+     "body": "The plates were real. Follow the report to point your search at Santa Laura. Following a report puts nobody on the ground, so then tap **Search Santa Laura**.",
      "highlight": [
       "#approaches"
      ],

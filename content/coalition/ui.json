@@ -9,7 +9,7 @@
   {
    "id": "log.start_escape",
    "pattern": "P08",
-   "text": "{clock}. You are {name}, {title}. {sibling}, {rel}, is abroad and already looking for a plane.",
+   "text": "{clock}. You are {name}, {title}. {sibling}, {rel}, is abroad and has already found a jet.",
    "args": [
     "clock",
     "name",
@@ -244,7 +244,7 @@
   {
    "id": "action.impossible",
    "pattern": "P03",
-   "text": "Cannot succeed"
+   "text": "This move cannot succeed"
   },
   {
    "id": "action.cancel",
@@ -425,7 +425,7 @@
   {
    "id": "need.passport_held",
    "pattern": "P05",
-   "text": "In your coat, but the ban lists the other one"
+   "text": "It is in your coat, and the ban lists your other passport"
   },
   {
    "id": "need.in_hand",
@@ -435,7 +435,7 @@
   {
    "id": "need.passage_from",
    "pattern": "P05",
-   "text": "Holt's crate, Theo's walk through the yard or Nonā Rosa's grandson gets you on"
+   "text": "Holt's crate, Theo's walk through the yard, or Nonā Rosa's grandson gets you on"
   },
   {
    "id": "need.nobody",
@@ -1171,7 +1171,7 @@
   {
    "id": "log.tutorial_ended",
    "pattern": "P13",
-   "text": "You left the demo and play on alone."
+   "text": "You left the demo, and now you play on alone."
   },
   {
    "id": "action.send_order",
@@ -1288,7 +1288,7 @@
   {
    "id": "route.no_command",
    "pattern": "P04",
-   "text": "Search, checkpoint and call-in orders here need Esmeralda's agreement",
+   "text": "Search, checkpoint, and call-in orders here need Esmeralda's agreement",
    "role": "gov"
   },
   {
@@ -1327,7 +1327,7 @@
   {
    "id": "start.sibling_her",
    "pattern": "P08",
-   "text": "Her {rel} {name} is finding the jet",
+   "text": "Her {rel} {name} has found a jet",
    "args": [
     "rel",
     "name"
@@ -1336,7 +1336,7 @@
   {
    "id": "start.sibling_his",
    "pattern": "P08",
-   "text": "His {rel} {name} is finding the jet",
+   "text": "His {rel} {name} has found a jet",
    "args": [
     "rel",
     "name"
@@ -1393,7 +1393,7 @@
   {
    "id": "menu.start",
    "pattern": "P01",
-   "text": "Start screen"
+   "text": "Go to the start screen"
   },
   {
    "id": "menu.help",
@@ -1448,7 +1448,7 @@
   {
    "id": "hand.heading",
    "pattern": "P02",
-   "text": "Deck"
+   "text": "Menu"
   },
   {
    "id": "hand.game",
@@ -1468,12 +1468,12 @@
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "People who help you give you cards, and a card works on its own. It lowers the number you need on the die, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border, and some people only move for money."
+   "text": "People who help you give you cards, and you never have to play them. A card lowers the number you need on the die, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border."
   },
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "Each turn, answer your phone, make up to one call, then make one move. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Esmeraldan airspace inside 72 hours."
+   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while Sosā searches where you are. When it reaches 10, the police stop you. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Esmeraldan airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
   },
   {
    "id": "help.ios",
@@ -1528,7 +1528,7 @@
   {
    "id": "update.ready",
    "pattern": "P11",
-   "text": "New version ready."
+   "text": "A new version is ready."
   },
   {
    "id": "update.reload",
@@ -1553,7 +1553,7 @@
   {
    "id": "title.line",
    "pattern": "P08",
-   "text": "72 hours to escape, and your allies are on the phone."
+   "text": "You have 72 hours to escape, and your allies are on the phone."
   },
   {
    "id": "title.start",
@@ -1578,7 +1578,7 @@
   {
    "id": "start.daily",
    "pattern": "P01",
-   "text": "Today's daily run"
+   "text": "Play today's daily run"
   },
   {
    "id": "start.tutorial",
@@ -1588,7 +1588,7 @@
   {
    "id": "start.gov_tutorial",
    "pattern": "P01",
-   "text": "Demo as Sofīā",
+   "text": "Play the demo as Sofīā",
    "role": "gov"
   },
   {
@@ -1675,7 +1675,7 @@
   {
    "id": "sim.inquiry.the_yacht_story_is_dead",
    "pattern": "P10",
-   "text": " Your yacht story falls apart, and that costs you more."
+   "text": " Your yacht story falls apart, and your police attention rises by one more."
   },
   {
    "id": "sim.inquiry.tells_them_where_you_were",
@@ -1873,7 +1873,7 @@
   {
    "id": "sim.line.ten_hours_and_you_understand",
    "pattern": "P07",
-   "text": "\"10 hours, and you understand what I asked.\"",
+   "text": "\"Ten hours, and you understand what I asked.\"",
    "speaker": "ally"
   },
   {
@@ -1897,7 +1897,7 @@
   {
    "id": "sim.why.nothing_to_call_about",
    "pattern": "P04",
-   "text": "Nothing to call about."
+   "text": "There is nothing to call about."
   },
   {
    "id": "sim.say.sold_you_out_sosa_knows",
@@ -1959,7 +1959,7 @@
   {
    "id": "sim.why.no_news_waiting",
    "pattern": "P04",
-   "text": "No news waiting."
+   "text": "There is no news waiting for you."
   },
   {
    "id": "sim.opt.cut_them_off",
@@ -2027,7 +2027,7 @@
   {
    "id": "sim.status.contact_salek_before_reaching_susana",
    "pattern": "P05",
-   "text": "It is too late to ask {sponsor} for a visa from Susana.",
+   "text": "You have reached Susana, so it is too late to ask {sponsor} for a visa.",
    "args": [
     "sponsor"
    ]
@@ -2099,7 +2099,7 @@
   {
    "id": "sim.preview.takes_hour",
    "pattern": "P03",
-   "text": "Takes {hours} hour{s}",
+   "text": "This move takes {hours} hour{s}.",
    "args": [
     "hours",
     "s"
@@ -2108,7 +2108,7 @@
   {
    "id": "sim.preview.die_needs_or_more_in",
    "pattern": "P03",
-   "text": "Roll {need} or higher to succeed, {need2} chances in six.",
+   "text": "Roll {need} or higher to succeed, a {need2} in 6 chance.",
    "args": [
     "need",
     "need2"
@@ -2267,8 +2267,11 @@
   {
    "id": "sim.line.inspector_sosa_come_back_for",
    "pattern": "P07",
-   "text": "\"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and your brother's name goes on the warrant too.\"",
-   "speaker": "enemy"
+   "text": "\"Inspector Sosā. Come back for the hearing and this ends quietly. Stay, and {rel}'s name goes on the warrant too.\"",
+   "speaker": "enemy",
+   "args": [
+    "rel"
+   ]
   },
   {
    "id": "sim.effect.v_lez_withdraws_her_officials",
@@ -2407,12 +2410,12 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "Sosā's search goes back to the residence, and your police attention drops by one. If one of your people later talks to Sosā, the lie adds one more point."
+   "text": "Sosā's search goes back to the residence, and your police attention drops by one. If one of your people later talks to Sosā, the lie raises your police attention by one more."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
    "pattern": "P01",
-   "text": "Confirm it, from the yacht"
+   "text": "Confirm it from the yacht"
   },
   {
    "id": "sim.line.radi_port_venla_we_hear",
@@ -2630,7 +2633,7 @@
   {
    "id": "gov.line.the_review_is_open_say",
    "pattern": "P07",
-   "text": "\"The review is open. Say the word and the operator hears about his licence.\"",
+   "text": "\"The review is open. Say the word and the operator hears about his license.\"",
    "role": "gov",
    "speaker": "aviation"
   },
@@ -2741,7 +2744,7 @@
   {
    "id": "gov.report.lights_on_someone_moved_past",
    "pattern": "P06",
-   "text": "Lights on, and someone moved past the upstairs window.",
+   "text": "The lights are on, and someone moved past the upstairs window.",
    "role": "gov"
   },
   {
@@ -2756,7 +2759,7 @@
   {
    "id": "gov.why.not_an_order_you_can",
    "pattern": "P04",
-   "text": "Not an order you can give now.",
+   "text": "You cannot give that order now.",
    "role": "gov"
   },
   {
@@ -2776,14 +2779,14 @@
   {
    "id": "gov.line.the_interior_ministry_will_consider",
    "pattern": "P07",
-   "text": "\"The interior ministry will consider it. 10 hours, and they will want to know why.\"",
+   "text": "\"The interior ministry will consider it. Ten hours, and they will want to know why.\"",
    "role": "gov",
    "speaker": "embassy"
   },
   {
    "id": "gov.why.nothing_to_ask",
    "pattern": "P04",
-   "text": "Nothing to ask.",
+   "text": "There is nothing to ask.",
    "role": "gov"
   },
   {
@@ -2937,7 +2940,7 @@
   {
    "id": "gov.scene.she_may_be_across_the",
    "pattern": "P08",
-   "text": "This is Esmeralda. Searches, checkpoints and call-ins here need Esmeralda's agreement first.",
+   "text": "This is Esmeralda. Searches, checkpoints, and call-ins here need Esmeralda's agreement first.",
    "role": "gov",
    "note": "objective"
   },
@@ -3033,7 +3036,7 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "The desk answers in six hours and needs a three or more. It gives you the operator card.",
+   "text": "The aviation desk answers in six hours and needs a roll of 3 or higher. If it succeeds, you get the operator card.",
    "role": "gov"
   },
   {
@@ -3057,13 +3060,13 @@
   {
    "id": "gov.preview.a_promise_to_consider_a",
    "pattern": "P03",
-   "text": "A promise to consider a hold is not an instruction to a tower.",
+   "text": "Nothing changes while Esmeralda is still considering your request.",
    "role": "gov"
   },
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Baca answers in 10 hours and needs a four or more. If Esmeralda agrees, her takeoff gets harder and your patrols can act at Susana.",
+   "text": "Baca answers in 10 hours and needs a roll of 4 or higher. If Esmeralda agrees, her takeoff gets harder and your patrols can act at Susana.",
    "role": "gov"
   },
   {
@@ -3102,7 +3105,7 @@
   {
    "id": "gov.preview.takes_hour_acts",
    "pattern": "P03",
-   "text": "Takes {hours} hour{s}. Done by {who}.",
+   "text": "{who} will carry out this order. It takes {hours} hour{s}.",
    "args": [
     "hours",
     "s",
@@ -3651,7 +3654,7 @@
   {
    "id": "sim.ledger.delivered",
    "pattern": "P05",
-   "text": "Delivered {what}.",
+   "text": "Delivered \"{what}.\"",
    "args": [
     "what"
    ]
@@ -3729,7 +3732,7 @@
   {
    "id": "sim.effect.requires_sponsor_help",
    "pattern": "P03",
-   "text": "{sponsor} reaches her uncle, and Vélez's minister hears about you. You get Vélez's card and spend your sponsor's line to the ministry.",
+   "text": "{sponsor} reaches Vélez's uncle, and Esmeralda's minister hears about you. You get Vélez's card, and you spend your sponsor's line to the ministry.",
    "args": [
     "sponsor"
    ]
@@ -3745,7 +3748,7 @@
   {
    "id": "sum.exposure_round_here",
    "pattern": "P10",
-   "text": "Police attention rose by {n} this round, and Sosā is searching where you are now",
+   "text": "Police attention rose by {n} this round, and Sosā is searching where you are now.",
    "args": [
     "n"
    ]
@@ -3923,7 +3926,7 @@
   {
    "id": "about.p2",
    "pattern": "P08",
-   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge or a border post on the phone, and he writes down every call."
+   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Esmeralda's interior minister, can have people waiting at the border if Baca gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge, or a border post on the phone, and he writes down every call."
   },
   {
    "id": "about.p3",
@@ -3938,12 +3941,12 @@
   {
    "id": "about.p4",
    "pattern": "P08",
-   "text": "South through Santa Laura, where the posts have not received the travel ban yet. East to the colônia at Nova Trentô. Up to the rail town at Salta and onto the midnight freight over the Huhūi passes. Three crossings lead into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port, and a pilot who flies where the flight plan says."
+   "text": "The road runs south through Santa Laura, where the posts have not received the travel ban yet. It turns east to the colônia at Nova Trentô. Then it climbs to the rail town at Salta, where you board the midnight freight over the Huhūi passes. Three crossings lead into Esmeralda there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Susana, a charter apron behind the port. A pilot there flies where the flight plan says."
   },
   {
    "id": "about.p5",
    "pattern": "P08",
-   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter and takes six hours longer. Gannibal in Zaryanova, where Mirēlā Vosk wants mineral rights you do not control. Whichever you pick will take you."
+   "text": "Where it says is the first thing you decide. You can fly to Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. In Almatau, in Tarun, a magistrate named Dēvan Rāo answers by letter and takes six hours longer. In Gannibal, in Zaryanova, Mirēlā Vosk wants mineral rights you do not control. Whichever you pick will take you."
   },
   {
    "id": "about.p6",
@@ -3968,7 +3971,7 @@
   {
    "id": "about.p8",
    "pattern": "P08",
-   "text": "The demo is one scripted escape with a coach beside you, 20 steps, and there is a shorter one for the government side. In the daily run everyone starts from the same draw, so you and a friend can compare endings. It is one page that works offline once loaded and saves your run. It is hard on purpose, and one bad call on Saturday evening can end it before it starts, so when a 20-minute run ends you start another."
+   "text": "The demo is one scripted escape in 20 steps with a coach beside you, and there is a shorter one for the government side. In the daily run everyone starts from the same draw, so you and a friend can compare endings. The game is one page that works offline once loaded, and it saves your run. It is hard on purpose, and one bad call on Saturday evening can end a run before it starts. A run takes 20 minutes, so when one ends you start another."
   },
   {
    "id": "about.world",
@@ -4276,7 +4279,7 @@
   {
    "id": "brief.again",
    "pattern": "P01",
-   "text": "Briefing"
+   "text": "Read the briefing"
   },
   {
    "id": "brief.milestone",
@@ -4391,7 +4394,7 @@
   {
    "id": "over.why_deal",
    "pattern": "P14",
-   "text": "You took the president's deal, conceded on camera and came home."
+   "text": "You took the president's deal, conceded on camera, and came home."
   },
   {
    "id": "brief.need_jet",
@@ -4494,7 +4497,7 @@
   {
    "id": "over.why_gov_deal",
    "pattern": "P14",
-   "text": "She took the president's deal, conceded on camera and came home."
+   "text": "She took the president's deal, conceded on camera, and came home."
   },
   {
    "id": "over.why_gov_landed",
@@ -4557,7 +4560,7 @@
   {
    "id": "brief.reception_note",
    "pattern": "P08",
-   "text": "The first step opens the road to Salta, the second cancels the extra takeoff trouble if Sosā has asked Esmeralda to hold you, and the third puts Vélez's officials at one border post."
+   "text": "The first step opens the road to Salta. The second step matters if Sosā has asked Esmeralda to hold you, because without it your takeoff roll needs two more. The third puts Vélez's officials at one border post."
   },
   {
    "id": "brief.gov_report_now",

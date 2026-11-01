@@ -113,7 +113,7 @@
   {
    "code": "trust.rely",
    "pattern": "P03",
-   "text": "You keep {person}'s help and the risk",
+   "text": "You keep {person}'s help and the risk of betrayal",
    "args": [
     "person"
    ]
@@ -129,7 +129,7 @@
   {
    "code": "trust.test",
    "pattern": "P03",
-   "text": "Learn the truth"
+   "text": "Find out if the rumor is true"
   },
   {
    "code": "arrangement.moves",
@@ -154,7 +154,7 @@
   {
    "code": "hold.climb",
    "pattern": "P03",
-   "text": "The police stop you, one step further"
+   "text": "The police hold you, a step closer to house arrest"
   },
   {
    "code": "route.advance",
@@ -223,12 +223,12 @@
   {
    "code": "ban.lost",
    "pattern": "P03",
-   "text": "Post loses the ban"
+   "text": "The ban is no longer confirmed at the post"
   },
   {
    "code": "hold.esmeralda_moves",
    "pattern": "P03",
-   "text": "Esmeralda moves on your hold"
+   "text": "Your request for Esmeralda to hold her moves forward"
   },
   {
    "code": "orders.easier",

@@ -47,7 +47,7 @@ const Gov = (() => {
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
     const r = { at, source, text, proves, doesnt, hour: (hour === undefined ? g.c.hour : hour) + (delay || 0), misleading: !!misleading, seen: false };
-    if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1)})`, at })); }
+    if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves.replace(/\.$/, '')}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1).replace(/\.$/, '')})`, at })); }
   }
   function release(g, events) { for (const r of g.pending.slice()) if (!r.job && r.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== r); g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: r.source, text: r.text, at: r.at })); } }
 

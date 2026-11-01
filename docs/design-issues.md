@@ -225,3 +225,17 @@ See [aar-fix-in-place.md](aar-fix-in-place.md). Each item is the owner's call.
 25. **Changing which country accepts you each run needs a way to change destination.** The destination is fixed in `newRun`, and the visa for a country that refuses you never arrives. Randomizing which country accepts would leave two runs in three unwinnable from the first screen. **Resolved November 1, 2026:** owner decision, the country the player picks is the right one for that run.
 26. **(Moot: single-use help was reverted when the deck left the screen.)** **Two kinds of help still work without being used up.** Holding "A report held one day" keeps the travel ban off the desk at the line, and holding Nando's cars makes the house-arrest climb easier. Neither is used up by that. Decide whether passive help should be spent too.
 27. **Where should the escape sit?** With the corrected harness, the simple policy wins 27.0% as Teresā and 24.7% as Matēu, down from 43.7% and 37.0% at the start of the session. The hold ladder AAR named about 40% as the target. The harness spends every card at once, so a player who keeps help back should do better.
+
+## Language pass, November 1, 2026: questions about meaning
+
+Every player-facing string (1,483) was checked against Humanizer, AP style and the project's UI rules; 111 were rewritten. These were left alone because the right wording depends on how the game should work.
+
+28. **Paying costs nothing.** Several moves say you pay (Holt, the cousin, the coast post, the yardmaster), but the game has no money. The card help no longer says "some people only move for money".
+29. **"Your sponsor keeps count"** (the sponsor's line card) and **"on {sponsor}'s terms"** (the first visa step) describe a price the rules do not charge; the demand is optional and only improves the odds.
+30. **"Ask {sponsor} to seek visa"** says the sponsor "will want something back" without naming it; each sponsor wants something different and the string has no slot for it.
+31. **The time-out ending** always says Esmeralda has closed the airfield, which no rule does.
+32. **Unreachable text since every country accepts you:** the "landed" endings, the daily "landed" line and the "still considering" ledger line.
+33. **Government side:** "On failure: {fail}" is a label-and-value row that needs a code change to become a sentence; the photo event's title says a paper has the photo while its text says a radio station does; the press conference is "at six" with no a.m. or p.m.; "until you send one" in the follow order does not say one what; the demo says "your offices drive there" while the game says "every desk in the province drives there".
+34. **About page:** "they stand on real ground" is unclear.
+35. **The blizzard line** "the storm costs Sosā half of them too" should say plainly that Sosā loses his next move.
+36. **Dead strings:** sum.exposure_round_here and brief.hours_escape are no longer used.
