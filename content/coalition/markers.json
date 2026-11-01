@@ -5,10 +5,7 @@
   {
    "code": "roll.need",
    "pattern": "P03",
-   "text": "Roll {need} or higher",
-   "args": [
-    "need"
-   ]
+   "text": "The die decides it"
   },
   {
    "code": "roll.win",

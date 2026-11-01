@@ -140,11 +140,12 @@ const UI = (() => {
 
   // ---- Here: approaches with a die face -------------------------------------
   // the move's badge is a 20-sided die showing the number to roll; a move that cannot be won shows a cross
-  function dieFace(need) { return need == null ? '<span class="die none" aria-hidden="true"></span>' : `<span class="die d20" aria-hidden="true"><b>${need > 20 ? '✕' : need}</b></span>`; }
+  // the move's badge is a blank 20-sided die: it says the move is decided by a roll, never what the roll has to beat
+  function dieFace(need) { return need == null ? '<span class="die none" aria-hidden="true"></span>' : '<span class="die d20" aria-hidden="true"></span>'; }
   // a bonus is named by the held cards that give it, never by the internal tag
   const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
   // chance of success and time taken are different facts, shown on separate lines
-  const chanceText = (a) => a.noRoll ? '' : !a.pct ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds }); // every move rolls; the chance is shown, never a promise
+  const chanceText = () => ''; // the blank die badge is the whole statement: this move is decided by a roll (owner, Nov. 1, 2026: no odds or targets anywhere)
   const metaLine = (a, withSosa) => `<span class="meta">${chanceText(a) ? `<span class="nd">${esc(chanceText(a))}</span>` : ''}<span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
   const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
@@ -152,16 +153,16 @@ const UI = (() => {
   const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
-    const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && !a.pct ? ' hard' : '');
+    const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `${dieFace(a.noRoll ? null : 1)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : 1)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
@@ -535,7 +536,7 @@ const UI = (() => {
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
     card.className = 'roll';
-    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
+    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die })}</span></span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
     const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
     card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
     if (next) { const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b); }
@@ -605,8 +606,8 @@ const UI = (() => {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: inSentence(e.name) })), 'sys'); } }); break;
         case 'roll': if (!e.who && e.auto) { Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.no_roll')), 'roll'); } }); }
-                     else if (!e.who) { Render.dice(e.die, e.need, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); if (e.bonus && e.bonus.length) toast(T('action.uses', { list: helpNames(e.bonus) })); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
-                     else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
+                     else if (!e.who) { Render.dice(e.die, null, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); if (e.bonus && e.bonus.length) toast(T('action.uses', { list: helpNames(e.bonus) })); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die })} ${T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
+                     else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die })), 'roll'); } }); break;
         // her number stays hidden on the government side
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;

@@ -99,7 +99,7 @@
      "id": "leave_house",
      "kind": "act",
      "title": "Get out of the house",
-     "body": "Pick **Send out a decoy convoy**, read the time and the roll it needs, then tap **Try it**. You can do this because Nando gave you the cars.",
+     "body": "Pick **Send out a decoy convoy**, read how long it takes, then tap **Try it**. You can do this because Nando gave you the cars.",
      "goal": "Read a move before committing",
      "highlight": [
       "#approaches"
@@ -117,8 +117,8 @@
      "id": "die",
      "kind": "read",
      "title": "Cards and the die",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and Sosā is still searching the residence.",
-     "goal": "See how cards change the roll",
+     "body": "Cards make moves easier, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and Sosā is still searching the residence.",
+     "goal": "See how cards help a move",
      "highlight": [
       "#scene"
      ]
@@ -127,7 +127,7 @@
      "id": "inquiry_acts",
      "kind": "read",
      "title": "Sosā moves too",
-     "body": "Every three hours Sosā does something. This time he sent the travel ban to the border posts, so each crossing needs a higher roll unless you hold a card that delays the report.",
+     "body": "Every three hours Sosā does something. This time he sent the travel ban to the border posts, so each crossing is harder unless you hold a card that delays the report.",
      "goal": "See the inquiry act on a schedule",
      "highlight": [
       "#sosa"
@@ -251,7 +251,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "A crate from Holt",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck makes the roll easier.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck helps here.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -297,7 +297,7 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine lowers the number you need, but the travel ban and your well-known face each raise it.",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
@@ -404,7 +404,7 @@
      "kind": "act",
      "title": "Put the ban on paper",
      "goal": "Read an order before sending it",
-     "body": "Pick **Circulate the travel ban**, read the roll and the hours, then tap **Send the order**.",
+     "body": "Pick **Circulate the travel ban**, read the hours, then tap **Send the order**.",
      "highlight": [
       "#approaches"
      ],

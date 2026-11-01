@@ -66,9 +66,9 @@ const Gov = (() => {
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.need <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
-    apps.sort((a, b) => exits(a) - exits(b) || a.need - b.need);
+    apps.sort((a, b) => exits(a) - exits(b) || a.real - b.real); // the computer-played candidate weighs the hidden target; she is the simulation, not a player being told odds
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
     return S.commit(c, 'wait').events;
   }
@@ -121,19 +121,19 @@ const Gov = (() => {
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
-      const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
-      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
-        odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
+      const real = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm); // the target the roll uses; it never reaches the view
+      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
+        odds: '', real, bonus: used, bonusFrom: used.map(u => u.tag),
+        preview: [o.text, T('sim.preview.die_needs_or_more_in', { bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
   function calls(g) {
     const out = [], c = g.c;
     const add = (id, name, ok, why, hours, preview) => out.push({ kind: 'call', id, name, ok, why, hours, preview });
-    add('req:hold', T('gov.label.ask_esmeralda_to_hold_her'), g.req.hold === 'notyet', g.req.hold === 'promised' ? T('gov.status.asked_the_embassy_has_not') : T('gov.status.esmeralda_has_agreed'), 1, [T('gov.preview.through_the_embassy_in_baca', { need: tgt(4), pct: D.DICE.chance(tgt(4)) }), T('gov.preview.a_promise_to_consider_a')]);
-    add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six', { need: tgt(3), pct: D.DICE.chance(tgt(3)) })]);
-    add('req:ban', T('gov.label.confirm_the_travel_ban_reached'), g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? T('gov.why.circulate_the_ban_first') : T('gov.status.confirmed_at_the_post'), 1, [T('gov.preview.the_post_answers', { need: tgt(2), pct: D.DICE.chance(tgt(2)) })]);
+    add('req:hold', T('gov.label.ask_esmeralda_to_hold_her'), g.req.hold === 'notyet', g.req.hold === 'promised' ? T('gov.status.asked_the_embassy_has_not') : T('gov.status.esmeralda_has_agreed'), 1, [T('gov.preview.through_the_embassy_in_baca'), T('gov.preview.a_promise_to_consider_a')]);
+    add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six')]);
+    add('req:ban', T('gov.label.confirm_the_travel_ban_reached'), g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? T('gov.why.circulate_the_ban_first') : T('gov.status.confirmed_at_the_post'), 1, [T('gov.preview.the_post_answers')]);
     return out;
   }
   function view(g) {
@@ -199,8 +199,8 @@ const Gov = (() => {
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
     // every order rolls the 20-sided die; cards lower the target but never remove the roll
-    const die = roll(g), won = wins(die, o.need);
-    events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
+    const die = roll(g), won = wins(die, o.real);
+    events.push(ev('roll', { die, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
@@ -241,7 +241,7 @@ const Gov = (() => {
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push(M('roll', 'roll.need', { need: tgt(fx.roll.need) })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => chipLower(x.t)).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => chipLower(x.t)).join(', ') })); return out; }
+    if (fx.roll) { out.push(M('roll', 'roll.need')); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => chipLower(x.t)).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => chipLower(x.t)).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: hrsText(fx.lead) }) : M('gain', 'lead.real_now'));
     if (fx.false) out.push(M('risk', 'lead.false'));

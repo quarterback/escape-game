@@ -194,3 +194,23 @@ The renames went into player text, demos, the map label, the about page and the 
 - Checks: content check 0 errors; contract tests, both demos, pbbg-check pass; a phone-width browser run showed the sibling's jet line on screen.
 
 **Contrast check, final run:** 2,157 text checks pass and all 32 text-over-picture checks pass. The help notice failure from the first run (text caught mid-fade at 1.08:1) is fixed; the notice slides in at full contrast. The remaining two failures are a disabled call row measured while the whole panel is dimmed to 55% during the dice animation (`body.busy`), a rule older than this branch; at rest the same text measures above 4.5:1. Left as is, since the dimming is outside this PR, and recorded here.
+
+## Fourth round, Nov. 1, 2026: no odds anywhere
+
+**Owner, in two messages:** "Do not ever say what can succeed or not; they never state why; it's bad game design," and then "No move should ever tell you odds or likelihood anywhere in the game."
+
+I had kept "This cannot succeed" on two moves because it was true. That was the wrong test. Telling the player the outcome before they choose, true or not, takes the decision away from them. The second message widened it: the shown target and the percentage are the same tell in numbers.
+
+**What changed (display only; the simulation is untouched):**
+- Move cards show the name, the time, who helps and a blank 20-sided die. No "Roll 11 or higher", no "50% chance", no number on the badge, no "needs 8" over the rolling die.
+- Results and logs say what the die landed on and what happened: "You rolled 15, and a friend in the inquiry made it easier. It worked." "You rolled 7. It failed."
+- News-choice chips say "The die decides it" instead of a target. Ally and government request previews say what happens if the call goes well, with no number.
+- The demos no longer tell the player to read the roll, or that a card "lowers the number you need".
+- A move that cannot be won (the cancelled passport, paying the yardmaster) looks like any other move. The yardmaster lost all 200 test rolls, including twenties.
+- The view no longer carries `need`, `odds` or `pct` at all. The hidden `real` target is read only by the roll, the computer-played candidate, the calibration bots and the tests.
+
+**Tests.** C16's two display checks inverted: they now fail if any view, chip, preview or catalog line carries a target, a percentage or "or higher", and separately confirm every roll still uses the hidden target. C18 scans all player text for forecasts ("cannot succeed", "guaranteed", "never pay", "0% chance").
+
+**Checks:** content check 0 errors; all contract tests, both demos, the house arrest check and pbbg-check pass. Calibration is identical to the digit (46.7%, 42.3%, 46.5%), which is the proof this touched nothing but what the player sees. A phone-width run read correctly end to end.
+
+**What went wrong:** I put a trailing `//` comment on a line with a closing brace for the third time this week. The build's parse step caught it before C17 could. The rule for me is now simple: comments go on their own line, always.

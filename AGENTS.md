@@ -62,8 +62,15 @@ How to work under it:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card.
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
-  six-sided scale and `Data.DICE.target` converts them; show targets and
-  chances from the view, never a promise that a move will work.
+  six-sided scale and `Data.DICE.target` converts them. **The player is never
+  told a target, a chance, or whether a move can succeed.** Owner, Nov. 1, 2026:
+  "No move should ever tell you odds or likelihood anywhere in the game," and
+  "Do not ever say what can succeed or not." A move shows its name, how long it
+  takes, who helps, and a blank die; the result says what the die landed on and
+  what happened. The view's `real` target exists only for the roll, the bots and
+  the tests, and must never reach a template (contract test C16 fails the
+  build if a view, chip, preview or catalog line carries one). A move that
+  cannot be won looks like any other move and loses on the table.
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
   place names and ARE NOT named after humans. Do not follow canon to do this, I
