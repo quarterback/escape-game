@@ -301,7 +301,7 @@ const Art = (() => {
       g.fill('#333'); g.rect(104, GROUND - 8, 8, 8); g.fill('#ff8a2a'); g.rect(106, GROUND - 6, 4, 3); g.glow(108, GROUND - 5, 12, '#ff8a2a', 0.9, 0.3); // the stove
       g.fill('#c83a3a'); g.rect(182, GROUND - 46, 2, 46); g.fill('#5cd65c'); g.rect(186, GROUND - 46, 2, 46); // the line
       g.fill(night ? '#c83a3a' : '#d84a4a'); g.rect(170, GROUND - 46, 10, 6); g.fill(night ? '#3a8a4a' : '#4aa85a'); g.rect(190, GROUND - 46, 10, 6); // two flags
-      box(g, 244, GROUND - 32, 44, 32, night ? '#2e4034' : '#4a6a52'); g.fill(night ? '#e8eef8' : '#ffffff'); g.rect(240, GROUND - 36, 52, 4); windowPane(g, 252, GROUND - 24, 10, 8, true, night); g.glow(257, GROUND - 20, 12, '#ffe28a', 0.7, 0.03); // the Esmeraldan hut
+      box(g, 244, GROUND - 32, 44, 32, night ? '#2e4034' : '#4a6a52'); g.fill(night ? '#e8eef8' : '#ffffff'); g.rect(240, GROUND - 36, 52, 4); windowPane(g, 252, GROUND - 24, 10, 8, true, night); g.glow(257, GROUND - 20, 12, '#ffe28a', 0.7, 0.03); // the Costamaran hut
       g.layer('near');
       g.fill(night ? '#d8deea' : '#f4f7fb'); g.rect(X0, GROUND, X1 - X0, H - GROUND); g.fill(night ? '#b8c0d0' : '#dde3ea'); for (let x = X0; x < X1; x += 7) g.rect(x, GROUND + 3 + ((x * 3) % 9), 4, 1);
       g.fill(night ? '#9aa4b8' : '#c8d0dc'); g.rect(X0, GROUND + 18, X1 - X0, 6); // the road through the snow
@@ -316,7 +316,7 @@ const Art = (() => {
       g.layer('far');
       g.fill(night ? '#1a2238' : '#4a6080'); g.rect(X0, GROUND - 30, X1 - X0, 30); g.fill(night ? '#24304a' : '#6a82a0'); for (let x = X0; x < X1; x += 11) g.rect(x, GROUND - 24 + (x % 5), 6, 1); // the sea
       g.fx('glints', { x0: 0, x1: W, y0: GROUND - 29, y1: GROUND - 10, col: night ? '#9fb0d0' : '#f0f6ff', rate: 9 });
-      g.fill(night ? '#20283e' : '#7a8aa4'); for (let x = 180, i = 0; x < 320; i++) { const w = 6 + (i * 5) % 8, h = 6 + (i * 11) % 14; g.rect(x, GROUND - 30 - h, w, h); x += w + 1; } // Susana across the bay
+      g.fill(night ? '#20283e' : '#7a8aa4'); for (let x = 180, i = 0; x < 320; i++) { const w = 6 + (i * 5) % 8, h = 6 + (i * 11) % 14; g.rect(x, GROUND - 30 - h, w, h); x += w + 1; } // Portalba across the bay
       if (night) { g.fill('#e8c87a'); for (let i = 0; i < 24; i++) g.rect(182 + (i * 37) % 136, GROUND - 32 - (i * 7) % 12, 1, 1); }
       g.layer('mid');
       box(g, 12, GROUND - 66, 16, 66, night ? '#3a3a44' : '#9aa0a8'); box(g, 4, GROUND - 78, 32, 14, night ? '#4a4a56' : '#b8bec6'); g.fill(night ? '#ffd27a' : '#c8e0f0'); g.rect(7, GROUND - 75, 26, 7); g.glow(20, GROUND - 71, 18, '#ffd27a', 0.8, 0.02); // the tower

@@ -53,22 +53,22 @@
   {
    "code": "search.elsewhere",
    "pattern": "P03",
-   "text": "Sosā's search moves off your stop"
+   "text": "The police move their search off your stop"
   },
   {
    "code": "search.finds",
    "pattern": "P03",
-   "text": "Sosā searches where you are"
+   "text": "The police move their search to your stop"
   },
   {
    "code": "search.loses_move",
    "pattern": "P03",
-   "text": "Sosā skips his next action"
+   "text": "The police skip their next action"
   },
   {
    "code": "search.at",
    "pattern": "P03",
-   "text": "Search {place}",
+   "text": "The police search {place}",
    "args": [
     "place"
    ]
@@ -84,7 +84,7 @@
   {
    "code": "card.lose_any",
    "pattern": "P03",
-   "text": "Lose a card"
+   "text": "You lose a card"
   },
   {
    "code": "card.lose",
@@ -121,7 +121,7 @@
   {
    "code": "trust.cut",
    "pattern": "P03",
-   "text": "You lose {person}'s help and cards",
+   "text": "You lose {person}'s help and any cards from them",
    "args": [
     "person"
    ]
@@ -134,7 +134,7 @@
   {
    "code": "arrangement.moves",
    "pattern": "P03",
-   "text": "Your welcome in Esmeralda moves up one step"
+   "text": "Your welcome in Costamar moves up one step"
   },
   {
    "code": "ban.now",
@@ -159,7 +159,7 @@
   {
    "code": "route.advance",
    "pattern": "P03",
-   "text": "Reach the next stop"
+   "text": "You reach the next stop"
   },
   {
    "code": "run.ends",
@@ -169,12 +169,12 @@
   {
    "code": "allies.slower",
    "pattern": "P03",
-   "text": "Your allies take two hours longer"
+   "text": "Your allies' replies take two hours longer from now on"
   },
   {
    "code": "lead.real_in",
    "pattern": "P03",
-   "text": "A true sighting, arriving in {hours}",
+   "text": "A true report of where she is now reaches your desk in {hours}",
    "args": [
     "hours"
    ]
@@ -182,12 +182,12 @@
   {
    "code": "lead.real_now",
    "pattern": "P03",
-   "text": "A true sighting now"
+   "text": "A true report of where she is now reaches your desk at once"
   },
   {
    "code": "lead.false",
    "pattern": "P03",
-   "text": "A false lead"
+   "text": "A false report about where she is"
   },
   {
    "code": "her.exposed",
@@ -197,12 +197,12 @@
   {
    "code": "her.warned",
    "pattern": "P03",
-   "text": "Her side is warned"
+   "text": "Her side hears about it, and she gets harder to find"
   },
   {
    "code": "her.slips",
    "pattern": "P03",
-   "text": "Her plans slip by {hours}",
+   "text": "Her helpers' answers come {hours} later",
    "args": [
     "hours"
    ]
@@ -210,7 +210,7 @@
   {
    "code": "line.harder",
    "pattern": "P03",
-   "text": "The line is harder to cross for {hours}",
+   "text": "Crossing the line is harder for the next {hours}",
    "args": [
     "hours"
    ]
@@ -218,7 +218,7 @@
   {
    "code": "ban.confirmed",
    "pattern": "P03",
-   "text": "Ban confirmed at the post"
+   "text": "The post confirms the travel ban"
   },
   {
    "code": "ban.lost",
@@ -228,12 +228,12 @@
   {
    "code": "hold.esmeralda_moves",
    "pattern": "P03",
-   "text": "Your request for Esmeralda to hold her moves forward"
+   "text": "Your request for Costamar to hold her moves forward"
   },
   {
    "code": "orders.easier",
    "pattern": "P03",
-   "text": "Orders are easier for {hours}",
+   "text": "Your orders are easier for the next {hours}",
    "args": [
     "hours"
    ]
@@ -241,7 +241,7 @@
   {
    "code": "orders.harder",
    "pattern": "P03",
-   "text": "Orders are harder for {hours}",
+   "text": "Your orders are harder for the next {hours}",
    "args": [
     "hours"
    ]
@@ -249,17 +249,17 @@
   {
    "code": "minister.pleased",
    "pattern": "P03",
-   "text": "Minister pleased"
+   "text": "The minister is pleased"
   },
   {
    "code": "minister.angry",
    "pattern": "P03",
-   "text": "Minister angry"
+   "text": "The minister is angry"
   },
   {
    "code": "minister.sooner",
    "pattern": "P03",
-   "text": "The minister wants a town {hours} sooner",
+   "text": "The minister wants a location {hours} sooner",
    "args": [
     "hours"
    ]

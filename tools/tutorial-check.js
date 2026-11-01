@@ -10,23 +10,23 @@ const Tutorial = require(path.join(__dirname, '..', 'src', 'tutorial.js'));
 const s = Sim.newRun(Tutorial.SEED, Tutorial.WHO, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true });
 const must = (r, what) => { if (!r.ok) throw new Error(`${what}: ${r.why}`); return r; };
 const msgId = () => { const m = Sim.actions(s).messages[0]; if (!m) throw new Error('no message at hour ' + s.hour); return m.id; };
-const actions = {
-  3:  () => must(Sim.commit(s, msgId(), 'confirm_dest'), 'name Atlanta'),
-  4:  () => must(Sim.commit(s, 'call:aircraft'), 'call aircraft'),
-  6:  () => must(Sim.commit(s, 'decoy'), 'decoy'),
-  9:  () => must(Sim.commit(s, 'call:permission'), 'call permission'),
-  10: () => must(Sim.commit(s, 'second_driver'), 'second driver'),
-  12: () => must(Sim.commit(s, 'help_host'), 'help host'),
-  14: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
-  15: () => must(Sim.commit(s, 'crate'), 'Holt'),
-  16: () => must(Sim.commit(s, 'board'), 'board'),
-  18: () => must(Sim.commit(s, 'post_rail'), 'second passport'),
+const actions = { // keyed by step id, so adding or removing a reading step never shifts the script
+  answer_brother: () => must(Sim.commit(s, msgId(), 'confirm_dest'), 'name Altamira'),
+  call_aircraft: () => must(Sim.commit(s, 'call:aircraft'), 'call aircraft'),
+  leave_house: () => must(Sim.commit(s, 'decoy'), 'decoy'),
+  call_sponsor: () => must(Sim.commit(s, 'call:permission'), 'call permission'),
+  hire_driver: () => must(Sim.commit(s, 'second_driver'), 'second driver'),
+  nona_rosa: () => must(Sim.commit(s, 'help_host'), 'help host'),
+  call_reception: () => must(Sim.commit(s, 'call:reception'), 'call reception'),
+  freight_crate: () => must(Sim.commit(s, 'crate'), 'Holt'),
+  board_freight: () => must(Sim.commit(s, 'board'), 'board'),
+  post_rail: () => must(Sim.commit(s, 'post_rail'), 'second passport'),
 };
 Tutorial.start('escape');
 Tutorial.STEPS.forEach((st, i) => {
   if (st.allow.next) { console.log(`${String(i + 1).padStart(2)} read   ${st.title}   [${Sim.clockText(s.hour)}, level ${s.pos}, exposure ${s.exposure}]`); Tutorial.next(); return; }
-  if (!actions[i]) throw new Error(`no action scripted for act step ${i + 1}`);
-  const r = actions[i](); const rolls = r.events.filter(e => e.type === 'roll').map(e => (e.auto ? `${e.who || 'you'}:no roll` : `${e.who || 'you'}:${e.die}/${e.need}${e.won ? '✓' : '✗'}`)).join(' ');
+  if (!actions[st.id]) throw new Error(`no action scripted for act step ${st.id}`);
+  const r = actions[st.id](); const rolls = r.events.filter(e => e.type === 'roll').map(e => (e.auto ? `${e.who || 'you'}:no roll` : `${e.who || 'you'}:${e.die}/${e.need}${e.won ? '✓' : '✗'}`)).join(' ');
   if (!Tutorial.check(st.done, s)) throw new Error(`step ${i + 1} "${st.title}" not done after its action`);
   if (!Tutorial.sync(s)) throw new Error(`tutorial did not advance at step ${i + 1}`);
   console.log(`${String(i + 1).padStart(2)} act    ${st.title}   [${Sim.clockText(s.hour)}, level ${s.pos}, exposure ${s.exposure}] ${rolls}`);

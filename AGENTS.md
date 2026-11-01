@@ -58,7 +58,19 @@ How to work under it:
   [docs/design-issues.md](docs/design-issues.md) for the owner instead of
   rewording around it.
 - **Player terms:** "police attention" (never "exposure", which the content
-  check now rejects), "move" (never "approach"), "Deck" (never "Hand").
+  check now rejects), "move" (never "approach"). There is no Deck screen:
+  cards work in the background and show as short notices (owner, Oct. 31,
+  2026). Never ask the player to manage or play a card.
+- **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
+  six-sided scale and `Data.DICE.target` converts them; show targets and
+  chances from the view, never a promise that a move will work.
+- **Place names sound like places** you could travel to, and none is named
+  after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
+  place names and ARE NOT named after humans. Do not follow canon to do this, I
+  am the author." Renamed that day: Esmeralda to Costamar (Costamaran), Baca to
+  Cerro Alto, Susana to Portalba, Santa Laura to Pedra Branca, Atlanta to
+  Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
+  Internal ids keep the old names.
 - **Endings** read "You win" or "You lose", then the reason in a full sentence.
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what

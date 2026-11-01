@@ -10,13 +10,13 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="Seventy-two hours. Escape Valdória with help from allies, or run the government inquiry and stop the flight. A turn-based pixel-art game by Ron Bronson.">
+<meta name="description" content="You have 72 hours to escape Valdória with help from your allies, or you can play the government side and try to stop the flight. Coalition is a turn-based pixel-art game by Ron Bronson.">
 <meta property="og:url" content="https://arcade.pdtmag.com/">
 <link rel="canonical" href="https://arcade.pdtmag.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Coalition">
 <meta property="og:title" content="Coalition: escape or stop the escape">
-<meta property="og:description" content="Seventy-two hours. Escape Valdória with help from allies, or run the government inquiry and stop the flight. A turn-based pixel-art game by Ron Bronson.">
+<meta property="og:description" content="You have 72 hours to escape Valdória with help from your allies, or you can play the government side and try to stop the flight. Coalition is a turn-based pixel-art game by Ron Bronson.">
 <meta property="og:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="The title Coalition over a pixel-art border post at night.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Coalition: escape or stop the escape">
-<meta name="twitter:description" content="Seventy-two hours. Escape Valdória with help from allies, or run the government inquiry and stop the flight. A turn-based pixel-art game by Ron Bronson.">
+<meta name="twitter:description" content="You have 72 hours to escape Valdória with help from your allies, or you can play the government side and try to stop the flight. Coalition is a turn-based pixel-art game by Ron Bronson.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/quarterback/escape-game/main/og/card.png">
 <meta name="twitter:image:alt" content="The title Coalition over a pixel-art border post at night.">
 <style>
@@ -72,6 +72,7 @@
     <span class="grab" aria-hidden="true"></span>
     <div id="lvlhead2"><h1 id="lvlname2"></h1><p id="lvlobj2"></p></div>
     <section id="phasecard" hidden aria-live="polite"></section>
+    <section id="recap" hidden aria-live="polite"></section>
     <div class="h2row" id="herehead"><h2>{{c:nav.here}}</h2><span class="waits"><button id="waitdark" class="pill" hidden>{{c:action.wait_dark}}</button><button id="wait" class="pill">{{c:action.wait}}</button></span></div>
     <div id="approaches"></div>
     <details id="logbox"><summary>{{c:log.heading}}</summary><div id="dialogue" aria-live="polite"></div></details>
@@ -79,8 +80,6 @@
 
   <section class="tab" id="tab-hand" data-tab="hand">
     <h2>{{c:hand.heading}}</h2>
-    <div id="hand"></div>
-    <h3 class="menu2-h">{{c:hand.game}}</h3>
     <div class="row" id="menu2"><button data-act="demo">{{c:menu.guided}}</button><button data-act="startscreen">{{c:menu.start}}</button><button data-act="help">{{c:menu.help}}</button><button data-act="credits">{{c:menu.credits}}</button><button data-act="install" hidden>{{c:menu.install}}</button><button data-act="mute">{{c:sound.menu_on}}</button></div>
   </section>
 
@@ -114,6 +113,8 @@
 </div>
 
 <div id="brief" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="bbox"><div class="bhead"><span class="bclock" id="b-clock"></span><span id="b-round"></span></div><h2 id="b-title"></h2><div id="b-story" class="bstory"></div><ol id="b-route" class="broute"></ol><div id="b-stats" class="bstats"></div><h3 id="b-jobh">{{c:brief.h_round}}</h3><div id="b-job" class="bjob"></div><div id="b-win"><h3>{{c:brief.h_win}}</h3><p id="b-needlead" class="blead"></p><ul id="b-need" class="bneed"></ul></div><button id="b-start" class="primary"></button></div></div>
+<div id="toast" role="status" aria-live="polite" hidden><b id="t-main"></b><span id="t-sub"></span></div>
+<div id="stopscreen" hidden><div class="sbox"><span class="sclock mono" id="s-clock"></span><span class="sstep" id="s-step"></span><b id="s-title"></b><ol class="sdots" id="s-dots" aria-hidden="true"></ol><p id="s-goal"></p></div></div>
 <div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
 <div id="update" hidden><span>{{c:update.ready}}</span><button id="reload">{{c:update.reload}}</button></div>
 
@@ -128,7 +129,7 @@
   <div class="mapbox">
     <h2 id="map-title">{{c:map.title}}</h2>
     <p class="mapsub">{{c:map.sub}}</p>
-    <div class="mapart"><svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-label="A world map with Valdória, Susana and the three countries that might take you"></svg></div>
+    <div class="mapart"><svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-label="A world map with Valdória, Portalba, and the three countries that might take you"></svg></div>
     <div id="map-choices"></div>
     <p class="small maphint">{{c:map.hint}}</p>
   </div>
