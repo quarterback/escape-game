@@ -143,9 +143,6 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  // escape side: how many times Sosā acts during the move's own hours
-  const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
-  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.police_none') : n === 1 ? T('action.police_once') : T('action.police_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
   // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
@@ -178,7 +175,7 @@ const UI = (() => {
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
-  const waitMeta = (w) => `<span class="meta"><span class="hrs">${esc(T(w.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(w.hours) }))}</span><span class="sosa-during">${esc(sosaDuring(w))}</span></span>`;
+  const waitMeta = (w) => `<span class="meta"><span class="hrs">${esc(T(w.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(w.hours) }))}</span></span>`;
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
@@ -198,7 +195,7 @@ const UI = (() => {
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>${(o.ok ? o.effect : o.why) ? `<small>${esc(o.ok ? o.effect : o.why)}</small>` : ''}`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { if (!o.ok) continue; const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
@@ -217,10 +214,10 @@ const UI = (() => {
       inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && (phase === 'phone' || phase === 'move')));
     }
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of A.calls) {
+    for (const c of A.calls) { if (!c.ok) continue; // only calls you can make
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
-      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
+      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
   }
@@ -533,7 +530,7 @@ const UI = (() => {
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`);
+    $('phasehint').textContent = ''; $('phasehint').hidden = true;
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
     document.body.classList.toggle('ringing', phase === 'phone');
     $('phasedone').hidden = true; // one call or one answer ends the phone step; nobody has to hang up
@@ -559,7 +556,7 @@ const UI = (() => {
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: Sim.num(v.rung) }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   // owner, Nov. 1, 2026 ("Ask Theo to walk you through" then "Theo walks you through" is redundant): when the move
   // has its own line, that line is the result. The move's name, the outcome word and the gains it already
@@ -692,7 +689,7 @@ const UI = (() => {
     if (!v.messages.length) inbox.innerHTML = `<p class="hint">${T('desk.empty')}</p>`;
     for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => (phase === 'phone' || phase === 'move') && Tutorial.allowsOption(o.id)));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
+    for (const c of v.calls) { if (!c.ok) continue; if (sel === c.id) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
   }
   function renderGovRoute() {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';

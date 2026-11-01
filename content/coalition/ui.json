@@ -111,7 +111,7 @@
   {
    "id": "nav.orders",
    "pattern": "P02",
-   "text": "Orders",
+   "text": "Make your move",
    "role": "gov"
   },
   {
@@ -155,7 +155,7 @@
   {
    "id": "action.wait_go",
    "pattern": "P01",
-   "text": "Wait"
+   "text": "Confirm"
   },
   {
    "id": "nav.phone",
@@ -165,7 +165,7 @@
   {
    "id": "nav.here",
    "pattern": "P02",
-   "text": "Here"
+   "text": "Make your move"
   },
   {
    "id": "coach.step",
@@ -194,7 +194,7 @@
   {
    "id": "action.commit",
    "pattern": "P01",
-   "text": "Try it"
+   "text": "Confirm"
   },
   {
    "id": "phone.waiting",
@@ -229,7 +229,7 @@
   {
    "id": "action.call",
    "pattern": "P01",
-   "text": "Call"
+   "text": "Confirm"
   },
   {
    "id": "need.aircraft_ready",
@@ -987,7 +987,7 @@
   {
    "id": "action.send_order",
    "pattern": "P01",
-   "text": "Send the order",
+   "text": "Confirm",
    "role": "gov"
   },
   {
@@ -1038,7 +1038,7 @@
   {
    "id": "action.send",
    "pattern": "P01",
-   "text": "Send",
+   "text": "Confirm",
    "role": "gov"
   },
   {
@@ -1353,7 +1353,7 @@
   {
    "id": "tab.here",
    "pattern": "P02",
-   "text": "Here"
+   "text": "Moves"
   },
   {
    "id": "tab.phone",
@@ -3282,39 +3282,6 @@
    "text": "Credits"
   },
   {
-   "id": "hint.news",
-   "pattern": "P08",
-   "text": "Pick a response."
-  },
-  {
-   "id": "hint.move",
-   "pattern": "P08",
-   "text": "Pick one move, or wait an hour."
-  },
-  {
-   "id": "hint.sosa",
-   "pattern": "P08",
-   "text": "See what the police and your allies did."
-  },
-  {
-   "id": "hint.gov_news",
-   "pattern": "P08",
-   "text": "Pick a response.",
-   "role": "gov"
-  },
-  {
-   "id": "hint.gov_move",
-   "pattern": "P08",
-   "text": "Give one order, or wait an hour.",
-   "role": "gov"
-  },
-  {
-   "id": "hint.gov_sosa",
-   "pattern": "P08",
-   "text": "Read the reports on her move.",
-   "role": "gov"
-  },
-  {
    "id": "sim.end.lets_the_jet_land",
    "pattern": "P14",
    "text": "{name} lets the jet land and asks questions for a week.",
@@ -4406,37 +4373,11 @@
    ]
   },
   {
-   "id": "action.police_none",
-   "pattern": "P03",
-   "text": "The police do not act in that time."
-  },
-  {
-   "id": "action.police_once",
-   "pattern": "P03",
-   "text": "The police act once in that time."
-  },
-  {
-   "id": "action.police_times",
-   "pattern": "P03",
-   "text": "The police act {n} times in that time.",
-   "args": [
-    "n"
-   ]
-  },
-  {
    "id": "sim.why.needs_step",
    "pattern": "P04",
    "text": "This move opens once you reach \"{step}.\"",
    "args": [
     "step"
-   ]
-  },
-  {
-   "id": "action.her_during",
-   "pattern": "P03",
-   "text": "She keeps moving during these {hours} hours, and her moves can leave new reports.",
-   "args": [
-    "hours"
    ]
   },
   {
@@ -4458,19 +4399,9 @@
    "speaker": "host"
   },
   {
-   "id": "action.her_during_one",
-   "pattern": "P03",
-   "text": "She keeps moving during this hour, and her moves can leave new reports."
-  },
-  {
    "id": "recap.title",
    "pattern": "P02",
    "text": "What just happened"
-  },
-  {
-   "id": "hint.call_first",
-   "pattern": "P08",
-   "text": "You can make one call from the phone before you move."
   },
   {
    "id": "log.no_roll",

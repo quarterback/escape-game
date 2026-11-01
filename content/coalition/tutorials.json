@@ -87,7 +87,7 @@
      "id": "call_aircraft",
      "kind": "act",
      "title": "Call about the jet",
-     "body": "Tap **Your sibling about the jet**, then **Call**. The call takes an hour, and his answer comes six hours after that.",
+     "body": "Tap **Your sibling about the jet**, then **Confirm**. The call takes an hour, and his answer comes six hours after that.",
      "goal": "Start an arrangement by phone",
      "highlight": [
       "#calls"
@@ -116,7 +116,7 @@
      "id": "leave_house",
      "kind": "act",
      "title": "Get out of the house",
-     "body": "Pick **Send out a decoy convoy**, then tap **Try it**. You can do this because Nando gave you the cars.",
+     "body": "Pick **Send out a decoy convoy**, then tap **Confirm**. You can do this because Nando gave you the cars.",
      "goal": "Send out the decoy convoy",
      "highlight": [
       "#approaches"
@@ -154,7 +154,7 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Altamira to let you in. Later he asks for the family accounts. Agreeing makes the visa more likely, and if you refuse he still asks at the usual odds.",
+     "body": "Tap **Bīr Amādū Salek about your visa**, then **Confirm**. He can get Altamira to let you in. Later he asks for the family accounts. Agreeing makes the visa more likely, and if you refuse he still asks at the usual odds.",
      "goal": "Ask a sponsor for your visa",
      "highlight": [
       "#calls"
@@ -182,7 +182,7 @@
      "id": "hire_driver",
      "kind": "act",
      "title": "Pay someone who takes money",
-     "body": "Nando's cousin drives for cash. Pick **Hire a plain car and driver**, then tap **Try it**.",
+     "body": "Nando's cousin drives for cash. Pick **Hire a plain car and driver**, then tap **Confirm**.",
      "goal": "Use an ally who takes money",
      "highlight": [
       "#approaches"
@@ -211,7 +211,7 @@
      "id": "nona_rosa",
      "kind": "act",
      "title": "Nonā Rosa needs something first",
-     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours. She gives you the truck either way, and if it works, her truck also carries you on to Salta.",
+     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Confirm**. It takes three hours. She gives you the truck either way, and if it works, her truck also carries you on to Salta.",
      "goal": "Earn help by helping",
      "highlight": [
       "#approaches"
@@ -240,7 +240,7 @@
      "id": "call_reception",
      "kind": "act",
      "title": "Who meets you on the other side",
-     "body": "Tap **Your sibling about your welcome in Costamar**, then **Call**. He can reach Rosario Vélez in Costamar. Each call that comes through moves your welcome one step, and at the third step her officials wait for you at one border post.",
+     "body": "Tap **Your sibling about your welcome in Costamar**, then **Confirm**. He can reach Rosario Vélez in Costamar. Each call that comes through moves your welcome one step, and at the third step her officials wait for you at one border post.",
      "goal": "Arrange reception across the line",
      "highlight": [
       "#calls"
@@ -268,7 +268,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "A crate from Holt",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck helps here.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Confirm**. Nonā Rosa's truck helps here.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -286,7 +286,7 @@
      "id": "board_freight",
      "kind": "act",
      "title": "Onto the train",
-     "body": "Holt's crate works only in the Salta yard, and only at night. Pick **Board the midnight freight**, then tap **Try it**. The crate is gone once the train leaves Salta.",
+     "body": "Holt's crate works only in the Salta yard, and only at night. Pick **Board the midnight freight**, then tap **Confirm**. The crate is gone once the train leaves Salta.",
      "goal": "Spend a card where it counts",
      "highlight": [
       "#approaches"
@@ -314,7 +314,7 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Confirm**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
      "goal": "See what the ban costs you at the line",
      "highlight": [
       "#approaches"
@@ -409,7 +409,7 @@
      "kind": "act",
      "title": "Ask Costamar now",
      "goal": "Start a slow request before you need it",
-     "body": "Your orders stop at the border, and the embassy in Cerro Alto takes 10 hours to answer, so ask Costamar now. Pick **Ask Costamar to hold her**, then **Send**.",
+     "body": "Your orders stop at the border, and the embassy in Cerro Alto takes 10 hours to answer, so ask Costamar now. Pick **Ask Costamar to hold her**, then **Confirm**.",
      "highlight": [
       "#calls"
      ],
@@ -427,7 +427,7 @@
      "kind": "act",
      "title": "Put the ban on paper",
      "goal": "Read an order before sending it",
-     "body": "Pick **Circulate the travel ban**, read how long it takes, then tap **Send the order**.",
+     "body": "Pick **Circulate the travel ban**, read how long it takes, then tap **Confirm**.",
      "highlight": [
       "#approaches"
      ],
@@ -474,7 +474,7 @@
      "kind": "act",
      "title": "Confirming the ban",
      "goal": "Confirm a request reached the people who act on it",
-     "body": "The ban is in force, so every crossing she tries is harder, but nobody at the post has confirmed it yet. Pick **Confirm the ban at the post**, then **Send**, to have the post confirm it.",
+     "body": "The ban is in force, so every crossing she tries is harder, but nobody at the post has confirmed it yet. Pick **Confirm the ban at the post**, then **Confirm**, to have the post confirm it.",
      "highlight": [
       "#calls"
      ],
