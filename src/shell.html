@@ -141,9 +141,17 @@
     <button id="continue" class="pill ghost" hidden>{{c:start.continue_plain}}</button>
     <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>{{c:start.daily}}</b><span id="daily-note"></span></button>
     <div id="start-demo"><button id="start-tutorial" class="primary">{{c:start.tutorial}}</button><span class="small" id="start-demo-note"></span><button id="start-gov-tutorial" class="pill ghost">{{c:start.gov_tutorial}}</button></div>
-    <h3 id="start-free">{{c:start.pick}}</h3>
-    <div id="start-chars"></div>
+    <button id="start-choose" class="primary choosebtn">{{c:start.choose}}</button>
     <p class="small byline">{{c:start.byline}} <a href="https://ronbronson.dev/">{{c:start.author}}</a><span aria-hidden="true"> · </span><button class="linkbtn" id="start-credits">{{c:menu.credits}}</button></p>
+  </div>
+</div>
+<div id="picker" hidden>
+  <div class="pickbox">
+    <h2 id="pick-title">{{c:pick.title}}</h2>
+    <div id="pick-grid"></div>
+    <div id="pick-detail" hidden></div>
+    <div id="pick-cards" hidden></div>
+    <div class="row"><button id="pick-back" class="pill ghost">{{c:pick.back}}</button><button id="pick-go" class="primary" hidden></button></div>
   </div>
 </div>
 <script>

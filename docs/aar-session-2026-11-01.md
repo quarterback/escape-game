@@ -147,3 +147,67 @@ Every display-only change was measured before and after and matched to the digit
 - Before pushing, check whether the branch's pull request has merged; if it has, restart from main first.
 - When a check needs an older build, use a separate worktree, not `git stash`.
 - When two sessions work on the game at once, check the open pull requests before starting, not only before merging.
+
+## Addendum: the character picker and the new cards
+
+From a screenshot of the start screen and a page of fighting-game select screens, the owner asked for:
+
+- a "choose your character" screen like a normal video game picker, with its own music;
+- first names only, without surnames or so many marks;
+- no text under the characters on that screen;
+- after picking, a view of what that character has;
+- then several cards to choose, each saying what it does.
+
+The owner's words: "Choosing cards in my mind means ADDING cards to the deck," "we don't even have a way for them to eat for 72 hours," and "I don't care if it makes the game easier, I chose what I wanted." A fourth character, a male special investigator, became issue #33.
+
+**What shipped:**
+
+- **The start screen:**
+  - It keeps the story, the daily run and both demos.
+  - The old "Who you are" cards are replaced by one button, **Choose your character**.
+- **The picker:**
+  - It shows pixel portraits of Teresa, Mateu and Sofia with first names only.
+  - It plays its own arcade loop, a new music bed.
+  - Sofia has a sprite for the first time.
+- **Tapping a character** shows:
+  - their role ("The candidate" or "Special investigator") and goal
+  - the card they start with and what it does
+  - their drawback: border officers know Teresa's face, and Mateu's police attention starts higher
+
+  Sofia shows her two starting cards and starts straight away.
+- **The card pick:** a candidate then picks three of seven new cards:
+  - Your supporters along the route
+  - Food for three days
+  - A lawyer's appeal
+  - A friend in the rail yard
+  - A customs broker's number
+  - Your campaign's pilot
+  - A map of the back roads
+
+  Each card uses a kind the game already has, at chosen stops. Food lowers starting police attention by one. A card the starting hand already covers at the same stops is not offered, so Teresa sees six and Mateu seven.
+- **Picked cards** are saved with the run and carried in replay links.
+- **Names:** Teresa, Mateu and Sofia have no marks or surnames, and the siblings are Duartē and Līviā. Sofia's title is now special investigator.
+- **Grammar fix:** "An Costamaran introduction" is now "A Costamaran introduction".
+
+**Judgment:**
+
+- **Cards that would unlock the wrong option.** Two existing checks tested a card's kind instead of the card: Vélez's call to the operator, and asking your sponsor. The broker and the pilot share those kinds, so the checks now name the specific cards. Without picks, the rules are unchanged.
+- **Sofia's card pick.** Sofia does not pick cards yet. Her other three cards come from requests during her run, and giving them at the start needs that flow checked first.
+
+**Calibration (300 runs):**
+
+| Picks | Teresa | Mateu |
+| --- | --- | --- |
+| None | 44.3% | 39.3% |
+| Supporters, food, lawyer | 49.0% | 42.0% |
+| Rail-yard friend, broker, pilot | 47.7% | 45.0% |
+| Food, rail-yard friend, broker | 48.3% | 48.7% |
+| Lawyer, broker, map | 48.3% | 41.0% |
+
+The owner accepted an easier game in advance. `tools/calibrate.js` takes `--extra=` to measure any set of picks.
+
+**Still open:**
+
+- Sofia's card pick.
+- The fourth character (#33).
+- Marks on the other names (Gianlūka, Nonā Rosa, Amādū).

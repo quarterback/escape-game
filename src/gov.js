@@ -231,7 +231,7 @@ const Gov = (() => {
     return { ok: true, events };
   }
 
-  // ---- Sofīā's dispatches: one every few hours, each with choices whose costs show as markers ----
+  // ---- Sofia's dispatches: one every few hours, each with choices whose costs show as markers ----
   const fill = (g, t) => String(t).replace(/\{there\}/g, place(g.belief));
   function eventOk(g, e) { return !g.seenEvents.includes(e.id) && (!e.after || g.c.hour >= e.after) && (!e.at || e.at.includes(g.belief)); }
   function drawEvent(g, events) {

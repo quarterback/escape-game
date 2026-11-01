@@ -10,16 +10,14 @@
 'use strict';
 const Data = (() => {
   const CHARACTERS = {
-    woman: { id: 'woman', name: 'Teresā Albukerkē', short: 'Teresā', title: 'the defeated candidate', pronoun: 'she',
-             sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
-             blurb: 'A friend inside the inquiry helps her slip past the police. Border guards and police officers know her face.',
-             // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
+    woman: { id: 'woman', name: 'Teresa', short: 'Teresa', title: 'the defeated candidate', pronoun: 'she',
+             sibling: { id: 'sibling', name: 'Duartē', short: 'Duartē', rel: 'your brother' },
+             // Distinct runs: Teresa starts with a friend in the inquiry, but every officer knows her face.
              hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], handAlt: ['delay_report'], exposure: 1, faceKnown: true,
              edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
-    man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
-             sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
-             blurb: 'The family barges can carry him up the river. The police have watched his house since the count.',
-             // Matēu has the family barges, but he has been watched since the count.
+    man:   { id: 'man', name: 'Mateu', short: 'Mateu', title: 'the defeated candidate', pronoun: 'he',
+             sibling: { id: 'sibling', name: 'Līviā', short: 'Līviā', rel: 'your sister' },
+             // Mateu has the family barges, but he has been watched since the count.
              hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], handAlt: ['delay_report'], exposure: 3, faceKnown: false,
              edge: 'Your family barges on the river', flaw: 'Watched since the count' },
   };
@@ -78,12 +76,28 @@ const Data = (() => {
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
                     text: "Your sponsor's name opens doors that money alone does not." },
-    barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Pedra Branca.',
+    barge:        { does: "You can take the river out of Pedra Branca.", name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Pedra Branca.',
                     text: "Your father's barges still run the river, and their captains owe him." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
-    informant:    { name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
+    informant:    { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
+    // Cards you choose before the run (owner, Nov. 1, 2026: "Add cards to help a user navigate, find support ... we don't
+    // even have a way for them to eat for 72 hours"). Each uses a kind the game already has; `does` is the picker's sentence.
+    supporters:   { does: "In Salta, they make Holt and Theo easier to deal with.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
+                    text: 'People who voted for you lend you trucks and drivers.' },
+    food:         { does: "Your police attention starts one step lower.", name: 'Food for three days', tag: 'supplies', from: 'self', reach: [], works: 'From the start of the run.', pick: true, startLower: 1,
+                    text: 'You carry bread, cheese, and water, so you never stop at a store where people would see you.' },
+    lawyer:       { does: "The travel ban does not make the line harder, and driving your own car out of Pedra Branca and the Punta Marēa crossing get easier.", name: "A lawyer's appeal", tag: 'delay', from: 'self', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.', pick: true,
+                    text: 'Your lawyer files an appeal that holds up police paperwork.' },
+    rail_friend:  { does: "You can board the midnight freight in Salta without Holt or Theo.", name: 'A friend in the rail yard', tag: 'passage', from: 'self', reach: ['salta'], works: 'Boarding the midnight freight.', pick: true,
+                    text: 'A rail worker in Salta who voted for you knows which boxcar the guards skip.' },
+    broker:       { does: "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier.", name: "A customs broker's number", tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', pick: true,
+                    text: 'A broker who moves goods across the border knows the officers at the posts.' },
+    pilot_owes:   { does: "Leaving Portalba without the visa gets easier.", name: "Your campaign's pilot", tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', pick: true,
+                    text: 'The pilot who flew your campaign still owes you a favor.' },
+    road_map:     { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
+                    text: 'Every checkpoint and back road between here and the line is marked.' },
   };
 
   // Levels. Each approach: needs (all must hold), dc (die needs dc or more after mods), mods (tag: bonus),
@@ -259,15 +273,14 @@ const Data = (() => {
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Portalba', city: 'Costamar', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
-  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',
-                blurb: "Keep the candidate from flying out before Tuesday at 2 p.m. Past the border, your patrols need Costamar's agreement." };
+  const GOV = { id: 'gov', name: 'Sofia', title: 'special investigator for the incoming government', pronoun: 'she', };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
-    watch:     { name: 'The watch team', tag: 'watch', from: 'A police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
-    desk:      { name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
+    watch:     { does: "They watch the residence and Pedra Branca and send you reports.", name: 'The watch team', tag: 'watch', from: 'A police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
+    desk:      { does: "Searches and checkpoints anywhere in Valdória get easier.", name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
     operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
-    esm_intro: { name: 'An Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
+    esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
@@ -282,7 +295,7 @@ const Data = (() => {
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
   ];
 
-  // ---- Government dispatches: the Reports phase on Sofīā's side. Invented, like the candidate's.
+  // ---- Government dispatches: the Reports phase on Sofia's side. Invented, like the candidate's.
   // at: stop indexes where the search must be looking (null = anywhere). after: earliest hour. needs: a government card id.
   // fx: hours, lead (a true report of where she is now; delay in hours), false (a report that points elsewhere),
   // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the

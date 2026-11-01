@@ -74,7 +74,13 @@ async function axe(page) {
     await run('credits', () => axe(page));
     await click('#credits-close'); await page.waitForTimeout(200);
     // the escape side: a run, every tab, every phase card the first rounds reach
-    await page.evaluate(() => document.querySelector('#start-chars > :first-child').click()); await page.waitForTimeout(1800); await idle();
+    // the character picker: the grid, a candidate's detail, the card pick, then a country
+    await click('#start-choose'); await page.waitForTimeout(400); await run('picker', () => axe(page));
+    await click('.picktile[data-k=woman]'); await page.waitForTimeout(300); await run('picker / candidate', () => axe(page));
+    await click('#pick-go'); await page.waitForTimeout(300);
+    await page.evaluate(() => [...document.querySelectorAll('.pickcard')].slice(0, 3).forEach(b => b.click())); await page.waitForTimeout(300); await run('picker / cards', () => axe(page));
+    await click('#pick-go'); await page.waitForTimeout(400);
+    await page.evaluate(() => { const d = document.querySelector('#map-choices .destbtn'); if (d) d.click(); }); await page.waitForTimeout(1800); await idle();
     await run('escape scene', () => overArt(page, OVER_ART.scene));
     for (let step = 0; step < 6; step++) {
       const ph = await page.evaluate(() => (document.querySelector('#phases li.now') || {}).textContent || '');
@@ -89,7 +95,7 @@ async function axe(page) {
     await click('#startscreen'); await page.waitForTimeout(400); await click('#start-tutorial'); await page.waitForTimeout(1800); await idle();
     await run('tutorial coach', () => axe(page));
     // the government side
-    await click('#startscreen'); await page.waitForTimeout(400); await page.evaluate(() => document.querySelector('#start-chars > :nth-child(3)').click()); await page.waitForTimeout(1800); await idle();
+    await click('#startscreen'); await page.waitForTimeout(400); await click('#start-choose'); await page.waitForTimeout(400); await click('.picktile[data-k=gov]'); await page.waitForTimeout(300); await run('picker / investigator', () => axe(page)); await click('#pick-go'); await page.waitForTimeout(1800); await idle();
     await run('government scene', () => overArt(page, OVER_ART.scene));
     for (const tab of ['here', 'phone', 'route', 'hand']) { if (w < 1000) await click(`#tabs [data-tab=${tab}]`); await page.waitForTimeout(150); await run(`government / ${w < 1000 ? tab : 'all panels'}`, () => axe(page)); if (w >= 1000) break; }
     // both ending screens, filled with sample text

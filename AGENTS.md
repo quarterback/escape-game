@@ -65,7 +65,11 @@ How to work under it:
   stop, and at 10 they stop you anyway. The police box says where they are searching,
   "You are not there." when it is elsewhere, and the level. No bar, no countdown. There is no Deck screen:
   cards work in the background and show as short notices (owner, Oct. 31,
-  2026). Never ask the player to manage or play a card.
+  2026). Never ask the player to manage or play a card during a run. Before a
+  run, the character picker lets the player choose three extra cards, each with
+  a sentence saying what it does (owner, Nov. 1, 2026: "Choosing cards in my
+  mind means ADDING cards to the deck ... I don't care if it makes the game
+  easier, I chose what I wanted"). New cards use kinds the game already has.
 - **Moves show only what you can do.** Owner, Nov. 1, 2026: "I don't want blocked
   moves to show up at all, just tell me what is next and if I get choices let me
   choose," and "it only matters if the instructions tell me an action. Otherwise none
@@ -87,6 +91,12 @@ How to work under it:
   target exists only for the roll, the bots and the tests (contract test C16 fails
   the build if a view, chip, preview or catalog line carries one). A move that
   cannot be won looks like any other move and loses on the table.
+- **Character names are first names without marks.** Owner, Nov. 1, 2026: "The
+  names need to not have so many glyphs, it's hard to immerse or read them," and
+  "I would only give a first name." The playable characters are Teresa, Mateu
+  and Sofia, with no surnames; the siblings are Duartē and Līviā. Sofia is the
+  special investigator. Other names keep their spelling until the owner says
+  otherwise.
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
   place names and ARE NOT named after humans. Do not follow canon to do this, I
@@ -221,7 +231,7 @@ favicon must stay embedded so the game works offline.
 `src/render.js` draws the scene with PixiJS 8 (`vendor/pixi.min.js`, pinned 8.21.0).
 `ui.js` only calls its public functions: `start`, `still`, `runwayStill`,
 `setState(s, gov)`, `enqueue`, `busy`, `float`, `dice`, `travel`, `enemy`, `ring`,
-`pause` and `gameOver`. Keep that interface when changing the art. Pass the
+`pause`, `gameOver` and `portrait` (a character's sprite for the picker). Keep that interface when changing the art. Pass the
 government state as the second argument to `setState` in that mode; the scene then
 shows the suspected stop and the search team and must never show the candidate's
 real position, people or arrangements. Keep the 2D fallback working for devices

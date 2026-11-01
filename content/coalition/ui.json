@@ -1101,27 +1101,101 @@
    ]
   },
   {
-   "id": "start.pick",
+   "id": "start.choose",
+   "pattern": "P01",
+   "text": "Choose your character"
+  },
+  {
+   "id": "pick.title",
    "pattern": "P02",
-   "text": "Who you are"
+   "text": "Choose your character"
   },
   {
-   "id": "start.sibling_her",
+   "id": "pick.role_candidate",
+   "pattern": "P02",
+   "text": "The candidate"
+  },
+  {
+   "id": "pick.role_investigator",
+   "pattern": "P02",
+   "text": "Special investigator"
+  },
+  {
+   "id": "pick.goal_candidate",
    "pattern": "P08",
-   "text": "Her {rel} {name} has found a jet",
+   "text": "Reach the jet at Portalba and fly out before Tuesday at 2 p.m."
+  },
+  {
+   "id": "pick.goal_investigator",
+   "pattern": "P08",
+   "text": "Stop the candidate from flying out before Tuesday at 2 p.m."
+  },
+  {
+   "id": "pick.starts_with",
+   "pattern": "P03",
+   "text": "{name} starts with {card}.",
    "args": [
-    "rel",
-    "name"
+    "name",
+    "card"
    ]
   },
   {
-   "id": "start.sibling_his",
-   "pattern": "P08",
-   "text": "His {rel} {name} has found a jet",
+   "id": "pick.starts_with_two",
+   "pattern": "P03",
+   "text": "{name} starts with {a} and {b}.",
    "args": [
-    "rel",
-    "name"
+    "name",
+    "a",
+    "b"
    ]
+  },
+  {
+   "id": "pick.face",
+   "pattern": "P03",
+   "text": "Every border officer knows her face, so crossing the border is harder."
+  },
+  {
+   "id": "pick.watched",
+   "pattern": "P03",
+   "text": "The police have watched him since the count, so his police attention starts higher."
+  },
+  {
+   "id": "pick.next",
+   "pattern": "P01",
+   "text": "Pick your cards"
+  },
+  {
+   "id": "pick.cards_title",
+   "pattern": "P02",
+   "text": "Pick three cards to take with you"
+  },
+  {
+   "id": "pick.left_many",
+   "pattern": "P02",
+   "text": "Pick {n} more cards",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "pick.left_one",
+   "pattern": "P02",
+   "text": "Pick one more card"
+  },
+  {
+   "id": "pick.left_none",
+   "pattern": "P02",
+   "text": "Your cards are ready"
+  },
+  {
+   "id": "pick.go",
+   "pattern": "P01",
+   "text": "Start the run"
+  },
+  {
+   "id": "pick.back",
+   "pattern": "P01",
+   "text": "Back"
   },
   {
    "id": "daily.done_note",
@@ -1359,7 +1433,7 @@
   {
    "id": "start.gov_tutorial",
    "pattern": "P01",
-   "text": "Play the demo as Sofīā",
+   "text": "Play the demo as Sofia",
    "role": "gov"
   },
   {
@@ -3612,7 +3686,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
+   "text": "Or sit at Sofia's desk. She is the incoming government's special investigator. The incoming minister wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
   },
   {
    "id": "about.start_h",

@@ -40,7 +40,7 @@
      "id": "intro",
      "kind": "read",
      "title": "Your first run",
-     "body": "You are Teresā Albukerkē, and you lost the election. You have until Tuesday at 2 p.m., 72 hours from now, to reach a jet and fly out. This demo guides you across the border, and you finish the run at the airfield on your own.",
+     "body": "You are Teresa, and you lost the election. You have until Tuesday at 2 p.m., 72 hours from now, to reach a jet and fly out. This demo guides you across the border, and you finish the run at the airfield on your own.",
      "goal": "Know the goal and the deadline",
      "highlight": []
     },
@@ -360,9 +360,9 @@
     {
      "id": "intro",
      "kind": "read",
-     "title": "Your first run as Sofīā",
+     "title": "Your first run as Sofia",
      "goal": "Know the goal and what you cannot see",
-     "body": "You are Sofīā Leōnī, aide to the incoming government. Teresā Albukerkē has until Tuesday at 2 p.m. to fly out, and your job is to stop her. You never see where she is, only reports, and reports come late.",
+     "body": "You are Sofia, special investigator for the incoming government. Teresa has until Tuesday at 2 p.m. to fly out, and your job is to stop her. You never see where she is, only reports, and reports come late.",
      "highlight": []
     },
     {

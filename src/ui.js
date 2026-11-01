@@ -59,12 +59,12 @@ const UI = (() => {
 
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
-  function newRun(w, demo, isDaily, dest, seed) {
+  function newRun(w, demo, isDaily, dest, seed, extra) {
     markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     lastStop = -1; // the first stop gets its screen too
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [] }); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -312,7 +312,7 @@ const UI = (() => {
   // ---- export and replay ------------------------------------------------------------
   // A run is its seed, who played, where they were going and every accepted action, in order.
   function exportRun() {
-    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
   }
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
@@ -333,7 +333,7 @@ const UI = (() => {
     replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
     if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
     $('start').hidden = true;
-    if (rec.kind === 'gov') newGovRun(false, rec.seed); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed);
+    if (rec.kind === 'gov') newGovRun(false, rec.seed); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || []);
     replaying.timer = setInterval(replayTick, 150);
   }
   function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
@@ -722,20 +722,84 @@ const UI = (() => {
 
   // ---- start, title, boot --------------------------------------------------------------
   function showStart() {
-    const box = $('start-chars'); box.innerHTML = '';
     const first = !seen(), saved = savedRun();
     $('continue').hidden = !saved; if (saved) $('continue').textContent = T('start.continue', { name: saved.gov ? Data.GOV.name : Data.CHARACTERS[saved.who].name });
     $('start-demo-note').textContent = T('start.demo_note', { name: Data.CHARACTERS[Tutorial.WHO].name });
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
-    $('start-free').textContent = T('start.pick');
-    let n = 0;
-    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(T(c.pronoun === 'she' ? 'start.sibling_her' : 'start.sibling_his', { rel: c.sibling.rel.replace('your ', ''), name: c.sibling.short }))}</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(k, false, false, d)); }; box.appendChild(b); }
-    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
     const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
     $('daily-date').textContent = D.label; $('daily-note').textContent = done ? T('daily.done_note', { line: done.line }) : T('daily.note');
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
+  }
+  // ---- choose your character (owner, Nov. 1, 2026) ----------------------------------------
+  // A picker like a fighting game's: portraits and first names, then who they are and what they start with,
+  // then three cards to take along. Cards the starting hand already covers at the same stops are not offered.
+  const PICKS = 3;
+  let pickWho = null, picked = [];
+  const ROSTER = () => [
+    { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name, gov: false },
+    { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name, gov: false },
+    { k: 'gov', role: 'sofia', name: Data.GOV.name, gov: true },
+  ];
+  const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
+  const poolFor = (k) => { const hand = Data.CHARACTERS[k].hand || []; return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
+  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc(c.text)} ${esc(c.does)}</span>`;
+  function showPicker() {
+    pickWho = null; picked = [];
+    $('start').hidden = true; $('picker').hidden = false; Sfx.ambience('select');
+    const grid = $('pick-grid'); grid.innerHTML = '';
+    for (const r of ROSTER()) {
+      const b = document.createElement('button'); b.className = 'picktile'; b.dataset.k = r.k;
+      const url = Render.portrait(r.role);
+      b.innerHTML = `<span class="face"></span><b>${esc(r.name)}</b>`; if (url) b.firstChild.style.backgroundImage = `url(${url})`;
+      b.onclick = () => { Sfx.unlock(); Sfx.select(); pickWho = r.k; picked = []; renderPicker(); };
+      grid.appendChild(b);
+    }
+    renderPicker();
+  }
+  function renderPicker() {
+    const stage = pickWho && $('pick-cards').dataset.on === '1' ? 'cards' : 'who';
+    for (const b of $('pick-grid').children) b.classList.toggle('sel', b.dataset.k === pickWho);
+    $('pick-grid').hidden = stage === 'cards';
+    $('pick-title').textContent = stage === 'cards' ? T(picked.length >= PICKS ? 'pick.left_none' : PICKS - picked.length === 1 ? 'pick.left_one' : 'pick.left_many', { n: Sim.num(PICKS - picked.length) }) : T('pick.title');
+    const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go');
+    det.hidden = !pickWho || stage === 'cards'; cards.hidden = stage !== 'cards'; go.hidden = !pickWho;
+    if (pickWho && stage === 'who') {
+      if (pickWho === 'gov') {
+        const [a, b] = ['watch', 'desk'].map(id => Data.GOV_CARDS[id]);
+        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, text: '', does: a.does })}</li><li>${cardLine({ name: b.name, text: '', does: b.does })}</li></ul>`;
+        go.textContent = T('pick.go');
+      } else {
+        const ch = Data.CHARACTERS[pickWho], sp = Data.CARDS[ch.hand[ch.hand.length - 1]];
+        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, text: '', does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
+        go.textContent = T('pick.next');
+      }
+    }
+    if (stage === 'cards') {
+      cards.innerHTML = '';
+      for (const id of poolFor(pickWho)) {
+        const c = Data.CARDS[id], on = picked.includes(id);
+        const b = document.createElement('button'); b.className = 'pickcard' + (on ? ' sel' : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.innerHTML = cardLine(c);
+        b.onclick = () => { Sfx.unlock(); if (on) picked = picked.filter(x => x !== id); else if (picked.length < PICKS) picked.push(id); else return; Sfx.select(); renderPicker(); };
+        cards.appendChild(b);
+      }
+      go.textContent = T('pick.go');
+    }
+  }
+  function pickerGo() {
+    if (!pickWho) return;
+    Sfx.unlock(); Sfx.click();
+    if (pickWho === 'gov') { $('picker').hidden = true; newGovRun(); return; }
+    if ($('pick-cards').dataset.on !== '1') { $('pick-cards').dataset.on = '1'; renderPicker(); return; }
+    const k = pickWho, extra = picked.slice(); $('picker').hidden = true; $('pick-cards').dataset.on = '';
+    showMap((d) => newRun(k, false, false, d, undefined, extra));
+  }
+  function pickerBack() {
+    Sfx.unlock(); Sfx.click();
+    if ($('pick-cards').dataset.on === '1') { $('pick-cards').dataset.on = ''; picked = []; renderPicker(); return; }
+    $('picker').hidden = true; showStart();
   }
   // The map: Valdória, the strip you fly from, and the three countries that might take you. The player picks one
   // with no more information than the blurbs; which country has actually agreed is never shown.
@@ -805,6 +869,8 @@ const UI = (() => {
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
     $('start-gov-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(true); };
+    $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
+    $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;
     $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
     let creditsFrom = null;

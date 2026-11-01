@@ -121,6 +121,8 @@ const Render = (() => {
     g.fill(p.marker); g.rect(p.x - 1, GROUND - 26, 3, 2); return g;
   }
   function still(s) { const c = mkCanvas(W, H); flatScene(c, { s, pos: s.pos, gov: false, night: Sim.isNight(s), hour: s.hour }); return c.toDataURL('image/png'); }
+  // a character's sprite on its own, for the picker
+  function portrait(role) { const c = mkCanvas(16, 26), g = painter(c, false, null); Art.drawSprite(g, role, 8, 25, 'idle0'); return c.toDataURL('image/png'); }
   function runwayStill() { const c = mkCanvas(W, H), g = painter(c, false, null); Art.runway(g); return c.toDataURL('image/png'); }
 
   // ---- pointer: map the cropped, scaled canvas back to scene pixels ----
@@ -369,5 +371,5 @@ const Render = (() => {
     requestAnimationFrame(loop);
     startPixi().catch((err) => { console.warn('PixiJS unavailable, drawing in 2D', err); start2D(); });
   }
-  return { start, still, runwayStill, setState, enqueue, busy, float, dice, travel, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
 })();

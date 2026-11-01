@@ -453,3 +453,24 @@ body.ringing #phoneh{color:var(--mint)}
 .sdots li i{grid-row:2}.sdots li span{grid-row:3}.sdots li:nth-child(even) span{grid-row:1}.sdots li.now span{color:var(--ink)}
 @media(prefers-reduced-motion:reduce){#toast.in,#stopscreen.in{animation:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* choose your character (owner, Nov. 1, 2026): portraits and first names, then the starting card, then three cards */
+#picker[hidden],#pick-grid[hidden],#pick-detail[hidden],#pick-cards[hidden],#pick-go[hidden]{display:none!important}
+#picker{position:fixed;inset:0;z-index:22;display:flex;justify-content:center;background:radial-gradient(ellipse at top,#2a1f55,var(--bg) 70%);overflow-y:auto;padding:calc(16px + var(--sat)) 16px calc(20px + var(--sab))}
+.pickbox{display:flex;flex-direction:column;gap:14px;width:100%;max-width:720px}
+#pick-title{font-family:var(--font-title);font-size:26px;text-align:center;color:var(--gold);margin:8px 0 4px}
+#pick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.picktile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 6px 12px;background:var(--s3);border:3px solid transparent;border-radius:14px;color:var(--ink)}
+.picktile b{font-family:var(--font-title);font-weight:400;font-size:18px}
+.picktile .face{width:100%;aspect-ratio:16/26;max-height:180px;background:#150f2e center/contain no-repeat;image-rendering:pixelated;border-radius:10px}
+.picktile.sel{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,201,60,.25)}
+#pick-detail{display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--s3);border-radius:14px}
+#pick-detail h3{font-size:20px;color:var(--gold)}#pick-detail p{margin:0;font-size:16px;line-height:1.45}
+.pickcards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pickcards li,.pickcard{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;background:#241a46;border-radius:12px;color:var(--ink);font-size:16px;line-height:1.4}
+.pickcards b,.pickcard b{font-family:var(--font-title);font-weight:400}
+#pick-cards{display:flex;flex-direction:column;gap:10px}
+.pickcard{border:3px solid transparent;min-height:60px}.pickcard.sel{border-color:var(--gold)}
+.pickbox .row{display:flex;gap:10px;justify-content:space-between;position:sticky;bottom:0;padding:10px 0;background:linear-gradient(transparent,var(--bg) 30%)}
+.pickbox .row .primary{flex:1}
+.choosebtn{font-size:20px;min-height:60px}
+@media(min-width:1000px){#pick-grid{gap:16px}.picktile .face{max-height:240px}}
