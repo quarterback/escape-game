@@ -224,27 +224,9 @@
    "text": "Next"
   },
   {
-   "id": "action.uses",
-   "pattern": "P03",
-   "text": "Easier with {list}",
-   "args": [
-    "list"
-   ]
-  },
-  {
-   "id": "marker.night",
-   "pattern": "P03",
-   "text": "Night only"
-  },
-  {
    "id": "action.cancel",
    "pattern": "P01",
    "text": "Cancel"
-  },
-  {
-   "id": "action.close",
-   "pattern": "P01",
-   "text": "Close"
   },
   {
    "id": "action.commit",
@@ -590,16 +572,6 @@
    "args": [
     "hours"
    ]
-  },
-  {
-   "id": "wait.dark_line",
-   "pattern": "P03",
-   "text": "Night starts at 10 p.m., and the night moves here open then."
-  },
-  {
-   "id": "wait.interrupt",
-   "pattern": "P03",
-   "text": "News or a police stop ends the wait early."
   },
   {
    "id": "result.your_order",

@@ -61,6 +61,14 @@ How to work under it:
   check now rejects), "move" (never "approach"). There is no Deck screen:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card.
+- **Moves show only what you can do.** Owner, Nov. 1, 2026: "I don't want blocked
+  moves to show up at all, just tell me what is next and if I get choices let me
+  choose," and "it only matters if the instructions tell me an action. Otherwise none
+  of it is necessary detail." The move list holds only moves you can make now, on
+  both sides. A move shows its name and how long it takes; opened, it adds "Try it"
+  and "Cancel". No description, night note, "easier with" chip or situation lines.
+  A person's tag appears only as a warning (doubted, or talked to the police).
+  What to do next belongs in the "Next" line, the briefing and the help.
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
   six-sided scale and `Data.DICE.target` converts them. Owner, Nov. 1, 2026:
   "Do not keep the chance! It goes! No roll anything, just let me see what I

@@ -116,8 +116,8 @@
      "id": "leave_house",
      "kind": "act",
      "title": "Get out of the house",
-     "body": "Pick **Send out a decoy convoy**, read what it does and how long it takes, then tap **Try it**. You can do this because Nando gave you the cars.",
-     "goal": "Read a move before committing",
+     "body": "Pick **Send out a decoy convoy**, then tap **Try it**. You can do this because Nando gave you the cars.",
+     "goal": "Send out the decoy convoy",
      "highlight": [
       "#approaches"
      ],
