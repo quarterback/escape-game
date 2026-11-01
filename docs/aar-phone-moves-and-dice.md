@@ -74,3 +74,13 @@ Both PRs removed the odds independently. The agent merged #31 into this branch s
 **Calibration after the merge, 300 runs:** Teresā 44.3% (was 44.7%), Matēu 39.3% (was 40.7%); government side 55.5% (200 runs). The change comes from #31's contacts-call rule and its bots reading facts, not from this branch.
 
 **Checks:** content check, both demo replays, contract tests (C03 to C20), house-arrest check and pbbg-check pass. Phone audit found no issues; both demos play to the end in the browser with no errors.
+
+## Second addendum: no rolled number
+
+The owner settled the open question: "I never want that information, just let the person roll the dice and then see what happens next. Why would it need to be announced?" The die still rolls on screen. The result card shows only the outcome ("It worked", "Failed"), and the log says "It worked." or "It failed." The "You rolled N" chip, both log lines with the number, and the ally and police-questioning lines' unused die values are gone. The result card's "A friend in the inquiry, the party machine made this easier" line went too: it announced how the roll was decided, and its grammar was broken. The card "Theo walks you through" is now "Theo's walk through the yard", the name the route already used, because the result card's "You got {name}" read "You got Theo walks you through". AGENTS.md records the rule. Display only; no rule changed.
+
+## Third addendum: one line per result
+
+The owner, on the result card for "Ask Theo to walk you through": "'Ask Theo to walk you through' and then 'Theo walks you through' is redundant. Why does it need to say that twice? It could say 'Theo escorts you' and that's literally it, and it would cover the whole card. All of them could be that way!"
+
+When a move or choice has its own narrative line, the result card now shows that line as its headline and nothing that repeats it: no move name, no "Success" or "Failed", no "You got (card)", no "(person) trusts you more", no "You made it to (stop)" (the milestone screen says that). Police attention, a lost card, a person who sold you and a search at your stop still show, because the line does not say them. A result with no line (six move outcomes and about half of the news choices) keeps the move name, the outcome word and every chip, so nothing is lost. Display only; no rule changed.

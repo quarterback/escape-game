@@ -75,8 +75,10 @@ How to work under it:
   "No move should ever tell you odds or likelihood anywhere in the game," "Do not
   ever say what can succeed or not," and "Do not keep the chance! It goes! No roll
   anything, just let me see what I rolled." Never show a target, a chance or a die
-  badge before the player acts, on moves, orders, calls or news choices. After the
-  roll, show what was rolled ("You rolled 14") and the outcome. The view's `real`
+  badge before the player acts, on moves, orders, calls or news choices. The die
+  rolls on screen and then the result shows what happened. Owner, Nov. 1, 2026:
+  "I never want that information, just let the person roll the dice and then see
+  what happens next." No text announces the number rolled. The view's `real`
   target exists only for the roll, the bots and the tests (contract test C16 fails
   the build if a view, chip, preview or catalog line carries one). A move that
   cannot be won looks like any other move and loses on the table.

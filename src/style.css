@@ -387,6 +387,7 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 /* no roll needed: a check instead of a die */
 .die.sure{display:grid;place-items:center;background:var(--mint);color:#150F2E}
 .automove{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+p.said{font-family:var(--font-title);font-size:18px;line-height:1.35;margin:4px 0 8px}
 
 /* the run shows the escape, not the machinery: no step strip, no deck, cards work in the background */
 #phases,#round{display:none!important}

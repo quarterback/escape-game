@@ -723,14 +723,6 @@
    "text": "Failed"
   },
   {
-   "id": "result.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die}",
-   "args": [
-    "die"
-   ]
-  },
-  {
    "id": "result.done",
    "pattern": "P10",
    "text": "Done"
@@ -814,14 +806,6 @@
    "text": "You lost {name}",
    "args": [
     "name"
-   ]
-  },
-  {
-   "id": "sum.helped",
-   "pattern": "P10",
-   "text": "{list} made this easier",
-   "args": [
-    "list"
    ]
   },
   {
@@ -927,23 +911,6 @@
    "text": "You try {name}.",
    "args": [
     "name"
-   ]
-  },
-  {
-   "id": "log.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die}.",
-   "args": [
-    "die"
-   ]
-  },
-  {
-   "id": "log.rolled_lowered",
-   "pattern": "P10",
-   "text": "You rolled {die}, and {list} helped.",
-   "args": [
-    "die",
-    "list"
    ]
   },
   {
