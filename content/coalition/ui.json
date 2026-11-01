@@ -135,7 +135,7 @@
   {
    "id": "scene.sosa_right",
    "pattern": "P06",
-   "text": "He is searching {place}, and you are there",
+   "text": "Police are searching {place}, and you are there",
    "args": [
     "place"
    ]
@@ -143,7 +143,7 @@
   {
    "id": "scene.sosa_wrong",
    "pattern": "P06",
-   "text": "He is searching {place}, and you are not there",
+   "text": "Police are searching {place}, and you are somewhere else",
    "args": [
     "place"
    ]
@@ -225,11 +225,6 @@
    "id": "marker.night",
    "pattern": "P03",
    "text": "Night only"
-  },
-  {
-   "id": "action.certain",
-   "pattern": "P03",
-   "text": "Guaranteed success"
   },
   {
    "id": "action.impossible",
@@ -4620,6 +4615,16 @@
    "id": "hint.call_first",
    "pattern": "P08",
    "text": "You can make one call from the phone before you move."
+  },
+  {
+   "id": "log.no_roll",
+   "pattern": "P10",
+   "text": "No roll was needed, and the move went through."
+  },
+  {
+   "id": "result.no_roll",
+   "pattern": "P10",
+   "text": "Went through without a roll"
   }
  ]
 }

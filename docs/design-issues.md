@@ -26,7 +26,7 @@ belongs here.
 ### Priority 1: the game breaks or contradicts itself
 
 1. **Arrangement messages never appear.** `src/sim.js` (stage function) compares against `s.arr[k].low`, which is never set, so every `STAGE_LINES` message is skipped, including the only one that names the border post where Esmeralda's officials wait. Likely fix: track the highest step reached and show the message the first time each step is reached.
-2. **Climbing out of house arrest returns you to house arrest.** The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
+2. **Fixed Nov. 1, 2026:** ~~Climbing out of house arrest returns you to house arrest.~~ The climb now adds 4 police attention instead of 8 (see `tools/house-arrest-check.js`). Original note: The climb's win adds 8 police attention to the reset value of 4, so the next hour starts another third stop. It only frees you when police attention was 1 or lower.
 3. **The escape demo stays scripted after it ends.** Leaving or finishing the demo keeps queued dice and Sosā actions and keeps `s.tutorial` set, so the rest of the run has no police stops and no news, and police attention stops at 9. The government demo clears its script; the escape demo does not.
 4. **Naming a town to the minister reveals her real position.** His reply differs depending on whether she is there, with no roll.
 5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta.
@@ -44,6 +44,10 @@ belongs here.
 14. **Events that claim a block the rules do not apply.** The strike and blizzard texts describe a stopped freight and a closed post; neither is blocked. Several "leave" choices ("Slip out now", "Leave the car, take the river") do not move you.
 15. **Her police attention shows on the government side** in the round summary, and her jet's preparation step after a licence review. (The floating number is now hidden.)
 16. **The Esmeralda notices at Susana never clear** after Esmeralda agrees.
+
+26. **Police attention reports disagree within a round.** The move chip, the round summary and the bar can show three different changes (stand-in playtest, moment 6). The summary mixes hourly drift with move effects.
+27. **Holt says "Midnight" whatever the hour.** The freight boards from 10 p.m. to 5 a.m., but his lines say midnight even at 3 a.m. (stand-in playtest, moment 7).
+28. **The demo locks message answers** while the hint tells the player to answer them (stand-in playtest, moment 4).
 
 ### Priority 3: smaller mismatches
 

@@ -283,7 +283,7 @@
      "id": "board_freight",
      "kind": "act",
      "title": "Onto the train",
-     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. The card makes the roll certain, and it is gone once the train leaves Salta.",
+     "body": "Holt's crate works only in the Salta yard, and only at night. Tap **Board the midnight freight**, then **Try it**. The card is gone once the train leaves Salta.",
      "goal": "Spend a card where it counts",
      "highlight": [
       "#approaches"
@@ -301,7 +301,7 @@
      "id": "border",
      "kind": "read",
      "title": "The line",
-     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and crossing there is certain.",
+     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two.",
      "goal": "Know what the three posts mean",
      "highlight": [
       "#approaches",
