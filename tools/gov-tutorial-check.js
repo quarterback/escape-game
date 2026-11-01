@@ -13,7 +13,7 @@ const v = () => Gov.view(g);
 // each act step does exactly what its body tells the player to do
 const actions = {
   minister: () => must(Gov.commit(g, v().messages[0].id, 'ask_time'), 'ask for time'),
-  hold: () => must(Gov.commit(g, 'req:hold'), 'ask Esmeralda'),
+  hold: () => must(Gov.commit(g, 'req:hold'), 'ask Costamar'),
   ban: () => must(Gov.commit(g, 'circulate'), 'circulate'),
   news: () => { if (!v().event) throw new Error('no news waiting at ' + g.c.hour); return must(Gov.commit(g, 'evt:plates'), 'plates'); },
   confirm: () => must(Gov.commit(g, 'req:ban'), 'confirm ban'),

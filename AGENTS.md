@@ -64,11 +64,19 @@ How to work under it:
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
   six-sided scale and `Data.DICE.target` converts them; show targets and
   chances from the view, never a promise that a move will work.
+- **Place names sound like places** you could travel to, and none is named
+  after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
+  place names and ARE NOT named after humans. Do not follow canon to do this, I
+  am the author." Renamed that day: Esmeralda to Costamar (Costamaran), Baca to
+  Cerro Alto, Susana to Portalba, Santa Laura to Pedra Branca, Atlanta to
+  Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
+  Internal ids keep the old names.
+- **The opponent is "the police"**, never Sosā. Owner, Nov. 1, 2026: "no one knows who Sosā is ... it's too confusing for people," then "Just say police or cops, the precision isn't required." Use a plural verb ("the police act once during these three hours"). Where one person is needed, say "the police inspector" (the phone shows "Police"). Internal ids keep `sosa` and `enemy`.
 - **Endings** read "You win" or "You lose", then the reason in a full sentence.
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what
   happens when it runs out." The vocabulary is fixed: the escape deadline
-  (Tuesday 2 p.m.), when Sosā acts again, how long a move takes, and the chance
+  (Tuesday 2 p.m.), when the police act again, how long a move takes, and the chance
   of success. Chance and duration are separate facts on separate lines.
 - **Budgets never beat meaning.** The checks cap buttons at six words and keep
   interface labels to one sentence. When an explanation does not fit, put it in

@@ -36,7 +36,7 @@ D.LEVELS.forEach((L, i) => {
   if (L.received) { add(`level.${L.id}.received.name`, 'action-label', L.received.name, P); add(`level.${L.id}.received.say`, 'action-result', L.received.say, P); }
   if (L.bought) add(`level.${L.id}.bought.say`, 'action-result', L.bought.say, P);
 });
-for (const k in D.DESTS) { const d = D.DESTS[k], s = d.sponsor; add(`dest.${k}.asks`, 'card', s.asks, P); add(`dest.${k}.terms`, 'arrangement-status', s.terms, P); add(`dest.${k}.demand`, 'dialogue', s.demand.text, P, 'sponsor'); add(`dest.${k}.accept`, 'action-label', s.demand.accept, P); add(`dest.${k}.effect`, 'action-preview', s.demand.effect, P); add(`dest.${k}.kept`, 'ending', s.kept, P); add(`dest.${k}.broke`, 'ending', s.broke, P); add(`dest.${k}.landing`, 'ending', d.landing, P); }
+for (const k in D.DESTS) { const d = D.DESTS[k], s = d.sponsor; add(`dest.${k}.asks`, 'card', s.asks, P); add(`dest.${k}.terms`, 'arrangement-status', s.terms, P); add(`dest.${k}.demand`, 'dialogue', s.demand.text, P, 'sponsor'); add(`dest.${k}.accept`, 'action-label', s.demand.accept, P); add(`dest.${k}.effect`, 'action-preview', s.demand.effect, P); add(`dest.${k}.kept`, 'ending', s.kept, P); add(`dest.${k}.wants`, 'card', s.wants, P); }
 for (const k in D.POSTS) add(`post.${k}`, 'navigation-heading', D.POSTS[k], P);
 for (const k in D.STAGE_LINES) D.STAGE_LINES[k].forEach((t, i) => add(`stage.${k}.${i}`, 'dialogue', t, P, k === 'aircraft' || k === 'reception' ? 'sibling' : 'sponsor'));
 for (const k in D.ARRANGEMENTS) { add(`arr.${k}.what`, 'arrangement-status', D.ARRANGEMENTS[k].what, P); D.ARRANGEMENTS[k].stages.forEach((t, i) => add(`arr.${k}.stage.${i}`, 'arrangement-status', t, P)); }

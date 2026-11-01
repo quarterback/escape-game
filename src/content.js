@@ -20,7 +20,9 @@ const Content = (() => {
   for (const e of P.markers.markers) MK[e.code] = e;
   const missing = [];
   const fill = (text, args) => String(text).replace(/\{(\w+)\}/g, (all, k) => (args && args[k] !== undefined && args[k] !== null) ? String(args[k]) : all);
-  function t(id, args) { const e = UI[id]; if (!e) { missing.push(id); return id; } return fill(e.text, args); }
+  // a clock that ends in a.m. or p.m. at the end of a sentence must not print a second period
+  const tidy = (x) => x.replace(/\b([ap])\.m\.\./g, '$1.m.');
+  function t(id, args) { const e = UI[id]; if (!e) { missing.push(id); return id; } return tidy(fill(e.text, args)); }
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   // the only markup content may carry: **bold** and paragraphs separated by a blank line (rule C10)
   function rich(text) { return esc(text).split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join(''); }

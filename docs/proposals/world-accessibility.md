@@ -116,6 +116,8 @@ R1 means round 1 of a normal escape run; "before round 1" means the screens befo
 
 ## 2. Rename
 
+**Decided by the owner, Oct. 31, 2026:** every place sounds like a place, none is named after a person, and canon does not bind the names. Applied: Esmeralda → Costamar (Costamaran), Baca → Cerro Alto, Susana → Portalba, Santa Laura → Pedra Branca, Atlanta → Altamira, Tarun → Ardésia, Zaryanova → Nordavia, Gannibal → Krasnomor. The working proposals below are kept for the record.
+
 Every new name below is a **working proposal** for the owner to accept, change or reject. None is a Nelôxi word; each uses an ordinary descriptive form or a place suffix that English readers already read as a place. Esmeralda, Baca and Susana are recorded as owner canon in the header of src/data.js, and Atlanta, Lāyūna and Gannibal come from the kels canon, so each rename is offered with a fallback that keeps the canon name and fixes the ambiguity with a descriptor.
 
 ### Atlanta (destination country)

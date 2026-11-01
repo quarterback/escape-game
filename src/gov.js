@@ -45,11 +45,13 @@ const Gov = (() => {
   function attach(g) { g._rng = function () { let a = (g._rngState + 0x6D2B79F5) | 0; g._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return g; }
   const roll = (g) => (g._dice && g._dice.length) ? g._dice.shift() : 1 + Math.floor(g._rng() * D.DICE.sides);
   const tgt = (n6) => D.DICE.target(n6), wins = (d, t) => D.DICE.wins(d, t);
+  // a chip inside a longer chip: lowercase only a common first word, never names (Sosā, Costamar, a person)
+  const chipLower = (t) => /^(You|Your|The|A|An|If|Takes|Passport|Moves|Her|Orders|Minister|Roll|Police|Search|Lose|Learn|Reach|Harder|Ban|Post)\b/.test(t) ? t[0].toLowerCase() + t.slice(1) : t;
   const personName = (g, id) => ({ minister: T('gov.name.the_minister'), watch: T('gov.name.the_watch_team'), desk: T('gov.name.the_santa_laura_desk'), rail: T('gov.name.the_railway_contact'), embassy: T('gov.name.the_embassy_in_baca'), aviation: T('gov.name.the_aviation_desk'), enemy: T('gov.name.inspector_sosa'), press: T('gov.name.radi_port_venla') })[id] || S.personName(g.c, id);
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
     const r = { at, source, text, proves, doesnt, hour: (hour === undefined ? g.c.hour : hour) + (delay || 0), misleading: !!misleading, seen: false };
-    if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1)})`, at })); }
+    if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves.replace(/\.$/, '')}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1).replace(/\.$/, '')})`, at })); }
   }
   function release(g, events) { for (const r of g.pending.slice()) if (!r.job && r.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== r); g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: r.source, text: r.text, at: r.at })); } }
 
@@ -86,7 +88,7 @@ const Gov = (() => {
       if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', T('gov.report.a_charter_to_layuna_is', { city: D.DESTS[c.dest].city }), T('gov.report.an_aircraft_is_booked'), T('gov.report.that_she_has_reached_it'), 3, c.hour);
       if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', T('gov.report.visa_issued', { name: D.DESTS[c.dest].name }), T('gov.report.will_receive_her', { name: D.DESTS[c.dest].name }), T('gov.report.where_she_is_now'), 4, c.hour);
       if (e.type === 'enemy' && e.id === 'press_ally' && e.talked) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, T('gov.report.where_she_was_last_seen'), T('gov.inquiry.where_she_is_now'), 0, c.hour); }
-      if (e.type === 'hold') report(g, events, c.pos, 'desk', T('gov.report.a_patrol_report_in', { title: e.title.toLowerCase(), place: place(c.pos) }), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
+      if (e.type === 'hold') report(g, events, c.pos, 'desk', stopReport(e.rung, place(c.pos)), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
       if (e.type === 'over') g.over = e;
     }
   }
@@ -115,23 +117,26 @@ const Gov = (() => {
       if (o.id === 'rail_ask' && g.hand.includes('rail')) continue;
       let bonus = 0; const used = [];
       for (const tag in o.mods) if (m[tag]) { bonus += o.mods[tag]; used.push({ tag, bonus: o.mods[tag] }); }
-      // across the line your ministry commands nothing: a search or a checkpoint in Esmeralda needs the hold
+      // across the line your ministry commands nothing: a search or a checkpoint in Costamar needs the hold
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
       const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
+      // an order with nothing written for failure and a difficulty of 1 (watching the house, following a report) is a choice, not a chance
+      if (o.dc <= 1 && !o.fail) { out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need: null, ok: !why, why, text: o.text, who: T('gov.preview.who_acts', { who: o.who }), pay: false, odds: '', pct: 100, noRoll: true, bonus: [], bonusFrom: [],
+        preview: [o.text, T('sim.preview.no_roll'), T('gov.preview.takes_hour_acts', { who: o.who }), T('gov.preview.cannot_fail')] }); continue; }
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
+        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
   function calls(g) {
     const out = [], c = g.c;
     const add = (id, name, ok, why, hours, preview) => out.push({ kind: 'call', id, name, ok, why, hours, preview });
-    add('req:hold', T('gov.label.ask_esmeralda_to_hold_her'), g.req.hold === 'notyet', g.req.hold === 'promised' ? T('gov.status.asked_the_embassy_has_not') : T('gov.status.esmeralda_has_agreed'), 1, [T('gov.preview.through_the_embassy_in_baca'), T('gov.preview.a_promise_to_consider_a')]);
-    add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six')]);
-    add('req:ban', T('gov.label.confirm_the_travel_ban_reached'), g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? T('gov.why.circulate_the_ban_first') : T('gov.status.confirmed_at_the_post'), 1, ['The post answers in four hours and needs a 2 or more. A sent message does not close the border; a confirmed one does.']);
+    add('req:hold', T('gov.label.ask_esmeralda_to_hold_her'), g.req.hold === 'notyet', g.req.hold === 'promised' ? T('gov.status.asked_the_embassy_has_not') : T('gov.status.esmeralda_has_agreed'), 1, [T('gov.preview.through_the_embassy_in_baca', { need: tgt(4), pct: D.DICE.chance(tgt(4)) }), T('gov.preview.a_promise_to_consider_a')]);
+    add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six', { need: tgt(3), pct: D.DICE.chance(tgt(3)) })]);
+    add('req:ban', T('gov.label.confirm_the_travel_ban_reached'), g.c.flags.restriction && g.req.ban !== 'inhand', !g.c.flags.restriction ? T('gov.why.circulate_the_ban_first') : T('gov.status.confirmed_at_the_post'), 1, [T('gov.preview.the_post_answers', { need: tgt(2), pct: D.DICE.chance(tgt(2)) })]);
     return out;
   }
   function view(g) {
@@ -148,7 +153,7 @@ const Gov = (() => {
         { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: g.req.ban === 'inhand' ? 'inhand' : c.flags.restriction ? 'promised' : 'notyet', sub: g.req.ban === 'inhand' ? T('gov.status.confirmed_the_post_has_her') : c.flags.restriction ? T('gov.status.ban_sent_not_confirmed_at') : T('gov.status.not_sent') },
         { at: 5, title: T('gov.status.esmeraldan_hold'), state: g.req.hold, sub: g.req.hold === 'inhand' ? T('gov.status.esmeralda_has_agreed_to_hold') : g.req.hold === 'promised' ? T('gov.status.asked_through_the_embassy_in') : T('gov.status.not_asked') },
       ],
-      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), g.hand.includes('registry') ? T('gov.status.your_people_the_registry') : T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
+      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
     };
   }
 
@@ -157,6 +162,17 @@ const Gov = (() => {
     const r = _commit(g, id, optionId);
     if (r.ok) (g.actions = g.actions || []).push(optionId === undefined ? [id] : [id, optionId]);
     return r;
+  }
+  // run a police action on her hidden run, and pass on only what the desk can know: the action's own line and a questioned helper's answer.
+  // Her police attention, her jet's progress and her cards never reach the government player (owner, Nov. 1, 2026).
+  // a police stop reported as a sentence, by how far up the ladder it went
+  const stopReport = (rung, p) => T(({ 1: 'gov.report.stop_1', 2: 'gov.report.stop_2', 3: 'gov.report.stop_3' })[rung] || 'gov.report.stop_1', { place: p });
+  function act(g, id, events) {
+    const c = g.c, priv = [], text = S.enemyAct(c, id, priv);
+    for (const e of priv) if (e.type === 'enemy' || (e.type === 'roll' && e.pressed)) events.push(e);
+    const h = priv.find(e => e.type === 'hold'); // a stop the police made is something the investigation has established
+    if (h) report(g, events, c.pos, 'desk', stopReport(h.rung, place(c.pos)), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 0, c.hour);
+    return text;
   }
   function _commit(g, id, optionId) {
     if (g.over || g.c.over) return { ok: false, why: T('sim.why.the_run_is_over') };
@@ -168,9 +184,10 @@ const Gov = (() => {
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: T('sim.why.that_message_is_gone') };
       const chosen = (g.inbox[i].options || []).find(o => o.id === optionId); g.inbox.splice(i, 1); g.answered.push(optionId); events.push(ev('answered', { label: chosen ? chosen.label : optionId }));
-      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } events.push(ev('say', { who: 'minister', text: right ? T('gov.line.good_sosa_has_the_address') : T('gov.line.i_will_say_so_at', { place: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1) }) })); if (!right) { c.belief = g.belief; events.push(ev('enemy', { id: 'claim', text: T('gov.inquiry.the_minister_names_on_the', { place: place(g.belief) }) })); } }
+      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } // the reply and the announcement are the same whether she is there or not: the player learns nothing from them; a wrong claim still sends the police to the wrong stop, unseen
+        events.push(ev('say', { who: 'minister', text: T('gov.line.i_will_say_so_at', { place: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1) }) })); events.push(ev('enemy', { id: 'claim', text: T('gov.inquiry.the_minister_names_on_the', { place: place(g.belief) }) })); if (!right) c.belief = g.belief; }
       if (optionId === 'ask_time') { g.flags.askedTime += 1; g.ministerBy = c.hour + 6; events.push(ev('say', { who: 'minister', text: T('gov.line.six_hours_then_i_want') })); }
-      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: T('gov.line.then_i_will_tell_them') })); S.enemyAct(c, 'press_story', events); }
+      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: T('gov.line.then_i_will_tell_them') })); act(g, 'press_story', events); }
       return done(g, events);
     }
     if (id.startsWith('req:')) {
@@ -184,9 +201,9 @@ const Gov = (() => {
     if (!o.ok) return { ok: false, why: o.why };
     const def = D.GOV_ORDERS.find(x => x.id === id);
     events.push(ev('order', { name: o.name }));
-    // every order rolls the 20-sided die; cards lower the target but never remove the roll
-    const die = roll(g), won = wins(die, o.need);
-    events.push(ev('roll', { die, need: o.need, won, bonus: o.bonusFrom }));
+    // every order with a failure rolls the 20-sided die; cards lower the target but never remove the roll
+    const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.need);
+    events.push(ev('roll', o.noRoll ? { die: null, need: null, won, auto: true, bonus: [] } : { die, need: o.need, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
@@ -195,7 +212,7 @@ const Gov = (() => {
       else if (id === 'rail_ask') { g.hand.push('rail'); report(g, events, 3, 'rail', T('gov.report.holt_greer_took_money_this'), T('gov.report.someone_paid_for_passage'), T('gov.report.that_it_was_her_or'), 0, c.hour); }
       else if (def.act) {
         c.belief = g.belief;
-        const text = S.enemyAct(c, def.act, events);
+        const text = act(g, def.act, events);
         if (id === 'search') { const close = c.pos === g.belief; report(g, events, g.belief, 'desk', close ? T('gov.report.the_patrol_finds_the_room', { place: place(g.belief) }) : T('gov.report.the_patrol_searches_nobody_there', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
         if (id === 'circulate') g.req.ban = 'promised';
       }
@@ -205,7 +222,7 @@ const Gov = (() => {
   function done(g, events) {
     // resolve requests that came due
     for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j); const d = roll(g);
-      if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); S.enemyAct(g.c, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
+      if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); act(g, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
       if (j.job === 'operator') { const ok = wins(d, tgt(3)); g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); }
       if (j.job === 'ban') { const ok = wins(d, tgt(2)); g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? T('gov.line.the_post_confirms_the_sergeant') : T('gov.line.the_sergeant_is_off_shift') })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
@@ -227,7 +244,7 @@ const Gov = (() => {
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push(M('roll', 'roll.need', { need: tgt(fx.roll.need) })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { out.push(M('roll', 'roll.need', { need: tgt(fx.roll.need) })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => chipLower(x.t)).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => chipLower(x.t)).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: hrsText(fx.lead) }) : M('gain', 'lead.real_now'));
     if (fx.false) out.push(M('risk', 'lead.false'));
@@ -279,7 +296,7 @@ const Gov = (() => {
     if (fx.dc) g.dcMods.push({ delta: fx.dc[0], until: c.hour + fx.dc[1] });
     if (fx.minister) g.standing += fx.minister;
     if (fx.sooner) g.ministerBy = Math.max(c.hour, g.ministerBy - fx.sooner);
-    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; S.enemyAct(c, fx.act, events); report(g, events, g.belief, 'enemy', close ? T('gov.report.sosa_finds_fresh_tracks_at', { place: place(g.belief) }) : T('gov.report.sosa_finds_nothing_at', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
+    if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; act(g, fx.act, events); report(g, events, g.belief, 'enemy', close ? T('gov.report.sosa_finds_fresh_tracks_at', { place: place(g.belief) }) : T('gov.report.sosa_finds_nothing_at', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
     if (fx.false) falseLead(g, events);
     if (fx.lead !== undefined) trueLead(g, events, fx.lead);
     if (fx.hours) pass(g, events, fx.hours);

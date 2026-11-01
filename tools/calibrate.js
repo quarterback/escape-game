@@ -33,7 +33,7 @@ function play(seed, who) {
   }
   if (!s.over) throw new Error('stuck seed ' + seed + ' ' + JSON.stringify({ hour: s.hour, pos: s.pos, ev: s.event }));
   lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour);
-  return { cards, lvlHours, win: s.over.win, reason: s.over.win ? 'win' : s.over.kind === 'clock' ? 'clock' : s.over.kind === 'deal' ? 'deal' : s.over.kind === 'landed' ? 'landed' : 'house arrest', holds: s.holds, hour: s.hour, exposure: s.exposure, used, arr: Object.fromEntries(Object.entries(s.arr).map(([k, v]) => [k, v.stage])) };
+  return { cards, lvlHours, win: s.over.win, reason: s.over.win ? 'win' : s.over.kind === 'clock' ? 'clock' : s.over.kind === 'deal' ? 'deal' : 'house arrest', holds: s.holds, hour: s.hour, exposure: s.exposure, used, arr: Object.fromEntries(Object.entries(s.arr).map(([k, v]) => [k, v.stage])) };
 }
 for (const who of ['woman', 'man']) {
   const rows = []; for (let i = 1; i <= N; i++) rows.push(play(i, who));
