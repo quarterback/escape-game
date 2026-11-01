@@ -300,7 +300,7 @@ const Render = (() => {
     X.dieNum.text = String(face);
     const pop = settled ? 1 + 0.18 * Math.max(0, 1 - (d.t - 1 / 3) * 6) : 1;
     X.die.position.set(CW / 2, CH / 2 - 34); X.die.rotation = settled ? 0 : Math.sin(now / 45) * 0.35; X.die.scale.set(pop);
-    X.dieNeed.text = ''; // the die shows what you rolled, never the target X.dieNeed.position.set(0, S / 2 + 10);
+    X.dieNeed.text = '';
   }
   function drawFloats(dt) {
     for (const f of view.floats) {
@@ -348,7 +348,7 @@ const Render = (() => {
     if (view.fade > 0) { ctx.fillStyle = `rgba(8,8,14,${0.92 * view.fade})`; ctx.fillRect(0, 0, CW, CH); }
     ctx.font = `22px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
     for (const fl of view.floats) { ctx.fillStyle = fl.color; ctx.fillText(fl.text, fl.x, fl.y - (fl.t / fl.life) * 36); }
-    if (view.die) { const d = view.die, k = Math.min(1, d.t * 3), face = k < 1 ? 1 + (Math.floor(now / 50) % 20) : d.die; ctx.fillStyle = k < 1 ? '#f6f1ff' : d.won ? '#3bd15e' : '#ff4d6d'; ctx.fillRect(CW / 2 - 28, CH / 2 - 62, 56, 56); ctx.fillStyle = '#150f2e'; ctx.font = `28px ${FONT}`; ctx.textBaseline = 'middle'; ctx.fillText(String(face), CW / 2, CH / 2 - 34); }
+    if (view.die) { const d = view.die, k = Math.min(1, d.t * 3), face = k < 1 ? 1 + (Math.floor(now / 50) % 20) : d.die; ctx.fillStyle = k < 1 ? '#f6f1ff' : d.won ? '#3bd15e' : '#ff4d6d'; ctx.fillRect(CW / 2 - 28, CH / 2 - 62, 56, 56); ctx.fillStyle = '#150f2e'; ctx.font = `28px ${FONT}`; ctx.textBaseline = 'middle'; ctx.fillText(String(face), CW / 2, CH / 2 - 34); ctx.font = `18px ${FONT}`; ctx.fillStyle = '#f6f1ff'; void 0; }
     if (view.detain && view.detain.k > 0.5) { const t = T(DETAIN_TEXT[view.detain.kind] || DETAIN_TEXT.questioned), vb = visibleBox(X.c2); ctx.font = `24px ${FONT}`; const w = ctx.measureText(t).width + 36, cx = (vb.x0 + vb.x1) / 2; ctx.fillStyle = '#ff7a90'; ctx.fillRect(cx - w / 2, CH * 0.3 - 24, w, 48); ctx.fillStyle = '#2a0610'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, CH * 0.3); }
     const h = !busy() ? hover : null;
     if (h) { ctx.font = `18px ${FONT}`; const w = ctx.measureText(h.label).width + 20, vb = visibleBox(X.c2), tx = Math.min(vb.x1 - w - 8, Math.max(vb.x0 + 8, h.x + h.w / 2 - w / 2)), ty = Math.max(vb.y0 + 6, h.y - 44); ctx.fillStyle = 'rgba(12,12,20,0.95)'; ctx.fillRect(tx, ty, w, 34); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(h.label, tx + 10, ty + 17); }

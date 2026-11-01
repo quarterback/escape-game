@@ -562,7 +562,7 @@ const UI = (() => {
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
     card.className = 'roll';
-    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
+    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.done')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span>` : `<span class="outcome ok">${T('result.done')}</span>`;
     const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
     card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
     if (next) { const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b); }
@@ -608,7 +608,7 @@ const UI = (() => {
         case 'belief': if (!gov) bucket.push({ k: e.belief === s.pos ? 'enemy' : 'gain', t: e.belief === s.pos ? T('sum.search_here') : T('sum.search_elsewhere') }); break;
         case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
-        case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
+        case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: gov ? e.text : enemyShort(e) }); break;
         case 'hold': r.theirs.push({ k: 'enemy', t: T('sum.hold', { title: e.title }) }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: e.id === 'rumor' ? T('sum.news_rumor', { name: e.title }) : T('sum.news', { title: e.title }) }); break;
@@ -642,7 +642,7 @@ const UI = (() => {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: inSentence(e.name) })), 'sys'); } }); break;
         case 'roll': if (!e.who && e.auto) { Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.no_roll')), 'roll'); } }); }
-                     else if (!e.who) { Render.dice(e.die, e.need, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
+                     else if (!e.who) { Render.dice(e.die, null, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
         // her number stays hidden on the government side
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;

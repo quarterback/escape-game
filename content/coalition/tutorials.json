@@ -133,9 +133,9 @@
     {
      "id": "die",
      "kind": "read",
-     "title": "Cards help you",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the police are still searching the residence.",
-     "goal": "See how cards help your moves",
+     "title": "Cards",
+     "body": "Cards make moves easier, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the police are still searching the residence.",
+     "goal": "See how cards help a move",
      "highlight": [
       "#scene"
      ]
@@ -268,7 +268,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "A crate from Holt",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card makes this easier. Never pay the yardmaster. He takes the money and tells the yard who you are, and your police attention rises by two.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck helps here.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -314,8 +314,8 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it, and the party machine lowers the number you need. The travel ban and your well-known face each raise it.",
-     "goal": "See how the ban makes crossing harder",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
+     "goal": "See what the ban costs you at the line",
      "highlight": [
       "#approaches"
      ],
@@ -521,7 +521,7 @@
      "kind": "read",
      "title": "The rest is yours",
      "goal": "Play on without the guide",
-     "body": "From here the die and the news are no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
+     "body": "From here the game is no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
      "highlight": [
       "#approaches",
       "#calls"

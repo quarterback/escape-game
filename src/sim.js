@@ -98,7 +98,7 @@ const Sim = (() => {
       msg(s, events, 'sibling', T('sim.line.jet_found_in_susana_the'), [
         { id: 'confirm_dest', label: T('sim.opt.confirm_destination', { city: dest(s).city }), hours: 0, effect: T('sim.effect.crew_booking_can_proceed', { city: dest(s).city }) },
         { id: 'wait_sponsor', label: T('sim.opt.wait_until_salek_answers', { sponsor: sponsor(s).short }), hours: 0, effect: T('sim.effect.crew_booking_waits_until_salek', { sponsor: sponsor(s).short }) },
-        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { need: tgt(D.PEOPLE.sibling.reliability), place: ch(s).sibling.short }) },
+        { id: 'delegate_sibling', label: T('sim.opt.let_decide', { place: ch(s).sibling.short }), hours: 0, effect: T('sim.effect.needs_roll_to_confirm', { place: ch(s).sibling.short }) },
       ]);
     }
     if (s.pos === 1) {
@@ -183,7 +183,7 @@ const Sim = (() => {
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
       if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
-      else if (a.success && a.success.advance && !a.success.advance.some(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1)) whys.push(T('sim.why.nothing_left_to_move'));
+      else if (a.success && a.success.advance && !a.success.advance.some(k => canMove(s, k))) whys.push(T('sim.why.nothing_left_to_move'));
       if (s.event) whys.unshift(s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first'));
       if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(T('sim.why.you_cut_off', { name: personName(s, a.with) }));
       else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(T('sim.why.talked_to_the_inquiry', { name: personName(s, a.with) }));
@@ -200,11 +200,11 @@ const Sim = (() => {
       if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresā's face
       // no failure written, or Vélez's officials walk you through: commit() never rolls these
       const free = !!a.noRoll || escorted;
-      const need = tgt(dc - bonus), pct = free ? 100 : D.DICE.chance(need); // the 20-sided target and its chance in percent
+      const real = tgt(dc - bonus); // the target the roll uses; it never reaches the view, because the player is told no odds (owner, Nov. 1, 2026)
       if (free) why.length = 0;
       if (escorted) why.push(T('sim.preview.escorted'));
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
-        odds: free ? '' : pct ? `${pct}%` : 'impossible', pct, need: free ? null : need, dc, noRoll: free, bonusFrom: escorted ? [] : used.map(u => u.tag), bonus: escorted ? [] : used, pay: !!a.pay,
+        odds: '', real: free ? null : real, dc, noRoll: free, bonusFrom: escorted ? [] : used.map(u => u.tag), bonus: escorted ? [] : used, pay: !!a.pay,
         // owner, Nov. 1, 2026: no odds before a move, only what you rolled after it
         preview: [a.text].concat(why, [T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })]) });
     }
@@ -221,7 +221,7 @@ const Sim = (() => {
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
       if (s.event) whys.unshift(T('sim.why.answer_the_news_first'));
       out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: ally === 'sibling' ? T('phone.your_sibling') : personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
-        preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally), turned: Math.min(20, tgt(D.PEOPLE[ally].reliability + (s.people[ally].turned ? 6 : 0) - (s.people[ally].trust >= 2 ? 1 : 0))) })] });
+        preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally) })] });
     };
     add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),
       T('sim.status.arrange_the_next_stage_charter'));
@@ -322,7 +322,7 @@ const Sim = (() => {
       { id: 'test', label: T('sim.opt.test_them_quietly', { first }), fx: { hours: 2, test: e.who } },
       { id: 'cut', label: T('sim.opt.cut_them_off', { first }), fx: { cut: e.who } } ] }; }
     else def = D.EVENTS.find(x => x.id === e.id);
-    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, tags: fxTags(s, c.fx) }; }) };
+    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, rolls: !!(c.fx && c.fx.roll), tags: fxTags(s, c.fx) }; }) };
   }
   function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, label: c.label, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; return D.EVENTS.find(x => x.id === v.id); }
   function resolveEvent(s, choiceId, events) {
@@ -392,7 +392,8 @@ const Sim = (() => {
     // every move rolls the 20-sided die, except the few with no failure written; cards lower the target but never remove the roll
     let won;
     if (a.noRoll) { won = true; events.push(ev('roll', { die: null, need: null, won, auto: true, bonus: [] })); }
-    else { const die = roll(s); won = wins(die, view.need); events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom })); }
+    // hard is read by the tests only; no screen shows a target
+    else { const die = roll(s); won = wins(die, view.real); events.push(ev('roll', { die, won, bonus: view.bonusFrom, hard: view.real > 6 })); }
     const bought = won && a.post && a.post === s.boughtPost; // the Valdórian side lets you through and the bought Costamaran post turns you back
     if (bought) events[events.length - 1].bought = true;
     apply(s, won ? (bought ? Object.assign({}, a.success, { say: '' }) : a.success) : a.fail, events, a);
@@ -419,7 +420,7 @@ const Sim = (() => {
     else if (a && a.id === 'help_host' && fx === a.fail) say(events, 'host', T('sim.line.nona_truck_late'), true);
     else {
       // a move that advances arrangements says only what really moved
-      const movable = fx.advance ? fx.advance.filter(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1) : null;
+      const movable = fx.advance ? fx.advance.filter(k => canMove(s, k)) : null;
       say(events, 'narrator', movable && movable.length < fx.advance.length ? T('sim.say.calls_moved_some', { list: movable.map(k => D.ARRANGEMENTS[k].name).join(', ') }) : fx.say);
     }
     if (fx.exposure) heat(s, fx.exposure, events);
@@ -427,16 +428,28 @@ const Sim = (() => {
     if (fx.card) gain(s, fx.card, events);
     if (fx.trust) { s.people[fx.trust].trust += 1; events.push(ev('trust', { who: fx.trust, trust: s.people[fx.trust].trust, delta: 1 })); }
     if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
-    if (fx.advance) for (const k of fx.advance) stage(s, k, s.arr[k].stage + 1, events);
+    if (fx.advance) for (const k of fx.advance) if (canMove(s, k)) { stage(s, k, s.arr[k].stage + 1, events); if (k === 'permission' && s.arr.permission.stage === 1) s.flags.destination = true; }
   }
   function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || s.used.includes(id)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
   function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }
   function heat(s, d, events) { s.exposure = Math.max(0, Math.min(EXPOSURE_LIMIT, s.exposure + d)); events.push(ev('exposure', { delta: d, exposure: s.exposure })); }
+  // an arrangement can move one step only where the same step through an ally could (resolveJob):
+  // the visa is issued only by a country that accepts you, and the crew confirms only once the jet has a destination
+  function canMove(s, k) {
+    const to = s.arr[k].stage + 1;
+    if (to > D.ARRANGEMENTS[k].stages.length - 1) return false;
+    if (k === 'permission' && to === 2 && !dest(s).accepts) return false;
+    if (k === 'aircraft' && to === 2 && !s.flags.destination && s.arr.permission.stage < 1) return false;
+    return true;
+  }
   function stage(s, k, to, events) {
     const def = D.ARRANGEMENTS[k]; to = Math.max(0, Math.min(def.stages.length - 1, to));
-    if (to === s.arr[k].stage) return; s.arr[k].stage = to;
-    events.push(ev('stage', { arr: k, stage: to, label: def.stages[to] }));
-    let line = (D.STAGE_LINES[k] || [])[to]; if (line) line = line.replace('{post}', postName(s.escortPost)).split('{sponsor}').join(sponsor(s).short).replace('{city}', dest(s).city); if (line && to > s.arr[k].low) say(events, k === 'aircraft' || k === 'reception' ? 'sibling' : 'sponsor', line);
+    const was = s.arr[k].stage; if (to === was) return; s.arr[k].stage = to;
+    // the progress message plays only when the arrangement moves forward; the sibling speaks for the jet and the welcome, the narrator for the visa
+    let line = (D.STAGE_LINES[k] || [])[to]; if (line) line = line.replace('{post}', postName(s.escortPost)).split('{sponsor}').join(sponsor(s).short).replace('{city}', dest(s).city);
+    const who = k === 'permission' ? 'narrator' : 'sibling', said = line && to > was ? line : '';
+    events.push(ev('stage', { arr: k, stage: to, label: def.stages[to], line: said, who }));
+    if (said) say(events, who, said);
     if (k === 'reception' && to >= 2) gain(s, 'intro_vel', events);
     if (k === 'permission' && to === 1) gain(s, 'sponsor_line', events);
   }

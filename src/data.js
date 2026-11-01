@@ -498,7 +498,8 @@ const Data = (() => {
     sides: 20,
     target: (n6) => n6 > 6 ? 21 : Math.min(20, Math.max(2, Math.round(21 - 20 * (7 - n6) / 6))),
     wins: (d, t) => t <= 20 && (d === 20 || (d !== 1 && d >= t)),
-    chance: (t) => t > 20 ? 0 : (21 - Math.max(2, t)) * 5, // percent
+    chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
+    shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
   return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();

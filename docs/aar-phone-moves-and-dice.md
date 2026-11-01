@@ -58,3 +58,19 @@ Saved runs load unchanged; nothing in the state changed. A player at a stop no l
 - The owner plays a run on the phone and says whether the "Next" line tells him enough now that the cards say nothing about requirements.
 - Any new move text belongs in the briefing, the help or the result, never on the move card.
 - When a check needs an older build, use a separate worktree, not `git stash`, so a running browser check keeps its page.
+
+## Addendum: merging PR #31
+
+The owner asked for a pull request and a check of the open ones for conflicts. PR #30 (this branch) merged cleanly into main. PR #31 (`claude/language-pass`, another session) conflicted with main in seven files and with #30 in 10. It was branched before #27 merged, so its version of `sim.js` still carried the Monday noon passport rule that step 3a removed, and its lines still said "Sosā".
+
+Both PRs removed the odds independently. The agent merged #31 into this branch so that #30 carries both:
+
+- **Taken from #31:** "Call your contacts" follows the visa rules and is offered only while something can move. Progress messages play on the result card in the speaker's words. The view carries the roll's target as `real` instead of `need` or a percent. Tests C16, C18 and C19 came over: no view, chip or catalog line carries a target, no text says in advance that a move will work, and no bot reads a display chip. Calls and ally replies no longer say "the call can fail". The tutorial lines that talked about "the number you need" were replaced with #31's wording, in police terms.
+- **Kept from this branch:** the move list and cards, the 20-sided rules and every rule decision since #31 branched, "the police" throughout, and "You rolled 14" after a roll. The C18 label test is now C20.
+- **Changed on merge:** the Salta tutorial step no longer says "Never pay the yardmaster", because #31's C18 enforces the owner's "Do not ever say what can succeed or not." C16 ignores "police attention is 7 or higher", which is a rule about attention, not a die target.
+
+**Conflict between the two PRs' owner instructions:** #31 removed "You rolled N" from results under "Get rid of 'the die decides it' or any superfluous language". The owner told this session "just let me see what I rolled". The merge keeps "You rolled N"; the owner should confirm.
+
+**Calibration after the merge, 300 runs:** Teresā 44.3% (was 44.7%), Matēu 39.3% (was 40.7%); government side 55.5% (200 runs). The change comes from #31's contacts-call rule and its bots reading facts, not from this branch.
+
+**Checks:** content check, both demo replays, contract tests (C03 to C20), house-arrest check and pbbg-check pass. Phone audit found no issues; both demos play to the end in the browser with no errors.

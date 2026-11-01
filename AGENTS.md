@@ -70,12 +70,16 @@ How to work under it:
   A person's tag appears only as a warning (doubted, or talked to the police).
   What to do next belongs in the "Next" line, the briefing and the help.
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
-  six-sided scale and `Data.DICE.target` converts them. Owner, Nov. 1, 2026:
-  "Do not keep the chance! It goes! No roll anything, just let me see what I
-  rolled." Never show a target, a chance or a die badge before the player acts,
-  on moves, orders, calls or news choices. After the roll, show what was rolled
-  ("You rolled 14") and the outcome. Situation lines without numbers stay
-  ("A police checkpoint here makes this harder until 8 a.m.").
+  six-sided scale and `Data.DICE.target` converts them. **The player is never
+  told a target, a chance, or whether a move can succeed.** Owner, Nov. 1, 2026:
+  "No move should ever tell you odds or likelihood anywhere in the game," "Do not
+  ever say what can succeed or not," and "Do not keep the chance! It goes! No roll
+  anything, just let me see what I rolled." Never show a target, a chance or a die
+  badge before the player acts, on moves, orders, calls or news choices. After the
+  roll, show what was rolled ("You rolled 14") and the outcome. The view's `real`
+  target exists only for the roll, the bots and the tests (contract test C16 fails
+  the build if a view, chip, preview or catalog line carries one). A move that
+  cannot be won looks like any other move and loses on the table.
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
   place names and ARE NOT named after humans. Do not follow canon to do this, I

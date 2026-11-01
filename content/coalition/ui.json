@@ -959,36 +959,32 @@
   {
    "id": "log.pressed_holds",
    "pattern": "P10",
-   "text": "The police question {name}, and with a roll of {die}, {name} says nothing.",
+   "text": "The police question {name}, who says nothing.",
    "args": [
-    "name",
-    "die"
+    "name"
    ]
   },
   {
    "id": "log.pressed_breaks",
    "pattern": "P10",
-   "text": "The police question {name}, and with a roll of {die}, {name} talks.",
+   "text": "The police question {name}, who talks.",
    "args": [
-    "name",
-    "die"
+    "name"
    ]
   },
   {
    "id": "log.ally_delivers",
    "pattern": "P10",
-   "text": "The die showed {die} for {name}, so the step comes through.",
+   "text": "{name} comes through, and the step moves forward.",
    "args": [
-    "die",
     "name"
    ]
   },
   {
    "id": "log.ally_not_yet",
    "pattern": "P10",
-   "text": "The die showed {die} for {name}, so nothing comes of it and you have to call again.",
+   "text": "{name} has nothing yet, so you have to call again.",
    "args": [
-    "die",
     "name"
    ]
   },
@@ -1921,11 +1917,11 @@
   {
    "id": "sim.preview.next_reply_in_hours_needs",
    "pattern": "P03",
-   "text": "{name} works on the next step, {stage}, and answers {k} hours after the call. The call can fail.",
+   "text": "{name} works on the next step, {stage}, and answers {k} hours after the call.",
    "args": [
-    "name",
     "stage",
-    "k"
+    "k",
+    "name"
    ]
   },
   {
@@ -2835,7 +2831,7 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "The desk answers six hours after your call. If it agrees, you get the operator card.",
+   "text": "The desk answers six hours after your call. If it agrees, it gives you the operator card.",
    "role": "gov"
   },
   {
@@ -3389,7 +3385,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} tries to pick the city for you. If that fails, you cannot call about the jet for six hours.",
+   "text": "{place} picks the city for you if the call goes well. If it does not, you cannot call about the jet for six hours.",
    "args": [
     "place"
    ]
@@ -4516,12 +4512,12 @@
   {
    "id": "sim.why.nothing_left_to_move",
    "pattern": "P04",
-   "text": "Everything these calls could move is already done."
+   "text": "These calls cannot move anything right now."
   },
   {
    "id": "sim.say.calls_moved_some",
    "pattern": "P03",
-   "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
+   "text": "Three hours later, these arrangements have moved one step: {list}. The others did not move.",
    "args": [
     "list"
    ]
@@ -4529,7 +4525,7 @@
   {
    "id": "gov.preview.the_post_answers",
    "pattern": "P03",
-   "text": "The post answers four hours after your call. If it confirms, you know the post has the ban, which is in force either way."
+   "text": "The post answers four hours after your call. The ban is in force either way, and this tells you the post has it."
   },
   {
    "id": "card.counts_for",
@@ -4709,6 +4705,15 @@
    "id": "sim.preview.escorted",
    "pattern": "P03",
    "text": "Costamaran officials are waiting for you at this post, so you walk straight through."
+  },
+  {
+   "id": "sum.stage_said",
+   "pattern": "P10",
+   "text": "{who} says, \"{line}\"",
+   "args": [
+    "who",
+    "line"
+   ]
   }
  ]
 }

@@ -183,3 +183,42 @@ The renames went into player text, demos, the map label, the about page and the 
 ## Follow-up: "your sibling" (owner, Nov. 1, 2026)
 
 "Call your sibling instead of call Duartē, this way it works for either character." Calls to the sibling now read "Your sibling about the jet" on the call row, "Call your sibling about the jet" in disabled rows and in the log, and "Call your sibling about the jet next" in the briefing. The demo steps name the same row. Dialogue and narration still use the sibling's name.
+
+## Third round, Nov. 1, 2026: the last three
+
+**Owner's instruction:** fix "Call your contacts" so it cannot issue a visa for a destination that refuses the player; keep "This cannot succeed" for the cancelled passport, since success is impossible, and never show on screen where anything will succeed; make the existing progress messages appear through the current result card.
+
+- **"Call your contacts"** now obeys the rules an ally's reply already follows (`canMove` in `src/sim.js`): the visa is issued only by a country that accepts you, and the crew confirms only once the jet has a city. The move is offered only while something can move, and its result names what moved. Calibration is unchanged for accepting destinations (46.7% and 42.3%); to a refusing country, nobody wins before or after, as the rules intend.
+- **"This cannot succeed"** stays on the cancelled passport and on paying the yardmaster, because those rolls cannot be won. The yardmaster's move text no longer forecasts the outcome (changed in the second round); its chance line, which is live game state, still shows.
+- **Progress messages.** The messages written for each arrangement step play whenever the step moves forward, and the result card shows them: the sibling speaks for the jet and the welcome, the narrator reports the visa. Before, the code compared against a value that was never set, so none ever played.
+- Checks: content check 0 errors; contract tests, both demos, pbbg-check pass; a phone-width browser run showed the sibling's jet line on screen.
+
+**Contrast check, final run:** 2,157 text checks pass and all 32 text-over-picture checks pass. The help notice failure from the first run (text caught mid-fade at 1.08:1) is fixed; the notice slides in at full contrast. The remaining two failures are a disabled call row measured while the whole panel is dimmed to 55% during the dice animation (`body.busy`), a rule older than this branch; at rest the same text measures above 4.5:1. Left as is, since the dimming is outside this PR, and recorded here.
+
+## Fourth round, Nov. 1, 2026: no odds anywhere
+
+**Owner, in two messages:** "Do not ever say what can succeed or not; they never state why; it's bad game design," and then "No move should ever tell you odds or likelihood anywhere in the game."
+
+I had kept "This cannot succeed" on two moves because it was true. That was the wrong test. Telling the player the outcome before they choose, true or not, takes the decision away from them. The second message widened it: the shown target and the percentage are the same tell in numbers.
+
+**What changed (display only; the simulation is untouched):**
+- Move cards show the name, the time, who helps and a blank 20-sided die. No "Roll 11 or higher", no "50% chance", no number on the badge, no "needs 8" over the rolling die.
+- Results and logs say what the die landed on and what happened: "You rolled 15, and a friend in the inquiry made it easier. It worked." "You rolled 7. It failed."
+- News-choice chips say "The die decides it" instead of a target. Ally and government request previews say what happens if the call goes well, with no number.
+- The demos no longer tell the player to read the roll, or that a card "lowers the number you need".
+- A move that cannot be won (the cancelled passport, paying the yardmaster) looks like any other move. The yardmaster lost all 200 test rolls, including twenties.
+- The view no longer carries `need`, `odds` or `pct` at all. The hidden `real` target is read only by the roll, the computer-played candidate, the calibration bots and the tests.
+
+**Tests.** C16's two display checks inverted: they now fail if any view, chip, preview or catalog line carries a target, a percentage or "or higher", and separately confirm every roll still uses the hidden target. C18 scans all player text for forecasts ("cannot succeed", "guaranteed", "never pay", "0% chance").
+
+**Checks:** content check 0 errors; all contract tests, both demos, the house arrest check and pbbg-check pass. Calibration is identical to the digit (46.7%, 42.3%, 46.5%), which is the proof this touched nothing but what the player sees. A phone-width run read correctly end to end.
+
+**What went wrong:** I put a trailing `//` comment on a line with a closing brace for the third time this week. The build's parse step caught it before C17 could. The rule for me is now simple: comments go on their own line, always.
+
+## Fifth round, Nov. 1, 2026: no leftover mechanics talk
+
+**Owner:** "Get rid of 'the die decides it' or any superfluous language against the rules."
+
+"The die decides it" was a placeholder where a number used to be. So were "There is no roll for this", "No roll was needed" and "Went through without a roll". None told the player anything about the story or what changed. All gone. The result card shows Success, Failed, Done or Turned back, and the log says "It worked." or "It failed." The die on the table already shows its number, so the prose no longer repeats it. The helper notice reads "Easier with a friend in the inquiry." Ally replies say what happened ("Duartē comes through, and the step moves forward"). Demo titles and goals no longer mention the die.
+
+**What went wrong, and it mattered.** Removing the news chip moved calibration by a point (46.7% to 47.7%). The test bot *and the computer-played candidate on the government side* were scoring news choices by counting display chips, so a label was carrying a rule. Both now read the fact from the view (`rolls`), and calibration is back to the digit: 46.7%, 42.3%, 46.5%. Test C19 fails the build if any bot reads a roll from a chip again. I also put a trailing comment on a code line for the fourth time; the parse step caught it. Comments go above the line, with no exceptions.
