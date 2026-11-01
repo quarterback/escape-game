@@ -87,3 +87,17 @@ demo. He reported four problems:
 - **Hang up in the demo.** The Hang up button stays bright green during demo
   steps that ask for something else. Whether it should be disabled there has
   not been checked.
+
+## Revised the same day: demo change withdrawn
+
+The owner then asked for onboarding rebuilt around learning by doing, and
+ruled out solving it with more explanatory copy. Folding the reading steps
+into the action cards made each card longer, so that change is withdrawn
+from this PR: `tutorials.json` is back to `main`.
+
+Kept from the demo work:
+- the round briefing stays hidden while the coach guides;
+- the escape replay is keyed by step id.
+
+The guided first-play sequence will be proposed separately, after a
+first-play observation.
