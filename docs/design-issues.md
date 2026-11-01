@@ -47,6 +47,9 @@ belongs here.
 
 ### Priority 3: smaller mismatches
 
+24. **Cancelling her own passport does nothing by itself.** `src/sim.js` checks a move called `own_passport` that does not exist; only the travel ban and the station stop change at the passport deadline.
+25. **Hang up stays bright during demo steps** that ask for something else; check whether the demo should disable it.
+
 17. The freight boards from 10 p.m. to 5 a.m., though the story says midnight.
 18. The vehicle bonus at Ālto Verdē can never apply; no vehicle card counts at the border.
 19. "A report held one day" never expires.

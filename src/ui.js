@@ -409,13 +409,16 @@ const UI = (() => {
       { k: 'permission', full: 2, name: T('brief.need_visa'), note: T('brief.visa_note') },
       { k: 'reception', full: 3, name: T('brief.need_reception'), note: T('brief.reception_note') },
     ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
+    if (s.flags.cancelled) out.story.push(T('sim.inquiry.monday_noon_your_own_passport'));
     out.job.push(L.objective);
     const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
     const calls = Sim.actions(s).calls.filter(c => c.ok);
     const call = order.map(k => calls.find(c => c.arr === k)).find(Boolean);
     if (call) out.job.push(T('brief.phone_suggest', { call: call.name }));
+    // two deadlines, each with its own consequence: the escape deadline, then the court's passport deadline
     out.stats = [
       { big: String(Math.max(0, Sim.HOURS_TOTAL - s.hour)), text: T('brief.hours_escape') },
+      ...(s.flags.cancelled ? [] : [{ big: String(Math.max(0, s.deadline - s.hour)), text: T('brief.passport_deadline', { time: Sim.clockText(s.deadline) }) }]),
       { big: `${s.exposure}/${Sim.EXPOSURE_LIMIT}`, text: T('brief.police_attention', { n: s.exposure, max: Sim.EXPOSURE_LIMIT }), bar: [s.exposure, Sim.EXPOSURE_LIMIT] },
     ];
     out.marks = { 5: [['jet', T('brief.jet')]] };
@@ -434,6 +437,7 @@ const UI = (() => {
       { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
     out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
     out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
+    if (!c.flags.cancelled) out.stats.push({ big: String(Math.max(0, c.deadline - c.hour)), text: T('brief.passport_deadline_gov', { time: Sim.clockText(c.deadline) }) });
     if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push({ big: short(v.ministerBy), text: T('brief.minister_expects', { time: Sim.clockText(v.ministerBy) }) });
     out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
     if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
@@ -448,6 +452,7 @@ const UI = (() => {
   }
   function showBrief() {
     if (!s || s.over) return;
+    if (Tutorial.active()) return; // the demo teaches by playing: the coach card guides each step instead of a briefing to read first
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });

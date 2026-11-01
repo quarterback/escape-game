@@ -33,39 +33,10 @@
    "events": false,
    "steps": [
     {
-     "id": "intro",
-     "kind": "read",
-     "title": "Your first run",
-     "body": "You are Teresā Albukerkē, and you lost the election. You have 72 hours to reach a jet and get out. This demo walks you across the border, and you play the airfield on your own.",
-     "goal": "Know the goal and the deadline",
-     "highlight": []
-    },
-    {
-     "id": "map",
-     "kind": "read",
-     "title": "Reading the scene",
-     "body": "The gold dot over your head is you, and the box in the corner names the place Sosā is searching. While he searches where you are, your police attention climbs, and at 10 the police stop you. Each stop within 12 hours of the last is worse, and the third step is house arrest.",
-     "goal": "Read police attention and where Sosā is searching",
-     "highlight": [
-      "#scene",
-      "#heat"
-     ]
-    },
-    {
-     "id": "phases",
-     "kind": "read",
-     "title": "A round",
-     "body": "Every round goes News, Phone, Move, Roll, then Sosā. Answer your phone, make one call, make one move, and see what it cost you.",
-     "goal": "Know the five phases",
-     "highlight": [
-      "#phasebar"
-     ]
-    },
-    {
      "id": "answer_brother",
      "kind": "act",
      "title": "Your brother is on the phone",
-     "body": "Duartē has found a jet, but the crew will not book without a destination. Tap **Confirm Lāyūna**. The demo picked it for you.",
+     "body": "You are Teresā Albukerkē. You lost the election, and you have 72 hours to fly out of the country. Duartē has found a jet, but the crew will not book without a destination. Tap **Confirm Lāyūna**. The demo picked it for you.",
      "goal": "Answer a message",
      "highlight": [
       "#inbox"
@@ -83,7 +54,7 @@
      "id": "call_aircraft",
      "kind": "act",
      "title": "Call about the jet",
-     "body": "Tap **Duartē Albukerkē about the jet**, then **Call**. The call takes an hour, and his answer comes six hours after that.",
+     "body": "Tap **Duartē Albukerkē about the jet**, then **Call**. The call takes an hour, and his answer comes six hours after that. The route shows when he owes you an answer, and if he fails, you call again.",
      "goal": "Start an arrangement by phone",
      "highlight": [
       "#calls"
@@ -98,21 +69,10 @@
      }
     },
     {
-     "id": "promise",
-     "kind": "read",
-     "title": "A promise is not a plane",
-     "body": "The route shows when Duartē owes you an answer, but he still has to come through. If he fails, you call again.",
-     "goal": "Tell a promise from a delivered arrangement",
-     "highlight": [
-      "#board",
-      "#rail"
-     ]
-    },
-    {
      "id": "leave_house",
      "kind": "act",
      "title": "Get out of the house",
-     "body": "Pick **Decoy convoy**, read the time and the roll it needs, then tap **Try it**. You can do this because Nando gave you the cars.",
+     "body": "The gold dot is you, and the box in the corner names the place Sosā is searching. While he searches where you are, your police attention climbs, and at 10 the police stop you. Each stop within 12 hours of the last is worse, and the third is house arrest. Pick **Decoy convoy**, read the time and the roll it needs, then tap **Try it**. You can do this because Nando gave you the cars.",
      "goal": "Read a move before committing",
      "highlight": [
       "#approaches"
@@ -127,30 +87,10 @@
      }
     },
     {
-     "id": "die",
-     "kind": "read",
-     "title": "Cards and the die",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up, and a card that gets you onto the freight is gone as soon as you move to another stop. You are in Santa Laura now, and Sosā is still searching the residence.",
-     "goal": "See how cards change the roll",
-     "highlight": [
-      "#scene"
-     ]
-    },
-    {
-     "id": "inquiry_acts",
-     "kind": "read",
-     "title": "Sosā moves too",
-     "body": "Every three hours Sosā does something. This time he sent the travel ban to every post, so each border crossing needs one more on the die unless you hold a card that delays the report.",
-     "goal": "See the inquiry act on a schedule",
-     "highlight": [
-      "#sosa"
-     ]
-    },
-    {
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in, and calling him agrees to his price: the family accounts move to his bank.",
+     "body": "You are in Santa Laura. While you moved, Sosā sent the travel ban to every post, so each border crossing needs one more on the die unless you hold a card that delays it. Tap **Bīr Amādū Salek about your visa**, then **Call**. He can get Atlanta to let you in, and calling him agrees to his price: the family accounts move to his bank.",
      "goal": "Accept terms by calling",
      "highlight": [
       "#calls"
@@ -178,7 +118,7 @@
      "id": "hire_driver",
      "kind": "act",
      "title": "Pay someone who takes money",
-     "body": "Nando's cousin drives for cash. Pick **Hire a plain car and driver**, then tap **Try it**.",
+     "body": "Cards lower the number you need on the die, and using one does not use it up. You lose a card when its owner turns on you or you give it up, and a card that gets you onto the freight is gone as soon as you move to another stop. Nando's cousin drives for cash. Pick **Hire a plain car and driver**, then tap **Try it**.",
      "goal": "Use an ally who takes money",
      "highlight": [
       "#approaches"
@@ -193,21 +133,10 @@
      }
     },
     {
-     "id": "work_while_driving",
-     "kind": "read",
-     "title": "Things moved while you drove",
-     "body": "Duartē booked the crew, and the ministry told the papers you had left the country. Sosā is searching Portô Venla, which is not where you are.",
-     "goal": "See arrangements progress while you travel",
-     "highlight": [
-      "#board",
-      "#rail"
-     ]
-    },
-    {
      "id": "nona_rosa",
      "kind": "act",
      "title": "Nonā Rosa needs something first",
-     "body": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours, she gives you the truck either way, and if it works her truck carries you on to Salta.",
+     "body": "While you drove, Duartē booked the crew, and Sosā kept searching Portô Venla, which is not where you are. Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Try it**. It takes three hours, she gives you the truck either way, and if it works her truck carries you on to Salta.",
      "goal": "Earn help by helping",
      "highlight": [
       "#approaches"
@@ -222,22 +151,10 @@
      }
     },
     {
-     "id": "relationships",
-     "kind": "read",
-     "title": "People give you cards",
-     "body": "You are in Salta now, and Nonā Rosa's truck is a card in your deck that helps your roll here. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
-     "goal": "Know that trust lowers the risk of betrayal",
-     "highlight": [
-      "#hand",
-      "#board",
-      "#rail"
-     ]
-    },
-    {
      "id": "call_reception",
      "kind": "act",
      "title": "Who meets you on the other side",
-     "body": "Tap **Duartē Albukerkē about your welcome in Esmeralda**, then **Call**. He can reach Rosario Vélez in Esmeralda, and after enough calls her officials wait for you at one border post.",
+     "body": "You are in Salta. Nonā Rosa's truck is now a card in your deck that helps your roll here, and she trusts you more, so she is less likely to talk if Sosā questions her. Tap **Duartē Albukerkē about your welcome in Esmeralda**, then **Call**. He can reach Rosario Vélez in Esmeralda, and after enough calls her officials wait for you at one border post.",
      "goal": "Arrange reception across the line",
      "highlight": [
       "#calls"
@@ -298,21 +215,10 @@
      }
     },
     {
-     "id": "border",
-     "kind": "read",
-     "title": "The line",
-     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and crossing there is certain.",
-     "goal": "Know what the three posts mean",
-     "highlight": [
-      "#approaches",
-      "#hand"
-     ]
-    },
-    {
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it one harder.",
+     "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it and the party machine lowers the roll, but the travel ban and your well known face each make it one harder.",
      "goal": "Read how the ban changes a roll",
      "highlight": [
       "#approaches"
@@ -356,40 +262,11 @@
    ],
    "steps": [
     {
-     "id": "intro",
-     "kind": "read",
-     "title": "Your first run as Sofīā",
-     "goal": "Know the goal and what you cannot see",
-     "body": "You are Sofīā Leōnī, aide to the incoming government. Teresā Albukerkē has until Tuesday at 2 p.m. to fly out, and your job is to stop her. You never see where she is, only reports, and reports come late.",
-     "highlight": []
-    },
-    {
-     "id": "view",
-     "kind": "read",
-     "title": "Reading the scene",
-     "goal": "Tell your search from her position",
-     "body": "The scene shows where your people are looking, and the box at the top says how old your last report is. She could be anywhere else on the route.",
-     "highlight": [
-      "#scene",
-      "#sosa"
-     ]
-    },
-    {
-     "id": "phases",
-     "kind": "read",
-     "title": "A round",
-     "goal": "Know the five phases",
-     "body": "Every round goes News, Desk, Order, Roll, then Her move. Answer the minister, send one request, give one order, and read what comes back.",
-     "highlight": [
-      "#phasebar"
-     ]
-    },
-    {
      "id": "minister",
      "kind": "act",
      "title": "The minister wants a town",
      "goal": "Answer a message without guessing",
-     "body": "If you name the wrong town, the minister announces it on the news, your offices drive there, and it counts against you at the end. Pick **Ask for six hours**.",
+     "body": "You are Sofīā Leōnī, and your job is to stop Teresā Albukerkē flying out before Tuesday at 2 p.m. You never see where she is, only reports, and reports come late. If you name the wrong town, the minister announces it on the news, your offices drive there, and it counts against you at the end. Pick **Ask for six hours**.",
      "highlight": [
       "#inbox"
      ],
@@ -425,7 +302,7 @@
      "kind": "act",
      "title": "Put the ban on paper",
      "goal": "Read an order before sending it",
-     "body": "Pick **Circulate the travel ban**, read the roll and the hours, then tap **Send the order**.",
+     "body": "The scene shows where your people are looking. She could be anywhere else on the route. Pick **Circulate the travel ban**, read the roll and the hours, then tap **Send the order**.",
      "highlight": [
       "#approaches"
      ],
@@ -505,21 +382,11 @@
      }
     },
     {
-     "id": "pressure",
-     "kind": "read",
-     "title": "How she gets caught",
-     "goal": "Know how searches turn into holds",
-     "body": "When an order puts Sosā's people on her stop, her police attention climbs, and at 10 the police stop her. Each stop within 12 hours of the last is worse, and the third step is house arrest, which is your win. When your people are on her stop, she takes riskier moves to get away.",
-     "highlight": [
-      "#scene"
-     ]
-    },
-    {
      "id": "alone",
      "kind": "read",
      "title": "The rest is yours",
      "goal": "Play on without the guide",
-     "body": "The dice and the news are real from here. The debrief at the end shows where she really was. Tap **Finish**.",
+     "body": "When an order puts Sosā's people on her stop, her police attention climbs, and at 10 the police stop her. Each stop within 12 hours of the last is worse, and the third step is house arrest, which is your win. When your people are on her stop, she takes riskier moves to get away. The dice and the news are real from here. The debrief at the end shows where she really was. Tap **Finish**.",
      "highlight": [
       "#approaches",
       "#calls"

@@ -4276,12 +4276,12 @@
   {
    "id": "brief.hours_escape",
    "pattern": "P08",
-   "text": "Hours until Tuesday at 2 p.m. Then your immunity ends and you can no longer leave."
+   "text": "Hours until your escape deadline, Tuesday at 2 p.m. Then your immunity ends and you can no longer leave the country."
   },
   {
    "id": "brief.hours_gov",
    "pattern": "P08",
-   "text": "Hours until Tuesday at 2 p.m. Then her immunity ends and she can no longer leave."
+   "text": "Hours until her escape deadline, Tuesday at 2 p.m. Then her immunity ends and she can no longer leave the country."
   },
   {
    "id": "brief.police_attention",
@@ -4594,6 +4594,22 @@
    "id": "action.her_during_one",
    "pattern": "P03",
    "text": "She keeps moving during this hour, and her moves can leave new reports."
+  },
+  {
+   "id": "brief.passport_deadline",
+   "pattern": "P08",
+   "text": "Hours until the court's passport deadline, {time}. Then your own passport is cancelled, the travel ban is in force at the border, so every crossing needs one more on the die, and any police stop starts with a night at the station.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "brief.passport_deadline_gov",
+   "pattern": "P08",
+   "text": "Hours until the court's passport deadline, {time}. Then her own passport is cancelled, the travel ban is in force at the border, so every crossing she tries needs one more on the die, and any police stop starts with a night at the station.",
+   "args": [
+    "time"
+   ]
   }
  ]
 }

@@ -64,7 +64,7 @@ const Data = (() => {
     truck:        { name: "The colônia's grape truck", tag: 'vehicle', from: 'host', reach: ['colonia', 'salta'], works: 'Getting help in the Salta rail yard.',
                     text: "A farm truck nobody looks at twice, and a cousin who drives it to Salta every week." },
     passport:     { name: 'Your second passport', tag: 'document', from: 'self', reach: ESMERALDA, works: 'The Paso Huhūi post and the Susana departure.',
-                    text: "You have held it for years. The travel ban lists your other one." },
+                    text: "You have held it for years, and the travel ban lists only your other passport. It gets you through the Paso Huhūi post and helps your takeoff at Susana." },
     intro_vel:    { name: "Rosario Vélez's card", tag: 'introduction', from: 'official', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, the Susana tower and the charter operator.',
                     text: "Vélez's number and her word that the border post knows your name." },
     delay_report: { name: 'A report held one day', tag: 'delay', from: 'aide', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Santa Laura and the line.',
@@ -88,7 +88,7 @@ const Data = (() => {
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
       objective: "Get past the watch.",
-      arrive: 'Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday noon. Your second passport is in your coat.',
+      arrive: "Two unmarked cars watch the house. The court has barred you from leaving and wants your passport handed in by Monday noon, and the travel ban lists that passport. Your second passport, which no list names, is in your coat.",
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
           mods: { information: 2 }, text: 'Send three cars out in different directions so the watch follows the wrong one.',
