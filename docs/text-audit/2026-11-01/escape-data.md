@@ -299,4 +299,4 @@ Where a string is never shown to the player, the mechanics column says so; it is
 - The log template log.try "You try {name}." reads badly with move names that are verb phrases ("You try Hire a plain car and driver."), and more will be verb phrases after this pass (ui.js:597).
 - CARDS.text, CHARACTERS.edge and flaw, CHARACTERS.short, ARRANGEMENTS.reception.what and permission.what, PEOPLE.sponsor.role and terms, PLACES.*.city and LEVELS.border.received.name are never shown.
 
-Count: 35 rewrites, 232 keeps, 4 flags, 0 unknowns.
+Count: 35 rewrites, 230 keeps, 4 flags, 0 unknowns.
