@@ -132,7 +132,7 @@ const Data = (() => {
           mods: { influence: 2 }, text: "Spend three hours getting the cooperative's truck released. If it works, her cousin drives you to Salta in it.",
           success: { card: 'truck', trust: 'host' },
           fail: { card: 'truck', hours: 1 } },
-        { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, needs: [],
+        { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
           mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Esmeralda and your visa each move one step.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
         { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
@@ -480,6 +480,9 @@ const Data = (() => {
     (n) => `${n} asked twice which car you will take.`,
     (n) => `${n} paid off a debt this morning, in cash.`,
   ];
+  // Moves marked once can be made one time per run (owner decision, Nov. 1, 2026: four unrolled
+  // "Call your contacts" finished almost every arrangement and kept claiming progress after).
+  // A move that advances arrangements is only offered while one of them can still move.
   // Moves marked noRoll (resting, phoning from a safe house, a ride already arranged) have no
   // failure written for them, so they are choices, not chances: they are never rolled.
   // One 20-sided die for every other roll (owner decision, Nov. 1, 2026: "20 sided").

@@ -176,6 +176,8 @@ const Sim = (() => {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
+      if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
+      else if (a.success && a.success.advance && !a.success.advance.some(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1)) whys.push(T('sim.why.nothing_left_to_move'));
       if (s.event) whys.unshift(s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first'));
       if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(T('sim.why.you_cut_off', { name: personName(s, a.with) }));
       else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(T('sim.why.talked_to_the_inquiry', { name: personName(s, a.with) }));
@@ -366,6 +368,7 @@ const Sim = (() => {
     const view = approachList(s).find(x => x.id === actionId);
     if (!view.ok) return { ok: false, why: view.why };
     events.push(ev('attempt', { id: a.id, name: a.name }));
+    if (a.once) { s.flags.onceDone = s.flags.onceDone || {}; s.flags.onceDone[a.id] = true; }
     if (a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post) {
       events.push(ev('roll', { die: null, need: 1, won: true, auto: true, escort: true, bonus: [] })); say(events, 'narrator', level(s).received.say); pass(s, level(s).received.hours, events); if (!s.over) advanceLevel(s, events); return finish(s, events);
     }
@@ -396,7 +399,11 @@ const Sim = (() => {
     if (a && a.id === 'decoy' && fx === a.success) say(events, 'nando', T('sim.line.nando_decoy_success'), true);
     else if (a && a.id === 'help_host' && fx === a.success) say(events, 'host', T('sim.line.nona_truck_released'), true);
     else if (a && a.id === 'help_host' && fx === a.fail) say(events, 'host', T('sim.line.nona_truck_late'), true);
-    else say(events, 'narrator', fx.say);
+    else {
+      // a move that advances arrangements says only what really moved
+      const movable = fx.advance ? fx.advance.filter(k => s.arr[k].stage < D.ARRANGEMENTS[k].stages.length - 1) : null;
+      say(events, 'narrator', movable && movable.length < fx.advance.length ? T('sim.say.calls_moved_some', { list: movable.map(k => D.ARRANGEMENTS[k].name).join(', ') }) : fx.say);
+    }
     if (fx.exposure) heat(s, fx.exposure, events);
     if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);

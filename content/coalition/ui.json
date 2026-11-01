@@ -4560,6 +4560,24 @@
     "n",
     "total"
    ]
+  },
+  {
+   "id": "sim.why.already_done",
+   "pattern": "P04",
+   "text": "You have already done this."
+  },
+  {
+   "id": "sim.why.nothing_left_to_move",
+   "pattern": "P04",
+   "text": "Everything these calls could move is already done."
+  },
+  {
+   "id": "sim.say.calls_moved_some",
+   "pattern": "P03",
+   "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
+   "args": [
+    "list"
+   ]
   }
  ]
 }

@@ -72,6 +72,18 @@
   - The calibration bot also wastes hours at Nonā Rosa's, so about 30% understates a sensible player.
 - **Difficulty levels decided** and recorded in next-mechanics.md, with the crew as a proposal for the easier levels.
 
+## Second follow-up: the calls at Nonā Rosa's, and the bot
+
+- **"Call your contacts" can be made once per run,** is not offered when nothing is left for it to move, and says which arrangements moved when not all three could (owner: "Fix that yes").
+- **The calibration bot leaves stops when it can,** as the government side's computer-played candidate already did.
+- **Corrected baseline for a sensible player:** Teresā 46.7%, Matēu 42.3%. The government side is unchanged at 46.5%. By time left, from the residence:
+  - 60 hours: 43% and 38%;
+  - 48 hours: 28% and 22%;
+  - 36 hours: 11% and 12%.
+
+  Today's medium is easier than the owner's target, and the presets have to account for that.
+- **Crew decision recorded** in next-mechanics.md: everyone has a crew, the level sets its size and dependability, more can be recruited through existing story choices, and it is built on the existing allies and cards.
+
 ## Open
 
 - The owner's answers to the questions in next-mechanics.md.

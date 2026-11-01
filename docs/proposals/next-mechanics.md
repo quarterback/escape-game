@@ -74,18 +74,38 @@ Not 36 hours yet: the bots win 5% to 9% there, and nobody knows yet how far huma
 
 Measured, from the residence (200 runs per candidate, test bot as it is today): 72 hours 26% and 29%, 60 hours 21% and 25%, 48 hours 14% and 13%, 36 hours 5% and 9%, 24 hours 0%. No win took less than 35 hours.
 
-### Proposal: a crew as the fiction for "more help"
+### The crew (decided Nov. 1, 2026)
 
-The owner suggested a travel companion or entourage that helps you decide and solve things. A crew could be how the easier levels give more help, so the player meets people instead of hidden numbers. Each companion works on their own, like cards now do, and helps at every stop:
+**Owner's decision:** "crew with difficulty, automatic, everyone has a crew." His notes add:
+- Crew is part of the game at every level. The level sets how much help you start with and how dependable it is.
+- You can recruit more people along the route on every level.
+- It is built on what exists (allies, trust, reliability, cards that work on their own), not a new system.
 
-| Companion | Helps with | Measured problem it answers |
+**What a crew member is:** an existing character with a relationship to you, one specialty, and a reliability. There is no crew screen, no inventory, no assignments and nothing to switch on. Help works on its own when it is relevant, and a short notice says so when it matters.
+
+| Level | Starting crew | Dependability |
 |---|---|---|
-| A fixer | Keeps calling allies while you travel, so replies come sooner | Waiting on allies' six-hour replies |
-| A lookout | Slows the rise of police attention while Sosā searches your stop | Lost runs average 2.6 to 2.9 police stops, wins 0.8 to 0.9 |
-| A lawyer | Turns one police stop a run into a lighter one | House arrest ends about half of lost runs |
-| A driver | Makes road moves easier | Rolls rarely cause losses: only 8% to 12% of move rolls fail |
+| Very easy | 3 helpers | Highly dependable |
+| Easy | 2 helpers | Dependable |
+| Medium | 1 helper | Normal |
+| Hard | 1 helper | Less dependable |
+| INTERPOL | 1 helper | Under the most pressure |
 
-Open question: does the crew come with the level (Very easy has three, Easy two, Medium one, Hard and INTERPOL none), or does the player pick it? Picking adds a decision before the run, which the owner wants kept to one simple choice.
+On harder levels a helper is not made arbitrarily incompetent. Sosā leans on them harder, and help is harder to secure.
+
+**Recruiting through choices already in the story.** Helping someone can bring their help along, with no "Recruit" button. Example from the owner: helping Nonā Rosa could bring her family's help on the road. Some favors earn real help; others take time and deliver nothing, which gives the side quests a purpose.
+
+**Kept separate, as the game already does:** agreeing to help, being reliable, and being loyal. Someone can agree and be unreliable; someone can be dependable and secretly talking to Sosā; someone can be loyal and stopped by the authorities. The phone shows none of this as meters, only who is helping and what happened when it mattered.
+
+**Specialties, matched to what loses runs today:**
+
+| Specialty | What it does | Measured problem |
+|---|---|---|
+| Lookout | Slows the rise of police attention while Sosā searches your stop | Lost runs average about three police stops, wins fewer than one |
+| Fixer | Keeps calling your allies while you travel, so replies come sooner | Allies take six hours to answer |
+| Lawyer | Turns one police stop into a lighter one | House arrest ends about half of lost runs |
+
+**Build order, after PR #25 merges and with the difficulty presets:** the lookout first, through an existing encounter, then measure the change in police stops and escapes; then the fixer and the lawyer. Existing characters fill each role where their story fits. Which characters is a question for the owner before writing any lines.
 
 ### Earlier draft (superseded by the table above)
 

@@ -19,7 +19,7 @@ function playAs(seed, who, dest) {
     const calls = A.calls.filter(c => c.ok), lvl = s.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); Sim.commit(s, calls[0].id); continue; }
     const L = Data.LEVELS[s.pos];
-    const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.pct > 0)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => a.need - b.need);
+    const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.pct > 0)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => ((Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(a.id)) - (Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(b.id))) || a.need - b.need); // moves that leave the stop first, as the government side's candidate already plays (owner bug report, Nov. 1, 2026: the bot sat at Nonā Rosa's)
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { Sim.commit(s, apps[0].id); continue; }
     Sim.commit(s, 'wait');
   }
