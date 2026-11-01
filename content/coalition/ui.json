@@ -1738,11 +1738,6 @@
    ]
   },
   {
-   "id": "sim.inquiry.monday_noon_your_own_passport",
-   "pattern": "P10",
-   "text": "The passport deadline has passed, so your own passport is cancelled, the travel ban is at every post, and any police stop now starts at the station."
-  },
-  {
    "id": "sim.line.think_about_it_i_will",
    "pattern": "P07",
    "text": "\"Think about it. I will call again.\"",
@@ -3413,7 +3408,7 @@
   {
    "id": "gov.say.port_venla_saturday_afternoon_two",
    "pattern": "P10",
-   "text": "Portô Venla, Saturday afternoon: two of your cars watch the residence, and the court wants her passports by Monday.",
+   "text": "Portô Venla, Saturday afternoon: two of your cars watch the residence, and the court has barred her from leaving the country.",
    "role": "gov"
   },
   {
@@ -3796,7 +3791,7 @@
   {
    "id": "about.lede",
    "pattern": "P08",
-   "text": "Saturday, 2 p.m. You lost the election, the court has barred you from leaving Valdória, and it wants your passports by Monday noon. One of them is in your coat."
+   "text": "Saturday, 2 p.m. You lost the election, and the court has barred you from leaving Valdória. Your second passport is in your coat."
   },
   {
    "id": "about.p1",

@@ -137,14 +137,9 @@
    "text": "Your welcome in Esmeralda moves up one step"
   },
   {
-   "code": "deadline.sooner",
+   "code": "ban.now",
    "pattern": "P03",
-   "text": "Passport deadline comes sooner"
-  },
-  {
-   "code": "deadline.later",
-   "pattern": "P03",
-   "text": "Passport deadline comes later"
+   "text": "The travel ban reaches every post now"
   },
   {
    "code": "rolls.easier",

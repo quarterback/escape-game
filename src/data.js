@@ -88,7 +88,7 @@ const Data = (() => {
   const LEVELS = [
     { id: 'residence', name: 'The residence, Portô Venla', short: 'Residence', scene: 'residence',
       objective: "Get past the watch.",
-      arrive: 'Two unmarked cars watch the house. The court has barred you from leaving and wants your passports by Monday noon. Your second passport is in your coat.',
+      arrive: 'Two unmarked cars watch the house. The court has barred you from leaving the country. Your second passport is in your coat.',
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
           mods: { information: 2 }, text: 'Send three cars out in different directions so the watch follows the wrong one.',
@@ -213,7 +213,7 @@ const Data = (() => {
   // Enemy actions. Picked by weight each enemy turn. Each is visible in the log and on the map.
   const ENEMY_ACTIONS = [
     { id: 'check_belief', w: 4, text: (lv) => `Sosā's people search ${lv}.` },
-    { id: 'circulate',    w: 3, once: true, text: () => 'Sosā sends the travel ban to the posts at the line, and every crossing there now needs one more on the die unless you hold "A report held one day."' },
+    { id: 'circulate',    w: 3, once: true, text: () => 'Sosā sends the travel ban to every post. Any police stop now starts at the station, and crossings at the line need one more on the die unless you hold "A report held one day."' },
     { id: 'lean_operator', w: 2, once: true, after: 12, text: () => 'The ministry warns the Susana charter operator that its Valdórian license is under review.' },
     { id: 'press_ally',   w: 3, text: (who) => `Sosā calls ${who} in for a conversation.` },
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, text: () => 'Valdória asks Esmeralda, through its embassy in Baca, to hold you if you appear.' },
@@ -267,7 +267,7 @@ const Data = (() => {
     { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and the police have been on her for a while, they stop her. Police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'The watch team tells you whether anyone is still in the house.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Follow the latest report: ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you send one.' },
-    { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
+    { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban, and any police stop on her now starts at the station. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
     { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'Inspector Sosā', mods: {}, act: 'press_ally', text: 'Sosā questions one of her helpers. If the helper talks, the police go to where she is and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
     { id: 'roadblock', name: (lv) => `Checkpoint on the road out of ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For six hours, everything she tries at that stop needs one more on the die.', fail: 'The checkpoint stands on the wrong road.' },
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'Her side relaxes and the police move to a stop where she is not.' },
@@ -358,8 +358,8 @@ const Data = (() => {
     { id: 'dog', at: ['residence'], title: 'The dog will not stay', text: 'Your youngest will not leave without the dog. The dog barks at strangers.', choices: [
       { id: 'bring_dog', label: 'Bring the dog', fx: { flag: { dog: true }, trust: { sibling: 1 }, say: 'The dog sleeps across your feet.' } },
       { id: 'leave_dog', label: 'Leave him with the cook', fx: { hours: 1, say: 'An hour of crying in the back seat.' } } ] },
-    { id: 'summons', at: ['residence'], title: 'A court officer at the gate', text: 'He has a summons and orders to hand it to you in person.', choices: [
-      { id: 'accept', label: 'Take the summons', fx: { deadline: -12, say: 'The court now has your signature, and your passport deadline moves up 12 hours.' } },
+    { id: 'summons', at: ['residence'], when: [{ ref: 'flag.restriction', op: 'eq', value: false }], title: 'A court officer at the gate', text: 'He has a summons and orders to hand it to you in person.', choices: [
+      { id: 'accept', label: 'Take the summons', fx: { ban: true, say: 'The court now has your signature, and it sends the travel ban to every post.' } },
       { id: 'lawyer', label: "Send Gianlūka's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer argues at the gate for two hours.' } },
       { id: 'ignore', label: 'Keep the gate shut', fx: { exposure: 1 } } ] },
     { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
@@ -450,9 +450,9 @@ const Data = (() => {
     { id: 'coffee', at: ['residence', 'road', 'colonia', 'salta'], title: 'A police car pulls in beside you', text: 'Two officers get out for coffee. One glances at your window.', choices: [
       { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
-    { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 }] /* before hour 30 */, title: 'The hearing moves up', text: 'The court moved your hearing forward. The passport deadline is sooner.', choices: [
-      { id: 'noted', label: 'Keep going', fx: { deadline: -10 } },
-      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { deadline: -4, trust: { aide: -1 }, exposure: 1, say: 'The clerk moves your hearing up four hours instead of 10. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
+    { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 } /* before hour 30 */, { ref: 'flag.restriction', op: 'eq', value: false }], title: 'The hearing moves up', text: 'The court moved your hearing forward, and it wants the travel ban at every post today.', choices: [
+      { id: 'noted', label: 'Keep going', fx: { ban: true, say: 'The court sends the travel ban to every post.' } },
+      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the court\'s order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
     { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios and the inquiry go quiet.', choices: [
       { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
       { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, say: 'Two hours in the dark. Nobody comes to the door.' } } ] },

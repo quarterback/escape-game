@@ -3,7 +3,7 @@
 // string is altered first (data records, catalog, markers), so a C14 test can compare the two.
 'use strict';
 const path = require('path'), fs = require('fs');
-const perturb = process.argv[2] === 'perturb', X = (s) => 'Ω' + [...s].reverse().join(''); // reversed: no original word survives
+const perturb = process.argv[2] === 'perturb', X = (s) => s === '' ? s : 'Ω' + [...s].reverse().join(''); // reversed: no original word survives; an empty line stays empty, since it carries no wording
 const src = path.join(__dirname, '..', '..', 'src'), cdir = path.join(__dirname, '..', '..', 'content', 'coalition');
 // the content package, perturbed before the runtime reads it
 const man = JSON.parse(fs.readFileSync(path.join(cdir, 'manifest.json'), 'utf8')), pkg = { manifest: man };

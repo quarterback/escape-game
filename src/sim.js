@@ -18,7 +18,6 @@ const Sim = (() => {
   const POST_IDS = ['rail', 'high', 'coast']; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
-  const DEADLINE = 46; // Monday 12:00: the passports were due; after it the own passport is cancelled and the ban is everywhere
   const SUSPECTS = ['aide', 'nando', 'host', 'holt', 'theo', 'pilot', 'official'];
   const EVENT_EVERY = 6; // hours at one stop between dispatches
   const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -35,7 +34,7 @@ const Sim = (() => {
       nextMsg: 1, lastEnemy: 0, visited: [0], tutorial: !!opts.tutorial, ledger: [],
       dest: D.DESTS[opts.dest] ? opts.dest : 'atlanta',
       // the deeper game: one dispatch or hold waits at a time; holds climb a ladder; the passport deadline is Monday noon.
-      event: null, seenEvents: [], hold: 0, holds: 0, lastHoldAt: -99, deadline: DEADLINE, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
+      event: null, seenEvents: [], hold: 0, holds: 0, lastHoldAt: -99, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
     };
     s.exposure = ch.exposure || 1;
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
@@ -269,7 +268,7 @@ const Sim = (() => {
   }
   function climbHold(s, events) {
     if (s.tutorial || s.over) return;
-    let r = s.hold + 1; if (s.flags.cancelled && s.hold === 0) r = 2; // after Monday noon the first hold is a station, not a roadside
+    let r = s.hold + 1; if (s.flags.restriction && s.hold === 0) r = 2; // once the travel ban is out, the first hold is a station, not a roadside
     // Jurisdiction: across the line a Valdórian court holds nobody. Esmeralda questions you only once Sosā has asked it to, and never climbs past that.
     if (s.pos >= ESMERALDA_FROM) { if (!s.flags.asked) return; r = 1; }
     s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos; s.lastHoldAt = s.hour;
@@ -293,7 +292,7 @@ const Sim = (() => {
     if (fx.cut) out.push(M('lose', 'trust.cut', { person: first(fx.cut) }));
     if (fx.test) out.push(M('time', 'trust.test'));
     if (fx.stage) out.push(M('gain', 'arrangement.moves'));
-    if (fx.deadline) out.push(M('up', fx.deadline < 0 ? 'deadline.sooner' : 'deadline.later'));
+    if (fx.ban) out.push(M('up', 'ban.now'));
     if (fx.skipEnemy) out.push(M('down', 'search.loses_move'));
     if (fx.mod) out.push(M(fx.mod < 0 ? 'down' : 'up', fx.mod < 0 ? 'rolls.easier' : 'rolls.harder'));
     if (fx.hold) out.push(M('risk', 'hold.climb'));
@@ -343,7 +342,7 @@ const Sim = (() => {
     if (fx.test) { const p = s.people[fx.test]; p.known = true; p.doubt = false; if (p.bad) { p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.test) lose(s, id, events); say(events, 'narrator', T('sim.say.was_working_for_sosa_you', { name: personName(s, fx.test) })); } else { p.trust = Math.max(p.trust, 2); say(events, 'narrator', T('sim.say.is_clean_and_offended_you', { name: personName(s, fx.test) })); } }
     if (fx.stage) for (const k in fx.stage) stage(s, k, s.arr[k].stage + fx.stage[k], events);
     if (fx.flag) Object.assign(s.flags, fx.flag);
-    if (fx.deadline) { s.deadline = Math.max(s.hour + 1, s.deadline + fx.deadline); }
+    if (fx.ban) { s.flags.restriction = true; s.flags.enemyDone.circulate = true; } // the court sends the ban itself; Sosā has nothing left to send
     if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
     if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
     if (fx.rung !== undefined) s.hold = fx.rung;
@@ -480,7 +479,6 @@ const Sim = (() => {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) }));
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
-      if (s.hour === s.deadline && !s.flags.cancelled) { s.flags.cancelled = true; s.flags.restriction = true; events.push(ev('enemy', { id: 'deadline', text: T('sim.inquiry.monday_noon_your_own_passport'), belief: s.belief })); }
       // exposure drifts while they look in the right place; Salta's wait for the midnight freight drifts at half rate
       if (s.belief === s.pos && s.hour % (s._manual || level(s).id === 'salta' ? 4 : 2) === 0) heat(s, 1, events);
       // the hold ladder decays: twelve quiet hours drop a rung, so Saturday's questioning is not Monday's house arrest
@@ -552,6 +550,6 @@ const Sim = (() => {
     return out.slice(0, 3).join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
