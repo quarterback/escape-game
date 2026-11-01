@@ -598,7 +598,7 @@ const UI = (() => {
         case 'attempt': r.title = e.name; break;
         case 'chose': r.title = r.title || e.label; break;
         case 'roll': if (!e.who && !after && e.bonus && e.bonus.length && !gov) { const names = e.bonus.map(t => cardsFor(t)[0]).filter(Boolean); if (names.length) r.mine.push({ k: 'gain', t: cap(T('sum.helped', { list: names.map(inSentence).join(', ') })) }); }
-          if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: Sim.shortName(gov ? gov.c : s, e.who), what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
+          if (e.who && !e.pressed) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: Sim.shortName(gov ? gov.c : s, e.who), what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
         case 'say':
           if (!after && !r.line && (e.who === 'narrator' || e.featured)) r.line = e.who === 'narrator' ? e.text : `${pname(e.who)}: ${e.text}`;
           break;

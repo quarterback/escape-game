@@ -53,22 +53,22 @@
   {
    "code": "search.elsewhere",
    "pattern": "P03",
-   "text": "The police move their search off your stop"
+   "text": "The Federal Police move their search off your stop"
   },
   {
    "code": "search.finds",
    "pattern": "P03",
-   "text": "The police move their search to your stop"
+   "text": "The Federal Police move their search to your stop"
   },
   {
    "code": "search.loses_move",
    "pattern": "P03",
-   "text": "The police skip their next action"
+   "text": "The Federal Police skip their next action"
   },
   {
    "code": "search.at",
    "pattern": "P03",
-   "text": "The police search {place}",
+   "text": "The Federal Police search {place}",
    "args": [
     "place"
    ]

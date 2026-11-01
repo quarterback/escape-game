@@ -48,8 +48,8 @@
      "id": "map",
      "kind": "read",
      "title": "Reading the scene",
-     "body": "The marker over your head is you, and the police box shows where the police are searching. While they search where you are, your police attention climbs, and at 10 the police stop you. Each stop within 12 hours of the last is worse, and the third step is house arrest.",
-     "goal": "Read police attention and where the police are searching",
+     "body": "The marker over your head is you, and the police box shows where the Federal Police are searching. While they search where you are, your police attention climbs, and at 10 they stop you. Each stop within 12 hours of the last is worse, and the third step is house arrest.",
+     "goal": "Read police attention and where the Federal Police are searching",
      "highlight": [
       "#scene",
       "#heat"
@@ -59,7 +59,7 @@
      "id": "phases",
      "kind": "read",
      "title": "A round",
-     "body": "Each turn, answer anyone who calls, make up to one call, then make one move. When the move is done, you see what happened during the hours it took, including what the police did.",
+     "body": "Each turn, answer anyone who calls, make up to one call, then make one move. When the move is done, you see what happened during the hours it took, including what the Federal Police did.",
      "goal": "Know what a turn is",
      "highlight": [
       "#approaches"
@@ -134,7 +134,7 @@
      "id": "die",
      "kind": "read",
      "title": "Cards and the die",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the police are still searching the residence.",
+     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the Federal Police are still searching the residence.",
      "goal": "See how cards change the roll",
      "highlight": [
       "#scene"
@@ -143,8 +143,8 @@
     {
      "id": "inquiry_acts",
      "kind": "read",
-     "title": "The police move too",
-     "body": "Every three hours, the police do something. This time they sent the travel ban to every post. If the police stop you now, they take you straight to the station. Each border crossing also needs a higher roll, unless you hold a card that delays the report.",
+     "title": "The Federal Police move too",
+     "body": "Every three hours, the Federal Police do something. This time they sent the travel ban to every post. If they stop you now, they take you straight to the station. Each border crossing also needs a higher roll, unless you hold a card that delays the report.",
      "goal": "See the inquiry act on a schedule",
      "highlight": [
       "#sosa"
@@ -200,7 +200,7 @@
      "id": "work_while_driving",
      "kind": "read",
      "title": "Things moved while you drove",
-     "body": "Duartē booked the crew, and the ministry told the papers you had left the country. The police are searching the residence in Portô Venla, which is not where you are.",
+     "body": "Duartē booked the crew, and the ministry told the papers you had left the country. The Federal Police are searching the residence in Portô Venla, which is not where you are.",
      "goal": "See arrangements progress while you travel",
      "highlight": [
       "#board",
@@ -229,7 +229,7 @@
      "id": "relationships",
      "kind": "read",
      "title": "Help earns trust",
-     "body": "You are in Salta now. Nonā Rosa's truck helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when the police question them.",
+     "body": "You are in Salta now. Nonā Rosa's truck helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when the Federal Police question them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
       "#board",
@@ -511,7 +511,7 @@
      "kind": "read",
      "title": "How she gets caught",
      "goal": "Know how searches turn into holds",
-     "body": "While the police are on her stop, her police attention climbs, and at 10 the police stop her; you never see that number. Each stop within 12 hours of the last is worse, and the third step is house arrest, which is your win. She also takes riskier moves to get away while your people are on her stop.",
+     "body": "While the Federal Police are on her stop, her police attention climbs, and at 10 they stop her; you never see that number. Each stop within 12 hours of the last is worse, and the third step is house arrest, which is your win. She also takes riskier moves to get away while your people are on her stop.",
      "highlight": [
       "#scene"
      ]

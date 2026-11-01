@@ -4,7 +4,7 @@
   {
    "id": "name.inspector",
    "pattern": "P02",
-   "text": "Police inspector"
+   "text": "Federal Police"
   },
   {
    "id": "log.start_escape",
@@ -122,12 +122,12 @@
   {
    "id": "scene.sosa_here",
    "pattern": "P06",
-   "text": "Police are searching where you are"
+   "text": "The Federal Police are searching where you are"
   },
   {
    "id": "scene.sosa_at",
    "pattern": "P06",
-   "text": "Police are searching {place}",
+   "text": "The Federal Police are searching {place}",
    "args": [
     "place"
    ]
@@ -151,7 +151,7 @@
   {
    "id": "scene.next_move",
    "pattern": "P02",
-   "text": "Police act again"
+   "text": "The Federal Police act again"
   },
   {
    "id": "scene.next_in",
@@ -172,7 +172,7 @@
   {
    "id": "scene.held_at",
    "pattern": "P05",
-   "text": "The police stop you when police attention reaches 10."
+   "text": "The Federal Police stop you when police attention reaches 10."
   },
   {
    "id": "scene.exposure",
@@ -429,7 +429,7 @@
   {
    "id": "who.talked",
    "pattern": "P05",
-   "text": "Talked to the police"
+   "text": "Talked to the Federal Police"
   },
   {
    "id": "who.clean",
@@ -485,7 +485,7 @@
   {
    "id": "route.inquiry_here",
    "pattern": "P06",
-   "text": "Police are searching here"
+   "text": "The Federal Police are searching here"
   },
   {
    "id": "route.who_acts",
@@ -541,17 +541,17 @@
   {
    "id": "route.inquiry",
    "pattern": "P02",
-   "text": "The police"
+   "text": "The Federal Police"
   },
   {
    "id": "route.looking_here",
    "pattern": "P06",
-   "text": "Police are searching here"
+   "text": "The Federal Police are searching here"
   },
   {
    "id": "route.no_inquiry",
    "pattern": "P12",
-   "text": "The police have not moved yet"
+   "text": "The Federal Police have not moved yet"
   },
   {
    "id": "over.play_her",
@@ -662,7 +662,7 @@
   {
    "id": "phase.sosa",
    "pattern": "P02",
-   "text": "Police"
+   "text": "Federal Police"
   },
   {
    "id": "phase.her_move",
@@ -813,7 +813,7 @@
   {
    "id": "sum.talked",
    "pattern": "P10",
-   "text": "talked to the police"
+   "text": "talked to the Federal Police"
   },
   {
    "id": "sum.delivered",
@@ -869,7 +869,7 @@
   {
    "id": "sum.sold",
    "pattern": "P10",
-   "text": "{person} sold you out, and the police know where you are",
+   "text": "{person} sold you out, and the Federal Police know where you are",
    "args": [
     "person"
    ]
@@ -995,7 +995,7 @@
   {
    "id": "log.pressed_holds",
    "pattern": "P10",
-   "text": "The police question {name}, who says nothing, because the die showed {die} and {need} or higher would have made them talk.",
+   "text": "The Federal Police question {name}, who says nothing, because the die showed {die} and {need} or higher would have made them talk.",
    "args": [
     "name",
     "die",
@@ -1005,7 +1005,7 @@
   {
    "id": "log.pressed_breaks",
    "pattern": "P10",
-   "text": "The police question {name}, who talks, because the die showed {die} and {need} or higher makes them talk.",
+   "text": "The Federal Police question {name}, who talks, because the die showed {die} and {need} or higher makes them talk.",
    "args": [
     "name",
     "die",
@@ -1387,7 +1387,7 @@
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while the police search where you are. When it reaches 10, the police stop you. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
+   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while the Federal Police search where you are. When it reaches 10, they stop you. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
   },
   {
    "id": "help.ios",
@@ -1544,7 +1544,7 @@
   {
    "id": "sim.end.talked_to_the_inquiry_will",
    "pattern": "P14",
-   "text": "{and} talked to the police.",
+   "text": "{and} talked to the Federal Police.",
    "args": [
     "and"
    ]
@@ -1611,7 +1611,7 @@
   {
    "id": "sim.inquiry.reviews_the_passenger_lists_at",
    "pattern": "P10",
-   "text": "The police review the passenger lists at Portô Venla airport and find nothing."
+   "text": "The Federal Police review the passenger lists at Portô Venla airport and find nothing."
   },
   {
    "id": "sim.inquiry.the_operator_withdraws_the_crew",
@@ -1626,7 +1626,7 @@
   {
    "id": "sim.inquiry.the_last_call_came_from",
    "pattern": "P10",
-   "text": " Your last call came from here, so the police now search where you are."
+   "text": " Your last call came from here, so the Federal Police now search where you are."
   },
   {
    "id": "sim.inquiry.nobody_there_has_seen_you",
@@ -1729,12 +1729,12 @@
   {
    "id": "sim.say.gianluka_does_not_answer_again",
    "pattern": "P10",
-   "text": "Gianlūka does not answer again, and the police now know where you are."
+   "text": "Gianlūka does not answer again, and the Federal Police now know where you are."
   },
   {
    "id": "sim.line.thank_you_sosa_s_people",
    "pattern": "P07",
-   "text": "\"Thank you. The police are in Pedra Branca tonight, by the way. Not here.\"",
+   "text": "\"Thank you. The Federal Police are in Pedra Branca tonight, by the way. Not here.\"",
    "speaker": "aide"
   },
   {
@@ -1800,7 +1800,7 @@
   {
    "id": "sim.say.sold_you_out_sosa_knows",
    "pattern": "P10",
-   "text": "{name} sold you out, and the police know where you are.",
+   "text": "{name} sold you out, and the Federal Police know where you are.",
    "args": [
     "name"
    ]
@@ -1836,7 +1836,7 @@
   {
    "id": "sim.say.was_working_for_sosa_you",
    "pattern": "P10",
-   "text": "{name} was working for the police, so you drop every card you got through that contact.",
+   "text": "{name} was working for the Federal Police, so you drop every card you got through that contact.",
    "args": [
     "name"
    ]
@@ -2021,7 +2021,7 @@
   {
    "id": "sim.why.talked_to_the_inquiry",
    "pattern": "P04",
-   "text": "{name} talked to the police.",
+   "text": "{name} talked to the Federal Police.",
    "args": [
     "name"
    ]
@@ -2099,7 +2099,7 @@
   {
    "id": "sim.effect.an_hour_on_the_phone",
    "pattern": "P03",
-   "text": "You keep the police inspector on the line for an hour, and the police skip their next action."
+   "text": "You keep the Federal Police inspector on the line for an hour, and the Federal Police skip their next action."
   },
   {
    "id": "sim.opt.keep_him_talking",
@@ -2109,7 +2109,7 @@
   {
    "id": "sim.line.inspector_sosa_come_back_for",
    "pattern": "P07",
-   "text": "\"This is the police inspector. Come back for the hearing and this ends quietly. Stay, and {rel}'s name goes on the warrant too.\"",
+   "text": "\"This is the Federal Police. Come back for the hearing and this ends quietly. Stay, and {rel}'s name goes on the warrant too.\"",
    "speaker": "enemy",
    "args": [
     "rel"
@@ -2163,7 +2163,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and the police move their search to Pedra Branca."
+   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and the Federal Police move their search to Pedra Branca."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2235,7 +2235,7 @@
   {
    "id": "sim.effect.sends_them_to_the_house",
    "pattern": "P03",
-   "text": "The police go back to searching the residence, your police attention stays the same, and nothing comes back on you later."
+   "text": "The Federal Police go back to searching the residence, your police attention stays the same, and nothing comes back on you later."
   },
   {
    "id": "sim.opt.deny_it_you_are_at",
@@ -2245,7 +2245,7 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "The police go back to searching the residence, and your police attention drops by one. If one of your people later talks to the police, the lie raises your police attention by one more."
+   "text": "The Federal Police go back to searching the residence, and your police attention drops by one. If one of your people later talks to the Federal Police, the lie raises your police attention by one more."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
@@ -2384,7 +2384,7 @@
   {
    "id": "gov.report.sosa_finds_nothing_at",
    "pattern": "P06",
-   "text": "The police find nothing at {place}.",
+   "text": "The Federal Police find nothing at {place}.",
    "args": [
     "place"
    ],
@@ -2393,7 +2393,7 @@
   {
    "id": "gov.report.sosa_finds_fresh_tracks_at",
    "pattern": "P06",
-   "text": "The police find fresh tracks at {place}.",
+   "text": "The Federal Police find fresh tracks at {place}.",
    "args": [
     "place"
    ],
@@ -2482,7 +2482,7 @@
   {
    "id": "gov.line.esmeralda_will_hold_her_if",
    "pattern": "P07",
-   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and their police can stop her once for questioning. The interior ministry gave us a name to call.\"",
+   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and the Costamaran police can stop her once for questioning. The interior ministry gave us a name to call.\"",
    "role": "gov",
    "speaker": "embassy"
   },
@@ -2708,7 +2708,7 @@
   {
    "id": "gov.status.your_people_the_watch_team",
    "pattern": "P05",
-   "text": "The watch team and the police inspector work here.",
+   "text": "The watch team and a Federal Police inspector work here.",
    "role": "gov"
   },
   {
@@ -2898,7 +2898,7 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Cerro Alto answers 10 hours after your call. Roll {need} or higher ({pct}% chance) for Costamar to agree. If it agrees, her takeoff gets harder, the police there can stop her for questioning, and your patrols can act at Portalba.",
+   "text": "Cerro Alto answers 10 hours after your call. Roll {need} or higher ({pct}% chance) for Costamar to agree. If it agrees, her takeoff gets harder, the Costamaran police can stop her for questioning, and your patrols can act at Portalba.",
    "role": "gov",
    "args": [
     "need",
@@ -2971,7 +2971,7 @@
   {
    "id": "gov.effect.honest_the_minister_briefs_the",
    "pattern": "P03",
-   "text": "The minister tells the papers she has fled. The police turn to a stop where she is not, and her police attention falls by one.",
+   "text": "The minister tells the papers she has fled. The Federal Police turn to a stop where she is not, and her police attention falls by one.",
    "role": "gov"
   },
   {
@@ -3197,7 +3197,7 @@
   {
    "id": "gov.name.inspector_sosa",
    "pattern": "P02",
-   "text": "Police inspector",
+   "text": "Federal Police inspector",
    "role": "gov"
   },
   {
@@ -3360,7 +3360,7 @@
   {
    "id": "hint.sosa",
    "pattern": "P08",
-   "text": "See what the police and your allies did."
+   "text": "See what the Federal Police and your allies did."
   },
   {
    "id": "hint.gov_news",
@@ -3544,7 +3544,7 @@
   {
    "id": "enemy.short.check_belief",
    "pattern": "P10",
-   "text": "The police search {place}.",
+   "text": "The Federal Police search {place}.",
    "args": [
     "place"
    ]
@@ -3552,7 +3552,7 @@
   {
    "id": "enemy.short.check_belief_hit",
    "pattern": "P10",
-   "text": "The police search {place}, where you are.",
+   "text": "The Federal Police search {place}, where you are.",
    "args": [
     "place"
    ]
@@ -3580,7 +3580,7 @@
   {
    "id": "enemy.short.press_ally",
    "pattern": "P10",
-   "text": "The police question {name}, who says nothing.",
+   "text": "The Federal Police question {name}, who says nothing.",
    "args": [
     "name"
    ]
@@ -3588,7 +3588,7 @@
   {
    "id": "enemy.short.press_ally_talked",
    "pattern": "P10",
-   "text": "The police question {name}, who talks.",
+   "text": "The Federal Police question {name}, who talks.",
    "args": [
     "name"
    ]
@@ -3606,7 +3606,7 @@
   {
    "id": "enemy.short.roadblock",
    "pattern": "P10",
-   "text": "Police set a checkpoint at {place} for six hours.",
+   "text": "The Federal Police set a checkpoint at {place} for six hours.",
    "args": [
     "place"
    ]
@@ -3614,7 +3614,7 @@
   {
    "id": "enemy.short.watch_sibling",
    "pattern": "P10",
-   "text": "The police monitor {name}'s calls.",
+   "text": "The Federal Police monitor {name}'s calls.",
    "args": [
     "name"
    ]
@@ -3688,7 +3688,7 @@
   {
    "id": "about.p1",
    "pattern": "P08",
-   "text": "Two unmarked cars sit outside the house in Portô Venla. A police inspector runs the departure inquiry from the Interior Ministry, and he is good at it. Rādiô Portô Venla has you on a yacht in the harbor, which is where you want the police looking."
+   "text": "Two unmarked cars sit outside the house in Portô Venla. The Federal Police run the departure inquiry for the Interior Ministry, and they are good at it. Rādiô Portô Venla has you on a yacht in the harbor, which is where you want the Federal Police looking."
   },
   {
    "id": "about.p2",
@@ -3698,7 +3698,7 @@
   {
    "id": "about.p3",
    "pattern": "P08",
-   "text": "Nando has driven you for 11 years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Two of the people helping you already work for the police, and which two changes every run."
+   "text": "Nando has driven you for 11 years. Nonā Rosa Trentinī has a room in Nova Trentô, a phone, and a grandson who knows which boxcar the guards skip. Holt Greer works the midnight freight out of Salta and sells his chalk-marked crate to anyone with cash. Theo Bascom runs the yard. Two of the people helping you already work for the Federal Police, and which two changes every run."
   },
   {
    "id": "about.road_h",
@@ -3718,7 +3718,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move takes a roll of one die, and police attention climbs toward 10 while the police search where you are. At 10 the police stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move takes a roll of one die, and police attention climbs toward 10 while the Federal Police search where you are. At 10 they stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -3812,12 +3812,12 @@
   {
    "id": "sim.effect.decoy_at_the_yard",
    "pattern": "P03",
-   "text": "You spend your two spare cars. The men follow Nando's sedan north, the police move their search to Pedra Branca, and your police attention drops by two."
+   "text": "You spend your two spare cars. The men follow Nando's sedan north, the Federal Police move their search to Pedra Branca, and your police attention drops by two."
   },
   {
    "id": "sim.effect.break_word",
    "pattern": "P03",
-   "text": "You lose every card Gianlūka gave you. He tells the police where you are, and your police attention rises by two."
+   "text": "You lose every card Gianlūka gave you. He tells the Federal Police where you are, and your police attention rises by two."
   },
   {
    "id": "gov.debrief.k_on",
@@ -4145,7 +4145,7 @@
   {
    "id": "brief.sosa",
    "pattern": "P02",
-   "text": "Police search here"
+   "text": "Federal Police search here"
   },
   {
    "id": "brief.jet",
@@ -4267,7 +4267,7 @@
   {
    "id": "brief.reception_note",
    "pattern": "P08",
-   "text": "The first step opens the road to Salta. The second step matters if the police have asked Costamar to hold you, because without it your takeoff roll is harder. The third puts Vélez's officials at one border post."
+   "text": "The first step opens the road to Salta. The second step matters if the Federal Police have asked Costamar to hold you, because without it your takeoff roll is harder. The third puts Vélez's officials at one border post."
   },
   {
    "id": "brief.gov_report_now",
@@ -4472,7 +4472,7 @@
   {
    "id": "action.sosa_none",
    "pattern": "P03",
-   "text": "The police do not act during these {hours} hours.",
+   "text": "The Federal Police do not act during these {hours} hours.",
    "args": [
     "hours"
    ]
@@ -4480,7 +4480,7 @@
   {
    "id": "action.sosa_once",
    "pattern": "P03",
-   "text": "The police act once during these {hours} hours.",
+   "text": "The Federal Police act once during these {hours} hours.",
    "args": [
     "hours"
    ]
@@ -4488,7 +4488,7 @@
   {
    "id": "action.sosa_times",
    "pattern": "P03",
-   "text": "The police act {n} times during these {hours} hours.",
+   "text": "The Federal Police act {n} times during these {hours} hours.",
    "args": [
     "hours",
     "n"
@@ -4638,7 +4638,7 @@
   {
    "id": "gov.inquiry.last_call",
    "pattern": "P03",
-   "text": " Her last call came from here, so the police now search where she is."
+   "text": " Her last call came from here, so the Federal Police now search where she is."
   },
   {
    "id": "gov.inquiry.no_calls",
@@ -4648,7 +4648,7 @@
   {
    "id": "gov.inquiry.helper_talks",
    "pattern": "P03",
-   "text": " {first} talks and stops helping her, and the police go where she is, but you are not told the place.",
+   "text": " {first} talks and stops helping her, and the Federal Police go where she is, but you are not told the place.",
    "args": [
     "first"
    ]
@@ -4722,12 +4722,12 @@
   {
    "id": "sum.search_here",
    "pattern": "P10",
-   "text": "The police now search where you are"
+   "text": "The Federal Police now search where you are"
   },
   {
    "id": "sum.search_elsewhere",
    "pattern": "P10",
-   "text": "The police now search somewhere else"
+   "text": "The Federal Police now search somewhere else"
   },
   {
    "id": "sum.report",
@@ -4751,7 +4751,7 @@
   {
    "id": "sim.preview.harder_checkpoint",
    "pattern": "P03",
-   "text": "Police have a checkpoint here until {time}, and it makes this roll harder.",
+   "text": "The Federal Police have a checkpoint here until {time}, and it makes this roll harder.",
    "args": [
     "time"
    ]

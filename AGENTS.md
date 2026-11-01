@@ -71,12 +71,12 @@ How to work under it:
   Cerro Alto, Susana to Portalba, Santa Laura to Pedra Branca, Atlanta to
   Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
   Internal ids keep the old names.
-- **Say "the police", never Sosā.** Owner, Nov. 1, 2026: "no one knows who Sosā is ... it's too confusing for people." Player text names what it is, the police, and uses a plural verb ("the police act"). Where one person is needed (his phone call, the government side's own officer), say "the police inspector". Internal ids keep `sosa` and `enemy`.
+- **The opponent is the Federal Police**, never Sosā. Owner, Nov. 1, 2026: "no one knows who Sosā is ... it's too confusing for people," then "Name the opponent properly." Player text names the force that hunts you "the Federal Police" with a plural verb ("the Federal Police act once during these three hours"). Its officer, where one person is needed, is "the Federal Police inspector" (the phone shows "Federal Police"). Costamar's force is "the Costamaran police". Generic phrases stay generic: "police attention", "a police stop", "a police car". Internal ids keep `sosa` and `enemy`.
 - **Endings** read "You win" or "You lose", then the reason in a full sentence.
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what
   happens when it runs out." The vocabulary is fixed: the escape deadline
-  (Tuesday 2 p.m.), when the police act again, how long a move takes, and the chance
+  (Tuesday 2 p.m.), when the Federal Police act again, how long a move takes, and the chance
   of success. Chance and duration are separate facts on separate lines.
 - **Budgets never beat meaning.** The checks cap buttons at six words and keep
   interface labels to one sentence. When an explanation does not fit, put it in
