@@ -381,3 +381,15 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 /* chance and time on separate lines */
 .act .meta,.approach .meta{display:flex;flex-direction:column;gap:2px}.act .meta .hrs,.approach .meta .hrs{color:var(--soft);font-family:var(--font-body)}
 .act .meta .sosa-during,.approach .meta .sosa-during{color:var(--coral2);font-family:var(--font-body)}
+
+/* the briefing route on a phone: a vertical list, so names never collide and markers never clip */
+@media (max-width: 640px) {
+  #brief .broute{grid-template-columns:1fr;gap:0;padding:0}
+  #brief .broute::before{left:7px;right:auto;top:14px;bottom:14px;width:3px;height:auto}
+  #brief .broute li{flex-direction:row;align-items:center;text-align:left;gap:12px;min-height:40px}
+  #brief .broute .dot{order:0;flex:none}
+  #brief .broute .stop{order:1;font-size:16px;flex:1 1 auto}
+  #brief .broute .above,#brief .broute .below{order:2;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;min-height:0;gap:4px}
+  #brief .broute .below{order:3}
+  #brief .bpill{font-size:13px}
+}
