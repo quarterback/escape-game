@@ -2871,8 +2871,12 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "The desk answers in six hours and needs a three or more. It gives you the operator card.",
-   "role": "gov"
+   "text": "The desk answers in six hours and needs a roll of {need} or higher, a {pct}% chance. It gives you the operator card.",
+   "role": "gov",
+   "args": [
+    "need",
+    "pct"
+   ]
   },
   {
    "id": "gov.why.the_aviation_desk_opens_on",
@@ -2901,8 +2905,12 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Cerro Alto answers in 10 hours and needs a four or more. If Costamar agrees, her takeoff gets harder and your patrols can act at Portalba.",
-   "role": "gov"
+   "text": "Cerro Alto answers in 10 hours and needs a roll of {need} or higher, a {pct}% chance. If Costamar agrees, her takeoff gets harder and your patrols can act at Portalba.",
+   "role": "gov",
+   "args": [
+    "need",
+    "pct"
+   ]
   },
   {
    "id": "gov.status.esmeralda_has_agreed",
@@ -4577,6 +4585,15 @@
    "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
    "args": [
     "list"
+   ]
+  },
+  {
+   "id": "gov.preview.the_post_answers",
+   "pattern": "P03",
+   "text": "The post answers in four hours and needs a roll of {need} or higher, a {pct}% chance.",
+   "args": [
+    "need",
+    "pct"
    ]
   }
  ]
