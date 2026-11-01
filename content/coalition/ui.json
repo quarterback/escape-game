@@ -1013,7 +1013,7 @@
   {
    "id": "log.card_lost",
    "pattern": "P10",
-   "text": "Lost: {card}.",
+   "text": "You no longer have {card}.",
    "args": [
     "card"
    ]
@@ -1121,13 +1121,13 @@
   {
    "id": "report.proves",
    "pattern": "P06",
-   "text": "Proves",
+   "text": "It proves",
    "role": "gov"
   },
   {
    "id": "report.not_prove",
    "pattern": "P06",
-   "text": "Does not prove",
+   "text": "It does not prove",
    "role": "gov"
   },
   {
@@ -2440,14 +2440,14 @@
   {
    "id": "gov.line.the_sergeant_is_off_shift",
    "pattern": "P07",
-   "text": "\"The sergeant is off shift. Nobody has read it.\"",
+   "text": "\"The sergeant is off shift, so nobody at the post has confirmed the ban yet.\"",
    "role": "gov",
    "speaker": "desk"
   },
   {
    "id": "gov.line.the_post_confirms_the_sergeant",
    "pattern": "P07",
-   "text": "\"The post confirms, and the sergeant has her name on the desk.\"",
+   "text": "\"The post confirms the ban, and the sergeant has her name on the desk.\"",
    "role": "gov",
    "speaker": "desk"
   },
@@ -2475,7 +2475,7 @@
   {
    "id": "gov.line.esmeralda_will_hold_her_if",
    "pattern": "P07",
-   "text": "\"Costamar will hold her if she appears. The interior ministry gave us a name to call.\"",
+   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and their police can stop her once for questioning. The interior ministry gave us a name to call.\"",
    "role": "gov",
    "speaker": "embassy"
   },
@@ -2593,7 +2593,7 @@
   {
    "id": "gov.line.the_post_will_confirm_when",
    "pattern": "P07",
-   "text": "\"The post will confirm when the sergeant reads it. Four hours.\"",
+   "text": "\"The ban is already in force. The post will confirm it when the sergeant reads it, in four hours.\"",
    "role": "gov",
    "speaker": "desk"
   },
@@ -2725,13 +2725,13 @@
   {
    "id": "gov.status.esmeralda_has_agreed_to_hold",
    "pattern": "P05",
-   "text": "Costamar has agreed to hold her.",
+   "text": "Costamar has agreed to your request.",
    "role": "gov"
   },
   {
    "id": "gov.status.esmeraldan_hold",
    "pattern": "P05",
-   "text": "Costamaran hold",
+   "text": "Costamar's agreement",
    "role": "gov"
   },
   {
@@ -2743,13 +2743,13 @@
   {
    "id": "gov.status.ban_sent_not_confirmed_at",
    "pattern": "P05",
-   "text": "Ban sent, not confirmed at the post",
+   "text": "The travel ban is in force, and the post has not confirmed it",
    "role": "gov"
   },
   {
    "id": "gov.status.confirmed_the_post_has_her",
    "pattern": "P05",
-   "text": "Confirmed, the post has her name",
+   "text": "The post has confirmed the travel ban",
    "role": "gov"
   },
   {
@@ -2774,7 +2774,7 @@
   {
    "id": "gov.scene.the_crossing_could_happen_before",
    "pattern": "P08",
-   "text": "She could cross before your orders arrive. A sent ban does not close the border.",
+   "text": "She could cross before your orders arrive, because the travel ban makes crossing harder without closing the border.",
    "role": "gov",
    "note": "objective"
   },
@@ -2845,7 +2845,7 @@
   {
    "id": "gov.status.confirmed_at_the_post",
    "pattern": "P05",
-   "text": "Confirmed at the post.",
+   "text": "The post has confirmed it.",
    "role": "gov"
   },
   {
@@ -2931,7 +2931,7 @@
   {
    "id": "gov.preview.on_failure",
    "pattern": "P03",
-   "text": "On failure: {fail}",
+   "text": "If it fails, {fail}",
    "args": [
     "fail"
    ],
@@ -2940,10 +2940,8 @@
   {
    "id": "gov.preview.takes_hour_acts",
    "pattern": "P03",
-   "text": "Takes {hours} hour{s}. Done by {who}.",
+   "text": "The order goes to {who}.",
    "args": [
-    "hours",
-    "s",
     "who"
    ],
    "role": "gov"
@@ -2966,7 +2964,7 @@
   {
    "id": "gov.why.your_ministry_does_not_command",
    "pattern": "P04",
-   "text": "Ask Costamar to hold her first",
+   "text": "Your orders reach Portalba only after Costamar agrees to your request.",
    "role": "gov"
   },
   {
@@ -4106,7 +4104,7 @@
   {
    "id": "brief.gov_need_hold",
    "pattern": "P02",
-   "text": "Costamar holds her"
+   "text": "Costamar's agreement"
   },
   {
    "id": "brief.gov_search",
@@ -4203,7 +4201,7 @@
   {
    "id": "brief.phone_suggest",
    "pattern": "P08",
-   "text": "The call that helps most now is {call}.",
+   "text": "{call} next, because it helps most now.",
    "args": [
     "call"
    ]
@@ -4582,7 +4580,7 @@
   {
    "id": "gov.preview.the_post_answers",
    "pattern": "P03",
-   "text": "The post answers four hours after your call. Roll {need} or higher ({pct}% chance) to confirm the ban.",
+   "text": "The post answers four hours after your call. Roll {need} or higher ({pct}% chance) to confirm the ban. The ban is in force either way, and this tells you the post has it.",
    "args": [
     "need",
     "pct"
@@ -4637,6 +4635,56 @@
    "text": " {first} talks and stops helping her, and the police go where she is, but you are not told the place.",
    "args": [
     "first"
+   ]
+  },
+  {
+   "id": "sum.news_rumor",
+   "pattern": "P10",
+   "text": "A rumor about {name} is waiting under News",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.news_rumor",
+   "pattern": "P03",
+   "text": "A rumor about {name} came in.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "result.bought",
+   "pattern": "P10",
+   "text": "Turned back at the Costamaran post"
+  },
+  {
+   "id": "log.bought",
+   "pattern": "P03",
+   "text": "The Valdórian side let you through, but the Costamaran post turns you back."
+  },
+  {
+   "id": "gov.report.stop_1",
+   "pattern": "P06",
+   "text": "A patrol stopped her for questioning in {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "gov.report.stop_2",
+   "pattern": "P06",
+   "text": "A patrol took her to the station in {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "gov.report.stop_3",
+   "pattern": "P06",
+   "text": "The court put her under house arrest in {place}.",
+   "args": [
+    "place"
    ]
   }
  ]

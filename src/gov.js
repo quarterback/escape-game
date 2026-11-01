@@ -88,7 +88,7 @@ const Gov = (() => {
       if (e.type === 'stage' && e.arr === 'aircraft' && e.stage === 1) report(g, events, 5, 'aviation', T('gov.report.a_charter_to_layuna_is', { city: D.DESTS[c.dest].city }), T('gov.report.an_aircraft_is_booked'), T('gov.report.that_she_has_reached_it'), 3, c.hour);
       if (e.type === 'stage' && e.arr === 'permission' && e.stage === 2) report(g, events, 5, 'embassy', T('gov.report.visa_issued', { name: D.DESTS[c.dest].name }), T('gov.report.will_receive_her', { name: D.DESTS[c.dest].name }), T('gov.report.where_she_is_now'), 4, c.hour);
       if (e.type === 'enemy' && e.id === 'press_ally' && e.talked) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, T('gov.report.where_she_was_last_seen'), T('gov.inquiry.where_she_is_now'), 0, c.hour); }
-      if (e.type === 'hold') report(g, events, c.pos, 'desk', T('gov.report.a_patrol_report_in', { title: e.title.toLowerCase(), place: place(c.pos) }), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
+      if (e.type === 'hold') report(g, events, c.pos, 'desk', stopReport(e.rung, place(c.pos)), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
       if (e.type === 'over') g.over = e;
     }
   }
@@ -124,7 +124,7 @@ const Gov = (() => {
       const need = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm), pct = D.DICE.chance(need); // the 20-sided target and its chance in percent
       out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, need, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: `${pct}%`, pct, bonus: used, bonusFrom: used.map(u => u.tag),
-        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { hours: o.hours, s: o.hours === 1 ? '' : 's', who: o.who[0].toUpperCase() + o.who.slice(1) }), o.fail ? T('gov.preview.on_failure', { fail: o.fail }) : T('gov.preview.cannot_fail')] });
+        preview: [o.text, T('sim.preview.die_needs_or_more_in', { need, pct, bonus: '' /* the move card names the cards that make it easier; a six-sided 'by two' would be wrong on the 20-sided die */ }), T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
     }
     return out;
   }
@@ -162,11 +162,13 @@ const Gov = (() => {
   }
   // run a police action on her hidden run, and pass on only what the desk can know: the action's own line and a questioned helper's answer.
   // Her police attention, her jet's progress and her cards never reach the government player (owner, Nov. 1, 2026).
+  // a police stop reported as a sentence, by how far up the ladder it went
+  const stopReport = (rung, p) => T(({ 1: 'gov.report.stop_1', 2: 'gov.report.stop_2', 3: 'gov.report.stop_3' })[rung] || 'gov.report.stop_1', { place: p });
   function act(g, id, events) {
     const c = g.c, priv = [], text = S.enemyAct(c, id, priv);
     for (const e of priv) if (e.type === 'enemy' || (e.type === 'roll' && e.pressed)) events.push(e);
     const h = priv.find(e => e.type === 'hold'); // a stop the police made is something the investigation has established
-    if (h) report(g, events, c.pos, 'desk', T('gov.report.a_patrol_report_in', { title: h.title.toLowerCase(), place: place(c.pos) }), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 0, c.hour);
+    if (h) report(g, events, c.pos, 'desk', stopReport(h.rung, place(c.pos)), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 0, c.hour);
     return text;
   }
   function _commit(g, id, optionId) {

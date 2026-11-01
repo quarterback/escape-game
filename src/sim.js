@@ -378,14 +378,16 @@ const Sim = (() => {
     let won;
     if (a.noRoll) { won = true; events.push(ev('roll', { die: null, need: null, won, auto: true, bonus: [] })); }
     else { const die = roll(s); won = wins(die, view.need); events.push(ev('roll', { die, need: view.need, won, bonus: view.bonusFrom })); }
-    apply(s, won ? a.success : a.fail, events, a);
+    const bought = won && a.post && a.post === s.boughtPost; // the Valdórian side lets you through and the bought Costamaran post turns you back
+    if (bought) events[events.length - 1].bought = true;
+    apply(s, won ? (bought ? Object.assign({}, a.success, { say: '' }) : a.success) : a.fail, events, a);
     // the wrong person to trust: a compromised ally may sell the move
     if (a.with && s.people[a.with] && s.people[a.with].bad && !s.people[a.with].known && s._rng() < 0.6) {
       const p = s.people[a.with]; p.known = true; p.turned = true; s.belief = s.pos; heat(s, 3, events); events.push(ev('belief', { belief: s.belief }));
       say(events, 'narrator', T('sim.say.sold_you_out_sosa_knows', { name: personName(s, a.with) })); events.push(ev('betrayal', { who: a.with }));
     }
     // the final boss: the Valdórian side lets you through and the bought Costamaran post detains you anyway
-    if (won && a.post && a.post === s.boughtPost) {
+    if (bought) {
       say(events, 'narrator', level(s).bought.say); ledger(s, 'official', T('sim.ledger.post_was_bought', { post: postName(a.post) }));
       s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); heat(s, 2, events); pass(s, a.hours + 12, events); return finish(s, events);
     }
