@@ -474,3 +474,17 @@ body.ringing #phoneh{color:var(--mint)}
 .pickbox .row .primary{flex:1}
 .choosebtn{font-size:20px;min-height:60px}
 @media(min-width:1000px){#pick-grid{gap:16px}.picktile .face{max-height:240px}}
+/* the route map (owner, Nov. 1, 2026): on the stop screen, and in the scene's empty road at desktop width */
+.routemap svg{display:block;width:100%;height:auto}
+#b-route{max-width:640px;margin:0 auto;width:100%}
+.routemap .land{fill:#2a2157}.routemap .land.far{fill:#33285f}
+.routemap .border{stroke:#B9B0D9;stroke-width:2;stroke-dasharray:6 6}
+.routemap .leg{stroke:#5a4d96;stroke-width:4;stroke-dasharray:2 8;stroke-linecap:round}
+.routemap .leg.went{stroke:var(--gold);stroke-dasharray:none}
+.routemap .stopdot{fill:#5a4d96;stroke:#150F2E;stroke-width:3}.routemap .stopdot.went{fill:#8f84c9}.routemap .stopdot.end{fill:var(--lav)}.routemap .stopdot.here{fill:var(--gold)}
+.routemap text{font-family:var(--font-body);fill:#F6F1FF}
+.routemap .nm{font-size:16px;fill:#B9B0D9}.routemap .nm.here{fill:#F6F1FF;font-family:var(--font-title)}
+.routemap .pt{font-size:14px;fill:#150F2E;font-family:var(--font-title)}
+.routemap .pill.you{fill:var(--gold)}.routemap .pill.sosa{fill:#FF9DAE}.routemap .pill.jet{fill:var(--lav)}.routemap .pill.seen{fill:#B9B0D9}
+.scenemap{display:none}
+@media(min-width:1000px){.scenemap{display:block;position:absolute;left:50%;bottom:20px;transform:translateX(-50%);width:min(620px,52%);padding:6px;background:rgba(21,15,46,.55);border-radius:18px;pointer-events:none}}

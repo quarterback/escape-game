@@ -127,7 +127,7 @@ const Data = (() => {
         { id: 'second_driver', with: 'nando', name: 'Hire a plain car and driver', hours: 2, dc: 3, needs: [], pay: true,
           mods: { information: 1 }, text: "Nando's cousin offers a taxi and his silence.",
           success: { say: 'You leave by taxi while Nando drives your sedan back north.' },
-          fail: { exposure: 1, hours: 2, say: 'The cousin wants more money, then wants nothing to do with it. The attempt costs you four hours.' } },
+          fail: { exposure: 1, hours: 2, say: "Nando's cousin wants more money, then backs out. You lose four hours." } },
         { id: 'siblings_driver', with: 'sibling', name: "Leave with your sibling's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
           mods: { information: 1 }, text: 'Your sibling knows a man in Pedra Branca. Once the charter is booked, he drives you to Nova Trentô.',
           success: { say: 'He asks nothing and drives the back roads. The radio stays off.' },

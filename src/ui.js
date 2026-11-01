@@ -109,6 +109,7 @@ const UI = (() => {
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
       $('heatnum2').className = 'mono orange'; $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
+      { const r = v.reports[0], m = { [gov.belief]: [['you', T('brief.gov_search')]] }; if (r) m[r.at] = (m[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]); $('routemap').innerHTML = routeMap(m, false, 0); }
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
@@ -125,6 +126,7 @@ const UI = (() => {
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
+    $('routemap').innerHTML = routeMap(routeMarks(), false, s.pos);
   }
 
   // ---- the coach -----------------------------------------------------------
@@ -378,7 +380,9 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
+      // owner, Nov. 1, 2026: a wait where nothing happened needs no card and no Continue; the scene says so and the next turn starts
+      if (result.waited && !roundSum.theirs.length && !result.mine.length && !s.event && !s.over && !Tutorial.active()) { Render.float(Render.W * Render.SCALE / 2, 160, T('sosa.safe'), '#7FE0B0'); Render.enqueue({ dur: 10, start() { startRound(false); } }); } }
     renderAll(); saveRun();
   }
 
@@ -468,6 +472,30 @@ const UI = (() => {
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
   const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  // A small map of the route (owner, Nov. 1, 2026: "it would be so much better if it had a little map ... instead of a
+  // line"): Valdória and Costamar, the border as a dashed line, the stops where they sit, the road you have travelled
+  // solid and the road ahead dashed. Wide in the scene and on a desktop stop screen; tall on a phone.
+  const MAPXY = { wide: [[54, 58], [150, 104], [246, 56], [342, 106], [444, 60], [548, 106]], tall: [[44, 34], [150, 86], [60, 140], [168, 192], [96, 250], [196, 304]] };
+  function routeMap(marks, tall, upto) {
+    const P = MAPXY[tall ? 'tall' : 'wide'], n = Data.LEVELS.length;
+    let h = tall
+      ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
+      : '<rect class="land" x="4" y="4" width="438" height="152" rx="18"/><rect class="land far" x="446" y="4" width="190" height="152" rx="18"/><line class="border" x1="444" y1="4" x2="444" y2="156"/>';
+    for (let i = 0; i < n - 1; i++) h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[i + 1][0]}" y2="${P[i + 1][1]}"/>`;
+    const said = [];
+    Data.LEVELS.forEach((L, i) => {
+      const [x, y] = P[i], m = marks[i] || [], here = m.some(k => k[0] === 'you');
+      h += `<circle class="stopdot${here ? ' here' : ''}${i === n - 1 ? ' end' : ''}${i < upto ? ' went' : ''}" cx="${x}" cy="${y}" r="${here ? 9 : 7}"/>`;
+      h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
+      m.forEach((k, j) => {
+        const w = Math.round(k[1].length * 7.6 + 18), px = tall ? x + 16 + j * (w + 6) : x - w / 2, py = tall ? y + 12 : y - 34 - j * 26;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
+        said.push(`${L.short}: ${k[1]}`);
+      });
+    });
+    const label = Data.LEVELS.map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
+    return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+  }
   function briefRoute(marks) {
     return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
@@ -484,7 +512,7 @@ const UI = (() => {
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
-    $('b-route').innerHTML = briefRoute(b.marks);
+    $('b-route').innerHTML = routeMap(b.marks, window.innerWidth < 640, gov ? 0 : s.pos);
     $('b-stats').innerHTML = b.stats.map(st => `<div><b${st.cls ? ` class="${st.cls}"` : ''}>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
     $('b-job').innerHTML = b.job.map(P).join('');
     $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
@@ -577,7 +605,7 @@ const UI = (() => {
     const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
-    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
+    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up' : 'sum.attention_down') });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = head + `<ul class="rows">${rows}</ul>`;
@@ -621,8 +649,8 @@ const UI = (() => {
         default: break;
       }
     }
-    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T(expMine > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
-    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
+    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T(expMine > 0 ? 'sum.attention_up' : 'sum.attention_down') });
+    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down') });
     return r;
   }
 

@@ -699,7 +699,12 @@
   {
    "id": "sosa.quiet",
    "pattern": "P12",
-   "text": "Nobody moved against you"
+   "text": "Safe for now"
+  },
+  {
+   "id": "sosa.safe",
+   "pattern": "P10",
+   "text": "Safe for now"
   },
   {
    "id": "sosa.kind_gov",
@@ -3522,18 +3527,12 @@
   {
    "id": "sum.attention_up",
    "pattern": "P10",
-   "text": "Police attention rises and is now {level}.",
-   "args": [
-    "level"
-   ]
+   "text": "Police attention goes up."
   },
   {
    "id": "sum.attention_down",
    "pattern": "P10",
-   "text": "Police attention falls and is now {level}.",
-   "args": [
-    "level"
-   ]
+   "text": "Police attention goes down."
   },
   {
    "id": "float.attention_up",
