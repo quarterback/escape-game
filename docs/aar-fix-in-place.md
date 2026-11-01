@@ -76,3 +76,16 @@ Saved runs from before these commits load; their old deadline field is ignored. 
 - The owner plays a run and says whether single-use help feels right. Step 3d reverts on its own if not.
 - The owner decides design issues 24 to 27.
 - Any further retune goes through the corrected `tools/calibrate.js` and `tools/gov-calibrate.js`.
+
+## Addendum, same day: the screen pass
+
+The owner reviewed screenshots and asked for less machinery on screen: no deck, cards working on their own, waiting as a real choice, no step strip, and milestone moments. He set aside the process rules for this pass ("Ignore my rules. Just do what I ask") and decided the destination question: the country the player picks is the right one for that run.
+
+- **Single-use help reverted.** With no deck and no card choice on screen, spending cards automatically would take help away without the player choosing. Cards are permanent and automatic again, and a result line names the card that helped a roll.
+- **Every destination accepts you.** The choice is between sponsors: Salek wants the family accounts, Rāo is six hours slower, Vosk's deal raises police attention.
+- **One turn, fewer screens.** The phone is part of the move step (one call per turn, as before). After a move, one card shows your result and what happened during its hours. The step strip and round number are hidden. On phones the Phone tab opens only when someone is waiting for an answer.
+- **Waiting is a move.** "Wait until dark" and "Wait an hour" sit in the list of moves with their hours, how often Sosā acts and that news can end the wait early.
+- **Milestones.** The briefing opens on the first turn and on reaching a new stop, as "Milestone reached: You made it to Salta", with time, police attention and the next challenge. It no longer opens every turn; the Briefing button still does.
+- **No deck.** The Deck tab is now Menu (the game menu it already held). The route no longer lists where cards count.
+
+Calibration, corrected harness, 300 runs: Atlanta 41.0% Teresā / 32.0% Matēu, Tarun 36.7% / 24.7%, Zaryanova 40.7% / 31.0%, daily 42.7% / 36.3%; government side 54.5% (she can no longer land somewhere that refuses her). Both demos play to the end in a phone-sized browser with no errors.

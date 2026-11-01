@@ -190,6 +190,11 @@
    "text": "Wait until dark"
   },
   {
+   "id": "action.wait_go",
+   "pattern": "P01",
+   "text": "Wait"
+  },
+  {
    "id": "nav.phone",
    "pattern": "P02",
    "text": "The phone"
@@ -425,7 +430,7 @@
   {
    "id": "need.in_hand",
    "pattern": "P05",
-   "text": "In your deck"
+   "text": "You have it"
   },
   {
    "id": "need.passage_from",
@@ -638,6 +643,21 @@
    ]
   },
   {
+   "id": "wait.dark_line",
+   "pattern": "P03",
+   "text": "Night starts at 10 p.m., and the night moves here open then."
+  },
+  {
+   "id": "wait.interrupt",
+   "pattern": "P03",
+   "text": "News or a police stop ends the wait early."
+  },
+  {
+   "id": "wait.hour_line",
+   "pattern": "P03",
+   "text": "You stay where you are for one hour."
+  },
+  {
    "id": "result.your_order",
    "pattern": "P10",
    "text": "Your order",
@@ -834,7 +854,7 @@
   {
    "id": "action.next_round",
    "pattern": "P01",
-   "text": "Next round"
+   "text": "Continue"
   },
   {
    "id": "sum.held_firm",
@@ -879,6 +899,14 @@
    "text": "You lost {name}",
    "args": [
     "name"
+   ]
+  },
+  {
+   "id": "sum.helped",
+   "pattern": "P10",
+   "text": "{list} made this easier",
+   "args": [
+    "list"
    ]
   },
   {
@@ -1440,12 +1468,12 @@
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "A card lowers the number you need on the die, or lets you try a move at all, but only at the stops listed under Where it counts. The party's cards stop working at the border, and some people only move for money."
+   "text": "People who help you give you cards, and a card works on its own. It lowers the number you need on the die, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border, and some people only move for money."
   },
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "A round is News, Phone, Move, Roll and then Sosā. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Esmeraldan airspace inside 72 hours."
+   "text": "Each turn, answer your phone, make up to one call, then make one move. Police attention rises while Sosā searches where you are, and at 10 the police stop you; each stop within 12 hours of the last is worse, and the third step is house arrest. Get out of Esmeraldan airspace inside 72 hours."
   },
   {
    "id": "help.ios",
@@ -1495,7 +1523,7 @@
   {
    "id": "tab.hand",
    "pattern": "P02",
-   "text": "Deck"
+   "text": "Menu"
   },
   {
    "id": "update.ready",
@@ -3821,7 +3849,7 @@
   {
    "id": "about.p5",
    "pattern": "P08",
-   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter. Gannibal in Zaryanova, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, you are sent back."
+   "text": "Where it says is the first thing you decide. Lāyūna in Atlanta, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Tarun, where a magistrate named Dēvan Rāo answers by letter and takes six hours longer. Gannibal in Zaryanova, where Mirēlā Vosk wants mineral rights you do not control. Whichever you pick will take you."
   },
   {
    "id": "about.p6",
@@ -4157,6 +4185,29 @@
    "text": "Briefing"
   },
   {
+   "id": "brief.milestone",
+   "pattern": "P02",
+   "text": "Milestone reached"
+  },
+  {
+   "id": "brief.made_it",
+   "pattern": "P02",
+   "text": "You made it to {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.h_next",
+   "pattern": "P02",
+   "text": "Next challenge"
+  },
+  {
+   "id": "brief.go_on",
+   "pattern": "P01",
+   "text": "Keep going"
+  },
+  {
    "id": "brief.gov_title",
    "pattern": "P02",
    "text": "The search"
@@ -4370,7 +4421,7 @@
   {
    "id": "brief.visa_note",
    "pattern": "P08",
-   "text": "Without it you can still fly, but if the country you chose will not take you, it sends you back."
+   "text": "Without it you can still fly, and the country you chose takes you when you land."
   },
   {
    "id": "brief.reception_note",
@@ -4608,20 +4659,6 @@
    "text": "First you need this step: {step}.",
    "args": [
     "step"
-   ]
-  },
-  {
-   "id": "hint.wait_sosa",
-   "pattern": "P08",
-   "text": "If you wait the hour, Sosā acts during it."
-  },
-  {
-   "id": "hint.wait_dark",
-   "pattern": "P08",
-   "text": "Night starts at 10 p.m., so waiting for it takes {hours} hour{s}, and news or a police stop ends the wait early.",
-   "args": [
-    "hours",
-    "s"
    ]
   },
   {

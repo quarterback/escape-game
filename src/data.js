@@ -193,7 +193,7 @@ const Data = (() => {
           success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Esmeraldan airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you on the apron for two hours while a request from Valdória is read, and reread.' } },
         { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
-          mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave without the visa. Your sponsor's line helps persuade him. If the country you picked never agreed to take you, you are held when you land.",
+          mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave without the visa. Your sponsor's line helps persuade him. The country you picked takes you when you land.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
           fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.' } },
         { id: 'fuel_now', name: 'Pay the fuel agent yourself', hours: 1, dc: 2, needs: [{ arr: 'aircraft', stage: 2 }], pay: true,
@@ -225,7 +225,9 @@ const Data = (() => {
 
   // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Gannibal); Almatau is a
   // working name for Tarun's capital, which the canon leaves open. accepts: whether the country will take you.
-  // The player never sees accepts; the only tell is whether the visa ever arrives. Susana, in Esmeralda, is where you fly from.
+  // Owner, November 1, 2026: the country the player picks is the right one for that run, so every country accepts.
+  // The choice is between sponsors: Salek wants the accounts, Rāo is six hours slower, Vosk's deal raises police attention.
+  // Susana, in Esmeralda, is where you fly from.
   const DESTS = {
     atlanta:   { name: 'Atlanta', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad and an old client of your family',
@@ -234,14 +236,14 @@ const Data = (() => {
                             demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
                             kept: 'Salek now holds the family accounts.', broke: 'Salek tells his clients you broke your word.' },
                  landing: '' },
-    tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: false,
+    tarun:     { name: 'Tarun', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14, accepts: true,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
                             asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics.',
                             terms: 'He will write to the ministry if you give your word to keep out of politics while you are his guest.', slow: 6,
                             demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Tarun. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer now comes through on a 3 or better.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.', broke: 'Rāo tells the ministry you broke your word.' },
                  landing: 'You land at Almatau at dawn. The flight plan was accepted; you were not. Tarun never agreed to take you, and the men at the foot of the stairs are police. A Valdórian liaison arrives by evening.' },
-    zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8, accepts: false,
+    zaryanova: { name: 'Zaryanova', city: 'Gannibal', lon: 131.9, lat: 43.1, hours: 8, accepts: true,
                  sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Gannibal with friends at the foreign ministry',
                             asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control.',
                             terms: 'She will take it to the ministry if you sign over mineral rights you do not control.', slow: 0,

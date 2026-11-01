@@ -386,3 +386,10 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 /* no roll needed: a check instead of a die */
 .die.sure{display:grid;place-items:center;background:var(--mint);color:#150F2E}
 .automove{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+
+/* the run shows the escape, not the machinery: no step strip, no deck, cards work in the background */
+#phases,#round{display:none!important}
+#tab-hand>h2,#hand{display:none!important}
+#tab-hand .menu2-h{margin-top:0}
+.waitact .die.wait,.actbox .die.wait{background:var(--lav);color:#1b1533}
+#b-win[hidden]{display:none}

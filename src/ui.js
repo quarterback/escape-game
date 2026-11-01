@@ -166,9 +166,27 @@ const UI = (() => {
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
     for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
-    $('wait').disabled = !!s.over || !Tutorial.allowsWait() || phase !== 'move';
-    // one tap for the hours until 10 p.m., shown only where a move here needs the dark
-    const wd = A.waitDark; $('waitdark').hidden = !wd.ok; $('waitdark').disabled = !wd.ok || !!s.over || !Tutorial.allowsWait() || phase !== 'move';
+    // waiting is a choice like any move: it says how long it takes and what can happen while you wait
+    $('wait').hidden = true; $('waitdark').hidden = true;
+    const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
+    const waits = [];
+    if (A.waitDark.ok) waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: [T('wait.dark_line'), T('wait.interrupt')] });
+    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [T('wait.hour_line')] });
+    for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
+  }
+  const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
+  const waitMeta = (w) => `<span class="meta"><span class="hrs">${esc(T(w.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(w.hours) }))}</span><span class="sosa-during">${esc(sosaDuring(w))}</span></span>`;
+  function waitBtn(w, allowed) {
+    const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
+    b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
+    b.onclick = () => { Sfx.unlock(); sel = w.id; Sfx.select(); renderAll(); };
+    return b;
+  }
+  function waitBox(w) {
+    const box = document.createElement('div'); box.className = 'actbox';
+    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div><ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.querySelector('.commit').onclick = () => doCommit(w.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
+    return box;
   }
 
   // ---- the phone: a thread, then calls --------------------------------------
@@ -193,14 +211,14 @@ const UI = (() => {
     if (!A.messages.length) inbox.innerHTML = `<p class="hint">${T('phone.empty')}</p>`;
     for (const m of A.messages) {
       const role = m.from === 'sibling' ? T('phone.sibling_role', { rel: Data.CHARACTERS[who].sibling.rel[0].toUpperCase() + Data.CHARACTERS[who].sibling.rel.slice(1).replace('your ', '') }) : m.from === 'enemy' ? Data.ENEMY.role : gov ? (Data.PEOPLE[m.from] || {}).role || '' : Sim.personRole(s, m.from);
-      inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && phase === 'phone'));
+      inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && (phase === 'phone' || phase === 'move')));
     }
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) {
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? T('phone.call_about', { name: pname(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] }) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
-      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && phase === 'phone' && phoneCalls < 1, label));
+      else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && phoneCalls < 1, label));
     }
   }
 
@@ -263,7 +281,7 @@ const UI = (() => {
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
-      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}${i > s.pos || i === s.pos ? `<span class="cardsnote">${cardNotes(i)}</span>` : ''}</div>`;
+      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
       rail.appendChild(li);
     });
     const ab = document.createElement('li'); ab.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><section id="abroad"><h3>${T('route.abroad_phone')}</h3>${abroad().map(w => `<span class="who">${whoHtml(w)}, ${w.role}</span>`).join('')}</section>`; rail.appendChild(ab);
@@ -275,8 +293,7 @@ const UI = (() => {
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
     lbl(T('route.who_acts_label')); Data.LEVELS.forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
     lbl(T('route.needed')); Data.LEVELS.forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
-    lbl(T('route.cards_count'));
-    const cr = document.createElement('div'); cr.className = 'cardsrow';
+    const cr = document.createElement('div'); cr.className = 'cardsrow'; cr.hidden = true; // cards work in the background now
     for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
     if (!s.hand.includes('intro_vel')) { const sp = document.createElement('span'); sp.className = 'cbar ghost card t-introduction'; sp.style.gridColumn = '5 / 7'; sp.style.cssText += ';min-height:0;transform:none;display:block;padding:8px 12px'; sp.textContent = T('route.velez_starts_short'); cr.appendChild(sp); }
     b.appendChild(cr);
@@ -334,7 +351,7 @@ const UI = (() => {
     if (Render.busy() || !$('interstitial').hidden) return;
     if (s.over || s.pos >= R.cutLevel) { stopReplay(); return; }
     R.last = now;
-    if (phase === 'roll') { enterPhase('sosa'); return; }
+    if (phase === 'roll') { enterPhase('sosa'); return; } // older saves
     if (phase === 'sosa') { startRound(false); return; }
     if (phase === 'news' && result && result.from === 'news') { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); return; }
     const next = R.queue.shift(); if (!next) { stopReplay(); return; }
@@ -371,8 +388,8 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
-    else if (sid.startsWith('msg:')) { /* stay on the phone */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 
@@ -391,13 +408,15 @@ const UI = (() => {
     if (!first) round += 1;
     phoneCalls = 0; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
+    if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
     if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
     else showBrief();
   }
+  const waitingMsgs = () => gov ? Gov.view(gov).messages.length : Sim.actions(s).messages.length;
   function enterPhase(p) {
-    if (p === 'phone' && !phoneUseful()) p = 'move';
+    if (p === 'phone' || p === 'roll') p = p === 'phone' ? 'move' : 'sosa';
     phase = p; sel = null;
-    if (window.innerWidth < 1000) setTab(p === 'phone' ? 'phone' : 'here');
+    if (window.innerWidth < 1000) setTab(p === 'move' && waitingMsgs() ? 'phone' : 'here'); // the phone opens only when someone is waiting for an answer
     if (Sfx.sting) Sfx.sting('phase');
     renderAll();
   }
@@ -406,7 +425,7 @@ const UI = (() => {
   const P = (t) => `<p>${esc(t)}</p>`;
   function briefEscape() {
     const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: [] };
-    if (s.pos !== briefPos) out.story.push(L.arrive);
+    if (s.pos !== briefPos) { out.story.push(L.arrive); out.arrived = true; }
     const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
     const steps = (k, full) => { const done = A[k].stages.slice(1, st(k) + 1), left = A[k].stages.slice(st(k) + 1, full + 1); return [done.length ? T('brief.done_list', { list: done.join(', ') }) : '', left.length ? T('brief.left_list', { list: left.join(', ') }) : ''].filter(Boolean).join(' '); };
     out.need = [
@@ -455,15 +474,17 @@ const UI = (() => {
     if (!s || s.over) return;
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = T('round.label', { n: round });
-    $('b-title').textContent = gov ? T('brief.gov_title') : Data.LEVELS[s.pos].short;
+    const milestone = !gov && s.pos > 0 && b.arrived;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = milestone ? T('brief.milestone') : T('round.label', { n: round });
+    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Data.LEVELS[s.pos].short }) : Data.LEVELS[s.pos].short;
+    $('b-jobh').textContent = T(milestone ? 'brief.h_next' : 'brief.h_round'); $('b-win').hidden = milestone; // a milestone is a moment, not a checklist
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
     $('b-route').innerHTML = briefRoute(b.marks);
     $('b-stats').innerHTML = b.stats.map(st => `<div><b>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
     $('b-job').innerHTML = b.job.map(P).join('');
     $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
     $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'}"><span class="tick" aria-hidden="true">${n.done ? '✓' : ''}</span><span class="nm"><b>${esc(n.name)}</b>${n.now ? `<span>${esc(n.now)}</span>` : ''}</span><span class="pips" aria-hidden="true">${Array.from({ length: n.of }, (_, k) => `<i class="${k < n.have ? 'on' : ''}"></i>`).join('')}</span></li>`).join('');
-    $('b-start').textContent = T('brief.start', { n: round });
+    $('b-start').textContent = gov || !b.arrived || s.pos === 0 ? T('brief.start', { n: round }) : T('brief.go_on');
     $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   function interstitial(clock, title, sub) {
@@ -476,16 +497,14 @@ const UI = (() => {
     $('phasebar').hidden = !on; document.body.classList.toggle('phased', on);
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
-      if (phase === 'move' && Tutorial.active() && !movedThisRound && phoneUseful()) phase = 'phone';
-      if (phase === 'phone' && !phoneUseful()) phase = 'move';
+      if (phase === 'phone') phase = 'move';
       if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
     }
     $('round').textContent = T('round.label', { n: round });
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    const wd = !gov && phase === 'move' && s && !s.over ? Sim.actions(s).waitDark : null;
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`) + (phase === 'move' && !gov && sosaActs(1) ? ' ' + T('hint.wait_sosa') : '') + (wd && wd.ok ? ' ' + T('hint.wait_dark', { hours: Sim.num(wd.hours), s: wd.hours === 1 ? '' : 's' }) + ' ' + sosaDuring({ hours: wd.hours }) : '');
+    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`);
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
     $('phasedone').hidden = phase !== 'phone';
     const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
@@ -513,14 +532,16 @@ const UI = (() => {
   function sosaCard(card) {
     card.className = 'sosa';
     // a move resolved without a roll skips the Roll step; its outcome opens this card instead
-    const auto = result && result.roll && result.roll.auto ? `<div class="automove"><span class="kind">${esc(result.kind)}</span>${result.title ? `<h3>${esc(result.title)}</h3>` : ''}<span class="outcome ok">${T('result.no_roll')}</span>${result.line ? `<p>${esc(result.line)}</p>` : ''}${result.mine.length ? mks(result.mine) : ''}</div>` : '';
+    // your move and what happened while it took its hours, on one card
+    const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : '';
+    const auto = r ? `<div class="automove"><span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}</div>` : '';
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     // one exposure line for the whole round, with the reason, instead of one per batch of hours
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
     if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? (s.belief === s.pos ? 'sum.exposure_round_here' : 'sum.exposure_round') : 'sum.exposure_round_fell', { n: Math.abs(exp) }) });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
-    card.innerHTML = auto + `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) }))}</h3><ul class="rows">${rows}</ul>`;
+    card.innerHTML = auto + `<span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span><h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3><ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
   }
   function summarize(events, kind, title) {
@@ -532,7 +553,8 @@ const UI = (() => {
       switch (e.type) {
         case 'attempt': r.title = e.name; break;
         case 'chose': r.title = r.title || e.label; break;
-        case 'roll': if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: pname(e.who).split(' ')[0], what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
+        case 'roll': if (!e.who && !after && e.bonus && e.bonus.length && !gov) { const names = e.bonus.map(t => cardsFor(t)[0]).filter(Boolean); if (names.length) r.mine.push({ k: 'gain', t: cap(T('sum.helped', { list: names.map(inSentence).join(', ') })) }); }
+          if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: pname(e.who).split(' ')[0], what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
         case 'say':
           if (!after && !r.line && (e.who === 'narrator' || e.featured)) r.line = e.who === 'narrator' ? e.text : `${pname(e.who)}: ${e.text}`;
           break;
@@ -614,9 +636,9 @@ const UI = (() => {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';
     $('waiting').textContent = v.messages.length ? T('phone.waiting', { n: v.messages.length }) : ''; const badge = $('tab-badge'); badge.hidden = !v.messages.length; badge.textContent = v.messages.length;
     if (!v.messages.length) inbox.innerHTML = `<p class="hint">${T('desk.empty')}</p>`;
-    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => phase === 'phone' && Tutorial.allowsOption(o.id)));
+    for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => (phase === 'phone' || phase === 'move') && Tutorial.allowsOption(o.id)));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, phase === 'phone' && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
+    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
   }
   function renderGovHand() {
     const h = $('hand'); h.innerHTML = '';
@@ -644,8 +666,8 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
-    else if (sid.startsWith('msg:')) { /* stay at the desk */ }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); } phase = result.roll && result.roll.auto ? 'sosa' : 'roll'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); }
     renderAll(); saveRun();
   }
 

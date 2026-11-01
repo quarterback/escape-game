@@ -55,10 +55,10 @@
      "id": "phases",
      "kind": "read",
      "title": "A round",
-     "body": "Every round goes News, Phone, Move, Roll, then Sosā. Answer your phone, make one call, make one move, and see what it cost you.",
-     "goal": "Know the five phases",
+     "body": "Each turn, answer anyone who calls, make up to one call, then make one move. When it is done you see what happened while it took its hours, including what Sosā did.",
+     "goal": "Know what a turn is",
      "highlight": [
-      "#phasebar"
+      "#approaches"
      ]
     },
     {
@@ -225,10 +225,9 @@
      "id": "relationships",
      "kind": "read",
      "title": "People give you cards",
-     "body": "You are in Salta now, and Nonā Rosa's truck is a card in your deck that helps your roll here. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
+     "body": "You are in Salta now, and Nonā Rosa's truck now helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when Sosā questions them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
-      "#hand",
       "#board",
       "#rail"
      ]
@@ -304,8 +303,7 @@
      "body": "Three posts cross into Esmeralda, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and crossing there needs no roll.",
      "goal": "Know what the three posts mean",
      "highlight": [
-      "#approaches",
-      "#hand"
+      "#approaches"
      ]
     },
     {
@@ -334,8 +332,7 @@
      "goal": "Play the airfield alone",
      "highlight": [
       "#board",
-      "#rail",
-      "#hand"
+      "#rail"
      ]
     }
    ]
@@ -378,10 +375,10 @@
      "id": "phases",
      "kind": "read",
      "title": "A round",
-     "goal": "Know the five phases",
-     "body": "Every round goes News, Desk, Order, Roll, then Her move. Answer the minister, send one request, give one order, and read what comes back.",
+     "goal": "Know what a turn is",
+     "body": "Each turn, answer the minister, send up to one request, then give one order. When it is done you see what came back while it took its hours.",
      "highlight": [
-      "#phasebar"
+      "#approaches"
      ]
     },
     {
