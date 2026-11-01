@@ -55,6 +55,23 @@
   I found them while checking the code for the owner's next question, fixed them in a follow-up commit, and corrected the numbers. A search for `need <= 6` should have been part of the first pass.
 - **Card names read badly inside a sentence** ("gives you Theo walks you through"). The notice now uses "New from {name}: {card}."
 
+## Follow-up the same day
+
+- **Regression tests (contract tests, section C16).** The owner pointed out that a believable overall win rate had hidden four six-sided leftovers, so these test the parts directly:
+  - no six-sided arithmetic is left in the game, catalog or bots;
+  - every move shows a 20-sided target with the matching chance and preview;
+  - every news choice's chip shows the target its roll uses, on both sides;
+  - the computer-played candidate takes moves harder than the old cut;
+  - the demo dice are 20-sided values.
+
+  Each check was run against the first version of this branch, and each one fails on it.
+- **Why the game feels hard** was measured (backlog items 33 and 34):
+  - The dice are rarely the cause.
+  - Time is: most of all, the wait for the night freight at Salta.
+  - Police stops are the other cause.
+  - The calibration bot also wastes hours at Nonā Rosa's, so about 30% understates a sensible player.
+- **Difficulty levels decided** and recorded in next-mechanics.md, with the crew as a proposal for the easier levels.
+
 ## Open
 
 - The owner's answers to the questions in next-mechanics.md.

@@ -60,6 +60,35 @@
 
 ## 3. Difficulty levels
 
+**Decided by the owner, Oct. 31, 2026.** Later starts from the residence, and the deadline stays Tuesday at 2 p.m. in every mode. The level is one choice before the run starts, a starting state only. It adds nothing during play, and the core simulation is unchanged. Build it after PR #25 is stable and merged, as its own small change, calibrated separately.
+
+| Level | Start | Time left | Other changes |
+|---|---|---|---|
+| Very easy | Saturday 2 p.m. | 72 hours | More cash, lower police attention, easier rolls, more reliable help |
+| Easy | Saturday 2 p.m. | 72 hours | Modest advantages |
+| Medium | Saturday 2 p.m. | 72 hours | Today's rules |
+| Hard | Sunday 2 a.m. | 60 hours | Otherwise standard |
+| INTERPOL | Sunday 2 p.m. | 48 hours | Otherwise standard |
+
+Not 36 hours yet: the bots win 5% to 9% there, and nobody knows yet how far humans beat the bots. Shorter runs that start farther along the route are a separate mode for later.
+
+Measured, from the residence (200 runs per candidate, test bot as it is today): 72 hours 26% and 29%, 60 hours 21% and 25%, 48 hours 14% and 13%, 36 hours 5% and 9%, 24 hours 0%. No win took less than 35 hours.
+
+### Proposal: a crew as the fiction for "more help"
+
+The owner suggested a travel companion or entourage that helps you decide and solve things. A crew could be how the easier levels give more help, so the player meets people instead of hidden numbers. Each companion works on their own, like cards now do, and helps at every stop:
+
+| Companion | Helps with | Measured problem it answers |
+|---|---|---|
+| A fixer | Keeps calling allies while you travel, so replies come sooner | Waiting on allies' six-hour replies |
+| A lookout | Slows the rise of police attention while Sosā searches your stop | Lost runs average 2.6 to 2.9 police stops, wins 0.8 to 0.9 |
+| A lawyer | Turns one police stop a run into a lighter one | House arrest ends about half of lost runs |
+| A driver | Makes road moves easier | Rolls rarely cause losses: only 8% to 12% of move rolls fail |
+
+Open question: does the crew come with the level (Very easy has three, Easy two, Medium one, Hard and INTERPOL none), or does the player pick it? Picking adds a decision before the run, which the owner wants kept to one simple choice.
+
+### Earlier draft (superseded by the table above)
+
 **Five levels,** chosen on the start screen. Medium is today's game.
 
 | Level | Roll targets | Escape deadline | Police act every | Starting cash | Target win rate |

@@ -52,5 +52,38 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const diff = a.slice(1).filter((l, i) => l !== b[i + 1]).length;
   ok(a.length === b.length && diff === 0, `C14 ${a.length - 1} recorded actions across 18 seeded runs are identical with every narrative and interface string altered`); }
 
+
+// ---- C16: one 20-sided die everywhere (owner, Oct. 31, 2026: aggregate win rates hid four six-sided leftovers,
+// so every roll target, preview, news chip, computer decision and scripted demo is checked directly)
+{ const fs = require('fs'), R = path.join(__dirname, '..');
+  // 1. no six-sided arithmetic left in the game or its bots
+  const SIX = [/need\s*<=\s*\(?[56]\b/, /need\s*<=\s*\(\s*\w+\s*\?\s*[56]/, /need\s*>\s*6\b/, /need\s*<\s*7\b/, /_rng\(\)\s*\*\s*6\b/, /%\s*6\)\s*\]/, /\bin 6\b/, /chances in six/, /7\s*-\s*need/];
+  const files = ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/render.js', 'tools/calibrate.js', 'tools/gov-calibrate.js', 'tools/sample-run.js', 'content/coalition/ui.json', 'content/coalition/markers.json'];
+  const hits = []; for (const f of files) { if (!fs.existsSync(path.join(R, f))) continue; fs.readFileSync(path.join(R, f), 'utf8').split('\n').forEach((l, i) => { for (const re of SIX) if (re.test(l)) hits.push(`${f}:${i + 1} ${re}`); }); }
+  ok(!hits.length, `C16 no six-sided rule is left in the game, catalog or bots${hits.length ? ': ' + hits.slice(0, 4).join('; ') : ''}`);
+  // 2. every move and order shows the same target and chance it rolls, on the 20-sided scale
+  let shown = 0, bad = [];
+  for (let i = 0; i < 6; i++) { const s = Sim.newRun(900 + i, i % 2 ? 'man' : 'woman'); for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p;
+    for (const a of Sim.actions(s).approaches) { if (a.noRoll) continue; shown += 1; const want = Data.DICE.chance(a.need);
+      if (a.need < 2 || a.need > 21 || a.pct !== want || (want && a.odds !== `${want}%`) || (want && !a.preview.join(' ').includes(`Roll ${a.need} or higher`))) bad.push(`${a.id} need ${a.need} pct ${a.pct}`); } } }
+  ok(!bad.length && shown > 40, `C16 ${shown} moves show a 20-sided target, the matching chance and preview${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
+  // 3. news choices: the chip's "Roll N or higher" is the target the roll uses, on both sides
+  const chipNeed = (tags) => { const m = tags.find(t => t.code === 'roll.need'); return m ? m.args.need : null; };
+  let news = 0; bad = [];
+  for (const def of Data.EVENTS) for (const c of def.choices) { const s = Sim.newRun(77, 'woman'); s.event = { kind: 'event', id: def.id }; const v = Sim.actions(s).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc || !vc.ok) continue; const n = chipNeed(vc.tags); if (n == null) continue;
+    for (const die of [n, n - 1]) { const h = Sim.restore(Sim.serialize(s)); h._dice = [die]; const r = Sim.commit(h, 'evt:' + c.id); const roll = (r.events || []).find(e => e.type === 'roll'); news += 1; if (!roll || roll.need !== n || roll.won !== Data.DICE.wins(die, n)) bad.push(`escape ${def.id}/${c.id}: chip ${n}, rolled ${roll && roll.need}`); } }
+  for (const def of Data.GOV_EVENTS) for (const c of def.choices) { const g = Gov.newRun(77, 'woman'); g.event = { id: def.id }; const v = Gov.view(g).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc || !vc.ok) continue; const n = chipNeed(vc.tags || []); if (n == null) continue;
+    const h = Gov.restore(Gov.serialize(g)); h._dice = [n]; const r = Gov.commit(h, 'evt:' + c.id); const roll = (r.events || []).find(e => e.type === 'roll'); news += 1; if (!roll || roll.need !== n || !roll.won) bad.push(`government ${def.id}/${c.id}: chip ${n}, rolled ${roll && roll.need}`); }
+  ok(!bad.length && news > 10, `C16 ${news} news rolls use the target their chip shows${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
+  // 4. the computer-played candidate on the government side takes moves harder than the old six-sided cut (target above 6)
+  let hard = 0, moves = 0; const orig = Sim.commit;
+  Sim.commit = function (st, id, o) { const r = orig.apply(this, arguments); if (st._probe) for (const e of (r.events || [])) if (e.type === 'roll' && !e.who && !e.auto) { moves += 1; if (e.need > 6) hard += 1; } return r; };
+  for (let i = 0; i < 12; i++) { const g = Gov.newRun(400 + i, 'woman'); g.c._probe = true; for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g); if (v.event) Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id); else if (v.messages.length) Gov.commit(g, v.messages[0].id, v.messages[0].options[0].id); else Gov.commit(g, 'wait'); } }
+  Sim.commit = orig;
+  ok(moves > 20 && hard > 0, `C16 the computer-played candidate rolled ${moves} moves, ${hard} of them with a target above 6`);
+  // 5. scripted demos roll 20-sided values
+  const T2 = JSON.parse(fs.readFileSync(path.join(R, 'content/coalition/tutorials.json'), 'utf8')); const dice = []; JSON.stringify(T2, (k, v) => { if (k === 'dice' && Array.isArray(v)) dice.push(...v); return v; });
+  ok(dice.length > 5 && dice.every(d => Number.isInteger(d) && d >= 1 && d <= 20) && dice.some(d => d > 6), `C16 ${dice.length} scripted demo dice are 20-sided values`); }
+
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);
