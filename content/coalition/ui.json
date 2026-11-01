@@ -1110,18 +1110,7 @@
   {
    "id": "start.continue",
    "pattern": "P01",
-   "text": "Pick up as {name}",
-   "args": [
-    "name"
-   ]
-  },
-  {
-   "id": "start.demo_note",
-   "pattern": "P13",
-   "text": "Play {name} with a coach as far as the airfield, then finish the run yourself.",
-   "args": [
-    "name"
-   ]
+   "text": "Continue your saved game"
   },
   {
    "id": "start.choose",
@@ -1188,27 +1177,32 @@
    "text": "Pick your cards"
   },
   {
-   "id": "pick.cards_title",
-   "pattern": "P02",
-   "text": "Pick three cards to take with you"
+   "id": "pick.next_mate",
+   "pattern": "P01",
+   "text": "Choose a companion"
   },
   {
-   "id": "pick.left_many",
+   "id": "pick.mate_title",
    "pattern": "P02",
-   "text": "Pick {n} more cards",
+   "text": "Choose who travels with you"
+  },
+  {
+   "id": "pick.added",
+   "pattern": "P02",
+   "text": "{n} cards added",
    "args": [
     "n"
    ]
   },
   {
-   "id": "pick.left_one",
+   "id": "pick.added_one",
    "pattern": "P02",
-   "text": "Pick one more card"
+   "text": "One card added"
   },
   {
-   "id": "pick.left_none",
+   "id": "pick.cards_title",
    "pattern": "P02",
-   "text": "Your cards are ready"
+   "text": "Add cards to your deck"
   },
   {
    "id": "pick.go",
@@ -1452,12 +1446,6 @@
    "id": "start.tutorial",
    "pattern": "P01",
    "text": "Play the demo"
-  },
-  {
-   "id": "start.gov_tutorial",
-   "pattern": "P01",
-   "text": "Play the demo as Sofia",
-   "role": "gov"
   },
   {
    "id": "start.byline",
@@ -4597,6 +4585,15 @@
    "id": "phone.your_sibling",
    "pattern": "P03",
    "text": "your sibling"
+  },
+  {
+   "id": "who.sibling",
+   "pattern": "P02",
+   "text": "your {rel} {name}",
+   "args": [
+    "rel",
+    "name"
+   ]
   },
   {
    "id": "sim.preview.harder_ban",

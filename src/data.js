@@ -96,6 +96,14 @@ const Data = (() => {
                     text: 'A broker who moves goods across the border knows the officers at the posts.' },
     pilot_owes:   { does: "Leaving Portalba without the visa gets easier.", name: "Your campaign's pilot", tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', pick: true,
                     text: 'The pilot who flew your campaign still owes you a favor.' },
+    // companions (owner, Nov. 1, 2026: "an ally you travel with who is trustworthy throughout ... one specific thing
+    // they're good at"). A companion never turns on you; the card is yours for the whole run.
+    comp_bruno:   { does: "In Salta, he makes Holt and Theo easier to deal with.", name: 'Bruno', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', companion: true,
+                    text: 'Bruno drives trucks for a living and knows every back road.' },
+    comp_clara:   { does: "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier.", name: 'Clara', tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', companion: true,
+                    text: 'Clara grew up in Costamar and still has family there.' },
+    comp_rita:    { does: "Leaving Portalba without the visa gets easier.", name: 'Rita', tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', companion: true,
+                    text: 'Rita flies cargo planes out of the coast and knows the charter crews.' },
     road_map:     { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
                     text: 'Every checkpoint and back road between here and the line is marked.' },
   };
@@ -281,6 +289,12 @@ const Data = (() => {
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
     operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
     esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
+  };
+  // A companion on the government side: the same people, and what each gives Sofia
+  const COMPANIONS = {
+    bruno: { card: 'comp_bruno', sprite: 'bruno', gov: 'rail', govDoes: 'He knows the freight crews, so you start with a railway contact in Salta.' },
+    clara: { card: 'comp_clara', sprite: 'clara', gov: 'esm_intro', govDoes: 'Your search, checkpoint and call-in orders work in Portalba.' },
+    rita:  { card: 'comp_rita', sprite: 'rita', gov: 'operator', govDoes: 'She knows the charter operator, so you can lean on him from the start.' },
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
@@ -514,6 +528,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
+  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

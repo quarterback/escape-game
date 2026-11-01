@@ -211,3 +211,51 @@ The owner accepted an easier game in advance. `tools/calibrate.js` takes `--extr
 - Sofia's card pick.
 - The fourth character (#33).
 - Marks on the other names (Gianlūka, Nonā Rosa, Amādū).
+
+## Addendum: the game screen, calls, companions and context
+
+The owner played the live build and sent screenshots through the evening. Every change below is display or flow only unless marked. Calibration without picks or a companion is unchanged throughout (44.3% / 39.3%).
+
+**What shipped:**
+
+- **Main screen:**
+  - "Make your move" replaces "Here".
+  - **Confirm** replaces "Try it", "Call", "Send" and "Wait".
+  - An opened move stays in its column.
+  - Durations read "1 hr".
+  - Calls, answers and news choices you cannot take are hidden.
+  - The hint line and the police-timing lines are gone.
+- **Route map:** in the scene's empty road at desktop width, and on the stop screen in place of the line.
+- **No card to click past:**
+  - After a move or a news answer, the scene plays the hours, what happened shows briefly at the top, and the next turn starts.
+  - A quiet wait shows "Safe for now".
+  - Result cards stopped repeating police attention and the search location, which are on screen.
+- **Call screen:** a waiting call rings over the game. You answer and see yourself and the caller side by side.
+- **Context:**
+  - Every opened move says who is involved and why, rewritten for all 21 moves with no odds or outcomes.
+  - "Wait until dark" says what it is for.
+  - "Your sibling" reads "your brother Duartē" or "your sister Līviā" everywhere.
+  - Two goal lines that spoiled traps are gone.
+- **Start screen:** one demo, through the picker. The saved-game button reads "Continue your saved game".
+- **Companions:** after the character, you pick Bruno, Clara or Rita. Each has one specialty and a different effect for Sofia.
+- **Deck:** cards are added with no cap.
+
+**Judgment:**
+
+- **Calls kept, not removed.** The owner asked to remove calls that have no point. Every call the game shows moves the jet, the visa or your welcome, so removing them would make the game unwinnable. The larger idea, allies working on their own with calls as speed-ups, went into issue #35.
+- **Only three companions.** Bruno, Clara and Rita are the three the police side can give a real effect for. More need new police-side effects.
+- **Salta left alone.** The agent did not change Salta's rules. The test players leave Salta in 7.6 hours on average, but people get stuck because the plan was invisible. The owner's answer is to fill the waiting with places to stay and eat, which is next.
+
+**Deviation:**
+
+- **A bug found late.** The title screen's background demo left a waiting call that opened over the start screen. The call screen now opens only during play and closes when a run starts.
+- **Interrupted tool calls.** Several tool calls were stopped mid-run by new messages, and their work was checked before continuing.
+
+**Still open:**
+
+- Places to stay and eat at every stop, with a safe house or a hotel for long waits.
+- Call labels that say what each call gets you.
+- More companions.
+- Sofia's card pick.
+- The fourth character (#33).
+- Speed runs (#35).

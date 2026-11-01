@@ -18,7 +18,9 @@ const UI = (() => {
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
   const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-  const esc = (t) => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  // owner, Nov. 1, 2026: "your sibling" means nothing to a player; every mention says who ("your brother Duartē")
+  const sibNamed = (t) => { if (gov || !who || !Data.CHARACTERS[who]) return t; const sb = Data.CHARACTERS[who].sibling, n = T('who.sibling', { rel: sb.rel.replace(/^your /, ''), name: sb.short }); return t.replace(/\bYour sibling\b/g, n[0].toUpperCase() + n.slice(1)).replace(/\byour sibling\b/g, n); };
+  const esc = (t) => sibNamed(t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
   const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
@@ -59,12 +61,13 @@ const UI = (() => {
 
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
-  function newRun(w, demo, isDaily, dest, seed, extra) {
+  function newRun(w, demo, isDaily, dest, seed, extra, mate) {
+    closeCall(); callShown.clear();
     markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     lastStop = -1; // the first stop gets its screen too
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [] }); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null }); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -72,10 +75,11 @@ const UI = (() => {
     log('sys', esc(T('log.start_escape', { clock: Sim.clockText(0), name: c.name, title: c.title, sibling: c.sibling.name, rel: c.sibling.rel })), 'sys');
     animate(s._boot); renderAll(); startRound(true); saveRun();
   }
-  function newGovRun(demo, seed) {
+  function newGovRun(demo, seed, mate) {
+    closeCall(); callShown.clear();
     markSeen(); recap = null; newsRecap = null; who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
     if (demo) { const G = Tutorial.RUNS.gov; gov = Gov.newRun(G.seed, 'woman', { dice: G.dice, events: G.eventQueue, tutorial: true }); Tutorial.start('gov'); }
-    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed); }
+    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, 'woman', { companion: mate || null }); }
     s = gov.c; document.body.classList.add('gov');
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -135,7 +139,7 @@ const UI = (() => {
     if (!Tutorial.active()) { box.hidden = true; document.body.classList.remove('coaching'); return; }
     const st = Tutorial.step(); box.hidden = false; document.body.classList.add('coaching');
     $('coach-step').textContent = T('coach.step', { n: Tutorial.index() + 1, total: Tutorial.STEPS.length });
-    $('coach-title').textContent = st.title; $('coach-body').innerHTML = Content.rich(st.body);
+    $('coach-title').textContent = st.title; $('coach-body').innerHTML = Content.rich(sibNamed(st.body));
     $('coach-next').hidden = !st.allow.next; $('coach-next').textContent = Tutorial.isLast() ? T('action.finish') : T('action.next');
     $('coach-do').hidden = !!st.allow.next;
     for (const q of st.highlight) { const el = document.querySelector(q); if (el) el.classList.add('tut-hi'); }
@@ -200,7 +204,7 @@ const UI = (() => {
   const callText = (m) => gov ? m.text : (s.inbox.find(x => x.id === m.msgId) || {}).text || '';
   const face = (el, role, name) => { const url = role ? Render.portrait(role) : null; if (url) el.style.backgroundImage = `url(${url})`; else { el.classList.add('initials'); el.textContent = initials(name); } };
   function maybeRing() {
-    if (callOpen || !s || s.over || Tutorial.active() || replaying || phase !== 'move' || !$('picker').hidden || !$('brief').hidden) return;
+    if (callOpen || !s || s.over || Tutorial.active() || s.tutorial || (gov && gov.tutorial) || replaying || phase !== 'move' || !$('picker').hidden || !$('brief').hidden || !$('start').hidden || !$('title').hidden || !$('map').hidden) return;
     const m = waitingCalls().find(x => !callShown.has(x.id)); if (!m) return;
     if (Render.busy()) { setTimeout(maybeRing, 400); return; }
     showCall(m);
@@ -346,7 +350,7 @@ const UI = (() => {
   // ---- export and replay ------------------------------------------------------------
   // A run is its seed, who played, where they were going and every accepted action, in order.
   function exportRun() {
-    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
   }
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
@@ -367,7 +371,7 @@ const UI = (() => {
     replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
     if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
     $('start').hidden = true;
-    if (rec.kind === 'gov') newGovRun(false, rec.seed); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || []);
+    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion);
     replaying.timer = setInterval(replayTick, 150);
   }
   function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
@@ -577,7 +581,7 @@ const UI = (() => {
   function toast(main, sub) {
     const el = $('toast'); toast.q = toast.q || []; toast.q.push([main, sub]);
     if (!el.hidden) return;
-    const next = () => { const it = toast.q.shift(); if (!it) { el.hidden = true; return; } $('t-main').textContent = it[0]; $('t-sub').textContent = it[1]; $('t-sub').hidden = !it[1]; el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); toast.t = setTimeout(next, 3200); };
+    const next = () => { const it = toast.q.shift(); if (!it) { el.hidden = true; return; } $('t-main').textContent = sibNamed(it[0]); $('t-sub').textContent = it[1]; $('t-sub').hidden = !it[1]; el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); toast.t = setTimeout(next, 3200); };
     el.onclick = () => { clearTimeout(toast.t); next(); };
     next();
   }
@@ -798,8 +802,7 @@ const UI = (() => {
   // ---- start, title, boot --------------------------------------------------------------
   function showStart() {
     const first = !seen(), saved = savedRun();
-    $('continue').hidden = !saved; if (saved) $('continue').textContent = T('start.continue', { name: saved.gov ? Data.GOV.name : Data.CHARACTERS[saved.who].name });
-    $('start-demo-note').textContent = T('start.demo_note', { name: Data.CHARACTERS[Tutorial.WHO].name });
+    $('continue').hidden = !saved; if (saved) $('continue').textContent = T('start.continue');
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
     const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
@@ -808,72 +811,91 @@ const UI = (() => {
     $('start').hidden = false; document.body.classList.remove('phased');
   }
   // ---- choose your character (owner, Nov. 1, 2026) ----------------------------------------
-  // A picker like a fighting game's: portraits and first names, then who they are and what they start with,
-  // then three cards to take along. Cards the starting hand already covers at the same stops are not offered.
-  const PICKS = 3;
-  let pickWho = null, picked = [];
+  // Three steps like a fighting game's select screen: the character, then the companion who travels with you, then the
+  // cards you add to your deck ("choosing cards means adding cards to the deck, not selecting a limited number").
+  // Cards the starting hand or the companion already covers at the same stops are not offered.
+  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who';
   const ROSTER = () => [
-    { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name, gov: false },
-    { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name, gov: false },
-    { k: 'gov', role: 'sofia', name: Data.GOV.name, gov: true },
+    { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name },
+    { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name },
+    { k: 'gov', role: 'sofia', name: Data.GOV.name },
   ];
   const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
-  const poolFor = (k) => { const hand = Data.CHARACTERS[k].hand || []; return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
-  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc(c.text)} ${esc(c.does)}</span>`;
-  function showPicker() {
-    pickWho = null; picked = [];
-    $('start').hidden = true; $('picker').hidden = false; Sfx.ambience('select');
+  const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
+  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc([c.text, c.does].filter(Boolean).join(' '))}</span>`;
+  function tiles(list, chosen, onPick) {
     const grid = $('pick-grid'); grid.innerHTML = '';
-    for (const r of ROSTER()) {
-      const b = document.createElement('button'); b.className = 'picktile'; b.dataset.k = r.k;
-      const url = Render.portrait(r.role);
-      b.innerHTML = `<span class="face"></span><b>${esc(r.name)}</b>`; if (url) b.firstChild.style.backgroundImage = `url(${url})`;
-      b.onclick = () => { Sfx.unlock(); Sfx.select(); pickWho = r.k; picked = []; renderPicker(); };
+    for (const r of list) {
+      const b = document.createElement('button'); b.className = 'picktile' + (chosen === r.k ? ' sel' : ''); b.dataset.k = r.k;
+      b.innerHTML = `<span class="face"></span><b>${esc(r.name)}</b>`; const url = Render.portrait(r.role); if (url) b.firstChild.style.backgroundImage = `url(${url})`;
+      b.onclick = () => { Sfx.unlock(); Sfx.select(); onPick(r.k); renderPicker(); };
       grid.appendChild(b);
     }
+  }
+  function showPicker(demo) {
+    pickWho = null; pickMate = null; picked = []; pickDemo = !!demo; pickStage = 'who';
+    $('start').hidden = true; $('picker').hidden = false; Sfx.ambience('select');
     renderPicker();
   }
   function renderPicker() {
-    const stage = pickWho && $('pick-cards').dataset.on === '1' ? 'cards' : 'who';
-    for (const b of $('pick-grid').children) b.classList.toggle('sel', b.dataset.k === pickWho);
-    $('pick-grid').hidden = stage === 'cards';
-    $('pick-title').textContent = stage === 'cards' ? T(picked.length >= PICKS ? 'pick.left_none' : PICKS - picked.length === 1 ? 'pick.left_one' : 'pick.left_many', { n: Sim.num(PICKS - picked.length) }) : T('pick.title');
-    const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go');
-    det.hidden = !pickWho || stage === 'cards'; cards.hidden = stage !== 'cards'; go.hidden = !pickWho;
-    if (pickWho && stage === 'who') {
+    const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go'), grid = $('pick-grid');
+    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = '';
+    if (pickStage === 'who') {
+      $('pick-title').textContent = T('pick.title');
+      tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
+      if (!pickWho) return;
+      det.hidden = false; go.hidden = false;
       if (pickWho === 'gov') {
         const [a, b] = ['watch', 'desk'].map(id => Data.GOV_CARDS[id]);
-        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, text: '', does: a.does })}</li><li>${cardLine({ name: b.name, text: '', does: b.does })}</li></ul>`;
-        go.textContent = T('pick.go');
+        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, does: a.does })}</li><li>${cardLine({ name: b.name, does: b.does })}</li></ul>`;
       } else {
         const ch = Data.CHARACTERS[pickWho], sp = Data.CARDS[ch.hand[ch.hand.length - 1]];
-        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, text: '', does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
-        go.textContent = T('pick.next');
+        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
       }
+      go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
+      return;
     }
-    if (stage === 'cards') {
-      cards.innerHTML = '';
-      for (const id of poolFor(pickWho)) {
-        const c = Data.CARDS[id], on = picked.includes(id);
-        const b = document.createElement('button'); b.className = 'pickcard' + (on ? ' sel' : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false');
-        b.innerHTML = cardLine(c);
-        b.onclick = () => { Sfx.unlock(); if (on) picked = picked.filter(x => x !== id); else if (picked.length < PICKS) picked.push(id); else return; Sfx.select(); renderPicker(); };
-        cards.appendChild(b);
-      }
-      go.textContent = T('pick.go');
+    if (pickStage === 'mate') {
+      $('pick-title').textContent = T('pick.mate_title');
+      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; });
+      if (!pickMate) return;
+      const m = Data.COMPANIONS[pickMate], c = Data.CARDS[m.card];
+      det.hidden = false; go.hidden = false;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p>${esc(pickWho === 'gov' ? m.govDoes : c.does)}</p>`;
+      go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
+      return;
     }
+    // cards: add any number to your deck
+    $('pick-title').textContent = picked.length ? cap(T(picked.length === 1 ? 'pick.added_one' : 'pick.added', { n: Sim.num(picked.length) })) : T('pick.cards_title');
+    cards.hidden = false; go.hidden = false; cards.innerHTML = '';
+    for (const id of poolFor(pickWho)) {
+      const c = Data.CARDS[id], on = picked.includes(id);
+      const b = document.createElement('button'); b.className = 'pickcard' + (on ? ' sel' : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.innerHTML = cardLine(c);
+      b.onclick = () => { Sfx.unlock(); picked = on ? picked.filter(x => x !== id) : picked.concat([id]); Sfx.select(); renderPicker(); };
+      cards.appendChild(b);
+    }
+    go.textContent = T('pick.go');
   }
   function pickerGo() {
     if (!pickWho) return;
     Sfx.unlock(); Sfx.click();
-    if (pickWho === 'gov') { $('picker').hidden = true; newGovRun(); return; }
-    if ($('pick-cards').dataset.on !== '1') { $('pick-cards').dataset.on = '1'; renderPicker(); return; }
-    const k = pickWho, extra = picked.slice(); $('picker').hidden = true; $('pick-cards').dataset.on = '';
-    showMap((d) => newRun(k, false, false, d, undefined, extra));
+    if (pickStage === 'who') {
+      if (pickDemo) { $('picker').hidden = true; if (pickWho === 'gov') newGovRun(true); else newRun(null, true); return; }
+      pickStage = 'mate'; renderPicker(); return;
+    }
+    if (pickStage === 'mate') {
+      if (!pickMate) return;
+      if (pickWho === 'gov') { $('picker').hidden = true; newGovRun(false, undefined, pickMate); return; }
+      pickStage = 'cards'; renderPicker(); return;
+    }
+    const k = pickWho, extra = picked.slice(), mate = pickMate; $('picker').hidden = true;
+    showMap((d) => newRun(k, false, false, d, undefined, extra, mate));
   }
   function pickerBack() {
     Sfx.unlock(); Sfx.click();
-    if ($('pick-cards').dataset.on === '1') { $('pick-cards').dataset.on = ''; picked = []; renderPicker(); return; }
+    if (pickStage === 'cards') { pickStage = 'mate'; picked = []; renderPicker(); return; }
+    if (pickStage === 'mate') { pickStage = 'who'; pickMate = null; renderPicker(); return; }
     $('picker').hidden = true; showStart();
   }
   // The map: Valdória, the strip you fly from, and the three countries that might take you. The player picks one
@@ -943,10 +965,9 @@ const UI = (() => {
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
-    $('start-gov-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(true); };
     $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
     $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;
-    $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
+    $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(true); }; // one demo: pick Teresa or Sofia
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
     let creditsFrom = null;
     let creditsHad = null; // what was playing before the credits: restored on close

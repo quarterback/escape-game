@@ -70,6 +70,20 @@ How to work under it:
   a sentence saying what it does (owner, Nov. 1, 2026: "Choosing cards in my
   mind means ADDING cards to the deck ... I don't care if it makes the game
   easier, I chose what I wanted"). New cards use kinds the game already has.
+  There is no cap: the player adds any number of cards to the deck.
+- **Companions.** After the character, the player picks one companion who
+  travels with them, never turns, and has one specialty (owner, Nov. 1, 2026).
+  The list is the same for every character; on the police side each gives
+  Sofia a different police card. Bruno, Clara and Rita exist; more need a
+  police-side effect first.
+- **Name people every time.** Owner, Nov. 1, 2026: "'your sibling' users will
+  have no idea who that person is." The screen says "your brother Duartē" or
+  "your sister Līviā"; a move's opened line says who a person is and why.
+- **One demo.** "Play the demo" opens the picker with Teresa and Sofia. The saved
+  game button reads "Continue your saved game".
+- **Show the game, not cards.** After a move or a news answer, the scene plays the
+  hours and the next turn starts; a card appears only for a choice. A call takes
+  over the screen: it rings, you answer, you and the caller side by side.
 - **Moves show only what you can do.** Owner, Nov. 1, 2026: "I don't want blocked
   moves to show up at all, just tell me what is next and if I get choices let me
   choose," and "it only matters if the instructions tell me an action. Otherwise none

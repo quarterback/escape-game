@@ -41,6 +41,9 @@ const Sim = (() => {
     s.exposure = ch.exposure || 1;
     // cards chosen before the run join the hand; food means you never stop where people would see you
     s.picked = (opts.extra || []).filter(id => D.CARDS[id] && D.CARDS[id].pick);
+    // a companion travels with you and never turns; their card is in your hand from the start
+    s.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    if (s.companion) s.hand.push(D.COMPANIONS[s.companion].card);
     for (const id of (opts.extra || [])) if (D.CARDS[id] && D.CARDS[id].pick && !s.hand.includes(id)) { s.hand.push(id); s.exposure = Math.max(0, s.exposure - (D.CARDS[id].startLower || 0)); }
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
     s._dice = opts.dice ? opts.dice.slice() : null;

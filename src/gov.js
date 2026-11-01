@@ -28,6 +28,9 @@ const Gov = (() => {
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
       timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
       event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0 };
+    // a companion gives Sofia one police card from the start
+    g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    if (g.companion && !g.hand.includes(D.COMPANIONS[g.companion].gov)) g.hand.push(D.COMPANIONS[g.companion].gov);
     if (opts.dice) g._dice = opts.dice.slice();
     if (opts.events) g._events = opts.events.slice();
     if (opts.tutorial) g.tutorial = true;
@@ -223,7 +226,7 @@ const Gov = (() => {
   function done(g, events) {
     // resolve requests that came due
     for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j); const d = roll(g);
-      if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { g.hand.push('esm_intro'); act(g, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
+      if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { if (!g.hand.includes('esm_intro')) g.hand.push('esm_intro'); act(g, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
       if (j.job === 'operator') { const ok = wins(d, tgt(3)); g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); }
       if (j.job === 'ban') { const ok = wins(d, tgt(2)); g.req.ban = ok ? 'inhand' : 'promised'; events.push(ev('say', { who: 'desk', text: ok ? T('gov.line.the_post_confirms_the_sergeant') : T('gov.line.the_sergeant_is_off_shift') })); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
