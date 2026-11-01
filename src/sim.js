@@ -119,11 +119,14 @@ const Sim = (() => {
         { id: 'wait_velez', label: T('sim.opt.wait'), hours: 0, effect: T('sim.effect.nothing_moves_until_you_call') },
       ]);
     }
-    if (s.pos === 3) {
+    // Holt's warning is a choice only while you still have Nando's spare cars to send; without them its one answer changes nothing
+    if (s.pos === 3 && heldTag(s, 'decoy')) {
       msg(s, events, 'holt', T('sim.line.two_men_in_a_car'), [
         { id: 'go_midnight', label: T('sim.opt.midnight_it_is'), hours: 0, effect: T('sim.effect.nothing_changes_you_know_the') },
         { id: 'send_decoy_yard', label: T('sim.opt.send_nando_past_the_gate'), hours: 0, effect: T('sim.effect.decoy_at_the_yard') },
       ]);
+    }
+    if (s.pos === 3) {
       const c = s.commitments.find(x => x.to === 'aide' && x.kept === null);
       if (c) msg(s, events, 'aide', T('sim.line.the_party_meets_tonight_send'), [
         { id: 'keep_word', label: T('sim.opt.send_the_statement'), hours: 1, effect: T('sim.effect.keep_gianluka_s_support_and') },
