@@ -153,6 +153,14 @@
    "text": "Wait until dark"
   },
   {
+   "id": "wait.dark_for",
+   "pattern": "P03",
+   "text": "Wait until 10 p.m., when you can {move}.",
+   "args": [
+    "move"
+   ]
+  },
+  {
    "id": "action.wait_go",
    "pattern": "P01",
    "text": "Confirm"
@@ -208,6 +216,21 @@
    "id": "phone.empty",
    "pattern": "P12",
    "text": "Nobody is calling."
+  },
+  {
+   "id": "call.ringing",
+   "pattern": "P02",
+   "text": "Calling you"
+  },
+  {
+   "id": "call.answer",
+   "pattern": "P01",
+   "text": "Answer"
+  },
+  {
+   "id": "call.later",
+   "pattern": "P01",
+   "text": "Not now"
   },
   {
    "id": "phone.sibling_role",

@@ -488,3 +488,23 @@ body.ringing #phoneh{color:var(--mint)}
 .routemap .pill.you{fill:var(--gold)}.routemap .pill.sosa{fill:#FF9DAE}.routemap .pill.jet{fill:var(--lav)}.routemap .pill.seen{fill:#B9B0D9}
 .scenemap{display:none}
 @media(min-width:1000px){.scenemap{display:block;position:absolute;left:50%;bottom:20px;transform:translateX(-50%);width:min(620px,52%);padding:6px;background:rgba(21,15,46,.55);border-radius:18px;pointer-events:none}}
+/* a call takes over the screen: it rings, you answer, you and the caller side by side (owner, Nov. 1, 2026) */
+#callscreen{position:fixed;inset:0;z-index:25;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,8,24,.82)}
+#callscreen[hidden]{display:none!important}
+.callpane{width:100%;max-width:560px;display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--s2);border-radius:20px;box-shadow:0 0 0 3px var(--lav)}
+.callpane .face{display:block;width:96px;aspect-ratio:16/26;background:#150f2e center/contain no-repeat;image-rendering:pixelated;border-radius:12px}
+.callpane .face.initials{display:flex;align-items:center;justify-content:center;font:400 28px var(--font-title);color:var(--ink);background:var(--s4)}
+.callpane .ring{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.callpane .ring .face.big{width:120px}.callpane .ring b{font:400 24px var(--font-title)}.callpane .ring .sub{font-size:16px;color:var(--lav)}
+#callscreen.ringing .callpane{animation:callring 1s ease-in-out infinite}
+@keyframes callring{0%,100%{box-shadow:0 0 0 3px var(--lav)}50%{box-shadow:0 0 0 10px rgba(201,164,245,.35)}}
+@media(prefers-reduced-motion:reduce){#callscreen.ringing .callpane{animation:none}}
+.callpane .row{display:flex;gap:10px;justify-content:center}.callpane .row .primary{min-width:140px}
+.callpane .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.callpane .side{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;background:var(--s3);border-radius:14px}.callpane .side b{font:400 18px var(--font-title)}
+.callpane .bubble{margin:0;padding:14px 16px;background:var(--s4);border-radius:14px;font-size:17px;line-height:1.45}
+.callpane .answers{display:flex;flex-direction:column;gap:10px}
+.callpane .answer{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:52px;padding:12px 16px;text-align:left;font-size:17px;background:var(--lav);color:#150F2E;border:0;border-radius:14px}
+.callpane .answer .hrs{font-size:15px;opacity:.8;white-space:nowrap}
+.actbox .ctx{margin:0;font-size:16px;line-height:1.4;color:var(--ink)}
+.callpane .answer:hover:not(:disabled){background:#d9bfff;border-color:transparent}
