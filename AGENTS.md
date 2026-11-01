@@ -61,9 +61,27 @@ How to work under it:
   check now rejects), "move" (never "approach"). There is no Deck screen:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card.
+- **Moves show only what you can do.** Owner, Nov. 1, 2026: "I don't want blocked
+  moves to show up at all, just tell me what is next and if I get choices let me
+  choose," and "it only matters if the instructions tell me an action. Otherwise none
+  of it is necessary detail." The move list holds only moves you can make now, on
+  both sides. A move shows its name and how long it takes; opened, it adds "Try it"
+  and "Cancel". No description, night note, "easier with" chip or situation lines.
+  A person's tag appears only as a warning (doubted, or talked to the police).
+  What to do next belongs in the "Next" line, the briefing and the help.
 - **Dice:** one 20-sided die. Difficulties in `src/data.js` stay on the old
-  six-sided scale and `Data.DICE.target` converts them; show targets and
-  chances from the view, never a promise that a move will work.
+  six-sided scale and `Data.DICE.target` converts them. **The player is never
+  told a target, a chance, or whether a move can succeed.** Owner, Nov. 1, 2026:
+  "No move should ever tell you odds or likelihood anywhere in the game," "Do not
+  ever say what can succeed or not," and "Do not keep the chance! It goes! No roll
+  anything, just let me see what I rolled." Never show a target, a chance or a die
+  badge before the player acts, on moves, orders, calls or news choices. The die
+  rolls on screen and then the result shows what happened. Owner, Nov. 1, 2026:
+  "I never want that information, just let the person roll the dice and then see
+  what happens next." No text announces the number rolled. The view's `real`
+  target exists only for the roll, the bots and the tests (contract test C16 fails
+  the build if a view, chip, preview or catalog line carries one). A move that
+  cannot be won looks like any other move and loses on the table.
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like
   place names and ARE NOT named after humans. Do not follow canon to do this, I
@@ -76,8 +94,7 @@ How to work under it:
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what
   happens when it runs out." The vocabulary is fixed: the escape deadline
-  (Tuesday 2 p.m.), when the police act again, how long a move takes, and the chance
-  of success. Chance and duration are separate facts on separate lines.
+  (Tuesday 2 p.m.), when the police act again, and how long a move takes.
 - **Budgets never beat meaning.** The checks cap buttons at six words and keep
   interface labels to one sentence. When an explanation does not fit, put it in
   the preview, the briefing or the help where there is room, or flag it. Never

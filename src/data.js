@@ -74,7 +74,7 @@ const Data = (() => {
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "The crate is in the third boxcar, with straw inside. Holt leaves at midnight and does not wait." },
-    yard_walk:    { name: 'Theo walks you through', tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
+    yard_walk:    { name: "Theo's walk through the yard", tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
                     text: "Your sponsor's name opens doors that money alone does not." },
@@ -222,7 +222,7 @@ const Data = (() => {
     { id: 'press_ally',   w: 3, text: (who) => `The police call ${who} in for a conversation.` },
     { id: 'ask_esmeralda',w: 2, once: true, after: 30, gtext: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold her if she appears. Unless Costamar's minister knows she is coming, her takeoff from Portalba is now harder, and the police at Portalba can stop her for questioning.", text: () => "Valdória asks Costamar, through its embassy in Cerro Alto, to hold you if you appear. Unless Costamar's minister knows you are coming, takeoff from Portalba is now harder. The police at Portalba can also stop you now." },
     { id: 'press_story',  w: 2, gtext: () => 'The ministry briefs the papers that she has already left the country.', text: () => 'The ministry briefs the papers that you have already left the country.' },
-    { id: 'roadblock',    w: 2, after: 6, text: (lv) => `The police set a checkpoint on the road out of ${lv}. For the next six hours, every move there that needs a roll is harder.` },
+    { id: 'roadblock',    w: 2, after: 6, text: (lv) => `The police set a checkpoint on the road out of ${lv}. For the next six hours, every move there that can fail is harder.` },
     { id: 'trace',        w: 3, after: 4, gtext: () => 'The ministry traces her recent calls.', text: () => 'The ministry traces your recent calls.' },
     { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `The police monitor ${who}'s calls, and everything ${who} is arranging for her now takes four hours longer.`, text: (who) => `The police monitor ${who}'s calls. The operator in Portalba goes quiet, and everything ${who} is arranging for you now takes four hours longer.` },
   ];
@@ -239,21 +239,21 @@ const Data = (() => {
                             asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return, and agreeing makes the visa more likely.',
                             wants: 'the family accounts moved to his bank',
                             terms: 'He wants the family accounts moved to his bank.', slow: 0,
-                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer now comes through on a roll of 8 or higher instead of 11.', heat: 0 },
+                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer is now more likely to come through.', heat: 0 },
                             kept: 'Salek now holds the family accounts.' } },
     tarun:     { name: 'Ardésia', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
                             asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics. Agreeing makes the visa more likely.',
                             wants: 'your word that you will stay out of politics',
                             terms: 'He wants your word that you will stay out of politics while you are his guest.', slow: 6,
-                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Ardésia. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer now comes through on a roll of 8 or higher instead of 11.', heat: 0 },
+                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Ardésia. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer is now more likely to come through.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.' } },
     zaryanova: { name: 'Nordavia', city: 'Krasnomor', lon: 131.9, lat: 43.1, hours: 8,
                  sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Krasnomor with friends at the foreign ministry',
                             asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes the visa more likely.',
                             wants: 'mineral rights you do not control',
                             terms: 'She wants mineral rights you do not control.', slow: 0,
-                            demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so her visa answer comes through on a roll of 8 or higher instead of 11. Word reaches home, and your police attention rises by one.', heat: 1 },
+                            demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so her visa answer is now more likely to come through. Word reaches home, and your police attention rises by one.', heat: 1 },
                             kept: 'Your signature on the concessions is in Krasnomor.' } },
   };
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Portalba', city: 'Costamar', lon: -79.9, lat: -2.2 } };
@@ -276,7 +276,7 @@ const Data = (() => {
     { id: 'follow', name: (lv, rep) => `Move your search to ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you order a search or a checkpoint at the new stop.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban. From then on, police who stop her take her straight to the station. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
     { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'the police', mods: {}, act: 'press_ally', text: 'The police question one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
-    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that needs a roll is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
+    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that can fail is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
     { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
@@ -498,7 +498,8 @@ const Data = (() => {
     sides: 20,
     target: (n6) => n6 > 6 ? 21 : Math.min(20, Math.max(2, Math.round(21 - 20 * (7 - n6) / 6))),
     wins: (d, t) => t <= 20 && (d === 20 || (d !== 1 && d >= t)),
-    chance: (t) => t > 20 ? 0 : (21 - Math.max(2, t)) * 5, // percent
+    chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
+    shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
   return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
 })();

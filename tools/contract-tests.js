@@ -12,27 +12,27 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 // ---- C03 (20-sided die): a 1 always fails, a 20 always succeeds, and targets keep the six-sided odds
 { const W = Data.DICE.wins, t = Data.DICE.target, odds = [2, 3, 4, 5, 6].map(n => [n, Math.round((7 - n) / 6 * 100), Data.DICE.chance(t(n))]);
   ok(!W(1, 2) && W(20, 20) && !W(20, 21) && t(1) === 2 && t(7) === 21 && odds.every(([, a, b]) => Math.abs(a - b) <= 5), `C03 dice: natural 1 and 20 rules hold, and every target is within 5 points of its old chance (${odds.map(o => o[1] + '→' + o[2]).join(', ')})`); }
-// ---- C03: every approach's displayed need is the need its roll uses, at every stop, on both candidates
+// ---- C03: every move's roll uses its hidden target, at every stop, on both candidates (nothing is displayed)
 { let checked = 0, wrong = [];
   for (const who of ['woman', 'man']) for (let pos = 0; pos < Data.LEVELS.length; pos++) for (const night of [14, 22]) {
     const base = Sim.newRun(77, who); base.pos = pos; base.hour = night - 14 + 24; base.event = null; base.nextEventAt = 999;
-    for (const a of Sim.actions(base).approaches.filter(a => a.ok && !a.noRoll && a.need >= 2 && a.need <= 20)) {
-      for (const die of [a.need, a.need - 1]) {
+    for (const a of Sim.actions(base).approaches.filter(a => a.ok && !a.noRoll && a.real >= 2 && a.real <= 20)) {
+      for (const die of [a.real, a.real - 1]) {
         const s = Sim.restore(Sim.serialize(base)); s._dice = [die]; s.nextEventAt = 999;
         const r = Sim.commit(s, a.id); const roll = r.events.find(e => e.type === 'roll' && !e.who); checked += 1;
-        if (!roll || roll.need !== a.need || roll.won !== Data.DICE.wins(die, a.need)) wrong.push(`${who} ${Data.LEVELS[pos].short} ${a.id}: shown ${a.need}+, rolled ${roll && roll.need}`);
+        if (!roll || roll.won !== Data.DICE.wins(die, a.real)) wrong.push(`${who} ${Data.LEVELS[pos].short} ${a.id}: hidden target ${a.real}, die ${die}, won ${roll && roll.won}`);
       }
     }
   }
-  ok(!wrong.length && checked > 0, `C03 escape: ${checked} rolls use the need shown on the approach${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
+  ok(!wrong.length && checked > 0, `C03 escape: ${checked} rolls use the move's hidden target${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
 { const L = Data.LEVELS[1], a = L.approaches.find(x => x.id === 'known_car') || L.approaches[0], before = a.hours;
   const s = Sim.newRun(77, 'woman'); s.pos = 1; const shown = () => Sim.actions(s).approaches.find(x => x.id === a.id);
   const h0 = shown().hours; a.hours = before + 3; const after = shown(); a.hours = before;
   ok(after.hours === h0 + 3 && after.preview.join(' ').includes(String(h0 + 3)), `C03 escape: changing ${a.id} from ${h0} to ${h0 + 3} hours changes the button and the preview without editing text`); }
 { let checked = 0, wrong = [];
   for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13;
-    for (const o of Gov.view(g).orders.filter(o => o.ok && o.need >= 2 && o.need <= 20)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.need]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || roll.need !== o.need || !roll.won) wrong.push(`${o.id}: shown ${o.need}, rolled ${roll && roll.need}`); } }
-  ok(!wrong.length && checked > 0, `C03 government: ${checked} orders roll against the need they show${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
+    for (const o of Gov.view(g).orders.filter(o => o.ok && o.real >= 2 && o.real <= 20)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.real]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || !roll.won) wrong.push(`${o.id}: hidden target ${o.real} did not win on a die of ${o.real}`); } }
+  ok(!wrong.length && checked > 0, `C03 government: ${checked} orders roll against their hidden target${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
 
 // ---- C04: hidden state never reaches the government view
 { let views = 0, leaks = [];
@@ -61,23 +61,23 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const files = ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/data.js', 'content/coalition/tutorials.json', 'src/render.js', 'tools/calibrate.js', 'tools/gov-calibrate.js', 'tools/sample-run.js', 'content/coalition/ui.json', 'content/coalition/markers.json'];
   const hits = []; for (const f of files) { if (!fs.existsSync(path.join(R, f))) continue; fs.readFileSync(path.join(R, f), 'utf8').split('\n').forEach((l, i) => { for (const re of SIX) if (re.test(l)) hits.push(`${f}:${i + 1} ${re}`); }); }
   ok(!hits.length, `C16 no six-sided rule is left in the game, catalog or bots${hits.length ? ': ' + hits.slice(0, 4).join('; ') : ''}`);
-  // 2. every move and order shows the same target and chance it rolls, on the 20-sided scale
+  // 2. no move or order view shows a target or a chance; the roll still uses the hidden real target (owner, Nov. 1, 2026: no odds anywhere)
   let shown = 0, bad = [];
+  const leaks = (txt) => /\b(or higher|\d+% chance|roll \d+|needed \d+|needs \d+)\b/i.test(txt.replace(/police attention is \d+ or higher/g, '')); // a police attention threshold is a rule, not a die target
   for (let i = 0; i < 6; i++) { const s = Sim.newRun(900 + i, i % 2 ? 'man' : 'woman'); for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p;
-    for (const a of Sim.actions(s).approaches) { if (a.noRoll) continue; shown += 1; const want = Data.DICE.chance(a.need);
-      if (a.need < 2 || a.need > 21 || a.pct !== want || (want && a.odds !== `${want}%`) || (want && !a.preview.join(' ').includes(`Roll ${a.need} or higher`))) bad.push(`${a.id} need ${a.need} pct ${a.pct}`); } } }
-  ok(!bad.length && shown > 40, `C16 ${shown} moves show a 20-sided target, the matching chance and preview${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
-  // 3. news choices: the chip's "Roll N or higher" is the target the roll uses, on both sides
-  const chipNeed = (tags) => { const m = tags.find(t => t.code === 'roll.need'); return m ? m.args.need : null; };
+    for (const a of Sim.actions(s).approaches) { if (a.noRoll) continue; shown += 1; if (leaks(a.odds + ' ' + a.preview.join(' ')) || /\d/.test(a.odds)) bad.push(`${a.id}: "${a.odds}"`);
+      const die = a.real <= 20 ? a.real : 20, h = Sim.restore(Sim.serialize(s)); h.nextEventAt = 999; h._dice = [die]; const r = Sim.commit(h, a.id); const roll = r.ok && r.events.find(e => e.type === 'roll' && !e.who); if (r.ok && roll && roll.won !== Data.DICE.wins(die, a.real)) bad.push(`${a.id}: roll ignores the real target`); } } }
+  for (let i = 0; i < 4; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; for (const o of Gov.view(g).orders) { shown += 1; if (leaks(o.odds + ' ' + o.preview.join(' ')) || /\d/.test(o.odds)) bad.push(`order ${o.id}: "${o.odds}"`); } }
+  ok(!bad.length && shown > 40, `C16 ${shown} move and order views carry no target or chance, and rolls use the hidden target${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
+  // 3. news chips, result lines and logs carry no target either
   let news = 0; bad = [];
-  for (const def of Data.EVENTS) for (const c of def.choices) { const s = Sim.newRun(77, 'woman'); s.event = { kind: 'event', id: def.id }; const v = Sim.actions(s).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc || !vc.ok) continue; const n = chipNeed(vc.tags); if (n == null) continue;
-    for (const die of [n, n - 1]) { const h = Sim.restore(Sim.serialize(s)); h._dice = [die]; const r = Sim.commit(h, 'evt:' + c.id); const roll = (r.events || []).find(e => e.type === 'roll'); news += 1; if (!roll || roll.need !== n || roll.won !== Data.DICE.wins(die, n)) bad.push(`escape ${def.id}/${c.id}: chip ${n}, rolled ${roll && roll.need}`); } }
-  for (const def of Data.GOV_EVENTS) for (const c of def.choices) { const g = Gov.newRun(77, 'woman'); g.event = { id: def.id }; const v = Gov.view(g).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc || !vc.ok) continue; const n = chipNeed(vc.tags || []); if (n == null) continue;
-    const h = Gov.restore(Gov.serialize(g)); h._dice = [n]; const r = Gov.commit(h, 'evt:' + c.id); const roll = (r.events || []).find(e => e.type === 'roll'); news += 1; if (!roll || roll.need !== n || !roll.won) bad.push(`government ${def.id}/${c.id}: chip ${n}, rolled ${roll && roll.need}`); }
-  ok(!bad.length && news > 10, `C16 ${news} news rolls use the target their chip shows${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
+  for (const def of Data.EVENTS) for (const c of def.choices) { const s = Sim.newRun(77, 'woman'); s.event = { kind: 'event', id: def.id }; const v = Sim.actions(s).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc) continue; news += 1; if (vc.tags.some(t => leaks(t.t) || /\d+ or/.test(t.t))) bad.push(`escape ${def.id}/${c.id}`); }
+  for (const def of Data.GOV_EVENTS) for (const c of def.choices) { const g = Gov.newRun(77, 'woman'); g.event = { id: def.id }; const v = Gov.view(g).event; const vc = v && v.choices.find(x => x.id === c.id); if (!vc) continue; news += 1; if ((vc.tags || []).some(t => leaks(t.t))) bad.push(`government ${def.id}/${c.id}`); }
+  { const fs = require('fs'), cat = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content/coalition/ui.json'), 'utf8')).entries; for (const e of cat) if (/\{need\}|\{pct\}|\{odds\}|\{turned\}/.test(e.text)) bad.push(`catalog ${e.id} still carries a target`); }
+  ok(!bad.length && news > 10, `C16 ${news} news choices, and every catalog line, carry no target or chance${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
   // 4. the computer-played candidate on the government side takes moves harder than the old six-sided cut (target above 6)
   let hard = 0, moves = 0; const orig = Sim.commit;
-  Sim.commit = function (st, id, o) { const r = orig.apply(this, arguments); if (st._probe) for (const e of (r.events || [])) if (e.type === 'roll' && !e.who && !e.auto) { moves += 1; if (e.need > 6) hard += 1; } return r; };
+  Sim.commit = function (st, id, o) { const r = orig.apply(this, arguments); if (st._probe) for (const e of (r.events || [])) if (e.type === 'roll' && !e.who && !e.auto) { moves += 1; if (e.hard) hard += 1; } return r; };
   for (let i = 0; i < 12; i++) { const g = Gov.newRun(400 + i, 'woman'); g.c._probe = true; for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g); if (v.event) Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id); else if (v.messages.length) Gov.commit(g, v.messages[0].id, v.messages[0].options[0].id); else Gov.commit(g, 'wait'); } }
   Sim.commit = orig;
   ok(moves > 20 && hard > 0, `C16 the computer-played candidate rolled ${moves} moves, ${hard} of them with a target above 6`);
@@ -102,6 +102,29 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 { const fs = require('fs'), hits = [];
   for (const f of ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/render.js', 'src/tutorial.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { const c = l.indexOf(' // '); if (c >= 0 && /\b(break;|case '|Render\.enqueue\(|return [^;]*;)/.test(l.slice(c)) && !/['"`]/.test(l.slice(c).split(/break;|case '/)[0].slice(4, 6))) hits.push(`${f}:${i + 1}`); });
   ok(!hits.length, `C17 no statement sits inside a line comment${hits.length ? ': ' + hits.slice(0, 4).join(', ') : ''}`); }
+
+// ---- C20: every answered choice names itself; a rumor answer once read "You chose \"undefined.\"" (owner screenshot, Nov. 1, 2026)
+{ let n = 0; const bad = [];
+  for (let seed = 1; seed <= 40; seed++) { const s = Sim.newRun(seed, seed % 2 ? 'man' : 'woman', { dest: 'atlanta' });
+    for (let k = 0; k < 160 && !s.over; k++) { const A = Sim.actions(s);
+      if (A.event) { const cs = A.event.choices.filter(x => x.ok); const r = Sim.commit(s, 'evt:' + cs[k % cs.length].id); for (const e of r.events || []) if (e.type === 'chose') { n += 1; if (!e.label || /undefined|null/.test(e.label)) bad.push(`seed ${seed}: ${A.event.kind}`); } continue; }
+      if (A.messages.length) { Sim.commit(s, A.messages[0].id, A.messages[0].options.find(o => o.ok).id); continue; }
+      const a = A.approaches.find(x => x.ok); Sim.commit(s, a ? a.id : 'wait'); } }
+  ok(!bad.length && n > 100, `C20 ${n} answered choices all carry their label${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`); }
+
+// ---- C18: the player is never told in advance that a move will or will not work (owner, Nov. 1, 2026)
+{ const fs = require('fs'), R = path.join(__dirname, '..'), hits = [];
+  const texts = [fs.readFileSync(path.join(R, 'content/coalition/ui.json'), 'utf8'), fs.readFileSync(path.join(R, 'content/coalition/markers.json'), 'utf8'), fs.readFileSync(path.join(R, 'content/coalition/tutorials.json'), 'utf8'), fs.readFileSync(path.join(R, 'src/data.js'), 'utf8')].join('\n');
+  for (const re of [/cannot succeed/i, /will (not )?work\b/i, /guaranteed/i, /\bnever pay\b/i, /this (will|cannot) (fail|succeed)/i, /impossible/i, /\b0% chance/]) if (re.test(texts)) hits.push(String(re));
+  // and no move or order shows a target above 20 or a chance of 0
+  for (let i = 0; i < 4; i++) { const s = Sim.newRun(950 + i, 'woman'); for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p; for (const a of Sim.actions(s).approaches) if (!a.noRoll && (a.need > 20 || a.pct <= 0 || /impossible|cannot/i.test(a.odds + a.preview.join(' ')))) hits.push(`${a.id}: need ${a.need}, ${a.odds}`); } }
+  ok(!hits.length, `C18 no text or move view tells the player an outcome in advance${hits.length ? ': ' + hits.slice(0, 4).join('; ') : ''}`); }
+
+
+// ---- C19: the bots and the computer-played candidate decide from facts, never from display chips (a removed chip moved calibration on Nov. 1, 2026)
+{ const fs = require('fs'), hits = [];
+  for (const f of ['src/gov.js', 'tools/calibrate.js', 'tools/sample-run.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { if (/\.tags\.reduce\([^)]*\broll\b/.test(l) || /\btags\.(some|find)\([^)]*(roll|need)/.test(l)) hits.push(`${f}:${i + 1}`); });
+  ok(!hits.length, `C19 no bot reads a roll from a display chip${hits.length ? ': ' + hits.join(', ') : ''}`); }
 
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

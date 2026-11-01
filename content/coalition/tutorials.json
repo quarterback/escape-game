@@ -116,8 +116,8 @@
      "id": "leave_house",
      "kind": "act",
      "title": "Get out of the house",
-     "body": "Pick **Send out a decoy convoy**, read the time and the roll it needs, then tap **Try it**. You can do this because Nando gave you the cars.",
-     "goal": "Read a move before committing",
+     "body": "Pick **Send out a decoy convoy**, then tap **Try it**. You can do this because Nando gave you the cars.",
+     "goal": "Send out the decoy convoy",
      "highlight": [
       "#approaches"
      ],
@@ -133,9 +133,9 @@
     {
      "id": "die",
      "kind": "read",
-     "title": "Cards and the die",
-     "body": "Cards lower the number you need, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the police are still searching the residence.",
-     "goal": "See how cards change the roll",
+     "title": "Cards",
+     "body": "Cards make moves easier, and using one does not use it up. You lose a card when its owner turns on you or you give it up. You are in Pedra Branca now, and the police are still searching the residence.",
+     "goal": "See how cards help a move",
      "highlight": [
       "#scene"
      ]
@@ -144,7 +144,7 @@
      "id": "inquiry_acts",
      "kind": "read",
      "title": "The police move too",
-     "body": "Every three hours, the police do something. This time they sent the travel ban to every post. If they stop you now, they take you straight to the station. Each border crossing also needs a higher roll, unless you hold a card that delays the report.",
+     "body": "Every three hours, the police do something. This time they sent the travel ban to every post. If they stop you now, they take you straight to the station. Each border crossing is also harder, unless you hold a card that delays the report.",
      "goal": "See the inquiry act on a schedule",
      "highlight": [
       "#sosa"
@@ -229,7 +229,7 @@
      "id": "relationships",
      "kind": "read",
      "title": "Help earns trust",
-     "body": "You are in Salta now. Nonā Rosa's truck helps your rolls here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when the police question them.",
+     "body": "You are in Salta now. Nonā Rosa's truck helps your moves here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when the police question them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
       "#board",
@@ -268,7 +268,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "A crate from Holt",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll. Never pay the yardmaster. He takes the money and tells the yard who you are, and your police attention rises by two.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck helps here.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -304,7 +304,7 @@
      "id": "border",
      "kind": "read",
      "title": "The line",
-     "body": "Three posts cross into Costamar, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and crossing there needs no roll.",
+     "body": "Three posts cross into Costamar, and Valdória has paid one of them. You do not know which. If Duartē's calls get Vélez's officials to the line, they meet you at one of the other two, and they walk you straight through.",
      "goal": "Know what the three posts mean",
      "highlight": [
       "#approaches"
@@ -314,8 +314,8 @@
      "id": "post_rail",
      "kind": "act",
      "title": "The rail post",
-     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you try it, and the party machine lowers the number you need. The travel ban and your well-known face each raise it.",
-     "goal": "Read how the ban changes a roll",
+     "body": "Pick **Cross at the Paso Huhūi post**, then tap **Try it**. Your second passport lets you use this post, and the party machine helps, but the travel ban and your well-known face each work against you.",
+     "goal": "See what the ban costs you at the line",
      "highlight": [
       "#approaches"
      ],
@@ -427,7 +427,7 @@
      "kind": "act",
      "title": "Put the ban on paper",
      "goal": "Read an order before sending it",
-     "body": "Pick **Circulate the travel ban**, read the roll and the hours, then tap **Send the order**.",
+     "body": "Pick **Circulate the travel ban**, read how long it takes, then tap **Send the order**.",
      "highlight": [
       "#approaches"
      ],
@@ -521,7 +521,7 @@
      "kind": "read",
      "title": "The rest is yours",
      "goal": "Play on without the guide",
-     "body": "From here the die and the news are no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
+     "body": "From here the game is no longer scripted. The debrief at the end shows where she really was. Tap **Finish**.",
      "highlight": [
       "#approaches",
       "#calls"

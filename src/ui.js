@@ -18,7 +18,7 @@ const UI = (() => {
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
   const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-  const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const esc = (t) => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
   const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
@@ -142,41 +142,38 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  // the move's badge is a 20-sided die showing the number to roll; a move that cannot be won shows a cross
-  function dieFace(need) { return need == null ? '<span class="die none" aria-hidden="true"></span>' : `<span class="die d20" aria-hidden="true"><b>${need > 20 ? '✕' : need}</b></span>`; }
-  // a bonus is named by the held cards that give it, never by the internal tag
-  const cardsFor = (tag) => gov ? gov.hand.map(id => Data.GOV_CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name) : s.hand.map(id => Data.CARDS[id]).filter(c => c && c.tag === tag).map(c => c.name);
-  // chance of success and time taken are different facts, shown on separate lines
-  const chanceText = (a) => a.noRoll ? '' : !a.pct ? T('action.impossible') : T('action.chance', { need: a.need, odds: a.odds }); // every move rolls; the chance is shown, never a promise
-  const metaLine = (a, withSosa) => `<span class="meta">${chanceText(a) ? `<span class="nd">${esc(chanceText(a))}</span>` : ''}<span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
   const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
-  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
-  const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
+  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.police_none') : n === 1 ? T('action.police_once') : T('action.police_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
+  // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
+  // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
+  const warnMark = (a) => { if (!a.with || a.with === 'self' || !s.people[a.with]) return ''; const [c, t] = whoMark(a.with); return c === 'doubt' || c === 'talked' ? mks([{ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }]) : ''; };
+  const hoursLine = (a) => `<span class="meta"><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}</span></span>`;
   function approachBtn(a, allowed) {
-    const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && !a.pct ? ' hard' : '');
+    const b = document.createElement('button'); b.className = 'act approach' + (sel === a.id ? ' sel' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `<span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span>`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
-    box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
+    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div><div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
+    if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
+    box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
+    requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons stay on screen
     return box;
   }
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
-    for (const a of A.approaches) { if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); }
+    for (const a of A.approaches) { if (!a.ok) continue; if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); } // only moves you can make
     // waiting is a choice like any move: it says how long it takes and what can happen while you wait
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
-    if (A.waitDark.ok) waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: [T('wait.dark_line'), T('wait.interrupt')] });
-    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [T('wait.hour_line')] });
+    if (A.waitDark.ok) waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: [] });
+    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
@@ -189,7 +186,7 @@ const UI = (() => {
   }
   function waitBox(w) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div><ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div>${w.lines.length ? `<ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}<div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = () => doCommit(w.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
@@ -495,7 +492,6 @@ const UI = (() => {
     $('brief').hidden = false; $('brief').scrollTop = 0; $('b-start').focus({ preventScroll: true });
   }
   // cards work in the background: no collection to manage, a short notice when help arrives, leaves or changes a roll (owner, Oct. 31, 2026)
-  const helpNames = (tags) => tags.map(tag => cardsFor(tag).map(inSentence).join(', ') || inSentence(tagName(tag))).join(', ');
   function toast(main, sub) {
     const el = $('toast'); toast.q = toast.q || []; toast.q.push([main, sub]);
     if (!el.hidden) return;
@@ -560,19 +556,23 @@ const UI = (() => {
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: Sim.num(v.rung) }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
     for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
+  // owner, Nov. 1, 2026 ("Ask Theo to walk you through" then "Theo walks you through" is redundant): when the move
+  // has its own line, that line is the result. The move's name, the outcome word and the gains it already
+  // describes are left out; police attention and anything you lose still show.
+  const ownResult = (r, out) => r.line ? `<p class="said">${esc(r.line)}</p>${mks(r.mine.filter(t => !t.quiet))}` : `${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.mine.length ? mks(r.mine) : ''}`;
   function resultCard(card, r, nextLabel, next) {
     if (!r) { card.innerHTML = ''; return; }
     card.className = 'roll';
-    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : `<span class="outcome ok">${T('result.done')}</span>`;
+    const out = r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.done')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span>` : `<span class="outcome ok">${T('result.done')}</span>`;
     const rows = r.from === 'news' && r.theirs.length ? `<ul class="rows">${r.theirs.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('')}</ul>` : '';
-    card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}${rows}`;
+    card.innerHTML = `<span class="kind">${esc(r.kind)}</span>${ownResult(r, out)}${rows}`;
     if (next) { const b = document.createElement('button'); b.className = 'primary next'; b.textContent = nextLabel; b.onclick = () => { Sfx.click(); next(); }; card.appendChild(b); }
   }
   function sosaCard(card, quiet2) {
     card.className = 'sosa';
     // what happened, in short lines: your move, then what changed while it took its hours. The full sentences are in the log.
-    const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span><span class="mks"><span class="mk roll">${T('result.rolled', { die: r.roll.die, need: r.roll.need })}</span></span>` : '';
-    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${r.title ? `<h3>${esc(r.title)}</h3>` : ''}${out}${r.line ? `<p>${esc(r.line)}</p>` : ''}${r.mine.length ? mks(r.mine) : ''}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
+    const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span>` : '';
+    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
     if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up_to' : 'sum.attention_down_to', { n: s.exposure }) });
@@ -597,19 +597,19 @@ const UI = (() => {
       switch (e.type) {
         case 'attempt': r.title = e.name; break;
         case 'chose': r.title = r.title || e.label; break;
-        case 'roll': if (!e.who && !after && e.bonus && e.bonus.length && !gov) { const names = e.bonus.map(t => cardsFor(t)[0]).filter(Boolean); if (names.length) r.mine.push({ k: 'gain', t: cap(T('sum.helped', { list: names.map(inSentence).join(', ') })) }); }
+        case 'roll': // owner, Nov. 1, 2026: nothing announces how the roll went, only what happened
           if (e.who && !e.pressed) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: Sim.shortName(gov ? gov.c : s, e.who), what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
         case 'say':
           if (!after && !r.line && (e.who === 'narrator' || e.featured)) r.line = e.who === 'narrator' ? e.text : `${pname(e.who)}: ${e.text}`;
           break;
         case 'exposure': if (after) expTheirs += e.delta; else expMine += e.delta; break;
-        case 'card': bucket.push({ k: 'gain', t: T('sum.card', { name: inSentence(e.name) }) }); break;
+        case 'card': bucket.push({ k: 'gain', quiet: !after, t: T('sum.card', { name: inSentence(e.name) }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
-        case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
+        case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', quiet: !after && e.delta > 0, t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'belief': if (!gov) bucket.push({ k: e.belief === s.pos ? 'enemy' : 'gain', t: e.belief === s.pos ? T('sum.search_here') : T('sum.search_elsewhere') }); break;
-        case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
+        case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
-        case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
+        case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: gov ? e.text : enemyShort(e) }); break;
         case 'hold': r.theirs.push({ k: 'enemy', t: T('sum.hold', { title: e.title }) }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: e.id === 'rumor' ? T('sum.news_rumor', { name: e.title }) : T('sum.news', { title: e.title }) }); break;
@@ -642,15 +642,16 @@ const UI = (() => {
       switch (e.type) {
         case 'say': Render.enqueue({ dur: 10, start() { log(e.who, e.text); } }); break;
         case 'attempt': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.try', { name: inSentence(e.name) })), 'sys'); } }); break;
+        // owner, Nov. 1, 2026: the die rolls on screen and nothing announces the number
         case 'roll': if (!e.who && e.auto) { Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.no_roll')), 'roll'); } }); }
-                     else if (!e.who) { Render.dice(e.die, e.need, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(`${e.bonus && e.bonus.length ? T('log.rolled_lowered', { die: e.die, need: e.need, list: helpNames(e.bonus) }) : T('log.rolled', { die: e.die, need: e.need })} ${T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')}`), 'roll'); } }); }
-                     else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who), die: e.die, need: e.need })), 'roll'); } }); break;
+                     else if (!e.who) { Render.dice(e.die, null, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')), 'roll'); } }); }
+                     else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who) })), 'roll'); } }); break;
         // her number stays hidden on the government side
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         // the card notice is a sentence, never a label and value
-        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;
-        case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: inSentence(e.name) }); toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
+        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; if (!(phase === 'sosa' || (phase === 'news' && result))) toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;
+        case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: inSentence(e.name) }); if (!(phase === 'sosa' || (phase === 'news' && result))) toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.owe', { name: pname(e.to), text: e.text })), 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
         case 'job': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.reply_by', { name: pname(e.ally), time: e.dueText })), 'sys'); } }); break;
@@ -675,7 +676,7 @@ const UI = (() => {
   function renderGovHere() {
     const box = $('approaches'); box.innerHTML = '';
     const v = Gov.view(gov);
-    for (const a of v.orders) { if (sel === a.id) box.appendChild(expanded(a, T('action.send_order'), () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move' && Tutorial.allowsApproach(a.id))); }
+    for (const a of v.orders) { if (!a.ok) continue; if (sel === a.id) box.appendChild(expanded(a, T('action.send_order'), () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move' && Tutorial.allowsApproach(a.id))); }
     const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>${T('nav.reports')}</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span>${r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: `<span class="mono">${r.age}</span>` })}</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>${T('report.proves')}</b><span>${esc(r.proves)}</span></span><span><b>${T('report.not_prove')}</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : `<p class="hint">${T('report.empty')}</p>`);
     box.appendChild(rep);
     $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait(); $('waitdark').hidden = true;

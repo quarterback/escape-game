@@ -224,24 +224,6 @@
    "text": "Next"
   },
   {
-   "id": "action.uses",
-   "pattern": "P03",
-   "text": "This roll is easier with {list}",
-   "args": [
-    "list"
-   ]
-  },
-  {
-   "id": "marker.night",
-   "pattern": "P03",
-   "text": "Night only"
-  },
-  {
-   "id": "action.impossible",
-   "pattern": "P03",
-   "text": "This move cannot succeed"
-  },
-  {
    "id": "action.cancel",
    "pattern": "P01",
    "text": "Cancel"
@@ -592,21 +574,6 @@
    ]
   },
   {
-   "id": "wait.dark_line",
-   "pattern": "P03",
-   "text": "Night starts at 10 p.m., and the night moves here open then."
-  },
-  {
-   "id": "wait.interrupt",
-   "pattern": "P03",
-   "text": "News or a police stop ends the wait early."
-  },
-  {
-   "id": "wait.hour_line",
-   "pattern": "P03",
-   "text": "You stay where you are for one hour."
-  },
-  {
    "id": "result.your_order",
    "pattern": "P10",
    "text": "Your order",
@@ -756,15 +723,6 @@
    "text": "Failed"
   },
   {
-   "id": "result.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die} and needed {need} or higher",
-   "args": [
-    "die",
-    "need"
-   ]
-  },
-  {
    "id": "result.done",
    "pattern": "P10",
    "text": "Done"
@@ -848,14 +806,6 @@
    "text": "You lost {name}",
    "args": [
     "name"
-   ]
-  },
-  {
-   "id": "sum.helped",
-   "pattern": "P10",
-   "text": "{list} made this easier",
-   "args": [
-    "list"
    ]
   },
   {
@@ -964,25 +914,6 @@
    ]
   },
   {
-   "id": "log.rolled",
-   "pattern": "P10",
-   "text": "You rolled {die} and needed {need} or higher.",
-   "args": [
-    "die",
-    "need"
-   ]
-  },
-  {
-   "id": "log.rolled_lowered",
-   "pattern": "P10",
-   "text": "You rolled {die} and needed {need} or higher, which {list} made easier.",
-   "args": [
-    "die",
-    "need",
-    "list"
-   ]
-  },
-  {
    "id": "log.success",
    "pattern": "P10",
    "text": "It worked."
@@ -995,41 +926,33 @@
   {
    "id": "log.pressed_holds",
    "pattern": "P10",
-   "text": "The police question {name}, who says nothing, because the die showed {die} and {need} or higher would have made them talk.",
+   "text": "The police question {name}, who says nothing.",
    "args": [
-    "name",
-    "die",
-    "need"
+    "name"
    ]
   },
   {
    "id": "log.pressed_breaks",
    "pattern": "P10",
-   "text": "The police question {name}, who talks, because the die showed {die} and {need} or higher makes them talk.",
+   "text": "The police question {name}, who talks.",
    "args": [
-    "name",
-    "die",
-    "need"
+    "name"
    ]
   },
   {
    "id": "log.ally_delivers",
    "pattern": "P10",
-   "text": "{name} needed {need} or higher and rolled {die}, so the step comes through.",
+   "text": "{name} comes through, and the step moves forward.",
    "args": [
-    "name",
-    "die",
-    "need"
+    "name"
    ]
   },
   {
    "id": "log.ally_not_yet",
    "pattern": "P10",
-   "text": "{name} needed {need} or higher and rolled {die}, so nothing comes of it and you have to call again.",
+   "text": "{name} has nothing yet, so you have to call again.",
    "args": [
-    "name",
-    "die",
-    "need"
+    "name"
    ]
   },
   {
@@ -1377,12 +1300,12 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick a move under Here, read the odds, then tap **Try it**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move under Here, read what it does and how long it takes, then tap **Try it**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
   },
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "People who help you give you cards, and you never have to play them. A card lowers the number you need on the die, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border."
+   "text": "People who help you give you cards, and you never have to play them. A card makes a move easier, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border."
   },
   {
    "id": "help.rounds",
@@ -1961,12 +1884,11 @@
   {
    "id": "sim.preview.next_reply_in_hours_needs",
    "pattern": "P03",
-   "text": "{name} works on the next step, {stage}, and answers {k} hours after the call. It comes through on a roll of {turned} or higher.",
+   "text": "{name} works on the next step, {stage}, and answers {k} hours after the call.",
    "args": [
     "stage",
     "k",
-    "name",
-    "turned"
+    "name"
    ]
   },
   {
@@ -2004,21 +1926,6 @@
    ]
   },
   {
-   "id": "sim.preview.die_needs_or_more_in",
-   "pattern": "P03",
-   "text": "Roll {need} or higher on the 20-sided die to succeed, a {pct}% chance.{bonus}",
-   "args": [
-    "need",
-    "pct",
-    "bonus"
-   ]
-  },
-  {
-   "id": "sim.preview.cannot_succeed_with_your_current",
-   "pattern": "P03",
-   "text": "This cannot succeed."
-  },
-  {
    "id": "sim.why.talked_to_the_inquiry",
    "pattern": "P04",
    "text": "{name} talked to the police.",
@@ -2037,18 +1944,45 @@
   {
    "id": "sim.why.needs_a_card",
    "pattern": "P04",
-   "text": "You need a card that gives you {card}.",
+   "text": "You need {card} first.",
    "args": [
     "card"
    ]
   },
   {
-   "id": "sim.why.your_card_is_not_recognized",
+   "id": "sim.why.need_passage",
    "pattern": "P04",
-   "text": "The card you hold for {card} does not work here.",
-   "args": [
-    "card"
-   ]
+   "text": "You need someone to get you aboard first."
+  },
+  {
+   "id": "sim.why.need_document",
+   "pattern": "P04",
+   "text": "You need your second passport."
+  },
+  {
+   "id": "sim.why.need_influence",
+   "pattern": "P04",
+   "text": "You need Gianlūka's help."
+  },
+  {
+   "id": "sim.why.need_decoy",
+   "pattern": "P04",
+   "text": "You need Nando's spare cars."
+  },
+  {
+   "id": "sim.why.need_boat",
+   "pattern": "P04",
+   "text": "You need the family barges."
+  },
+  {
+   "id": "sim.why.need_permission",
+   "pattern": "P04",
+   "text": "You need your sponsor's help."
+  },
+  {
+   "id": "sim.why.not_here_help",
+   "pattern": "P04",
+   "text": "The help you have does not work here."
   },
   {
    "id": "sim.effect.aircraft_preparations_stay_on_hold",
@@ -2128,7 +2062,7 @@
   {
    "id": "sim.effect.refuse_demand",
    "pattern": "P03",
-   "text": "{sponsor} still asks the ministry for your visa, at the usual odds.",
+   "text": "{sponsor} still asks the ministry for your visa, with no extra push.",
    "args": [
     "sponsor"
    ]
@@ -2864,12 +2798,8 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "The desk answers six hours after your call. Roll {need} or higher ({pct}% chance) to get the operator card.",
-   "role": "gov",
-   "args": [
-    "need",
-    "pct"
-   ]
+   "text": "The desk answers six hours after your call. If it agrees, it gives you the operator card.",
+   "role": "gov"
   },
   {
    "id": "gov.why.the_aviation_desk_opens_on",
@@ -2898,12 +2828,8 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Cerro Alto answers 10 hours after your call. Roll {need} or higher ({pct}% chance) for Costamar to agree. If it agrees, her takeoff gets harder, the police there can stop her for questioning, and your patrols can act at Portalba.",
-   "role": "gov",
-   "args": [
-    "need",
-    "pct"
-   ]
+   "text": "Cerro Alto answers 10 hours after your call. If Costamar agrees, her takeoff gets harder, the police there can stop her for questioning, and your patrols can act at Portalba.",
+   "role": "gov"
   },
   {
    "id": "gov.status.esmeralda_has_agreed",
@@ -3426,10 +3352,9 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} picks the city for you on a roll of {need} or higher. On a miss, you cannot call about the jet for six hours.",
+   "text": "{place} picks the city for you if the call goes well. If it does not, you cannot call about the jet for six hours.",
    "args": [
-    "place",
-    "need"
+    "place"
    ]
   },
   {
@@ -3718,7 +3643,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move takes a roll of one die, and police attention climbs toward 10 while the police search where you are. At 10 they stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move can fail, and police attention climbs toward 10 while the police search where you are. At 10 they stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -4190,7 +4115,7 @@
   {
    "id": "brief.gov_job_ban",
    "pattern": "P08",
-   "text": "Circulate the travel ban, and every border crossing she tries needs a higher roll."
+   "text": "Circulate the travel ban, and every border crossing she tries is harder."
   },
   {
    "id": "brief.gov_job_hold",
@@ -4267,7 +4192,7 @@
   {
    "id": "brief.reception_note",
    "pattern": "P08",
-   "text": "The first step opens the road to Salta. The second step matters if the police have asked Costamar to hold you, because without it your takeoff roll is harder. The third puts Vélez's officials at one border post."
+   "text": "The first step opens the road to Salta. The second step matters if the police have asked Costamar to hold you, because without it your takeoff is harder. The third puts Vélez's officials at one border post."
   },
   {
    "id": "brief.gov_report_now",
@@ -4440,15 +4365,6 @@
    ]
   },
   {
-   "id": "action.chance",
-   "pattern": "P03",
-   "text": "Roll {need} or higher ({odds} chance)",
-   "args": [
-    "need",
-    "odds"
-   ]
-  },
-  {
    "id": "action.takes",
    "pattern": "P03",
    "text": "Takes {hours} hours",
@@ -4470,27 +4386,20 @@
    ]
   },
   {
-   "id": "action.sosa_none",
+   "id": "action.police_none",
    "pattern": "P03",
-   "text": "The police do not act during these {hours} hours.",
-   "args": [
-    "hours"
-   ]
+   "text": "The police do not act in that time."
   },
   {
-   "id": "action.sosa_once",
+   "id": "action.police_once",
    "pattern": "P03",
-   "text": "The police act once during these {hours} hours.",
-   "args": [
-    "hours"
-   ]
+   "text": "The police act once in that time."
   },
   {
-   "id": "action.sosa_times",
+   "id": "action.police_times",
    "pattern": "P03",
-   "text": "The police act {n} times during these {hours} hours.",
+   "text": "The police act {n} times in that time.",
    "args": [
-    "hours",
     "n"
    ]
   },
@@ -4546,25 +4455,12 @@
   {
    "id": "log.no_roll",
    "pattern": "P10",
-   "text": "No roll was needed, and the move succeeded."
+   "text": "The move went through."
   },
   {
    "id": "result.no_roll",
    "pattern": "P10",
-   "text": "Succeeded without a roll"
-  },
-  {
-   "id": "dice.needs",
-   "pattern": "P03",
-   "text": "Need {need} or higher",
-   "args": [
-    "need"
-   ]
-  },
-  {
-   "id": "sim.preview.no_roll",
-   "pattern": "P03",
-   "text": "There is no roll for this."
+   "text": "It worked"
   },
   {
    "id": "stop.step",
@@ -4583,12 +4479,12 @@
   {
    "id": "sim.why.nothing_left_to_move",
    "pattern": "P04",
-   "text": "Everything these calls could move is already done."
+   "text": "These calls cannot move anything right now."
   },
   {
    "id": "sim.say.calls_moved_some",
    "pattern": "P03",
-   "text": "Three hours later, these arrangements have moved one step: {list}. The others were already done.",
+   "text": "Three hours later, these arrangements have moved one step: {list}. The others did not move.",
    "args": [
     "list"
    ]
@@ -4596,11 +4492,7 @@
   {
    "id": "gov.preview.the_post_answers",
    "pattern": "P03",
-   "text": "The post answers four hours after your call. Roll {need} or higher ({pct}% chance) to confirm the ban. The ban is in force either way, and this tells you the post has it.",
-   "args": [
-    "need",
-    "pct"
-   ]
+   "text": "The post answers four hours after your call. The ban is in force either way, and this tells you the post has it."
   },
   {
    "id": "card.counts_for",
@@ -4746,12 +4638,12 @@
   {
    "id": "sim.preview.harder_ban",
    "pattern": "P03",
-   "text": "The travel ban is on the desk at this post, and it makes this roll harder. Holding \"A report held one day\" keeps it off the desk."
+   "text": "The travel ban is on the desk at this post, and it makes this harder. Holding \"A report held one day\" keeps it off the desk."
   },
   {
    "id": "sim.preview.harder_checkpoint",
    "pattern": "P03",
-   "text": "The police have a checkpoint here until {time}, and it makes this roll harder.",
+   "text": "A police checkpoint here makes this harder until {time}.",
    "args": [
     "time"
    ]
@@ -4759,27 +4651,36 @@
   {
    "id": "sim.preview.harder_asked",
    "pattern": "P03",
-   "text": "Valdória has asked Costamar to hold you, and Costamar's minister does not know you are coming. That makes this roll much harder."
+   "text": "Valdória has asked Costamar to hold you, and Costamar's minister does not know you are coming. That makes this much harder."
   },
   {
    "id": "sim.preview.harder_news",
    "pattern": "P03",
-   "text": "A choice you made earlier at this stop makes this roll harder."
+   "text": "A choice you made earlier at this stop makes this harder."
   },
   {
    "id": "sim.preview.easier_news",
    "pattern": "P03",
-   "text": "A choice you made earlier at this stop makes this roll easier."
+   "text": "A choice you made earlier at this stop makes this easier."
   },
   {
    "id": "sim.preview.harder_face",
    "pattern": "P03",
-   "text": "Every border officer knows your face, and it makes this roll harder."
+   "text": "Every border officer knows your face, and it makes this harder."
   },
   {
    "id": "sim.preview.escorted",
    "pattern": "P03",
-   "text": "Costamaran officials are waiting for you at this post, so you cross without a roll."
+   "text": "Costamaran officials are waiting for you at this post, so you walk straight through."
+  },
+  {
+   "id": "sum.stage_said",
+   "pattern": "P10",
+   "text": "{who} says, \"{line}\"",
+   "args": [
+    "who",
+    "line"
+   ]
   }
  ]
 }
