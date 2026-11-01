@@ -425,8 +425,9 @@ const Sim = (() => {
   }
   function advanceLevel(s, events) {
     if (s.pos >= D.LEVELS.length - 1) return;
+    const left = level(s).id; // a way onto the freight is gone once you leave the stop where it counts, not before you get there
     s.pos += 1; s.visited.push(s.pos); events.push(ev('travel', { to: s.pos }));
-    for (const id of s.hand.slice()) { const c = D.CARDS[id]; if (c && c.tag === 'passage') { lose(s, id, events); s.used.push(id); } }
+    for (const id of s.hand.slice()) { const c = D.CARDS[id]; if (c && c.tag === 'passage' && c.reach.includes(left)) { lose(s, id, events); s.used.push(id); } }
     arrive(s, events, false);
   }
   function call(s, k, events) {

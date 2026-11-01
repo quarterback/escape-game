@@ -2846,12 +2846,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.status.your_people_the_registry",
-   "pattern": "P05",
-   "text": "The registry works for you here.",
-   "role": "gov"
-  },
-  {
    "id": "gov.status.your_people_the_provincial_desk",
    "pattern": "P05",
    "text": "The provincial desk and its patrol work here.",
@@ -3847,7 +3841,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Santa Laura desk, the civil registry, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
+   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Santa Laura desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Baca that will ask Esmeralda to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
   },
   {
    "id": "about.start_h",
