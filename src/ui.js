@@ -152,7 +152,7 @@ const UI = (() => {
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && !a.pct ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
-    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${pname(a.with).split(' ')[0]}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
+    const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
     b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
@@ -365,7 +365,7 @@ const UI = (() => {
 
   // ---- phase turns ------------------------------------------------------------------
   const PH = ['news', 'phone', 'move', 'roll', 'sosa'];
-  const mks = (tags) => `<span class="mks">${tags.map(t => `<span class="mk ${t.k}">${esc(t.t)}</span>`).join('')}</span>`;
+  const mks = (tags) => `<span class="mks">${tags.map(t => `<span class="mk ${t.k}${t.long ? ' long' : ''}">${esc(t.t)}</span>`).join('')}</span>`;
   const PH_LABEL = { news: ['phase.news', 'phase.reports'], phone: ['phase.phone', 'phase.desk'], move: ['phase.move', 'phase.order'], roll: ['phase.roll', 'phase.roll'], sosa: ['phase.sosa', 'phase.her_move'] };
   const pendingEvent = () => gov ? Gov.view(gov).event : Sim.actions(s).event;
   function phoneUseful() {
@@ -557,21 +557,24 @@ const UI = (() => {
       switch (e.type) {
         case 'attempt': r.title = e.name; break;
         case 'chose': r.title = r.title || e.label; break;
-        case 'roll': if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: pname(e.who).split(' ')[0], what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
+        case 'roll': if (e.who) r.theirs.push({ k: e.won ? 'gain' : 'enemy', t: T('sum.person', { person: Sim.shortName(gov ? gov.c : s, e.who), what: T(e.pressed ? (e.won ? 'sum.held_firm' : 'sum.talked') : (e.won ? 'sum.delivered' : 'sum.not_yet')) }) }); else if (!r.roll && !after) r.roll = e; break;
         case 'say':
           if (!after && !r.line && (e.who === 'narrator' || e.featured)) r.line = e.who === 'narrator' ? e.text : `${pname(e.who)}: ${e.text}`;
           break;
         case 'exposure': if (after) expTheirs += e.delta; else expMine += e.delta; break;
         case 'card': bucket.push({ k: 'gain', t: T('sum.card', { name: inSentence(e.name) }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
+        case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
+        case 'belief': if (!gov) bucket.push({ k: e.belief === s.pos ? 'enemy' : 'gain', t: e.belief === s.pos ? T('sum.search_here') : T('sum.search_elsewhere') }); break;
+        case 'deadline': if (!gov && e.delta) bucket.push({ k: e.delta < 0 ? 'lose' : 'gain', t: T(e.delta < 0 ? 'sum.deadline_sooner' : 'sum.deadline_later', { n: Sim.num(Math.abs(e.delta)) }) }); break;
         case 'travel': r.mine.push({ k: 'gain', t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
-        case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: pname(e.who).split(' ')[0] }) }); break;
+        case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'stage': r.theirs.push({ k: 'gain', t: e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: e.text }); break;
         case 'hold': r.theirs.push({ k: 'enemy', t: T('sum.hold', { title: e.title }) }); break;
         case 'dispatch': r.theirs.push({ k: 'news', t: e.id === 'rumor' ? T('sum.news_rumor', { name: e.title }) : T('sum.news', { title: e.title }) }); break;
         case 'message': r.theirs.push({ k: 'news', t: T('sum.message', { name: pname(e.from) }) }); break;
-        case 'report': bucket.push({ k: e.from === 'enemy' ? 'enemy' : 'news', t: `${pname(e.from)}: ${e.text.replace(/ \(.*\)$/, '')}` }); break;
+        case 'report': bucket.push({ k: e.from === 'enemy' ? 'enemy' : 'news', long: true, t: T('sum.report', { text: e.text.replace(/ \(.*\)$/, ''), source: pname(e.from) }) }); break; // a sentence with its source, never "Source: text"
         case 'order': r.title = r.title || e.name; break;
         default: break;
       }
@@ -774,7 +777,7 @@ const UI = (() => {
     $('saverun').onclick = () => { Sfx.click(); downloadRun(); };
     $('copyreplay').onclick = () => { Sfx.click(); copyReplay(); };
     $('share').onclick = async () => { const text = shareText(); try { if (navigator.share) await navigator.share({ title: 'Coalition', text }); else { await navigator.clipboard.writeText(text); $('share').textContent = T('share.copied'); } } catch (e) { /* share dismissed */ } };
-    const released = () => { if (gov && !Tutorial.active()) Gov.endTutorial(gov); };
+    const released = () => { if (Tutorial.active()) return; if (gov) Gov.endTutorial(gov); else if (s) Sim.endTutorial(s); };
     $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); released(); renderAll(); saveRun(); };
     $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); released(); log('sys', T('log.tutorial_ended'), 'sys'); renderAll(); saveRun(); };
     const toggleMute = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').setAttribute('aria-label', T(Sfx.isMuted() ? 'sound.off' : 'sound.on')); $('mute-wave').style.display = Sfx.isMuted() ? 'none' : ''; document.querySelector('#menu2 [data-act=mute]').textContent = T(Sfx.isMuted() ? 'sound.menu_off' : 'sound.menu_on'); };

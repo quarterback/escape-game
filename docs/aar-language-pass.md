@@ -116,3 +116,66 @@ The renames went into player text, demos, the map label, the about page and the 
 
 - **The old six-sided wording survived PR #25 in text.** The C16 test only scanned code. It now scans data and demo text too.
 - **I repeated the comment bug the review had just found.** The parse step in the build caught it before anything shipped.
+
+## Second round, Nov. 1, 2026: the held lines resolved
+
+**Owner's instruction:** the language pass is approved. Resolve the remaining issues in PR #26:
+1. ending text;
+2. government position leaks;
+3. labels that misdescribe the rules;
+4. the bought post shown as a dice success;
+5. formatting, duplicates, misleading status indicators and tutorial mismatches;
+6. tutorials that teach controls without revealing outcomes;
+7. rename Lāyūna;
+8. no new mechanics, screens or management systems.
+
+**What changed:**
+- **Endings.** The end screen shows the reason, then "What happened" (the takeoff, landing or capture line), then "Afterward" (the epilogue).
+  - The why lines now say why: "before your immunity ran out", "Police stops climbed to house arrest", "its police hold you for Valdória".
+  - Endings store the story and the epilogue separately.
+  - The warrant line no longer appears after the president's deal, which closes the case, or says "by Monday" on Tuesday.
+- **Government leaks.**
+  - The minister's reply and announcement are identical whether or not she is at the named town; a wrong claim still sends the police there, unseen.
+  - Police actions run from the government side pass on only their own line and a questioned helper's answer, in the third person (`gtext` in `ENEMY_ACTIONS`, gov variants of the inquiry suffixes). Her police attention, jet progress and cards no longer reach the round summary.
+  - A stop the police make becomes a desk report written as a sentence.
+- **Labels.**
+  - Travel ban: in force once sent; it makes crossing harder and never closes the border. Confirming only has the post confirm it, and the briefing row counts the ban as done once it is in force.
+  - Costamar: agrees to a request with listed effects; it never "holds her".
+  - Strike, blizzard and storm block nothing. Choices that moved nobody are relabeled: "Lie low nearby for an hour", "Use the dark to lose them", "Stop working with Holt", "File the short route".
+  - The yardmaster's favor now says Theo walks you through, matching the card it gives.
+  - The Portalba arrival no longer claims Sosā asked Costamar to hold you.
+- **Bought post.** A won roll at the bought post shows "Turned back at the Costamaran post", a neutral die and the log line "The Valdórian side let you through, but the Costamaran post turns you back." The move's success line is not printed, and its other effects are unchanged.
+- **Formatting and status.**
+  - Numbers below 10 print as words.
+  - Card and move names are in sentence case mid-sentence, and people are named the way the game names them ("Nonā Rosa", never "Nonā").
+  - Rumor news no longer reads as a person arriving.
+  - Report rows read "{text} ({source})" and wrap.
+  - The move card no longer repeats its chance line in the preview.
+  - The jet is marked only once booked.
+  - Route status cells carry their state in words for screen readers.
+  - Result cards now report trust, search and passport deadline changes.
+  - Unused strings were removed.
+- **Demos.**
+  - Leaving or finishing the escape demo hands over a real run (`Sim.endTutorial`).
+  - The yardmaster warning, which told the player which choice fails, is gone.
+  - The ban confirmation step describes what confirming does.
+  - Every control a step names now matches the screen (a script checks each bold label).
+- **Lāyūna** becomes Lagoa Funda.
+
+**Reverted from the first round:** call rows went back to "{name} about {what}". The review made them "Call {name} about {what}", which made the demo read "Tap Call …, then Call" and broke the one-instruction-per-step check. The briefing now says "Call {name} about {what} next, because it helps most now."
+
+**Checks:**
+- Content check: 0 errors. pbbg-check passes.
+- Contract tests pass, including two new tests:
+  - C04b: government events carry none of her hidden state and never address her as "you";
+  - C17: no statement may sit inside a line comment. It fails against the version that had the bug.
+- Both demo replays and the house arrest check pass.
+- Calibration is unchanged: 46.7% and 42.3% on the escape side, 46.5% on the government side.
+- Phone-width browser runs of both sides reached their end screens with no page errors.
+
+**What went wrong:** the same comment bug came back twice more while I was writing these fixes, once in a sound line and once in a police action. The parse check caught both, and test C17 now stops it at the source.
+
+**Still open, because fixing them would take a new mechanic:**
+- "Call your contacts" can mark the visa issued for a country that never accepts you.
+- The cancelled passport still shows "This cannot succeed" as its chance, because that roll cannot be won.
+- The stage messages never appear (backlog item 1).

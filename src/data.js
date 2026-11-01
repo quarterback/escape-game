@@ -32,13 +32,13 @@ const Data = (() => {
     nando:    { name: 'Nando', role: 'your driver for 11 years', where: 0, reliability: 2 },
     sponsor:  { name: 'Your sponsor', role: 'the person asking a foreign ministry for your visa', where: -1, reliability: 4,
                 terms: '' },
-    host:     { name: 'Nonā Rosa Trentinī', role: 'matriarch of the Nova Trentô colônia', where: 2, reliability: 2 },
+    host:     { name: 'Nonā Rosa Trentinī', short: 'Nonā Rosa', role: 'matriarch of the Nova Trentô colônia', where: 2, reliability: 2 },
     official: { name: 'Rosario Vélez', role: "aide to Costamar's interior minister", where: 4, reliability: 4,
                 terms: 'She wants it understood that Costamar receives you as a guest, not as a government in exile.' },
     holt:     { name: 'Holt Greer', role: 'brakeman on the Huhūi freight', where: 3, reliability: 2 },
     theo:     { name: 'Theo Bascom', role: 'yard foreman in the Salta rail town', where: 3, reliability: 3 },
-    pilot:    { name: 'Capitān Olsēn', role: 'charter pilot, Portalba', where: 5, reliability: 3 },
-    press:    { name: 'Rādiô Portô Venla', role: 'the station everyone in the capital has on', where: -1, reliability: 6 },
+    pilot:    { name: 'Capitān Olsēn', short: 'Capitān Olsēn', role: 'charter pilot, Portalba', where: 5, reliability: 3 },
+    press:    { name: 'Rādiô Portô Venla', short: 'Rādiô Portô Venla', role: 'the station everyone in the capital has on', where: -1, reliability: 6 },
   };
 
   // The enemy. Inspector Valentīn Sosā, Interior Ministry. Each action is concrete and visible.

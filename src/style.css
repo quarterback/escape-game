@@ -286,6 +286,7 @@ body.phased .tab{top:var(--phaseh,52px)}body.phased #coach{top:calc(var(--phaseh
 body.busy #phasecard button{opacity:.5;pointer-events:none}
 .mks{display:flex;flex-wrap:wrap;gap:6px}
 .mk{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font:400 13px/1.1 var(--font-body);background:var(--s2);color:var(--ink);white-space:nowrap}
+.mk.long{white-space:normal;border-radius:12px;line-height:1.3;text-align:left;max-width:100%}
 .mk.time{box-shadow:inset 0 0 0 1.5px var(--lav)}.mk.roll{background:var(--gold);color:#2A1A00}.mk.up,.mk.risk{background:#5A2040;color:#FFC4CF}.mk.risk{background:var(--coral2);color:#2A0610}
 .mk.down,.mk.gain{background:#183A36;color:#8FF5D8}.mk.lose{background:#4A3418;color:#FFD3A8}
 .mk.trust{background:#183A36;color:#8FF5D8}.mk.doubt{background:#4A3418;color:#FFD3A8}.mk.talked{background:#5A2040;color:#FFC4CF}.mk.cut{background:var(--s1);color:var(--soft);text-decoration:line-through}.mk.unknown{background:var(--s1);color:var(--soft)}

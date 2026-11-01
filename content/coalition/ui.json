@@ -4676,6 +4676,57 @@
    "args": [
     "place"
    ]
+  },
+  {
+   "id": "sum.trust_more",
+   "pattern": "P10",
+   "text": "{person} trusts you more",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "id": "sum.trust_less",
+   "pattern": "P10",
+   "text": "{person} trusts you less",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "id": "sum.search_here",
+   "pattern": "P10",
+   "text": "The police now search where you are"
+  },
+  {
+   "id": "sum.search_elsewhere",
+   "pattern": "P10",
+   "text": "The police now search somewhere else"
+  },
+  {
+   "id": "sum.deadline_sooner",
+   "pattern": "P10",
+   "text": "The court's passport deadline moves {n} hours earlier",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.deadline_later",
+   "pattern": "P10",
+   "text": "The court's passport deadline moves {n} hours later",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "sum.report",
+   "pattern": "P06",
+   "text": "{text} ({source})",
+   "args": [
+    "text",
+    "source"
+   ]
   }
  ]
 }

@@ -79,6 +79,8 @@ const Sim = (() => {
   const num = (n) => (n >= 0 && n < 10) ? T('sim.num.words').split('|')[n] : String(n); // AP: words below 10
   const sponsor = (s) => dest(s).sponsor;
   const ch = (s) => D.CHARACTERS[s.who];
+  // how a person is named mid-sentence: the name people use for them, never a lone first word like "Nonā"
+  const shortName = (s, id) => id === 'sponsor' ? sponsor(s).short : (D.PEOPLE[id] && D.PEOPLE[id].short) || personName(s, id).split(' ')[0];
   const personName = (s, id) => id === 'sibling' ? ch(s).sibling.name : id === 'self' ? 'you' : id === 'sponsor' ? sponsor(s).name : (D.PEOPLE[id] && D.PEOPLE[id].name) || id;
   const personRole = (s, id) => id === 'sponsor' ? sponsor(s).role : (D.PEOPLE[id] || {}).role || '';
 
@@ -277,7 +279,7 @@ const Sim = (() => {
   // Markers: what a choice costs or gives, as short tags the UI shows instead of sentences.
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
-    const first = (id) => personName(s, id).split(' ')[0];
+    const first = (id) => shortName(s, id);
     if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need: tgt(need) })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => chipLower(x.t)).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.exposure) out.push(M(fx.exposure > 0 ? 'up' : 'down', 'exposure.change', { signed: (fx.exposure > 0 ? '+' : '') + fx.exposure }));
@@ -303,7 +305,7 @@ const Sim = (() => {
     const e = s.event; if (!e) return null;
     let def, kind = e.kind;
     if (kind === 'hold') def = D.HOLDS[e.rung];
-    else if (kind === 'rumor') { const n = personName(s, e.who); const first = n.split(' ')[0]; def = { title: n, text: D.RUMORS[e.line](first), choices: [
+    else if (kind === 'rumor') { const n = personName(s, e.who); const first = shortName(s, e.who); def = { title: n, text: D.RUMORS[e.line](first), choices: [
       { id: 'trust', label: T('sim.opt.keep_trusting', { split: first }), fx: { doubt: e.who } },
       { id: 'test', label: T('sim.opt.test_them_quietly', { first }), fx: { hours: 2, test: e.who } },
       { id: 'cut', label: T('sim.opt.cut_them_off', { first }), fx: { cut: e.who } } ] }; }
@@ -334,17 +336,17 @@ const Sim = (() => {
     if (fx.belief === 'here') { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);
     if (fx.lose) { const pool = s.hand.filter(id => fx.lose === 'best' ? true : id !== 'passport'); let id = fx.lose; if (fx.lose === 'random') id = pool[Math.floor(s._rng() * pool.length)]; if (fx.lose === 'best') id = s.hand.includes('passport') ? 'passport' : pool[Math.floor(s._rng() * pool.length)]; if (id) { lose(s, id, events); s.used.push(id); } }
-    if (fx.trust) for (const k in fx.trust) { s.people[k].trust = Math.max(-2, Math.min(3, s.people[k].trust + fx.trust[k])); events.push(ev('trust', { who: k, trust: s.people[k].trust })); }
+    if (fx.trust) for (const k in fx.trust) { s.people[k].trust = Math.max(-2, Math.min(3, s.people[k].trust + fx.trust[k])); events.push(ev('trust', { who: k, trust: s.people[k].trust, delta: fx.trust[k] })); }
     if (fx.doubt) s.people[fx.doubt].doubt = true;
     if (fx.cut) { s.people[fx.cut].cut = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.cut) lose(s, id, events); say(events, 'narrator', T('sim.say.you_stop_answering', { name: personName(s, fx.cut) })); }
     if (fx.test) { const p = s.people[fx.test]; p.known = true; p.doubt = false; if (p.bad) { p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id].from === fx.test) lose(s, id, events); say(events, 'narrator', T('sim.say.was_working_for_sosa_you', { name: personName(s, fx.test) })); } else { p.trust = Math.max(p.trust, 2); say(events, 'narrator', T('sim.say.is_clean_and_offended_you', { name: personName(s, fx.test) })); } }
     if (fx.stage) for (const k in fx.stage) stage(s, k, s.arr[k].stage + fx.stage[k], events);
     if (fx.flag) Object.assign(s.flags, fx.flag);
-    if (fx.deadline) { s.deadline = Math.max(s.hour + 1, s.deadline + fx.deadline); }
+    if (fx.deadline) { const was = s.deadline; s.deadline = Math.max(s.hour + 1, s.deadline + fx.deadline); events.push(ev('deadline', { delta: s.deadline - was })); }
     if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
     if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
     if (fx.rung !== undefined) s.hold = fx.rung;
-    if (fx.end) { const after = epilogue(s, false); s.over = { win: false, kind: fx.end.kind || 'arrest', story: fx.end.reason, after, reason: `${fx.end.reason} ${after}` }; events.push(ev('over', s.over)); return; }
+    if (fx.end) { const after = epilogue(s, false, fx.end.kind); s.over = { win: false, kind: fx.end.kind || 'arrest', story: fx.end.reason, after, reason: `${fx.end.reason} ${after}` }; events.push(ev('over', s.over)); return; }
     if (fx.hold) climbHold(s, events);
     if (fx.advance) advanceLevel(s, events);
     if (fx.hours) pass(s, fx.hours, events);
@@ -411,7 +413,7 @@ const Sim = (() => {
     if (fx.exposure) heat(s, fx.exposure, events);
     if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);
-    if (fx.trust) { s.people[fx.trust].trust += 1; events.push(ev('trust', { who: fx.trust, trust: s.people[fx.trust].trust })); }
+    if (fx.trust) { s.people[fx.trust].trust += 1; events.push(ev('trust', { who: fx.trust, trust: s.people[fx.trust].trust, delta: 1 })); }
     if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
     if (fx.advance) for (const k of fx.advance) stage(s, k, s.arr[k].stage + 1, events);
   }
@@ -522,10 +524,10 @@ const Sim = (() => {
       case 'circulate': s.flags.restriction = true; text = say3(pick)(); break;
       // her jet's progress stays hidden from the government side
       case 'lean_operator': s.flags.leaned = true; if (s.arr.aircraft.stage >= 3) { stage(s, 'aircraft', s.arr.aircraft.stage - 1, events); text = say3(pick)() + (s._manual ? '' : T('sim.inquiry.the_operator_withdraws_the_crew')); } else text = say3(pick)(); break;
-      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = say3(pick)(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: personName(s, who).split(' ')[0] }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += s._manual ? T('gov.inquiry.helper_talks', { first: personName(s, who).split(' ')[0] }) : T('sim.inquiry.tells_them_where_you_were', { first: personName(s, who).split(' ')[0], yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
+      case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; text = say3(pick)(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: shortName(s, who) }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += s._manual ? T('gov.inquiry.helper_talks', { first: shortName(s, who) }) : T('sim.inquiry.tells_them_where_you_were', { first: shortName(s, who), yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = say3(pick)(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = say3(pick)(); break; }
-      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(D.LEVELS[Math.max(0, s.belief)].short); break; }
+      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short); break; }
       case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked }));
@@ -540,12 +542,12 @@ const Sim = (() => {
   function serialize(s) { const o = Object.assign({}, s); delete o._rng; delete o._boot; return JSON.stringify(o); }
   function restore(json) { const s = JSON.parse(json); s._boot = []; return attachRng(s); }
   // The ending names what the run cost. Built from the state, so every run reads differently.
-  function epilogue(s, win) {
+  function epilogue(s, win, kind) {
     // at most three lines after the ending itself, most important first
-    const out = [], first = (id) => personName(s, id).split(' ')[0];
+    const out = [], first = (id) => shortName(s, id);
     const turned = Object.keys(s.people).filter(k => s.people[k].turned && k !== 'sponsor');
     if (win) out.push(s.arr.permission.stage >= 2 ? T('sim.end.a_car_meets_the_aircraft', { city: dest(s).city }) : T('sim.end.lets_the_jet_land', { name: dest(s).name }));
-    if (!win) out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') }));
+    if (!win && kind !== 'deal') out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') })); // the deal closes the case
     if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: num(s.holds) }));
     if (turned.length) out.push(T('sim.end.talked_to_the_inquiry_will', { and: turned.map(first).join(' and ') }));
     for (const c of s.commitments) {
@@ -558,6 +560,8 @@ const Sim = (() => {
     return out.slice(0, 3).join(' ');
   }
 
-  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName };
+  // leaving or finishing the demo hands over a real run: no more scripted dice or police moves, and police stops happen again (as Gov.endTutorial does)
+  function endTutorial(s) { delete s._dice; s._enemy = null; s.tutorial = false; }
+  return { HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, DEADLINE, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName, shortName, endTutorial };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
