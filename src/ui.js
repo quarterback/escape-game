@@ -113,7 +113,7 @@ const UI = (() => {
     $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: placeName(s.belief) });
     $('sosa-nextl').textContent = T('scene.next_move');
     { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: Sim.num(n) }); }
-    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: s.hold }) : T('scene.held_at');
+    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: Sim.num(s.hold) }) : T('scene.held_at');
     for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
     $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = ''; $('heat2').hidden = false;
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
@@ -601,7 +601,8 @@ const UI = (() => {
         // her number stays hidden on the government side
         case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
-        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); toast(t, (Data.CARDS[e.id] || {}).works ? `${T('card.works_on')}: ${Data.CARDS[e.id].works}` : ''); log('sys', esc(t), 'sys'); } }); break;
+        // the card notice is a sentence, never a label and value
+        case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;
         case 'cardlost': Render.enqueue({ dur: 10, start() { const t = T('log.card_lost', { card: e.name }); toast(t, ''); log('sys', esc(t), 'sys'); } }); break;
         case 'commit': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.owe', { name: pname(e.to), text: e.text })), 'sys'); } }); break;
         case 'stage': Render.enqueue({ dur: 10, start() { Sfx.arranged(); } }); break;
