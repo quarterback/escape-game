@@ -265,7 +265,7 @@
   {
    "id": "phone.call_about",
    "pattern": "P01",
-   "text": "Call {name} about {what}",
+   "text": "{name} about {what}",
    "args": [
     "name",
     "what"
@@ -275,16 +275,6 @@
    "id": "action.call",
    "pattern": "P01",
    "text": "Call"
-  },
-  {
-   "id": "card.works_on",
-   "pattern": "P09",
-   "text": "Where it counts"
-  },
-  {
-   "id": "place.the_line",
-   "pattern": "P09",
-   "text": "the line"
   },
   {
    "id": "need.aircraft_ready",
@@ -3676,7 +3666,7 @@
   {
    "id": "about.p5",
    "pattern": "P08",
-   "text": "Where it says is the first thing you decide. Lāyūna in Altamira, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Ardésia, where a magistrate named Dēvan Rāo answers by letter. Krasnomor in Nordavia, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, you are sent back."
+   "text": "Where the jet flies is the first thing you decide. Lagoa Funda in Altamira, where Amādū Salek wants the family accounts moved to his bank before he picks up a phone. Almatau in Ardésia, where a magistrate named Dēvan Rāo answers by letter. Krasnomor in Nordavia, where Mirēlā Vosk wants mineral rights you do not control. None of them has said yes. The visa comes while you run or it does not, and if you land without one in a country that will not take you, its police hold you for Valdória."
   },
   {
    "id": "about.p6",
@@ -4201,7 +4191,7 @@
   {
    "id": "brief.phone_suggest",
    "pattern": "P08",
-   "text": "{call} next, because it helps most now.",
+   "text": "Call {call} next, because it helps most now.",
    "args": [
     "call"
    ]

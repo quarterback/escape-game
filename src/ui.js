@@ -206,6 +206,8 @@ const UI = (() => {
 
   // ---- the route: one model, a rail on the phone and the board on desktop ------
   const NEED_LABEL = { aircraft: 'need.aircraft_ready', reception: null, permission: 'need.visa' };
+  // status is never shown by color alone: screen readers hear the same words the legend uses
+  const stateWord = (st) => T(st === 'inhand' ? 'route.legend_inhand' : st === 'promised' ? 'route.legend_promised' : 'route.legend_notyet');
   function needCells(L) {
     // what gates the good exits of this stop, in one of three states
     const out = [], seen = {};
@@ -244,7 +246,7 @@ const UI = (() => {
     const rail = $('rail'); rail.innerHTML = '';
     Data.LEVELS.forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
-      const needs = needCells(L).map(n => `<span class="need ${n.state}"><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
+      const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}${i > s.pos || i === s.pos ? `<span class="cardsnote">${cardNotes(i)}</span>` : ''}</div>`;
       rail.appendChild(li);
@@ -257,7 +259,7 @@ const UI = (() => {
     cell('', 'head'); Data.LEVELS.forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
     lbl(T('route.who_acts_label')); Data.LEVELS.forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
-    lbl(T('route.needed')); Data.LEVELS.forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
+    lbl(T('route.needed')); Data.LEVELS.forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
     lbl(T('route.cards_count'));
     const cr = document.createElement('div'); cr.className = 'cardsrow';
     for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
@@ -648,7 +650,7 @@ const UI = (() => {
     Data.LEVELS.forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(T('route.report_src', { source: r.source, age: r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: r.age }) }))}</b><span>${esc(r.text)} ${esc(r.doesnt ? T('route.does_not_prove', { what: r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) }) : '')}</span></span>`).join('');
-      const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
+      const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><span class="sr">${esc(stateWord(r.state))} </span><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === gov.belief ? T('route.may_be_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div><span class="who">${esc(v.people[i])}</span>${i === 5 ? `<span class="need notyet"><b>${T('route.no_command')}</b><span>${T('route.ask_esm')}</span></span>` : ''}${reqs}${reps}</div>`;
       rail.appendChild(li);
     });

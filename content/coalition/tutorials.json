@@ -52,7 +52,7 @@
      "id": "answer_brother",
      "kind": "act",
      "title": "Your brother is on the phone",
-     "body": "Duartē has found a jet, but the crew will not book the flight until he gives them a city. Tap **Confirm Lāyūna**, the city in Altamira the demo picked for you.",
+     "body": "Duartē has found a jet, but the crew will not book the flight until he gives them a city. Tap **Confirm Lagoa Funda**, the city in Altamira the demo picked for you.",
      "goal": "Answer a message",
      "highlight": [
       "#inbox"
@@ -251,7 +251,7 @@
      "id": "freight_crate",
      "kind": "act",
      "title": "A crate from Holt",
-     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Your truck card helps the roll. Never pay the yardmaster, because he takes the money, tells the yard who you are, and your police attention rises by two.",
+     "body": "Pick **Pay Holt for a crate**, then tap **Try it**. Nonā Rosa's truck makes the roll easier.",
      "goal": "Get a card for one place",
      "highlight": [
       "#approaches"
@@ -449,9 +449,9 @@
     {
      "id": "confirm",
      "kind": "act",
-     "title": "A sent ban is not a closed border",
+     "title": "Confirming the ban",
      "goal": "Confirm a request reached the people who act on it",
-     "body": "The ban went out, but nobody at the post has read it. Pick **Confirm the ban at the post**, then **Send**.",
+     "body": "The ban is in force, so every crossing she tries is harder, but nobody at the post has confirmed it yet. Pick **Confirm the ban at the post**, then **Send**, to have the post confirm it.",
      "highlight": [
       "#calls"
      ],

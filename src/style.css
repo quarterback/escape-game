@@ -421,3 +421,4 @@ body.ringing #phoneh{color:var(--mint)}
 .sdots li.past i{background:var(--mint)}.sdots li.now i{background:var(--gold);box-shadow:0 0 0 4px rgba(255,210,74,.3)}
 .sdots span{font-size:11px;line-height:1.15;color:var(--mute);text-align:center;overflow-wrap:anywhere;max-width:100%;padding:0 2px}.sdots li.now span{color:var(--ink)}
 @media(prefers-reduced-motion:reduce){#toast.in,#stopscreen.in{animation:none}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

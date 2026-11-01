@@ -69,7 +69,7 @@ How to work under it:
   place names and ARE NOT named after humans. Do not follow canon to do this, I
   am the author." Renamed that day: Esmeralda to Costamar (Costamaran), Baca to
   Cerro Alto, Susana to Portalba, Santa Laura to Pedra Branca, Atlanta to
-  Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor.
+  Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
   Internal ids keep the old names.
 - **Endings** read "You win" or "You lose", then the reason in a full sentence.
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number

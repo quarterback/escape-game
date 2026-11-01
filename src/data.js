@@ -227,11 +227,11 @@ const Data = (() => {
     { id: 'watch_sibling', w: 2, once: true, after: 9, gtext: (who) => `Sosā has ${who}'s calls monitored, so every answer her sibling has already promised her comes four hours later.`, text: (who) => `Sosā has ${who}'s calls monitored, so every answer your sibling has already promised you comes four hours later.` },
   ];
 
-  // ---- Where you could go. Three countries, one city each, from the kels canon (Lāyūna, Krasnomor); Almatau is a
+  // ---- Where you could go. Three countries, one city each, renamed by the owner so each sounds like a place (Lagoa Funda, Krasnomor); Almatau is a
   // working name for Ardésia's capital, which the canon leaves open. accepts: whether the country will take you.
   // The player never sees accepts; the only tell is whether the visa ever arrives. Portalba, in Costamar, is where you fly from.
   const DESTS = {
-    atlanta:   { name: 'Altamira', city: 'Lāyūna', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
+    atlanta:   { name: 'Altamira', city: 'Lagoa Funda', lon: -13.2, lat: 27.2, hours: 10, accepts: true,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad and an old client of your family',
                             asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return.',
                             terms: 'He will speak to the ministry if you move the family accounts to his house.', slow: 0,
