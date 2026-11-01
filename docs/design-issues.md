@@ -51,7 +51,7 @@ belongs here.
 
 29. **Fixed Nov. 1, 2026:** ~~"Have Gianlūka ask for a delay" could never be chosen.~~ The news choice asked for a card by its id (`aide_word`) instead of its kind (`influence`), so it never matched and the greyed button showed the code ("You need a card that gives you aide_word"). It now asks for the influence kind, like the other Gianlūka choices.
 30. **Two moves still tell the player they cannot work.** "Pay the yardmaster" says "This cannot succeed" in its own text, and the cancelled passport shows the same line. The owner's rule is never to tell the player in advance what will work. These are candidates for the trap side quests in [proposals/next-mechanics.md](proposals/next-mechanics.md), so they are left for that decision.
-31. **The government side got easier with the 20-sided die.** The calibration bot's quarry escapes 37.5% of runs, down from 48.5%, because her formerly certain moves can now fail on a 1. The escape side stays inside the owner's range (30.3% for Teresā, 27.7% for Matēu). Difficulty levels are the proposed way to tune each side.
+31. **Withdrawn Nov. 1, 2026.** The government side looked easier with the 20-sided die (37.5% escapes) only because the computer-played candidate still skipped targets above 6. After the fix she escapes 46.5% of runs, against 48.5% before the die changed.
 32. **Three moves are not rolled.** Calling contacts and sleeping at Nonā Rosa's, and taking the road to Salta once it is arranged, have no failure written for them, so they stay choices instead of chances. The escort waiting at a border post is also not rolled. Say whether these should roll; each would need a failure outcome written.
 
 ### Priority 3: smaller mismatches

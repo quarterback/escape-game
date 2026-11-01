@@ -274,7 +274,7 @@ const Sim = (() => {
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
     const first = (id) => personName(s, id).split(' ')[0];
-    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { const need = fx.roll.need + (fx.roll.face && ch(s).faceKnown ? 1 : 0) - (fx.roll.decoy && hasTag(s, 'decoy') ? 1 : 0); out.push(M('roll', 'roll.need', { need: tgt(need) })); const lose = fxTags(s, fx.roll.lose, []); if (lose.length) out.push(M('risk', 'roll.fail', { list: lose.map(x => x.t.toLowerCase()).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.exposure) out.push(M(fx.exposure > 0 ? 'up' : 'down', 'exposure.change', { signed: (fx.exposure > 0 ? '+' : '') + fx.exposure }));
     if (fx.belief === 'away') out.push(M('down', 'search.elsewhere'));

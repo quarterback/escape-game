@@ -23,9 +23,11 @@ Measured with the calibration bots (escape: 300 runs per candidate; government: 
 
 | | Before | After |
 |---|---|---|
-| Teresā escapes | 32.0% | 30.3% |
-| Matēu escapes | 31.3% | 27.7% |
-| Government side, her escape rate | 48.5% | 37.5% |
+| Teresā escapes | 32.0% | 30.0% |
+| Matēu escapes | 31.3% | 29.3% |
+| Government side, her escape rate | 48.5% | 46.5% |
+
+The first numbers published for this branch (37.5% on the government side) came from a bug: the computer-played candidate and the calibration bot still skipped any target above 6, which on the 20-sided die meant every move harder than about 85%. Fixed in the follow-up commit.
 
 The rest of this file is the original proposal, kept for the record.
 

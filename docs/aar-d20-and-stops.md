@@ -37,8 +37,8 @@
 - Contract tests pass. A new C03 dice test checks the 1 and 20 rules and that every target keeps its chance within 5 points.
 - Both demo replays pass. The house arrest check shows 0 of 80.
 - **Calibration:**
-  - Teresā 32.0% → 30.3%, Matēu 31.3% → 27.7%. Both are inside the owner's range.
-  - Government side: her escape rate 48.5% → 37.5% (backlog item 31).
+  - Teresā 32.0% → 30.0%, Matēu 31.3% → 29.3%. Both are inside the owner's range.
+  - Government side: her escape rate 48.5% → 46.5%.
 - **Phone-width browser:**
   - Two full runs showed stop screens at every new stop and card notices.
   - There were no page errors.
@@ -47,6 +47,12 @@
 ## What went wrong
 
 - **The first version made every move roll,** including sleeping. The text-perturbation contract test caught moves with no failure text. That led to the no-roll flag instead of inventing failure lines.
+- **I missed four places that still assumed a six-sided die,** and published numbers that came from them:
+  - the computer-played candidate on the government side skipped every move with a target above 6;
+  - the calibration bot and the sample run did the same;
+  - news-choice chips showed the old six-sided number ("Roll 4 or higher") while the roll used 11.
+
+  I found them while checking the code for the owner's next question, fixed them in a follow-up commit, and corrected the numbers. A search for `need <= 6` should have been part of the first pass.
 - **Card names read badly inside a sentence** ("gives you Theo walks you through"). The notice now uses "New from {name}: {card}."
 
 ## Open

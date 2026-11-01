@@ -64,7 +64,7 @@ const Gov = (() => {
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && a.need <= (found ? 6 : 5)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.need <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
     apps.sort((a, b) => exits(a) - exits(b) || a.need - b.need);
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
@@ -227,7 +227,7 @@ const Gov = (() => {
   }
   function govTags(g, fx, out) {
     out = out || []; if (!fx) return out;
-    if (fx.roll) { out.push(M('roll', 'roll.need', { need: fx.roll.need })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
+    if (fx.roll) { out.push(M('roll', 'roll.need', { need: tgt(fx.roll.need) })); const w = govTags(g, fx.roll.win, []), l = govTags(g, fx.roll.lose, []); if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) })); if (w.length) out.push(M('gain', 'roll.win', { list: w.map(x => x.t.toLowerCase()).join(', ') })); if (l.length) out.push(M('risk', 'roll.fail', { list: l.map(x => x.t.toLowerCase()).join(', ') })); return out; }
     if (fx.hours) out.push(M('time', fx.hours === 1 ? 'time.hour' : 'time.hours', { hours: hrsText(fx.hours) }));
     if (fx.lead !== undefined) out.push(fx.lead ? M('gain', 'lead.real_in', { hours: hrsText(fx.lead) }) : M('gain', 'lead.real_now'));
     if (fx.false) out.push(M('risk', 'lead.false'));
