@@ -412,4 +412,4 @@ How these strings reach the player (traced once, referred to below):
 - The keep_calling label is a template literal in sim.js:119, and `fill` hard-codes "the residence" and "the line" (sim.js:239); both are player text outside the catalog (rule C12).
 - No place name in this scope reads as a person.
 
-Count: rewrites 55, keeps 288 (13 of them never rendered), flags 12, unknowns 0.
+Count: rewrites 55, keeps 288 (15 of them never rendered), flags 12, unknowns 0.
