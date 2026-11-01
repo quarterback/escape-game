@@ -138,6 +138,8 @@ that kept coming back and the rule for each.
   again, but paying them on the apron gets you seen, and police attention rises by one."
 - No label-and-value rows ("Who asks", "The catch", "News waiting: …"). Write the
   sentence.
+- Durations in the interface are figures with "hr": "1 hr", "2 hr", "1 hr wait"
+  (owner, Nov. 1, 2026: "brevity is key in UIs"). Prose keeps AP style.
 - AP style: figures from 10, words below; "2 p.m.", "noon", "midnight"; "Sept.",
   "Oct."; no title case.
 - Read it aloud. If you run out of breath, split it into two complete sentences;

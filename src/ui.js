@@ -149,7 +149,7 @@ const UI = (() => {
   // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
   // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
   const warnMark = (a) => { if (!a.with || a.with === 'self' || !s.people[a.with]) return ''; const [c, t] = whoMark(a.with); return c === 'doubt' || c === 'talked' ? mks([{ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }]) : ''; };
-  const hoursLine = (a) => `<span class="meta"><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}</span></span>`;
+  const hoursLine = (a) => `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: a.hours }))}</span></span>`;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (sel === a.id ? ' sel' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
@@ -177,7 +177,7 @@ const UI = (() => {
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
-  const waitMeta = (w) => `<span class="meta"><span class="hrs">${esc(T(w.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(w.hours) }))}</span></span>`;
+  const waitMeta = (w) => w.id === 'wait' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
@@ -197,13 +197,13 @@ const UI = (() => {
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { if (!o.ok) continue; const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { if (!o.ok) continue; const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${esc(T('action.takes', { hours: o.hours }))}</span>` : ''}</span>`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
   function callBtn(c, allowed, label) {
     const b = document.createElement('button'); b.className = 'call' + (c.ok ? '' : ' no') + (sel === c.id ? ' sel' : '') + (allowed ? '' : ' off'); b.disabled = !allowed;
-    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${c.hours} h</span>` : `<span class="why">${esc(c.why)}</span>`}`;
+    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${esc(T('action.takes', { hours: c.hours }))}</span>` : `<span class="why">${esc(c.why)}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === c.id ? null : c.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -380,7 +380,7 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
       // owner, Nov. 1, 2026: a wait where nothing happened needs no card and no Continue; the scene says so and the next turn starts
       if (result.waited && !roundSum.theirs.length && !result.mine.length && !s.event && !s.over && !Tutorial.active()) { Render.float(Render.W * Render.SCALE / 2, 160, T('sosa.safe'), '#7FE0B0'); Render.enqueue({ dur: 10, start() { startRound(false); } }); } }
     renderAll(); saveRun();
@@ -605,8 +605,7 @@ const UI = (() => {
     const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
-    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up' : 'sum.attention_down') });
-    else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
+    if (exp && gov) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = head + `<ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
@@ -636,7 +635,7 @@ const UI = (() => {
         case 'card': bucket.push({ k: 'gain', quiet: !after, t: T('sum.card', { name: inSentence(e.name) }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
         case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', quiet: !after && e.delta > 0, t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
-        case 'belief': if (!gov) bucket.push({ k: e.belief === s.pos ? 'enemy' : 'gain', t: e.belief === s.pos ? T('sum.search_here') : T('sum.search_elsewhere') }); break;
+        case 'belief': break; // owner, Nov. 1, 2026: the police box and the map show where they search; the card does not repeat it
         case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
@@ -649,7 +648,6 @@ const UI = (() => {
         default: break;
       }
     }
-    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T(expMine > 0 ? 'sum.attention_up' : 'sum.attention_down') });
     if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down') });
     return r;
   }

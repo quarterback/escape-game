@@ -99,7 +99,7 @@
   {
    "id": "action.wait_gov",
    "pattern": "P01",
-   "text": "Wait an hour",
+   "text": "1 hr wait",
    "role": "gov"
   },
   {
@@ -145,7 +145,7 @@
   {
    "id": "action.wait",
    "pattern": "P01",
-   "text": "Wait an hour"
+   "text": "1 hr wait"
   },
   {
    "id": "action.wait_dark",
@@ -524,14 +524,9 @@
    "text": "You lay low"
   },
   {
-   "id": "result.lay_low_title",
-   "pattern": "P10",
-   "text": "One hour passes"
-  },
-  {
    "id": "result.hours_pass",
    "pattern": "P10",
-   "text": "{hours} hours pass",
+   "text": "{hours} hr later",
    "args": [
     "hours"
    ]
@@ -795,7 +790,7 @@
   {
    "id": "sum.hold",
    "pattern": "P10",
-   "text": "{title}, and you choose how to answer it before your next move",
+   "text": "{title}",
    "args": [
     "title"
    ]
@@ -803,7 +798,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "News: {title}",
+   "text": "{title}",
    "args": [
     "title"
    ]
@@ -4353,15 +4348,10 @@
   {
    "id": "action.takes",
    "pattern": "P03",
-   "text": "Takes {hours} hours",
+   "text": "{hours} hr",
    "args": [
     "hours"
    ]
-  },
-  {
-   "id": "action.takes_one",
-   "pattern": "P03",
-   "text": "Takes one hour"
   },
   {
    "id": "action.done_by",
@@ -4498,7 +4488,7 @@
   {
    "id": "sum.news_rumor",
    "pattern": "P10",
-   "text": "A rumor about {name} is waiting under News",
+   "text": "A rumor about {name}",
    "args": [
     "name"
    ]
