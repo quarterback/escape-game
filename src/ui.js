@@ -105,9 +105,9 @@ const UI = (() => {
       const v = Gov.view(gov);
       $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
-      $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label');
+      $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label'); $('sosa-next').parentElement.hidden = false; $('sosa-where').hidden = false; $('sosa').querySelector('.arrive').hidden = false;
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
-      $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
+      $('heatnum2').className = 'mono orange'; $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
@@ -115,12 +115,13 @@ const UI = (() => {
     $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
     $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
-    $('sosa-where').textContent = T(right ? 'scene.sosa_right' : 'scene.sosa_wrong', { place: placeName(s.belief) });
-    $('sosa-nextl').textContent = T('scene.next_move');
-    { const n = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); $('sosa-next').textContent = T(n === 1 ? 'scene.next_in_one' : 'scene.next_in', { hours: Sim.num(n) }); }
-    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = false; $('sosa').querySelector('.arrive').textContent = s.hold ? T('scene.held_again', { hold: Sim.num(s.hold) }) : T('scene.held_at');
-    for (const id of ['heat', 'heat2']) { const h = $(id); h.innerHTML = ''; for (let i = 0; i < Sim.EXPOSURE_LIMIT; i++) { const d = document.createElement('i'); d.className = (i < s.exposure ? 'on' : '') + (i >= 7 ? ' hot' : ''); h.appendChild(d); } }
-    $('heatnum').textContent = s.exposure; $('heatnum2').textContent = `${s.exposure}/10`; $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = ''; $('heat2').hidden = false;
+    // owner, Nov. 1, 2026, from a phone: the box says where the police are and your police attention, nothing else.
+    // "You are not at the residence. Nothing else needed." One number, no bar; no countdown; the limit of 10 is in the help.
+    $('sosa-where').textContent = right ? '' : T('scene.sosa_away'); $('sosa-where').hidden = right;
+    $('sosa-next').parentElement.hidden = true;
+    { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
+    $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
+    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); h.textContent = attnWord(s.exposure); h.className = 'mono lvl-' + attnLevel(s.exposure); } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
@@ -437,10 +438,14 @@ const UI = (() => {
     out.stats = shortStats(); out.marks = routeMarks();
     return out;
   }
+  // owner, Nov. 1, 2026: "does the number really matter at all?" Only two lines change anything: from 7 a search where
+  // you are ends in a stop, and at 10 they stop you anyway. So the player sees a level, never the number.
+  const attnLevel = (x) => x >= 7 ? 'high' : x >= 4 ? 'rising' : 'low';
+  const attnWord = (x) => ({ low: T('attn.low'), rising: T('attn.rising'), high: T('attn.high') })[attnLevel(x)];
   // the numbers alone; what they mean is in Help and opens from the top bar
   const shortStats = () => [
     { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
-    { big: `${s.exposure}/${Sim.EXPOSURE_LIMIT}`, text: T('brief.attention_short'), bar: [s.exposure, Sim.EXPOSURE_LIMIT] },
+    { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
   ];
   function routeMarks() {
     const m = { 5: [['jet', T('brief.jet')]] };
@@ -483,7 +488,7 @@ const UI = (() => {
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
     $('b-route').innerHTML = briefRoute(b.marks);
-    $('b-stats').innerHTML = b.stats.map(st => `<div><b>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
+    $('b-stats').innerHTML = b.stats.map(st => `<div><b${st.cls ? ` class="${st.cls}"` : ''}>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
     $('b-job').innerHTML = b.job.map(P).join('');
     $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
     if (!gov) $('b-need').innerHTML = b.need.map(n => `<li class="${n.done ? 'done' : 'todo'} st"><details><summary><b>${esc(n.name)}</b><span>${esc(n.status)}</span></summary>${n.now ? `<p>${esc(n.now)}</p>` : ''}</details></li>`).join('');
@@ -575,7 +580,7 @@ const UI = (() => {
     const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
-    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up_to' : 'sum.attention_down_to', { n: s.exposure }) });
+    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
     else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = head + `<ul class="rows">${rows}</ul>`;
@@ -619,8 +624,8 @@ const UI = (() => {
         default: break;
       }
     }
-    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T('sum.exposure', { signed: (expMine > 0 ? '+' : '') + expMine }) });
-    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.exposure_rose' : 'sum.exposure_fell', { n: Sim.num(Math.abs(expTheirs)) }) });
+    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T(expMine > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
+    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
     return r;
   }
 
@@ -647,7 +652,7 @@ const UI = (() => {
                      else if (!e.who) { Render.dice(e.die, null, e.won && !e.bought); Render.enqueue({ dur: 10, start() { Sfx.dice(); log('sys', esc(T(e.bought ? 'log.bought' : e.won ? 'log.success' : 'log.failed')), 'roll'); } }); }
                      else Render.enqueue({ dur: 10, start() { log('sys', esc(T(e.pressed ? (e.won ? 'log.pressed_holds' : 'log.pressed_breaks') : (e.won ? 'log.ally_delivers' : 'log.ally_not_yet'), { name: pname(e.who) })), 'roll'); } }); break;
         // her number stays hidden on the government side
-        case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T('float.police_attention', { signed: (e.delta > 0 ? '+' : '') + e.delta }), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
+        case 'exposure': if (!gov) Render.float(Render.W * Render.SCALE / 2, 160, T(e.delta > 0 ? 'float.attention_up' : 'float.attention_down'), e.delta > 0 ? '#FF7A90' : '#7FB2E5'); Render.enqueue({ dur: 10, start() { Sfx.heat(e.delta > 0); } }); break;
         case 'belief': Render.enqueue({ dur: 300, start() { Sfx.click(); } }); break;
         // the card notice is a sentence, never a label and value
         case 'card': Render.enqueue({ dur: 10, start() { Sfx.arranged(); const t = T('log.gives', { name: pname(e.from), card: e.name }); const w = (Data.CARDS[e.id] || {}).works; if (!(phase === 'sosa' || (phase === 'news' && result))) toast(t, w ? T('card.counts_for', { what: /^(Any|At|Boarding|Getting|Reaching|The)\b/.test(w) ? w[0].toLowerCase() + w.slice(1) : w }) : ''); log('sys', esc(t), 'sys'); } }); break;

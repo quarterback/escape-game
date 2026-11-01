@@ -48,7 +48,7 @@
      "id": "map",
      "kind": "read",
      "title": "Reading the scene",
-     "body": "The marker over your head is you, and the police box shows where the police are searching. While they search where you are, your police attention climbs, and at 10 they stop you. Each stop within 12 hours of the last is worse, and the third step is house arrest.",
+     "body": "The marker over your head is you, and the police box shows where the police are searching. While they search where you are, your police attention climbs. Once it is high, a search where you are ends in a stop. Each stop within 12 hours of the last is worse, and the third step is house arrest.",
      "goal": "Read police attention and where the police are searching",
      "highlight": [
       "#scene",

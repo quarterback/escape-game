@@ -84,3 +84,16 @@ The owner settled the open question: "I never want that information, just let th
 The owner, on the result card for "Ask Theo to walk you through": "'Ask Theo to walk you through' and then 'Theo walks you through' is redundant. Why does it need to say that twice? It could say 'Theo escorts you' and that's literally it, and it would cover the whole card. All of them could be that way!"
 
 When a move or choice has its own narrative line, the result card now shows that line as its headline and nothing that repeats it: no move name, no "Success" or "Failed", no "You got (card)", no "(person) trusts you more", no "You made it to (stop)" (the milestone screen says that). Police attention, a lost card, a person who sold you and a search at your stop still show, because the line does not say them. A result with no line (six move outcomes and about half of the news choices) keeps the move name, the outcome word and every chip, so nothing is lost. Display only; no rule changed.
+
+## Fourth addendum: the police box and police attention
+
+From a phone screenshot of the police box at desktop width: "this is so large on mobile, it's too wordy." Then: "you are not at the residence, nothing else needed," "it can be the bar or a 6/10, doesn't need both," "the police stop you when ... doesn't need to be there at all," and "police act in [2 hrs] isn't really useful in this game." Then: "does the number really matter at all? it's kind of a canard. Why do I need to know the police attention?"
+
+The agent traced the rule before answering. Police attention rises while the police search where you are and from some moves and choices. From 7, a police search where you are ends in a stop; at 10, they stop you wherever you are and it drops to 4. Nothing else reads the number. The box had told the player about 10 and never about 7. The owner approved a level instead of a number.
+
+- The police box shows the search ("The police are searching Pedra Branca"), "You are not there." when it is elsewhere, and at desktop width the level. No bar, no countdown, no line about the limit.
+- Police attention reads Low (0 to 3), Rising (4 to 6) or High (7 to 9) in mint, orange or coral, with the word so color is not the only signal. The phone strip under the scene and the stop screen use the same word.
+- Results say "Police attention rises and is now high." instead of "+1" or "rises to 6"; the float over the scene says "Police attention rises".
+- Help, About and the first tutorial explain High: a search where you are ends in a stop, and if it keeps climbing they stop you wherever you are.
+
+Not changed: effect lines that say "police attention rises by one" or "by two" still count steps; the owner has not asked about them. Display only; no rule changed. Contrast check: only the two title-screen failures already recorded.

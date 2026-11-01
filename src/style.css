@@ -18,7 +18,7 @@ button:hover:not(:disabled){border-color:var(--line2);background:rgba(255,255,25
 button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 button.primary{font-family:var(--font-title);color:#06120A;background:var(--commit);border:0;box-shadow:0 0 0 5px rgba(59,209,94,.2)}button.primary:hover:not(:disabled){background:#4ADB6A}
 .pill{border-radius:999px}.ghost{border-color:var(--line)}
-.mono{font-family:var(--font-mono)}.num{font-family:var(--font-label)}.gold{color:var(--gold)}.coral{color:var(--coral2)}.orange{color:var(--orange)}
+.mono{font-family:var(--font-mono)}.num{font-family:var(--font-label)}.gold{color:var(--gold)}.coral{color:var(--coral2)}.orange{color:var(--orange)}.lvl-low{color:var(--mint)}.lvl-rising{color:var(--orange)}.lvl-high{color:var(--coral2)}
 .small{font-size:14px;color:var(--mute);line-height:1.5}
 h1,h2,h3{font-family:var(--font-title);font-weight:400;margin:0}
 h2{font-size:25px;line-height:1.2}h3{font-size:18px;line-height:1.3}
@@ -50,6 +50,7 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 #sosa{position:absolute;top:calc(10px + var(--sat));right:10px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;padding:6px 8px;background:var(--inq);border-radius:10px;max-width:calc(44% - 10px);text-align:right}
 #sosa .name{display:flex;align-items:center;gap:5px;font:400 13px/1.2 var(--font-title);color:var(--pink)}#sosa .name svg{flex:none;width:13px;height:13px}
 #sosa .where{display:none;font-size:15px;color:var(--ink)}
+body:not(.gov) #sosa .where{display:block;font-size:14px}
 #sosa .row2{font-size:13px;color:#E3B8C4}#sosa .row2 .num{font-size:13px}
 #sosa .exp,#sosa .bar,#sosa .arrive{display:none}
 .bar{display:flex;gap:3px;flex:1}.bar i{display:block;flex:1;height:6px;border-radius:2px;background:#3A3170}.bar i.on{background:var(--orange)}.bar i.hot{background:#5A2448}.bar i.hot.on{background:var(--coral)}

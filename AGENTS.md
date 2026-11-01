@@ -58,7 +58,12 @@ How to work under it:
   [docs/design-issues.md](docs/design-issues.md) for the owner instead of
   rewording around it.
 - **Player terms:** "police attention" (never "exposure", which the content
-  check now rejects), "move" (never "approach"). There is no Deck screen:
+  check now rejects), "move" (never "approach"). Police attention shows as a level,
+  never a number (owner, Nov. 1, 2026: "does the number really matter at all? it's
+  kind of a canard"): Low (0 to 3), Rising (4 to 6), High (7 to 9), with the word and
+  its color. Only 7 and 10 change anything: from 7 a search where you are ends in a
+  stop, and at 10 they stop you anyway. The police box says where they are searching,
+  "You are not there." when it is elsewhere, and the level. No bar, no countdown. There is no Deck screen:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card.
 - **Moves show only what you can do.** Owner, Nov. 1, 2026: "I don't want blocked

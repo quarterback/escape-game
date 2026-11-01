@@ -133,46 +133,9 @@
    ]
   },
   {
-   "id": "scene.sosa_right",
+   "id": "scene.sosa_away",
    "pattern": "P06",
-   "text": "Police attention rises while they search {place}, where you are.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "scene.sosa_wrong",
-   "pattern": "P06",
-   "text": "You are not in {place}, so this search does not raise police attention.",
-   "args": [
-    "place"
-   ]
-  },
-  {
-   "id": "scene.next_move",
-   "pattern": "P02",
-   "text": "The police act again"
-  },
-  {
-   "id": "scene.next_in",
-   "pattern": "P05",
-   "text": "in {hours} hours",
-   "args": [
-    "hours"
-   ]
-  },
-  {
-   "id": "scene.held_again",
-   "pattern": "P05",
-   "text": "Police stops are at step {hold} of three, and step three is house arrest",
-   "args": [
-    "hold"
-   ]
-  },
-  {
-   "id": "scene.held_at",
-   "pattern": "P05",
-   "text": "The police stop you when police attention reaches 10."
+   "text": "You are not there."
   },
   {
    "id": "scene.exposure",
@@ -849,30 +812,6 @@
    ]
   },
   {
-   "id": "sum.exposure",
-   "pattern": "P10",
-   "text": "Police attention {signed}",
-   "args": [
-    "signed"
-   ]
-  },
-  {
-   "id": "sum.exposure_rose",
-   "pattern": "P10",
-   "text": "Police attention rose by {n} while the hours passed.",
-   "args": [
-    "n"
-   ]
-  },
-  {
-   "id": "sum.exposure_fell",
-   "pattern": "P10",
-   "text": "Police attention fell by {n} while the hours passed.",
-   "args": [
-    "n"
-   ]
-  },
-  {
    "id": "daily.out",
    "pattern": "P14",
    "text": "Escaped after {hours} hours in round {round}",
@@ -1268,11 +1207,6 @@
    "text": "Goal"
   },
   {
-   "id": "scene.of_ten",
-   "pattern": "P05",
-   "text": "of 10"
-  },
-  {
    "id": "coach.do",
    "pattern": "P13",
    "text": "Do what this step asks to continue."
@@ -1310,7 +1244,7 @@
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while the police search where you are. When it reaches 10, they stop you. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
+   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while the police search where you are, from low to rising to high. Once it is high, a police search where you are ends in a stop, and if it keeps climbing they stop you wherever you are. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
   },
   {
    "id": "help.ios",
@@ -3545,20 +3479,45 @@
    ]
   },
   {
-   "id": "sum.attention_up_to",
+   "id": "sum.attention_up",
    "pattern": "P10",
-   "text": "Police attention rises to {n}.",
+   "text": "Police attention rises and is now {level}.",
    "args": [
-    "n"
+    "level"
    ]
   },
   {
-   "id": "sum.attention_down_to",
+   "id": "sum.attention_down",
    "pattern": "P10",
-   "text": "Police attention falls to {n}.",
+   "text": "Police attention falls and is now {level}.",
    "args": [
-    "n"
+    "level"
    ]
+  },
+  {
+   "id": "float.attention_up",
+   "pattern": "P10",
+   "text": "Police attention rises"
+  },
+  {
+   "id": "float.attention_down",
+   "pattern": "P10",
+   "text": "Police attention falls"
+  },
+  {
+   "id": "attn.low",
+   "pattern": "P05",
+   "text": "Low"
+  },
+  {
+   "id": "attn.rising",
+   "pattern": "P05",
+   "text": "Rising"
+  },
+  {
+   "id": "attn.high",
+   "pattern": "P05",
+   "text": "High"
   },
   {
    "id": "over.save_run",
@@ -3643,7 +3602,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move can fail, and police attention climbs toward 10 while the police search where you are. At 10 they stop you. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move can fail, and police attention climbs while the police search where you are. Once it is high, a search where you are ends in a stop, and if it keeps climbing they stop you wherever you are. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -3715,11 +3674,6 @@
    "id": "scene.hours_one",
    "pattern": "P05",
    "text": "one hour"
-  },
-  {
-   "id": "scene.next_in_one",
-   "pattern": "P05",
-   "text": "in one hour"
   },
   {
    "id": "sim.num.words",
@@ -4235,14 +4189,6 @@
    "text": "The minister expects a town by {time}.",
    "args": [
     "time"
-   ]
-  },
-  {
-   "id": "float.police_attention",
-   "pattern": "P10",
-   "text": "{signed} police attention",
-   "args": [
-    "signed"
    ]
   },
   {
