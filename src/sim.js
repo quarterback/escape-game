@@ -172,7 +172,8 @@ const Sim = (() => {
   // a card kind in player words, never the internal tag
   const kindWord = (tag) => { const w = ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag; return w[0].toLowerCase() + w.slice(1); };
   function needText(s, n) {
-    if (n.card) return hasTag(s, n.card) ? null : (heldTag(s, n.card) ? T('sim.why.your_card_is_not_recognized', { card: kindWord(n.card) }) : T('sim.why.needs_a_card', { card: kindWord(n.card) }));
+    // what is missing, named as the thing in the story (the barges, Gianlūka's help), never as a card
+    if (n.card) { if (hasTag(s, n.card)) return null; const id = ['sim', 'why', 'need', n.card].join('_').replace(/_/, '.').replace(/_/, '.'); return heldTag(s, n.card) ? T('sim.why.not_here_help') : C.has(id) ? T(id) : T('sim.why.needs_a_card', { card: kindWord(n.card) }); }
     if (n.night) return isNight(s) ? null : T('need.night');
     if (n.arr) { const a = s.arr[n.arr]; return a.stage >= n.stage ? null : T('sim.why.needs_step', { step: D.ARRANGEMENTS[n.arr].stages[n.stage] }); }
     return null;

@@ -18,7 +18,7 @@ const UI = (() => {
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
   const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-  const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const esc = (t) => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
   const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
@@ -151,21 +151,22 @@ const UI = (() => {
   const metaLine = (a, withSosa) => `<span class="meta">${chanceText(a) ? `<span class="nd">${esc(chanceText(a))}</span>` : ''}<span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}${a.who ? esc(T('action.done_by', { who: a.who })) : ''}</span>${withSosa && sosaActs(a.hours) ? `<span class="sosa-during">${esc(sosaDuring(a))}</span>` : ''}</span>`;
   // escape side: how many times Sosā acts during the move's own hours
   const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
-  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.sosa_none', { hours: Sim.num(a.hours) }) : n === 1 ? T('action.sosa_once', { hours: Sim.num(a.hours) }) : T('action.sosa_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
+  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.police_none') : n === 1 ? T('action.police_once') : T('action.police_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
   const usesLabel = (a) => a.bonus && a.bonus.length ? `<span class="uses">${esc(T('action.uses', { list: a.bonus.map(u => cardsFor(u.tag).map(inSentence).join(', ') || inSentence(tagName(u.tag))).join(', ') }))}</span>` : '';
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (a.ok ? '' : ' no') + (sel === a.id ? ' sel' : '') + (a.ok && !a.pct ? ' hard' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
     const marks = []; if (a.with && a.with !== 'self' && s.people[a.with]) { const [c, t] = whoMark(a.with); marks.push({ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }); } if (a.night && a.ok) marks.push({ k: 'night', t: T('marker.night') });
-    b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a, true)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
+    b.innerHTML = `${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${marks.length ? mks(marks) : ''}${a.ok ? `${metaLine(a)}` : `<span class="why">${esc(a.why)}</span>`}</span>${a.ok && window.innerWidth >= 1000 ? usesLabel(a) : ''}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === a.id ? null : a.id; Sfx.select(); renderAll(); };
     return b;
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).concat(a.ok ? [sosaDuring(a)] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row"><button class="primary commit" ${a.ok && !s.over ? '' : 'disabled'}>${commitLabel}</button><button class="cancel">${T('action.cancel')}</button></div>`;
-    box.querySelector('.commit').onclick = onCommit; box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
+    box.innerHTML = `<div class="act">${dieFace(a.noRoll ? null : a.need)}<span class="body"><span class="nm">${esc(a.name)}</span>${metaLine(a)}${usesLabel(a)}</span></div><p>${esc(a.text || '')}</p><ul class="preview">${a.preview.slice(1).filter((x, i) => (i > 0 || a.noRoll) && x !== T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.ok ? '' : `<p class="why" style="color:var(--coral2)">${esc(a.why)}</p>`}<div class="row">${a.ok && !s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T(a.ok && !s.over ? 'action.cancel' : 'action.close')}</button></div>`;
+    if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
+    requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons are always on screen box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
   function renderHere() {
@@ -176,7 +177,7 @@ const UI = (() => {
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
     if (A.waitDark.ok) waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: [T('wait.dark_line'), T('wait.interrupt')] });
-    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [T('wait.hour_line')] });
+    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
@@ -189,7 +190,7 @@ const UI = (() => {
   }
   function waitBox(w) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div><ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div>${w.lines.length ? `<ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}<div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = () => doCommit(w.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }

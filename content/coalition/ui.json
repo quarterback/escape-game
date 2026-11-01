@@ -247,6 +247,11 @@
    "text": "Cancel"
   },
   {
+   "id": "action.close",
+   "pattern": "P01",
+   "text": "Close"
+  },
+  {
    "id": "action.commit",
    "pattern": "P01",
    "text": "Try it"
@@ -600,11 +605,6 @@
    "id": "wait.interrupt",
    "pattern": "P03",
    "text": "News or a police stop ends the wait early."
-  },
-  {
-   "id": "wait.hour_line",
-   "pattern": "P03",
-   "text": "You stay where you are for one hour."
   },
   {
    "id": "result.your_order",
@@ -2037,18 +2037,45 @@
   {
    "id": "sim.why.needs_a_card",
    "pattern": "P04",
-   "text": "You need a card that gives you {card}.",
+   "text": "You need {card} first.",
    "args": [
     "card"
    ]
   },
   {
-   "id": "sim.why.your_card_is_not_recognized",
+   "id": "sim.why.need_passage",
    "pattern": "P04",
-   "text": "The card you hold for {card} does not work here.",
-   "args": [
-    "card"
-   ]
+   "text": "You need someone to get you aboard first."
+  },
+  {
+   "id": "sim.why.need_document",
+   "pattern": "P04",
+   "text": "You need your second passport."
+  },
+  {
+   "id": "sim.why.need_influence",
+   "pattern": "P04",
+   "text": "You need Gianlūka's help."
+  },
+  {
+   "id": "sim.why.need_decoy",
+   "pattern": "P04",
+   "text": "You need Nando's spare cars."
+  },
+  {
+   "id": "sim.why.need_boat",
+   "pattern": "P04",
+   "text": "You need the family barges."
+  },
+  {
+   "id": "sim.why.need_permission",
+   "pattern": "P04",
+   "text": "You need your sponsor's help."
+  },
+  {
+   "id": "sim.why.not_here_help",
+   "pattern": "P04",
+   "text": "The help you have does not work here."
   },
   {
    "id": "sim.effect.aircraft_preparations_stay_on_hold",
@@ -4470,27 +4497,20 @@
    ]
   },
   {
-   "id": "action.sosa_none",
+   "id": "action.police_none",
    "pattern": "P03",
-   "text": "The police do not act during these {hours} hours.",
-   "args": [
-    "hours"
-   ]
+   "text": "The police do not act in that time."
   },
   {
-   "id": "action.sosa_once",
+   "id": "action.police_once",
    "pattern": "P03",
-   "text": "The police act once during these {hours} hours.",
-   "args": [
-    "hours"
-   ]
+   "text": "The police act once in that time."
   },
   {
-   "id": "action.sosa_times",
+   "id": "action.police_times",
    "pattern": "P03",
-   "text": "The police act {n} times during these {hours} hours.",
+   "text": "The police act {n} times in that time.",
    "args": [
-    "hours",
     "n"
    ]
   },
@@ -4751,7 +4771,7 @@
   {
    "id": "sim.preview.harder_checkpoint",
    "pattern": "P03",
-   "text": "The police have a checkpoint here until {time}, and it makes this roll harder.",
+   "text": "A police checkpoint here makes this harder until {time}.",
    "args": [
     "time"
    ]

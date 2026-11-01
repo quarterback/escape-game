@@ -44,7 +44,7 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 #world .shade.bottom{bottom:0;height:34%;background:linear-gradient(0deg,rgba(21,15,46,.95) 0%,rgba(21,15,46,0) 100%)}
 #clockbox{position:absolute;top:calc(10px + var(--sat));left:10px;display:flex;flex-direction:column;gap:2px;max-width:calc(56% - 10px);padding:6px 8px;background:rgba(21,15,46,.84);border-radius:10px}
 #clockbox .clock{font:400 22px/1 var(--font-clock);color:var(--gold);white-space:nowrap}
-#clockbox .left{font-size:13px;line-height:1.3}
+#clockbox .left{font-size:14px;line-height:1.3}
 #goalbox{display:none;position:absolute;top:24px;left:50%;transform:translateX(-50%);flex-direction:column;align-items:center;gap:2px;text-align:center;padding:10px 20px;background:rgba(21,15,46,.78);border-radius:14px}
 #goalbox .lbl{font-size:14px;color:var(--mute)}#goalbox .txt{font:400 18px/1.3 var(--font-title)}
 #sosa{position:absolute;top:calc(10px + var(--sat));right:10px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;padding:6px 8px;background:var(--inq);border-radius:10px;max-width:calc(44% - 10px);text-align:right}
@@ -82,7 +82,7 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 .act .nm{font:400 17px/1.3 var(--font-title)}
 .act .meta{font-size:14px;color:var(--mute);line-height:1.4}.act .meta .nd{font-family:var(--font-mono);color:var(--gold)}.act .meta .hrs{font-family:var(--font-mono);color:var(--ink)}
 .act .why{display:block;font-size:14px;color:var(--mute);line-height:1.4}
-.uses{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--mint);color:#0E2A24;font-size:13px;line-height:1;white-space:nowrap}
+.uses{display:inline-flex;padding:5px 10px;border-radius:14px;background:var(--mint);color:#0E2A24;font-size:14px;line-height:1.25;white-space:normal;max-width:100%}
 .actbox{display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--s3);border-radius:16px;box-shadow:0 0 0 3px var(--gold)}
 .actbox .act{padding:0;background:transparent;min-height:0;box-shadow:none}
 .actbox p{margin:0;font-size:16px}.actbox .preview{margin:0;padding-left:18px;font-size:15px;color:var(--soft)}.actbox .preview li{margin:2px 0}
@@ -145,7 +145,7 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 #coach{position:absolute;top:8px;left:12px;right:12px;z-index:3;background:#2A2210;border:1px solid var(--gold);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.5;display:flex;flex-direction:column;max-height:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 body.coaching .tab{top:calc(var(--coachh,0px) + 16px)}
 #coach[hidden]{display:none}#coach-body{overflow-y:auto;min-height:0}#coach p{margin:0 0 8px}
-#coach .step{font-size:13px;color:var(--gold)}#coach h3{font-size:18px;margin:2px 0 6px}
+#coach .step{font-size:14px;color:var(--gold)}#coach h3{font-size:18px;margin:2px 0 6px}
 #coach .row{margin:0 0 8px;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}#coach-do{color:var(--orange)}#coach-leave{margin-left:auto;font-size:14px;min-height:40px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .tut-hi{outline:2px solid var(--gold);outline-offset:3px;border-radius:14px;animation:tutpulse 1.6s ease-in-out infinite}@keyframes tutpulse{0%,100%{outline-color:var(--gold)}50%{outline-color:rgba(255,201,60,.25)}}
@@ -286,7 +286,7 @@ body.phased .tab{top:var(--phaseh,52px)}body.phased #coach{top:calc(var(--phaseh
 #phasecard .next{align-self:flex-start;min-height:48px;padding:0 24px}
 body.busy #phasecard button{opacity:.5;pointer-events:none}
 .mks{display:flex;flex-wrap:wrap;gap:6px}
-.mk{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font:400 13px/1.1 var(--font-body);background:var(--s2);color:var(--ink);white-space:nowrap}
+.mk{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:14px;font:400 14px/1.25 var(--font-body);background:var(--s2);color:var(--ink);white-space:normal;max-width:100%} /* long tags wrap inside the card, never past it */
 .mk.long{white-space:normal;border-radius:12px;line-height:1.3;text-align:left;max-width:100%}
 .mk.time{box-shadow:inset 0 0 0 1.5px var(--lav)}.mk.roll{background:var(--gold);color:#2A1A00}.mk.up,.mk.risk{background:#5A2040;color:#FFC4CF}.mk.risk{background:var(--coral2);color:#2A0610}
 .mk.down,.mk.gain{background:#183A36;color:#8FF5D8}.mk.lose{background:#4A3418;color:#FFD3A8}
@@ -340,7 +340,7 @@ body.busy #phasecard button{opacity:.5;pointer-events:none}
 .maphint{margin:0}
 @media(min-width:1000px){#map-choices{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* the ledger: what each ally promised and what came back */
-.ledger{display:block;font-size:13px;color:var(--mute);line-height:1.4;margin-top:2px}.ledger .h{font-family:var(--font-mono);color:var(--gold)}
+.ledger{display:block;font-size:14px;color:var(--mute);line-height:1.4;margin-top:2px}.ledger .h{font-family:var(--font-mono);color:var(--gold)}
 
 #replaybadge{position:fixed;top:calc(8px + var(--sat));left:50%;transform:translateX(-50%);z-index:30;padding:4px 12px;border-radius:999px;background:var(--gold);color:#150F2E;font:400 13px/1.4 var(--font-label);letter-spacing:.04em;text-transform:uppercase}#replaybadge[hidden]{display:none}
 body.attract #title{background:transparent}
@@ -362,8 +362,8 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
 #brief .broute .above,#brief .broute .below{min-height:21px;display:flex;flex-direction:column;align-items:center;gap:3px}
 #brief .broute .dot{width:16px;height:16px;border-radius:50%;background:var(--line2);box-shadow:0 0 0 4px var(--s1);position:relative}
 #brief .broute li.here .dot{background:var(--gold)}#brief .broute li.end .dot{background:var(--lav)}
-#brief .broute .stop{font-size:13px;line-height:1.25;color:var(--mute)}#brief .broute li.here .stop{color:var(--ink)}
-#brief .bpill{padding:2px 8px;border-radius:999px;font:400 12px/1.4 var(--font-title);color:#150F2E;white-space:nowrap}
+#brief .broute .stop{font-size:14px;line-height:1.25;color:var(--mute)}#brief .broute li.here .stop{color:var(--ink)}
+#brief .bpill{padding:2px 8px;border-radius:999px;font:400 14px/1.4 var(--font-title);color:#150F2E;white-space:nowrap}
 #brief .bpill.you{background:var(--gold)}#brief .bpill.sosa{background:var(--coral2)}#brief .bpill.jet,#brief .bpill.seen{background:var(--lav)}
 #brief .bstats{display:flex;flex-direction:column;gap:12px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 #brief .bstats>div{display:flex;gap:14px;align-items:flex-start}#brief .bstats b{flex:none;min-width:64px;font:400 24px/1.2 var(--font-label);font-weight:400}#brief .bstats p{margin:0;font-size:16px;line-height:1.45;color:var(--soft);display:flex;flex-direction:column;gap:6px}
@@ -417,15 +417,15 @@ body.attract .title-box{background:rgba(21,15,46,.78);border-radius:20px;backdro
   #brief .broute .stop{order:1;font-size:16px;flex:1 1 auto}
   #brief .broute .above,#brief .broute .below{order:2;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;min-height:0;gap:4px}
   #brief .broute .below{order:3}
-  #brief .bpill{font-size:13px}
+  #brief .bpill{font-size:14px}
 }
 
 /* the last round, kept on screen until the next move; nothing to click through */
 #recap{margin:0 0 12px;padding:10px 14px;background:var(--s2);border-radius:14px}#recap[hidden]{display:none}
 #recap summary{cursor:pointer;color:var(--gold);font:400 15px/1.3 var(--font-title);min-height:36px;display:flex;align-items:center}
-#recap .recapbody{display:flex;flex-direction:column;gap:10px}#recap .recapbody h3{font-size:17px;margin:2px 0}#recap .kind{font-size:13px;color:var(--mute)}
+#recap .recapbody{display:flex;flex-direction:column;gap:10px}#recap .recapbody h3{font-size:17px;margin:2px 0}#recap .kind{font-size:14px;color:var(--mute)}
 /* the police box is small: two short lines */
-#sosa{padding:4px 7px;max-width:calc(40% - 10px)}#sosa .name{font-size:12px}#sosa .row2,#sosa .row2 .num{font-size:11px}
+#sosa{padding:4px 8px;max-width:calc(46% - 10px)}#sosa .name{font-size:14px}#sosa .row2,#sosa .row2 .num{font-size:14px} /* 14px minimum for secondary text */
 @media (max-width: 999px){#sosa .name svg{display:none}}
 /* the phone rings: the phone tab and the phone heading pulse while a call waits */
 @keyframes ringpulse{0%,100%{box-shadow:0 0 0 0 rgba(46,230,181,.0)}50%{box-shadow:0 0 0 6px rgba(46,230,181,.45)}}
