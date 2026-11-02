@@ -153,6 +153,48 @@
    "text": "Wait until dark"
   },
   {
+   "id": "sim.label.hurry",
+   "pattern": "P01",
+   "text": "Ask {name} to hurry {what}",
+   "args": [
+    "name",
+    "what"
+   ]
+  },
+  {
+   "id": "sim.hurry.aircraft",
+   "pattern": "P03",
+   "text": "The answer comes in two hours. Paying the crew extra gets noticed, so your police attention rises by one."
+  },
+  {
+   "id": "sim.hurry.permission",
+   "pattern": "P03",
+   "text": "The answer comes in two hours. A rushed ministry says no more often."
+  },
+  {
+   "id": "sim.hurry.reception",
+   "pattern": "P03",
+   "text": "The answer comes in two hours. A rushed minister's office says no more often."
+  },
+  {
+   "id": "sim.hurry_line.aircraft",
+   "pattern": "P07",
+   "text": "\"I'll pay the crew double to move tonight. Two hours.\"",
+   "speaker": "sibling"
+  },
+  {
+   "id": "sim.hurry_line.permission",
+   "pattern": "P07",
+   "text": "\"I'll call the minister at home. You'll have an answer in two hours, whatever it is.\"",
+   "speaker": "sponsor"
+  },
+  {
+   "id": "sim.hurry_line.reception",
+   "pattern": "P07",
+   "text": "\"I'll press them tonight. Two hours, and they won't like being pressed.\"",
+   "speaker": "sibling"
+  },
+  {
    "id": "action.wait_job",
    "pattern": "P01",
    "text": "Wait for {name}'s answer",

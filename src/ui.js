@@ -275,9 +275,9 @@ const UI = (() => {
     }
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) { if (!c.ok) continue; // only calls you can make
-      const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
-      const label = c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
-      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
+      const arr = c.id.replace(/^(call|hurry):/, ''), def = Data.ARRANGEMENTS[arr];
+      const label = c.hurry ? c.name : c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
+      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b>${c.cost ? `<p class="ctx">${esc(c.cost)}</p>` : ''}<div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
   }
@@ -434,7 +434,7 @@ const UI = (() => {
     const sid = String(id), sm = summarize(r.events, T('result.your_move'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
-    else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('call:') || sid.startsWith('hurry:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // the food and sleep screen is a choice card, not a move
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
     else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark' || sid === 'wait_job') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');

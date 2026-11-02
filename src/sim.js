@@ -237,6 +237,8 @@ const Sim = (() => {
       const a = A[k], def = D.ARRANGEMENTS[k];
       if (a.stage >= def.stages.length - 1) return;
       const p = pending(k);
+      // owner, Nov. 2, 2026: "the user needs to be able to haste" — a pending arrangement can be hurried once, at a price
+      if (p && !p.hurried && !p.stall && p.due - s.hour > 2) { out.push({ kind: 'call', id: 'hurry:' + k, hurry: true, name: T('sim.label.hurry', { name: ally === 'sibling' ? `${ch(s).sibling.rel} ${ch(s).sibling.name}` : personName(s, p.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally: p.ally, arr: k, ok: !s.event, why: s.event ? T('sim.why.answer_the_news_first') : '', hours: 1, cost: hurryCost(k), preview: [hurryCost(k)] }); return; }
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
       if (s.event) whys.unshift(T('sim.why.answer_the_news_first'));
       out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: ally === 'sibling' ? T('phone.your_sibling') : personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
@@ -449,6 +451,7 @@ const Sim = (() => {
     if (actionId === 'wait_dark') { if (!waitDark(s).ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; careLine(s, events); quietly(s, true, () => { while (!isNight(s) && !s.event && !s.over) pass(s, 1, events); }); return finish(s, events); }
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
+    if (actionId.startsWith('hurry:')) return hurry(s, actionId.slice(6), events);
     const a = level(s).approaches.find(x => x.id === actionId);
     if (!a) return { ok: false, why: T('sim.why.not_something_you_can_do') };
     const view = approachList(s).find(x => x.id === actionId);
@@ -546,6 +549,18 @@ const Sim = (() => {
     say(events, c.ally, k === 'aircraft' ? T('sim.line.leave_it_with_me_six') : k === 'reception' ? (c.ally === 'official' ? T('sim.line.i_will_see_what_the') : T('sim.line.i_have_a_name_in')) : T('sim.line.ten_hours_and_you_understand'));
     pass(s, 1, events); return finish(s, events);
   }
+  // hurry a pending arrangement: the answer comes two hours after the call. The jet costs attention (paying the crew extra
+  // gets noticed); the visa and the welcome cost certainty (a rushed ministry is more likely to say no).
+  const hurryCost = (k) => ({ aircraft: T('sim.hurry.aircraft'), permission: T('sim.hurry.permission'), reception: T('sim.hurry.reception') })[k];
+  function hurry(s, k, events) {
+    const c = callList(s).find(x => x.id === 'hurry:' + k), j = s.jobs.find(x => x.arr === k && !x.stall);
+    if (!c || !c.ok || !j) return { ok: false, why: c ? c.why : T('sim.why.nothing_to_call_about') };
+    j.hurried = true; j.due = s.hour + 3; if (k !== 'aircraft') j.harder = 1; s.calledAt = s.hour; s.calledFrom = s.pos;
+    events.push(ev('job', { arr: k, ally: j.ally, due: j.due, dueText: clockText(j.due) }));
+    say(events, j.ally, ({ aircraft: T('sim.hurry_line.aircraft'), permission: T('sim.hurry_line.permission'), reception: T('sim.hurry_line.reception') })[k]);
+    if (k === 'aircraft') heat(s, 1, events);
+    pass(s, 1, events); return finish(s, events);
+  }
   function answer(s, id, optionId, events) {
     const i = s.inbox.findIndex(m => m.id === id); if (i < 0) return { ok: false, why: T('sim.why.that_message_is_gone') };
     const m = s.inbox[i], o = m.options.find(x => x.id === optionId); if (!o) return { ok: false, why: T('sim.why.pick_one_of_the_answers') };
@@ -599,7 +614,7 @@ const Sim = (() => {
   function resolveJob(s, j, events) {
     s.jobs = s.jobs.filter(x => x !== j);
     if (j.stall) return;
-    const rel = D.PEOPLE[j.ally].reliability + (s.people[j.ally].turned ? 6 : 0) - (s.people[j.ally].trust >= 2 ? 1 : 0);
+    const rel = D.PEOPLE[j.ally].reliability + (s.people[j.ally].turned ? 6 : 0) - (s.people[j.ally].trust >= 2 ? 1 : 0) + (j.harder || 0);
     const d = roll(s), t = tgt(rel), good = wins(d, t);
     events.push(ev('roll', { die: d, need: t, won: good, who: j.ally }));
     if (good) { if (j.arr === 'aircraft' && j.target === 2 && !s.flags.destination && s.arr.permission.stage < 1) { say(events, 'sibling', T('sim.line.the_crew_will_not_confirm')); return; }
