@@ -828,17 +828,8 @@ const UI = (() => {
   const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
   const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
   // ---- the cards you add: designed as game cards (owner, Nov. 2, 2026: "why didn't you design these instead of making them words?")
-  // A 12-by-8 pixel icon per card, drawn as SVG squares: 1 in the card's color, 2 light, 3 dark, 0 empty. The color says what kind of help it is.
-  const CARD_ART = {
-    supporters: ['000000000000', '011111100000', '011111101100', '011111101210', '011111111111', '011111111111', '003300003300', '003300003300'],
-    food: ['000000000000', '000111111000', '001212121100', '011111111110', '011111111110', '011111111110', '033333333330', '000000000000'],
-    lawyer: ['001111111100', '012222222210', '001233332100', '001222222100', '001233332100', '001233222100', '012222222210', '001111111100'],
-    rail_friend: ['000111110000', '001222221000', '001232321110', '001111111110', '001111111110', '001111111110', '000330033000', '333333333333'],
-    broker: ['000011110000', '000011110000', '000001100000', '001111111100', '001111111100', '003333333300', '000000000000', '022222222220'],
-    pilot_owes: ['000001100000', '000001100000', '000011110000', '011111111110', '111111111111', '000001100000', '000001100000', '000011110000'],
-    road_map: ['111222111222', '121232121232', '111222111222', '121223121222', '111222131222', '121222113222', '111222111232', '121222121222'],
-  };
-  const KIND_COLOR = { vehicle: '#2EE6B5', supplies: '#FF9F43', delay: '#C9A4F5', passage: '#2EE6B5', introduction: '#7FB2E5', permission: '#FF9DAE', information: '#FFC93C' };
+  // Each card's 12-by-8 pixel icon comes from Art.ITEMS (the scene carries the same icons), drawn here as SVG squares.
+  const CARD_ART = Art.ITEMS, KIND_COLOR = Art.ITEM_COLOR;
   function cardArt(id, tag) {
     const rows = CARD_ART[id] || CARD_ART.road_map, col = KIND_COLOR[tag] || '#FFC93C', fill = { 1: col, 2: '#F6F1FF', 3: '#150F2E' };
     let r = ''; rows.forEach((row, y) => [...row].forEach((ch, x) => { if (fill[ch]) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${fill[ch]}"/>`; }));
