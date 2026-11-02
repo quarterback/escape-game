@@ -99,7 +99,7 @@
   {
    "id": "action.wait_gov",
    "pattern": "P01",
-   "text": "Wait an hour",
+   "text": "1 hr wait",
    "role": "gov"
   },
   {
@@ -111,7 +111,7 @@
   {
    "id": "nav.orders",
    "pattern": "P02",
-   "text": "Orders",
+   "text": "Make your move",
    "role": "gov"
   },
   {
@@ -145,7 +145,7 @@
   {
    "id": "action.wait",
    "pattern": "P01",
-   "text": "Wait an hour"
+   "text": "1 hr wait"
   },
   {
    "id": "action.wait_dark",
@@ -153,9 +153,17 @@
    "text": "Wait until dark"
   },
   {
+   "id": "wait.dark_for",
+   "pattern": "P03",
+   "text": "Wait until 10 p.m., when you can {move}.",
+   "args": [
+    "move"
+   ]
+  },
+  {
    "id": "action.wait_go",
    "pattern": "P01",
-   "text": "Wait"
+   "text": "Confirm"
   },
   {
    "id": "nav.phone",
@@ -165,7 +173,7 @@
   {
    "id": "nav.here",
    "pattern": "P02",
-   "text": "Here"
+   "text": "Make your move"
   },
   {
    "id": "coach.step",
@@ -194,7 +202,7 @@
   {
    "id": "action.commit",
    "pattern": "P01",
-   "text": "Try it"
+   "text": "Confirm"
   },
   {
    "id": "phone.waiting",
@@ -208,6 +216,21 @@
    "id": "phone.empty",
    "pattern": "P12",
    "text": "Nobody is calling."
+  },
+  {
+   "id": "call.ringing",
+   "pattern": "P02",
+   "text": "Calling you"
+  },
+  {
+   "id": "call.answer",
+   "pattern": "P01",
+   "text": "Answer"
+  },
+  {
+   "id": "call.later",
+   "pattern": "P01",
+   "text": "Not now"
   },
   {
    "id": "phone.sibling_role",
@@ -229,7 +252,7 @@
   {
    "id": "action.call",
    "pattern": "P01",
-   "text": "Call"
+   "text": "Confirm"
   },
   {
    "id": "need.aircraft_ready",
@@ -524,14 +547,9 @@
    "text": "You lay low"
   },
   {
-   "id": "result.lay_low_title",
-   "pattern": "P10",
-   "text": "One hour passes"
-  },
-  {
    "id": "result.hours_pass",
    "pattern": "P10",
-   "text": "{hours} hours pass",
+   "text": "{hours} hr later",
    "args": [
     "hours"
    ]
@@ -699,7 +717,12 @@
   {
    "id": "sosa.quiet",
    "pattern": "P12",
-   "text": "Nobody moved against you"
+   "text": "Safe for now"
+  },
+  {
+   "id": "sosa.safe",
+   "pattern": "P10",
+   "text": "Safe for now"
   },
   {
    "id": "sosa.kind_gov",
@@ -790,7 +813,7 @@
   {
    "id": "sum.hold",
    "pattern": "P10",
-   "text": "{title}, and you choose how to answer it before your next move",
+   "text": "{title}",
    "args": [
     "title"
    ]
@@ -798,7 +821,7 @@
   {
    "id": "sum.news",
    "pattern": "P10",
-   "text": "News: {title}",
+   "text": "{title}",
    "args": [
     "title"
    ]
@@ -987,7 +1010,7 @@
   {
    "id": "action.send_order",
    "pattern": "P01",
-   "text": "Send the order",
+   "text": "Confirm",
    "role": "gov"
   },
   {
@@ -1038,7 +1061,7 @@
   {
    "id": "action.send",
    "pattern": "P01",
-   "text": "Send",
+   "text": "Confirm",
    "role": "gov"
   },
   {
@@ -1087,41 +1110,109 @@
   {
    "id": "start.continue",
    "pattern": "P01",
-   "text": "Pick up as {name}",
-   "args": [
-    "name"
-   ]
+   "text": "Continue your saved game"
   },
   {
-   "id": "start.demo_note",
-   "pattern": "P13",
-   "text": "Play {name} with a coach as far as the airfield, then finish the run yourself.",
-   "args": [
-    "name"
-   ]
+   "id": "start.choose",
+   "pattern": "P01",
+   "text": "Choose your character"
   },
   {
-   "id": "start.pick",
+   "id": "pick.title",
    "pattern": "P02",
-   "text": "Who you are"
+   "text": "Choose your character"
   },
   {
-   "id": "start.sibling_her",
+   "id": "pick.role_candidate",
+   "pattern": "P02",
+   "text": "The candidate"
+  },
+  {
+   "id": "pick.role_investigator",
+   "pattern": "P02",
+   "text": "Special investigator"
+  },
+  {
+   "id": "pick.goal_candidate",
    "pattern": "P08",
-   "text": "Her {rel} {name} has found a jet",
+   "text": "Reach the jet at Portalba and fly out before Tuesday at 2 p.m."
+  },
+  {
+   "id": "pick.goal_investigator",
+   "pattern": "P08",
+   "text": "Stop the candidate from flying out before Tuesday at 2 p.m."
+  },
+  {
+   "id": "pick.starts_with",
+   "pattern": "P03",
+   "text": "{name} starts with {card}.",
    "args": [
-    "rel",
-    "name"
+    "name",
+    "card"
    ]
   },
   {
-   "id": "start.sibling_his",
-   "pattern": "P08",
-   "text": "His {rel} {name} has found a jet",
+   "id": "pick.starts_with_two",
+   "pattern": "P03",
+   "text": "{name} starts with {a} and {b}.",
    "args": [
-    "rel",
-    "name"
+    "name",
+    "a",
+    "b"
    ]
+  },
+  {
+   "id": "pick.face",
+   "pattern": "P03",
+   "text": "Every border officer knows her face, so crossing the border is harder."
+  },
+  {
+   "id": "pick.watched",
+   "pattern": "P03",
+   "text": "The police have watched him since the count, so his police attention starts higher."
+  },
+  {
+   "id": "pick.next",
+   "pattern": "P01",
+   "text": "Pick your cards"
+  },
+  {
+   "id": "pick.next_mate",
+   "pattern": "P01",
+   "text": "Choose a companion"
+  },
+  {
+   "id": "pick.mate_title",
+   "pattern": "P02",
+   "text": "Choose who travels with you"
+  },
+  {
+   "id": "pick.added",
+   "pattern": "P02",
+   "text": "{n} cards added",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "pick.added_one",
+   "pattern": "P02",
+   "text": "One card added"
+  },
+  {
+   "id": "pick.cards_title",
+   "pattern": "P02",
+   "text": "Add cards to your deck"
+  },
+  {
+   "id": "pick.go",
+   "pattern": "P01",
+   "text": "Start the run"
+  },
+  {
+   "id": "pick.back",
+   "pattern": "P01",
+   "text": "Back"
   },
   {
    "id": "daily.done_note",
@@ -1279,7 +1370,7 @@
   {
    "id": "tab.here",
    "pattern": "P02",
-   "text": "Here"
+   "text": "Moves"
   },
   {
    "id": "tab.phone",
@@ -1355,12 +1446,6 @@
    "id": "start.tutorial",
    "pattern": "P01",
    "text": "Play the demo"
-  },
-  {
-   "id": "start.gov_tutorial",
-   "pattern": "P01",
-   "text": "Play the demo as Sofīā",
-   "role": "gov"
   },
   {
    "id": "start.byline",
@@ -3208,39 +3293,6 @@
    "text": "Credits"
   },
   {
-   "id": "hint.news",
-   "pattern": "P08",
-   "text": "Pick a response."
-  },
-  {
-   "id": "hint.move",
-   "pattern": "P08",
-   "text": "Pick one move, or wait an hour."
-  },
-  {
-   "id": "hint.sosa",
-   "pattern": "P08",
-   "text": "See what the police and your allies did."
-  },
-  {
-   "id": "hint.gov_news",
-   "pattern": "P08",
-   "text": "Pick a response.",
-   "role": "gov"
-  },
-  {
-   "id": "hint.gov_move",
-   "pattern": "P08",
-   "text": "Give one order, or wait an hour.",
-   "role": "gov"
-  },
-  {
-   "id": "hint.gov_sosa",
-   "pattern": "P08",
-   "text": "Read the reports on her move.",
-   "role": "gov"
-  },
-  {
    "id": "sim.end.lets_the_jet_land",
    "pattern": "P14",
    "text": "{name} lets the jet land and asks questions for a week.",
@@ -3481,18 +3533,12 @@
   {
    "id": "sum.attention_up",
    "pattern": "P10",
-   "text": "Police attention rises and is now {level}.",
-   "args": [
-    "level"
-   ]
+   "text": "Police attention goes up."
   },
   {
    "id": "sum.attention_down",
    "pattern": "P10",
-   "text": "Police attention falls and is now {level}.",
-   "args": [
-    "level"
-   ]
+   "text": "Police attention goes down."
   },
   {
    "id": "float.attention_up",
@@ -3612,7 +3658,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofīā Leōnī's desk. She is aide to the incoming minister, who wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
+   "text": "Or sit at Sofia's desk. She is the incoming government's special investigator. The incoming minister wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
   },
   {
    "id": "about.start_h",
@@ -4313,15 +4359,10 @@
   {
    "id": "action.takes",
    "pattern": "P03",
-   "text": "Takes {hours} hours",
+   "text": "{hours} hr",
    "args": [
     "hours"
    ]
-  },
-  {
-   "id": "action.takes_one",
-   "pattern": "P03",
-   "text": "Takes one hour"
   },
   {
    "id": "action.done_by",
@@ -4332,37 +4373,11 @@
    ]
   },
   {
-   "id": "action.police_none",
-   "pattern": "P03",
-   "text": "The police do not act in that time."
-  },
-  {
-   "id": "action.police_once",
-   "pattern": "P03",
-   "text": "The police act once in that time."
-  },
-  {
-   "id": "action.police_times",
-   "pattern": "P03",
-   "text": "The police act {n} times in that time.",
-   "args": [
-    "n"
-   ]
-  },
-  {
    "id": "sim.why.needs_step",
    "pattern": "P04",
    "text": "This move opens once you reach \"{step}.\"",
    "args": [
     "step"
-   ]
-  },
-  {
-   "id": "action.her_during",
-   "pattern": "P03",
-   "text": "She keeps moving during these {hours} hours, and her moves can leave new reports.",
-   "args": [
-    "hours"
    ]
   },
   {
@@ -4384,19 +4399,9 @@
    "speaker": "host"
   },
   {
-   "id": "action.her_during_one",
-   "pattern": "P03",
-   "text": "She keeps moving during this hour, and her moves can leave new reports."
-  },
-  {
    "id": "recap.title",
    "pattern": "P02",
    "text": "What just happened"
-  },
-  {
-   "id": "hint.call_first",
-   "pattern": "P08",
-   "text": "You can make one call from the phone before you move."
   },
   {
    "id": "log.no_roll",
@@ -4494,7 +4499,7 @@
   {
    "id": "sum.news_rumor",
    "pattern": "P10",
-   "text": "A rumor about {name} is waiting under News",
+   "text": "A rumor about {name}",
    "args": [
     "name"
    ]
@@ -4580,6 +4585,15 @@
    "id": "phone.your_sibling",
    "pattern": "P03",
    "text": "your sibling"
+  },
+  {
+   "id": "who.sibling",
+   "pattern": "P02",
+   "text": "your {rel} {name}",
+   "args": [
+    "rel",
+    "name"
+   ]
   },
   {
    "id": "sim.preview.harder_ban",

@@ -61,6 +61,7 @@
     <span class="bar" id="heat"></span>
     <span class="row2 arrive" hidden></span>
   </div>
+  <div id="routemap" class="routemap scenemap"></div>
   <div id="expline"><span id="expl"><span id="expl-l">{{c:scene.exposure}}</span> <b id="expl-b"></b></span><span class="bar" id="heat2"></span><span class="mono orange" id="heatnum2"></span></div>
   <div id="lvlhead"><h1 id="lvlname"></h1><p id="lvlobj"></p></div>
 </div>
@@ -112,7 +113,7 @@
 </nav>
 </div>
 
-<div id="brief" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="bbox"><div class="bhead"><span class="bclock" id="b-clock"></span><span id="b-round"></span></div><h2 id="b-title"></h2><div id="b-story" class="bstory"></div><ol id="b-route" class="broute"></ol><div id="b-stats" class="bstats"></div><h3 id="b-jobh">{{c:brief.h_round}}</h3><div id="b-job" class="bjob"></div><div id="b-win"><h3>{{c:brief.h_win}}</h3><p id="b-needlead" class="blead"></p><ul id="b-need" class="bneed"></ul></div><button id="b-start" class="primary"></button></div></div>
+<div id="brief" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="bbox"><div class="bhead"><span class="bclock" id="b-clock"></span><span id="b-round"></span></div><h2 id="b-title"></h2><div id="b-story" class="bstory"></div><div id="b-route" class="routemap"></div><div id="b-stats" class="bstats"></div><h3 id="b-jobh">{{c:brief.h_round}}</h3><div id="b-job" class="bjob"></div><div id="b-win"><h3>{{c:brief.h_win}}</h3><p id="b-needlead" class="blead"></p><ul id="b-need" class="bneed"></ul></div><button id="b-start" class="primary"></button></div></div>
 <div id="toast" role="status" aria-live="polite" hidden><b id="t-main"></b><span id="t-sub"></span></div>
 <div id="stopscreen" hidden><div class="sbox"><span class="sclock mono" id="s-clock"></span><span class="sstep" id="s-step"></span><b id="s-title"></b><ol class="sdots" id="s-dots" aria-hidden="true"></ol><p id="s-goal"></p></div></div>
 <div id="interstitial" hidden><div class="ibox"><span class="iclock mono" id="i-clock"></span><b id="i-title"></b><span id="i-sub"></span></div></div>
@@ -140,10 +141,19 @@
     <p id="start-blurb">{{c:start.blurb}}</p>
     <button id="continue" class="pill ghost" hidden>{{c:start.continue_plain}}</button>
     <button id="daily" class="dailybtn"><span class="mono" id="daily-date"></span><b>{{c:start.daily}}</b><span id="daily-note"></span></button>
-    <div id="start-demo"><button id="start-tutorial" class="primary">{{c:start.tutorial}}</button><span class="small" id="start-demo-note"></span><button id="start-gov-tutorial" class="pill ghost">{{c:start.gov_tutorial}}</button></div>
-    <h3 id="start-free">{{c:start.pick}}</h3>
-    <div id="start-chars"></div>
+    <div id="start-demo"><button id="start-tutorial" class="pill ghost">{{c:start.tutorial}}</button></div>
+    <button id="start-choose" class="primary choosebtn">{{c:start.choose}}</button>
     <p class="small byline">{{c:start.byline}} <a href="https://ronbronson.dev/">{{c:start.author}}</a><span aria-hidden="true"> · </span><button class="linkbtn" id="start-credits">{{c:menu.credits}}</button></p>
+  </div>
+</div>
+<div id="callscreen" hidden role="dialog" aria-modal="true"><div class="callpane" id="callpane"></div></div>
+<div id="picker" hidden>
+  <div class="pickbox">
+    <h2 id="pick-title">{{c:pick.title}}</h2>
+    <div id="pick-grid"></div>
+    <div id="pick-detail" hidden></div>
+    <div id="pick-cards" hidden></div>
+    <div class="row"><button id="pick-back" class="pill ghost">{{c:pick.back}}</button><button id="pick-go" class="primary" hidden></button></div>
   </div>
 </div>
 <script>

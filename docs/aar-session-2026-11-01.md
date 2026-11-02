@@ -147,3 +147,115 @@ Every display-only change was measured before and after and matched to the digit
 - Before pushing, check whether the branch's pull request has merged; if it has, restart from main first.
 - When a check needs an older build, use a separate worktree, not `git stash`.
 - When two sessions work on the game at once, check the open pull requests before starting, not only before merging.
+
+## Addendum: the character picker and the new cards
+
+From a screenshot of the start screen and a page of fighting-game select screens, the owner asked for:
+
+- a "choose your character" screen like a normal video game picker, with its own music;
+- first names only, without surnames or so many marks;
+- no text under the characters on that screen;
+- after picking, a view of what that character has;
+- then several cards to choose, each saying what it does.
+
+The owner's words: "Choosing cards in my mind means ADDING cards to the deck," "we don't even have a way for them to eat for 72 hours," and "I don't care if it makes the game easier, I chose what I wanted." A fourth character, a male special investigator, became issue #33.
+
+**What shipped:**
+
+- **The start screen:**
+  - It keeps the story, the daily run and both demos.
+  - The old "Who you are" cards are replaced by one button, **Choose your character**.
+- **The picker:**
+  - It shows pixel portraits of Teresa, Mateu and Sofia with first names only.
+  - It plays its own arcade loop, a new music bed.
+  - Sofia has a sprite for the first time.
+- **Tapping a character** shows:
+  - their role ("The candidate" or "Special investigator") and goal
+  - the card they start with and what it does
+  - their drawback: border officers know Teresa's face, and Mateu's police attention starts higher
+
+  Sofia shows her two starting cards and starts straight away.
+- **The card pick:** a candidate then picks three of seven new cards:
+  - Your supporters along the route
+  - Food for three days
+  - A lawyer's appeal
+  - A friend in the rail yard
+  - A customs broker's number
+  - Your campaign's pilot
+  - A map of the back roads
+
+  Each card uses a kind the game already has, at chosen stops. Food lowers starting police attention by one. A card the starting hand already covers at the same stops is not offered, so Teresa sees six and Mateu seven.
+- **Picked cards** are saved with the run and carried in replay links.
+- **Names:** Teresa, Mateu and Sofia have no marks or surnames, and the siblings are Duartē and Līviā. Sofia's title is now special investigator.
+- **Grammar fix:** "An Costamaran introduction" is now "A Costamaran introduction".
+
+**Judgment:**
+
+- **Cards that would unlock the wrong option.** Two existing checks tested a card's kind instead of the card: Vélez's call to the operator, and asking your sponsor. The broker and the pilot share those kinds, so the checks now name the specific cards. Without picks, the rules are unchanged.
+- **Sofia's card pick.** Sofia does not pick cards yet. Her other three cards come from requests during her run, and giving them at the start needs that flow checked first.
+
+**Calibration (300 runs):**
+
+| Picks | Teresa | Mateu |
+| --- | --- | --- |
+| None | 44.3% | 39.3% |
+| Supporters, food, lawyer | 49.0% | 42.0% |
+| Rail-yard friend, broker, pilot | 47.7% | 45.0% |
+| Food, rail-yard friend, broker | 48.3% | 48.7% |
+| Lawyer, broker, map | 48.3% | 41.0% |
+
+The owner accepted an easier game in advance. `tools/calibrate.js` takes `--extra=` to measure any set of picks.
+
+**Still open:**
+
+- Sofia's card pick.
+- The fourth character (#33).
+- Marks on the other names (Gianlūka, Nonā Rosa, Amādū).
+
+## Addendum: the game screen, calls, companions and context
+
+The owner played the live build and sent screenshots through the evening. Every change below is display or flow only unless marked. Calibration without picks or a companion is unchanged throughout (44.3% / 39.3%).
+
+**What shipped:**
+
+- **Main screen:**
+  - "Make your move" replaces "Here".
+  - **Confirm** replaces "Try it", "Call", "Send" and "Wait".
+  - An opened move stays in its column.
+  - Durations read "1 hr".
+  - Calls, answers and news choices you cannot take are hidden.
+  - The hint line and the police-timing lines are gone.
+- **Route map:** in the scene's empty road at desktop width, and on the stop screen in place of the line.
+- **No card to click past:**
+  - After a move or a news answer, the scene plays the hours, what happened shows briefly at the top, and the next turn starts.
+  - A quiet wait shows "Safe for now".
+  - Result cards stopped repeating police attention and the search location, which are on screen.
+- **Call screen:** a waiting call rings over the game. You answer and see yourself and the caller side by side.
+- **Context:**
+  - Every opened move says who is involved and why, rewritten for all 21 moves with no odds or outcomes.
+  - "Wait until dark" says what it is for.
+  - "Your sibling" reads "your brother Duartē" or "your sister Līviā" everywhere.
+  - Two goal lines that spoiled traps are gone.
+- **Start screen:** one demo, through the picker. The saved-game button reads "Continue your saved game".
+- **Companions:** after the character, you pick Bruno, Clara or Rita. Each has one specialty and a different effect for Sofia.
+- **Deck:** cards are added with no cap.
+
+**Judgment:**
+
+- **Calls kept, not removed.** The owner asked to remove calls that have no point. Every call the game shows moves the jet, the visa or your welcome, so removing them would make the game unwinnable. The larger idea, allies working on their own with calls as speed-ups, went into issue #35.
+- **Only three companions.** Bruno, Clara and Rita are the three the police side can give a real effect for. More need new police-side effects.
+- **Salta left alone.** The agent did not change Salta's rules. The test players leave Salta in 7.6 hours on average, but people get stuck because the plan was invisible. The owner's answer is to fill the waiting with places to stay and eat, which is next.
+
+**Deviation:**
+
+- **A bug found late.** The title screen's background demo left a waiting call that opened over the start screen. The call screen now opens only during play and closes when a run starts.
+- **Interrupted tool calls.** Several tool calls were stopped mid-run by new messages, and their work was checked before continuing.
+
+**Still open:**
+
+- Places to stay and eat at every stop, with a safe house or a hotel for long waits.
+- Call labels that say what each call gets you.
+- More companions.
+- Sofia's card pick.
+- The fourth character (#33).
+- Speed runs (#35).

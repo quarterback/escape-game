@@ -245,6 +245,12 @@ const Sfx = (() => {
     const wave = (ac, out, t) => burst(ac, out, t, 'lowpass', 600, 0.4, 1.8, 0.4, 2.6, 1800);
 
     const BEDS = {
+      // the character picker: an arcade loop, bass on the beat and a lead over it (owner, Nov. 1, 2026)
+      select(ac, out, night, every) {
+        const BASS = [110, 110, 165, 110, 131, 110, 165, 147], LEAD = [440, 0, 523, 587, 659, 0, 587, 523, 440, 0, 392, 440, 523, 0, 494, 440];
+        let i = 0;
+        every((a, o, t) => { const k = i++; blip(a, o, t, BASS[k % 8], 'triangle', 0.005, 0.09, 0.18); const f = LEAD[k % 16]; if (f) blip(a, o, t, f, 'square', 0.005, 0.035, 0.12); }, 0.2, 0.2);
+      },
       residence(ac, out, night, every, nodes) {
         bed(ac, out, 'lowpass', 220, 0.6, 0.85, { rate: 0.07, depth: 0.2, on: 'gain' }, nodes); // city hum
         hum(ac, out, 58, 'sawtooth', 0.025, nodes, 160);

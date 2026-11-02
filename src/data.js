@@ -10,16 +10,14 @@
 'use strict';
 const Data = (() => {
   const CHARACTERS = {
-    woman: { id: 'woman', name: 'Teresā Albukerkē', short: 'Teresā', title: 'the defeated candidate', pronoun: 'she',
-             sibling: { id: 'sibling', name: 'Duartē Albukerkē', short: 'Duartē', rel: 'your brother' },
-             blurb: 'A friend inside the inquiry helps her slip past the police. Border guards and police officers know her face.',
-             // Distinct runs: Teresā starts with a friend in the inquiry, but every officer knows her face.
+    woman: { id: 'woman', name: 'Teresa', short: 'Teresa', title: 'the defeated candidate', pronoun: 'she',
+             sibling: { id: 'sibling', name: 'Duartē', short: 'Duartē', rel: 'your brother' },
+             // Distinct runs: Teresa starts with a friend in the inquiry, but every officer knows her face.
              hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], handAlt: ['delay_report'], exposure: 1, faceKnown: true,
              edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
-    man:   { id: 'man', name: 'Matēu Zanetī', short: 'Matēu', title: 'the defeated candidate', pronoun: 'he',
-             sibling: { id: 'sibling', name: 'Līviā Zanetī', short: 'Līviā', rel: 'your sister' },
-             blurb: 'The family barges can carry him up the river. The police have watched his house since the count.',
-             // Matēu has the family barges, but he has been watched since the count.
+    man:   { id: 'man', name: 'Mateu', short: 'Mateu', title: 'the defeated candidate', pronoun: 'he',
+             sibling: { id: 'sibling', name: 'Līviā', short: 'Līviā', rel: 'your sister' },
+             // Mateu has the family barges, but he has been watched since the count.
              hand: ['passport', 'decoy_cars', 'aide_word', 'barge'], handAlt: ['delay_report'], exposure: 3, faceKnown: false,
              edge: 'Your family barges on the river', flaw: 'Watched since the count' },
   };
@@ -78,12 +76,36 @@ const Data = (() => {
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
                     text: "Your sponsor's name opens doors that money alone does not." },
-    barge:        { name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Pedra Branca.',
+    barge:        { does: "You can take the river out of Pedra Branca.", name: 'Your family barges', tag: 'boat', from: 'self', reach: ['road', 'colonia'], works: 'The river south of Pedra Branca.',
                     text: "Your father's barges still run the river, and their captains owe him." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
-    informant:    { name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
+    informant:    { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
+    // Cards you choose before the run (owner, Nov. 1, 2026: "Add cards to help a user navigate, find support ... we don't
+    // even have a way for them to eat for 72 hours"). Each uses a kind the game already has; `does` is the picker's sentence.
+    supporters:   { does: "In Salta, they make Holt and Theo easier to deal with.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
+                    text: 'People who voted for you lend you trucks and drivers.' },
+    food:         { does: "Your police attention starts one step lower.", name: 'Food for three days', tag: 'supplies', from: 'self', reach: [], works: 'From the start of the run.', pick: true, startLower: 1,
+                    text: 'You carry bread, cheese, and water, so you never stop at a store where people would see you.' },
+    lawyer:       { does: "The travel ban does not make the line harder, and driving your own car out of Pedra Branca and the Punta Marēa crossing get easier.", name: "A lawyer's appeal", tag: 'delay', from: 'self', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.', pick: true,
+                    text: 'Your lawyer files an appeal that holds up police paperwork.' },
+    rail_friend:  { does: "You can board the midnight freight in Salta without Holt or Theo.", name: 'A friend in the rail yard', tag: 'passage', from: 'self', reach: ['salta'], works: 'Boarding the midnight freight.', pick: true,
+                    text: 'A rail worker in Salta who voted for you knows which boxcar the guards skip.' },
+    broker:       { does: "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier.", name: "A customs broker's number", tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', pick: true,
+                    text: 'A broker who moves goods across the border knows the officers at the posts.' },
+    pilot_owes:   { does: "Leaving Portalba without the visa gets easier.", name: "Your campaign's pilot", tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', pick: true,
+                    text: 'The pilot who flew your campaign still owes you a favor.' },
+    // companions (owner, Nov. 1, 2026: "an ally you travel with who is trustworthy throughout ... one specific thing
+    // they're good at"). A companion never turns on you; the card is yours for the whole run.
+    comp_bruno:   { does: "In Salta, he makes Holt and Theo easier to deal with.", name: 'Bruno', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', companion: true,
+                    text: 'Bruno drives trucks for a living and knows every back road.' },
+    comp_clara:   { does: "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier.", name: 'Clara', tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', companion: true,
+                    text: 'Clara grew up in Costamar and still has family there.' },
+    comp_rita:    { does: "Leaving Portalba without the visa gets easier.", name: 'Rita', tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', companion: true,
+                    text: 'Rita flies cargo planes out of the coast and knows the charter crews.' },
+    road_map:     { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
+                    text: 'Every checkpoint and back road between here and the line is marked.' },
   };
 
   // Levels. Each approach: needs (all must hold), dc (die needs dc or more after mods), mods (tag: bonus),
@@ -94,15 +116,15 @@ const Data = (() => {
       arrive: 'Two unmarked cars watch the house. The court has barred you from leaving the country. Your second passport is in your coat.',
       approaches: [
         { id: 'decoy', with: 'nando', name: 'Send out a decoy convoy', hours: 3, dc: 3, needs: [{ card: 'decoy' }],
-          mods: { information: 2 }, text: 'Send three cars out in different directions so the watch follows the wrong one.',
+          mods: { information: 2 }, text: "Nando, your driver, sends three cars out at once so the watch follows the wrong one.",
           success: { belief: 0, exposure: -1 },
           fail: { exposure: 2, say: 'The police stop the second car on the avenue. Nando talks his way out, and they are watching the house more closely now.' } },
         { id: 'service', name: 'Leave by the service door', hours: 1, dc: 4, needs: [{ night: true }],
-          mods: { information: 1 }, text: 'Leave with the kitchen staff between 10 p.m. and 5 a.m.',
+          mods: { information: 1 }, text: "The kitchen staff go home after 10 p.m., and you leave with them.",
           success: { belief: 0, say: 'The night cook lends you an apron and a cigarette. Nobody looks at the help.' },
           fail: { exposure: 2, say: 'A flash goes off in a parked car. Someone photographed the help tonight.' } },
         { id: 'partycar', with: 'aide', name: "The party's official car", hours: 1, dc: 2, needs: [{ card: 'influence' }],
-          mods: {}, text: "Ride out in Gianlūka's official car. In return he wants your public word that he leads the party while you are gone.",
+          mods: {}, text: "Gianlūka, the party's chief of staff, drives you out in his official car. In return, he wants you to say in public that he leads the party.",
           success: { belief: 0, commit: 'aide', say: 'The flags get you through. Gianlūka reminds you, gently, what he asked for.' },
           fail: { exposure: 1, commit: 'aide', say: 'The watch stops the car at the gate and reports whose car it is. You are still at the house.' } },
       ] },
@@ -111,19 +133,19 @@ const Data = (() => {
       arrive: 'The radio says you are on a yacht in Portô Venla.',
       approaches: [
         { id: 'second_driver', with: 'nando', name: 'Hire a plain car and driver', hours: 2, dc: 3, needs: [], pay: true,
-          mods: { information: 1 }, text: "Nando's cousin offers a taxi and his silence.",
+          mods: { information: 1 }, text: "Nando's cousin drives a taxi and keeps quiet for cash.",
           success: { say: 'You leave by taxi while Nando drives your sedan back north.' },
-          fail: { exposure: 1, hours: 2, say: 'The cousin wants more money, then wants nothing to do with it. The attempt costs you four hours.' } },
+          fail: { exposure: 1, hours: 2, say: "Nando's cousin wants more money, then backs out. You lose four hours." } },
         { id: 'siblings_driver', with: 'sibling', name: "Leave with your sibling's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
-          mods: { information: 1 }, text: 'Your sibling knows a man in Pedra Branca. Once the charter is booked, he drives you to Nova Trentô.',
+          mods: { information: 1 }, text: "Your sibling knows a driver in Pedra Branca who takes you once the charter jet is booked.",
           success: { say: 'He asks nothing and drives the back roads. The radio stays off.' },
           fail: { exposure: 1, hours: 1, say: 'He is late, then nervous, and you wait an hour on a side street while he decides.' } },
         { id: 'barge', name: 'Take a family barge upriver', hours: 3, dc: 2, needs: [{ card: 'boat' }], with: 'self',
-          mods: { information: 1 }, text: 'A captain who owes your father takes you up the river to the colônia.',
+          mods: { information: 1 }, text: "A river captain who owes your father takes you up to Nova Trentô.",
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
         { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [],
-          mods: { delay: 2, decoy: 2 }, text: "Risk the posts in a car they know. Nando's spare sedans or a held report make it easier.",
+          mods: { delay: 2, decoy: 2 }, text: "You drive on in your own car, which the police know.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
           fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and report you." } },
       ] },
@@ -132,55 +154,55 @@ const Data = (() => {
       arrive: "Nonā Rosa offers a room and a phone. Her cooperative's truck was impounded this morning.",
       approaches: [
         { id: 'help_host', with: 'host', name: "Help Nonā Rosa free the truck", hours: 3, dc: 2, needs: [],
-          mods: { influence: 2 }, text: "Spend three hours getting the cooperative's truck released. If it works, her cousin drives you to Salta in it.",
+          mods: { influence: 2 }, text: "Nonā Rosa runs the colônia. Her truck was impounded this morning, and once it is free, her cousin can drive you to Salta.",
           success: { card: 'truck', trust: 'host' },
           fail: { card: 'truck', hours: 1 } },
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
-          mods: {}, text: "Spend three hours on Nonā Rosa's phone. The jet, your welcome in Costamar and your visa each move one step. You can only do this once.",
+          mods: {}, text: "You use Nonā Rosa's phone to push on the jet, your welcome in Costamar and your visa.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
         { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
-          mods: {}, text: 'Rest for six hours. Your police attention drops by two, and the police keep searching while you sleep.',
+          mods: {}, text: "You sleep for six hours in Nonā Rosa's spare room.",
           success: { exposure: -2, say: 'Nobody knocks for six hours, and you wake to a quiet house.' }, fail: { say: '' } },
         { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
-          mods: {}, text: "Once Costamar expects you, Nonā Rosa's cousin drives you up to Salta.",
+          mods: {}, text: "Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
-      objective: 'Get on the midnight freight. The yardmaster will sell you to the police.',
+      objective: 'Get on the midnight freight.',
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
-          mods: { passage: 2 }, text: "Board between 10 p.m. and 5 a.m. with Holt's crate, Theo's walk through the yard, or Nonā Rosa's grandson.",
+          mods: { passage: 2 }, text: "The freight to the border leaves at midnight.",
           success: { say: 'The train pulls out at 12 minutes past midnight. You lie in cold straw and listen to the train climb the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars, and you drop back into the shadows. You can try again while it is still dark.' } },
         { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
-          mods: { vehicle: 1, information: 1 }, text: 'Pay Holt to save you a crate in the third boxcar. You still have to board at night.',
+          mods: { vehicle: 1, information: 1 }, text: "Holt, a brakeman on the freight, saves you a crate in the third boxcar for cash.",
           success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Midnight. I don\'t wait."' },
           fail: { exposure: 1, say: 'Holt wants to see who else is asking. You spend two hours in a shed waiting for him to decide.' } },
         { id: 'foreman', with: 'theo', name: 'Ask Theo to walk you through', hours: 2, dc: 4, needs: [],
-          mods: { vehicle: 2, information: 1, influence: 1 }, text: "Ask Theo to walk you through the yard at train time. The colônia's truck helps convince him.",
+          mods: { vehicle: 2, information: 1, influence: 1 }, text: "Theo runs the rail yard and can walk you past the yard office to the train.",
           success: { card: 'yard_walk', trust: 'theo', say: 'Theo agrees to walk you across the yard tonight. Nobody interrupts a foreman.' },
           fail: { exposure: 1, say: 'The registry window is open late tonight. Theo shakes his head and tells you to come back at the shift change.' } },
         { id: 'buy_seat', name: 'Pay the yardmaster', hours: 1, dc: 7, needs: [], pay: true,
-          mods: {}, text: 'He will pocket the money and report you.',
+          mods: {}, text: "The yardmaster offers you a seat on the freight for cash.",
           success: { exposure: 2, say: "Three men watch the yardmaster take your money." },
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
-      objective: 'Cross into Costamar. One of the three posts works for Valdória.',
+      objective: 'Cross into Costamar.',
       arrive: 'Three crossings lie within a day of each other: the rail post at Paso Huhūi, the road post at Ālto Verdē toward Cerro Alto, and the Punta Marēa crossing toward the coast. Valdória has paid the guards at one of them to stop you.',
       border: true,
       approaches: [
         { id: 'post_rail', post: 'rail', name: 'Cross at the Paso Huhūi post', hours: 1, dc: 4, needs: [{ card: 'document' }],
-          mods: { introduction: 2, influence: 1 }, text: "This is the freight's own crossing. You show your second passport at the desk.",
+          mods: { introduction: 2, influence: 1 }, text: "The freight's own crossing, where you show your second passport.",
           success: { say: 'The guard turns the pages, looks at a sheet on the desk, and stamps it.' },
           fail: { exposure: 2, hours: 3, say: 'The guard reads the sheet first. You spend three hours in a cold room and come out on the Valdórian side.' } },
         { id: 'post_high', post: 'high', name: 'Take the Ālto Verdē road post', hours: 3, dc: 3, needs: [],
-          mods: { introduction: 2 }, text: "The drive to the post takes three hours on switchbacks toward Cerro Alto. The post answers to the interior ministry, where Vélez works.",
+          mods: { introduction: 2 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
           success: { say: 'After a long climb, the sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
         { id: 'post_coast', post: 'coast', name: 'Pay the Punta Marēa crossing', hours: 2, dc: 4, needs: [], pay: true,
-          mods: { delay: 2, information: 2 }, text: "This is the merchants' road to the coast. The guards here answer to the port, and the port takes money.",
+          mods: { delay: 2, information: 2 }, text: "The merchants' crossing to the coast, where the guards take money.",
           success: { exposure: 1, say: 'The barrier goes up. Nobody says thank you.' },
           fail: { exposure: 2, hours: 2, say: 'The older guard takes the money and the younger one calls the ministry. You wait two hours in the salt wind.' } },
       ],
@@ -192,15 +214,15 @@ const Data = (() => {
       final: true,
       approaches: [
         { id: 'depart', with: 'pilot', name: 'Board and depart', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 4 }, { arr: 'permission', stage: 2 }],
-          mods: { introduction: 1, document: 1 }, text: 'Leave once the jet is ready and your visa is issued. The tower still has to clear you.',
+          mods: { introduction: 1, document: 1 }, text: "Capitān Olsēn flies you out once the jet is ready and your visa is in.",
           success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Costamaran airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you on the apron for two hours while it reads a request from Valdória, then reads it again.' } },
         { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
-          mods: { introduction: 1, permission: 2 }, text: "Ask the pilot to leave without the visa. Your sponsor's line helps persuade him. The country you picked takes you when you land.",
+          mods: { introduction: 1, permission: 2 }, text: "You ask Capitān Olsēn to fly without the visa.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
           fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.' } },
         { id: 'fuel_now', name: 'Pay the fuel agent yourself', hours: 1, dc: 2, needs: [{ arr: 'aircraft', stage: 2 }], pay: true,
-          mods: {}, text: 'Pay the fuel agent in cash to move the jet one step closer to ready. People on the apron will see you.',
+          mods: {}, text: "You pay the fuel agent in cash to get the jet ready sooner.",
           success: { advance: ['aircraft'], exposure: 1, say: "The fuel truck arrives. People on the apron recognize you." },
           fail: { exposure: 1, say: "The agent will only take payment from the operator's account, and you lose an hour." } },
       ] },
@@ -259,15 +281,20 @@ const Data = (() => {
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Portalba', city: 'Costamar', lon: -79.9, lat: -2.2 } };
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
-  const GOV = { id: 'gov', name: 'Sofīā Leōnī', title: 'aide to the incoming government', pronoun: 'she',
-                blurb: "Keep the candidate from flying out before Tuesday at 2 p.m. Past the border, your patrols need Costamar's agreement." };
+  const GOV = { id: 'gov', name: 'Sofia', title: 'special investigator for the incoming government', pronoun: 'she', };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
-    watch:     { name: 'The watch team', tag: 'watch', from: 'A police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
-    desk:      { name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
+    watch:     { does: "They watch the residence and Pedra Branca and send you reports.", name: 'The watch team', tag: 'watch', from: 'A police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
+    desk:      { does: "Searches and checkpoints anywhere in Valdória get easier.", name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
     operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
-    esm_intro: { name: 'An Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
+    esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
+  };
+  // A companion on the government side: the same people, and what each gives Sofia
+  const COMPANIONS = {
+    bruno: { card: 'comp_bruno', sprite: 'bruno', gov: 'rail', govDoes: 'He knows the freight crews, so you start with a railway contact in Salta.' },
+    clara: { card: 'comp_clara', sprite: 'clara', gov: 'esm_intro', govDoes: 'Your search, checkpoint and call-in orders work in Portalba.' },
+    rita:  { card: 'comp_rita', sprite: 'rita', gov: 'operator', govDoes: 'She knows the charter operator, so you can lean on him from the start.' },
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
@@ -282,7 +309,7 @@ const Data = (() => {
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
   ];
 
-  // ---- Government dispatches: the Reports phase on Sofīā's side. Invented, like the candidate's.
+  // ---- Government dispatches: the Reports phase on Sofia's side. Invented, like the candidate's.
   // at: stop indexes where the search must be looking (null = anywhere). after: earliest hour. needs: a government card id.
   // fx: hours, lead (a true report of where she is now; delay in hours), false (a report that points elsewhere),
   // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the
@@ -501,6 +528,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, GOV_EVENTS };
+  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

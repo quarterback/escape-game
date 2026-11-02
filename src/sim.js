@@ -39,6 +39,12 @@ const Sim = (() => {
       event: null, seenEvents: [], hold: 0, holds: 0, lastHoldAt: -99, nextEventAt: 6, calledAt: -99, mods: {}, daily: !!opts.daily,
     };
     s.exposure = ch.exposure || 1;
+    // cards chosen before the run join the hand; food means you never stop where people would see you
+    s.picked = (opts.extra || []).filter(id => D.CARDS[id] && D.CARDS[id].pick);
+    // a companion travels with you and never turns; their card is in your hand from the start
+    s.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    if (s.companion) s.hand.push(D.COMPANIONS[s.companion].card);
+    for (const id of (opts.extra || [])) if (D.CARDS[id] && D.CARDS[id].pick && !s.hand.includes(id)) { s.hand.push(id); s.exposure = Math.max(0, s.exposure - (D.CARDS[id].startLower || 0)); }
     s._manual = !!opts.manualEnemy; // the government player chooses the inquiry's moves
     s._dice = opts.dice ? opts.dice.slice() : null;
     s._enemy = opts.enemy ? opts.enemy.slice() : null;
@@ -197,7 +203,7 @@ const Sim = (() => {
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) { dc += 2; why.push(T('sim.preview.harder_asked')); }
       const news = s.mods[s.pos] || 0;
       if (news) { dc += news; why.push(T(news > 0 ? 'sim.preview.harder_news' : 'sim.preview.easier_news')); }
-      if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresā's face
+      if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresa's face
       // no failure written, or Vélez's officials walk you through: commit() never rolls these
       const free = !!a.noRoll || escorted;
       const real = tgt(dc - bonus); // the target the roll uses; it never reaches the view, because the player is told no odds (owner, Nov. 1, 2026)
@@ -238,8 +244,8 @@ const Sim = (() => {
       options: m.options.map(o => Object.assign({}, o, { ok: optionOk(s, o), why: optionWhy(s, o) })) }));
   }
   function optionWhy(s, o) {
-    if (o.id === 'via_sponsor' && !heldTag(s, 'permission')) return T('sim.why.you_do_not_have_salek', { sponsor: sponsor(s).short });
-    if (o.id === 'velez_word' && !hasTag(s, 'introduction')) return T('sim.why.you_do_not_have_v');
+    if (o.id === 'via_sponsor' && !s.hand.includes('sponsor_line')) return T('sim.why.you_do_not_have_salek', { sponsor: sponsor(s).short });
+    if (o.id === 'velez_word' && !(s.hand.includes('intro_vel') && reaches(s, 'intro_vel'))) return T('sim.why.you_do_not_have_v');
     if (o.id === 'send_decoy_yard' && !heldTag(s, 'decoy')) return T('sim.why.nando_and_the_spare_cars');
     if (o.id === 'via_sponsor' && s.people.sponsor.turned) return T('sim.why.salek_is_not_taking_your', { sponsor: sponsor(s).short });
     return '';

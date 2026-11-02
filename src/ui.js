@@ -18,7 +18,9 @@ const UI = (() => {
   const COLORS = { narrator: '#B9B0D9', sibling: '#C9A4F5', aide: '#E85DF0', nando: '#FF9F43', sponsor: '#FFC93C', host: '#FF9F43', official: '#7FB2E5', holt: '#B9B0D9', theo: '#FF9F43', press: '#D8D2EE', pilot: '#7FB2E5', enemy: '#FF7A90', minister: '#FFC93C', watch: '#D8D2EE', desk: '#D8D2EE', sys: '#B9B0D9' };
   const short = (h) => { const [d, ...t] = Sim.clockText(h).split(' '); return `${d.slice(0, 3)} ${t.join(' ')}`; };
   const initials = (name) => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-  const esc = (t) => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  // owner, Nov. 1, 2026: "your sibling" means nothing to a player; every mention says who ("your brother Duartē")
+  const sibNamed = (t) => { if (gov || !who || !Data.CHARACTERS[who]) return t; const sb = Data.CHARACTERS[who].sibling, n = T('who.sibling', { rel: sb.rel.replace(/^your /, ''), name: sb.short }); return t.replace(/\bYour sibling\b/g, n[0].toUpperCase() + n.slice(1)).replace(/\byour sibling\b/g, n); };
+  const esc = (t) => sibNamed(t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
   const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
@@ -59,12 +61,13 @@ const UI = (() => {
 
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
-  function newRun(w, demo, isDaily, dest, seed) {
+  function newRun(w, demo, isDaily, dest, seed, extra, mate) {
+    closeCall(); callShown.clear();
     markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     lastStop = -1; // the first stop gets its screen too
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest }); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null }); Tutorial.stop(); }
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -72,10 +75,11 @@ const UI = (() => {
     log('sys', esc(T('log.start_escape', { clock: Sim.clockText(0), name: c.name, title: c.title, sibling: c.sibling.name, rel: c.sibling.rel })), 'sys');
     animate(s._boot); renderAll(); startRound(true); saveRun();
   }
-  function newGovRun(demo, seed) {
+  function newGovRun(demo, seed, mate) {
+    closeCall(); callShown.clear();
     markSeen(); recap = null; newsRecap = null; who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
     if (demo) { const G = Tutorial.RUNS.gov; gov = Gov.newRun(G.seed, 'woman', { dice: G.dice, events: G.eventQueue, tutorial: true }); Tutorial.start('gov'); }
-    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed); }
+    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, 'woman', { companion: mate || null }); }
     s = gov.c; document.body.classList.add('gov');
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -87,7 +91,7 @@ const UI = (() => {
 
   function renderAll() {
     if (!s) return;
-    renderScene(); renderCoach(); renderPhase();
+    renderScene(); renderCoach(); renderPhase(); setTimeout(maybeRing, 0);
     if (Sfx.ambience) Sfx.ambience(s.over ? null : Data.LEVELS[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
@@ -109,6 +113,7 @@ const UI = (() => {
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
       $('heatnum2').className = 'mono orange'; $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
+      { const r = v.reports[0], m = { [gov.belief]: [['you', T('brief.gov_search')]] }; if (r) m[r.at] = (m[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]); $('routemap').innerHTML = routeMap(m, false, 0); }
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
@@ -125,6 +130,7 @@ const UI = (() => {
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
+    $('routemap').innerHTML = routeMap(routeMarks(), false, s.pos);
   }
 
   // ---- the coach -----------------------------------------------------------
@@ -133,7 +139,7 @@ const UI = (() => {
     if (!Tutorial.active()) { box.hidden = true; document.body.classList.remove('coaching'); return; }
     const st = Tutorial.step(); box.hidden = false; document.body.classList.add('coaching');
     $('coach-step').textContent = T('coach.step', { n: Tutorial.index() + 1, total: Tutorial.STEPS.length });
-    $('coach-title').textContent = st.title; $('coach-body').innerHTML = Content.rich(st.body);
+    $('coach-title').textContent = st.title; $('coach-body').innerHTML = Content.rich(sibNamed(st.body));
     $('coach-next').hidden = !st.allow.next; $('coach-next').textContent = Tutorial.isLast() ? T('action.finish') : T('action.next');
     $('coach-do').hidden = !!st.allow.next;
     for (const q of st.highlight) { const el = document.querySelector(q); if (el) el.classList.add('tut-hi'); }
@@ -143,14 +149,11 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  // escape side: how many times Sosā acts during the move's own hours
-  const sosaActs = (hours) => { if (gov) return hours > 0 ? 1 : 0; const next = Math.max(1, Sim.ENEMY_EVERY - (s.hour - s.lastEnemy)); return hours >= next ? 1 + Math.floor((hours - next) / Sim.ENEMY_EVERY) : 0; };
-  const sosaDuring = (a) => { if (gov) return a.hours === 1 ? T('action.her_during_one') : T('action.her_during', { hours: Sim.num(a.hours) }); const n = sosaActs(a.hours); return n === 0 ? T('action.police_none') : n === 1 ? T('action.police_once') : T('action.police_times', { hours: Sim.num(a.hours), n: Sim.num(n) }); };
   const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
   // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
   // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
   const warnMark = (a) => { if (!a.with || a.with === 'self' || !s.people[a.with]) return ''; const [c, t] = whoMark(a.with); return c === 'doubt' || c === 'talked' ? mks([{ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }]) : ''; };
-  const hoursLine = (a) => `<span class="meta"><span class="hrs">${esc(T(a.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(a.hours) }))}</span></span>`;
+  const hoursLine = (a) => `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: a.hours }))}</span></span>`;
   function approachBtn(a, allowed) {
     const b = document.createElement('button'); b.className = 'act approach' + (sel === a.id ? ' sel' : '');
     if (!allowed) { b.classList.add('off'); b.disabled = true; }
@@ -160,7 +163,7 @@ const UI = (() => {
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div><div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div>${a.text ? `<p class="ctx">${esc(a.text)}</p>` : ''}<div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
     if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
     box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons stay on screen
@@ -173,12 +176,12 @@ const UI = (() => {
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
-    if (A.waitDark.ok) waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: [] });
+    if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
-  const waitMeta = (w) => `<span class="meta"><span class="hrs">${esc(T(w.hours === 1 ? 'action.takes_one' : 'action.takes', { hours: Sim.num(w.hours) }))}</span><span class="sosa-during">${esc(sosaDuring(w))}</span></span>`;
+  const waitMeta = (w) => w.id === 'wait' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
@@ -187,24 +190,59 @@ const UI = (() => {
   }
   function waitBox(w) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div>${w.lines.length ? `<ul class="preview">${w.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}<div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act">${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span></div>${w.lines.map(x => `<p class="ctx">${esc(x)}</p>`).join('')}<div class="row"><button class="primary commit">${T('action.wait_go')}</button><button class="cancel">${T('action.cancel')}</button></div>`;
     box.querySelector('.commit').onclick = () => doCommit(w.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     return box;
   }
 
+  // ---- a call takes over the screen (owner, Nov. 1, 2026) ---------------------------------------
+  // "phone calls would trigger a transition ... I see it's ringing, I answer ... a split screen of you and then
+  // whoever you are talking to." The phone panel keeps every call; this shows the waiting ones one at a time.
+  const CALLER_ROLE = { aide: 'aide', nando: 'nando', host: 'host', holt: 'holt', theo: 'theo', pilot: 'pilot', official: 'official', enemy: 'police', sibling: 'local', sponsor: 'local' };
+  const callShown = new Set(); let callOpen = null;
+  const waitingCalls = () => gov ? Gov.view(gov).messages : Sim.actions(s).messages;
+  const callText = (m) => gov ? m.text : (s.inbox.find(x => x.id === m.msgId) || {}).text || '';
+  const face = (el, role, name) => { const url = role ? Render.portrait(role) : null; if (url) el.style.backgroundImage = `url(${url})`; else { el.classList.add('initials'); el.textContent = initials(name); } };
+  function maybeRing() {
+    if (callOpen || !s || s.over || Tutorial.active() || s.tutorial || (gov && gov.tutorial) || replaying || phase !== 'move' || !$('picker').hidden || !$('brief').hidden || !$('start').hidden || !$('title').hidden || !$('map').hidden) return;
+    const m = waitingCalls().find(x => !callShown.has(x.id)); if (!m) return;
+    if (Render.busy()) { setTimeout(maybeRing, 400); return; }
+    showCall(m);
+  }
+  function closeCall() { callOpen = null; $('callscreen').hidden = true; $('callscreen').classList.remove('ringing'); }
+  function showCall(m) {
+    callOpen = m.id; callShown.add(m.id);
+    const name = pname(m.from), pane = $('callpane'), box = $('callscreen');
+    pane.innerHTML = `<div class="ring"><span class="face big"></span><b>${esc(name)}</b><span class="sub">${esc(T('call.ringing'))}</span><div class="row"><button class="primary" id="call-answer">${esc(T('call.answer'))}</button><button class="pill ghost" id="call-later">${esc(T('call.later'))}</button></div></div>`;
+    face(pane.querySelector('.face'), CALLER_ROLE[m.from], name);
+    box.hidden = false; box.classList.add('ringing'); Sfx.ring();
+    $('call-later').onclick = () => { Sfx.click(); closeCall(); };
+    $('call-answer').onclick = () => {
+      Sfx.unlock(); Sfx.click(); box.classList.remove('ringing');
+      const me = gov ? Data.GOV.name : Data.CHARACTERS[who].name, mine = gov ? 'sofia' : who === 'man' ? 'mateu' : 'teresa';
+      pane.innerHTML = `<div class="split"><div class="side"><span class="face"></span><b>${esc(me)}</b></div><div class="side"><span class="face"></span><b>${esc(name)}</b></div></div><p class="bubble">${esc(callText(m))}</p><div class="answers"></div>`;
+      const faces = pane.querySelectorAll('.face'); face(faces[0], mine, me); face(faces[1], CALLER_ROLE[m.from], name);
+      const ans = pane.querySelector('.answers');
+      for (const o of m.options) { if (!o.ok) continue;
+        const b = document.createElement('button'); b.className = 'answer';
+        b.innerHTML = `<span>${esc(o.label)}</span>${o.hours ? `<span class="hrs">${esc(T('action.takes', { hours: o.hours }))}</span>` : ''}`;
+        b.onclick = () => { closeCall(); if (gov) doGov(m.id, o.id); else doCommit(m.id, o.id); };
+        ans.appendChild(b); }
+    };
+  }
   // ---- the phone: a thread, then calls --------------------------------------
   function thread(from, role, text, options, optClass) {
     const d = document.createElement('div'); d.className = 'msg';
     const name = pname(from), cls = from === 'enemy' ? ' enemy' : from === 'press' ? ' press' : '';
     d.innerHTML = `<div class="who"><span class="avatar${cls}" aria-hidden="true">${initials(name)}</span><span class="n"><b>${esc(name)}</b><span>${esc(role)}</span></span></div><p class="bubble">${esc(text)}</p><div class="opts"></div>`;
     const opts = d.querySelector('.opts');
-    for (const o of options) { const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${o.hours} h</span>` : ''}</span>${(o.ok ? o.effect : o.why) ? `<small>${esc(o.ok ? o.effect : o.why)}</small>` : ''}`; b.onclick = () => o.go(); opts.appendChild(b); }
+    for (const o of options) { if (!o.ok) continue; const b = document.createElement('button'); b.className = 'opt' + (optClass(o) ? '' : ' off'); b.disabled = !o.ok || !!s.over || !optClass(o); b.innerHTML = `<span class="l">${esc(o.label)}${o.hours ? `<span class="mono gold">${esc(T('action.takes', { hours: o.hours }))}</span>` : ''}</span>`; b.onclick = () => o.go(); opts.appendChild(b); }
     return d;
   }
   const PHONE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A4F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>`;
   function callBtn(c, allowed, label) {
     const b = document.createElement('button'); b.className = 'call' + (c.ok ? '' : ' no') + (sel === c.id ? ' sel' : '') + (allowed ? '' : ' off'); b.disabled = !allowed;
-    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${c.hours} h</span>` : `<span class="why">${esc(c.why)}</span>`}`;
+    b.innerHTML = `${PHONE}<span class="t">${esc(label)}</span>${c.ok ? `<span class="hrs">${esc(T('action.takes', { hours: c.hours }))}</span>` : `<span class="why">${esc(c.why)}</span>`}`;
     b.onclick = () => { Sfx.unlock(); sel = sel === c.id ? null : c.id; Sfx.select(); renderAll(); };
     return b;
   }
@@ -217,10 +255,10 @@ const UI = (() => {
       inbox.appendChild(thread(m.from, role, s.inbox.find(x => x.id === m.msgId).text, m.options.map(o => Object.assign({}, o, { go: () => doCommit(m.id, o.id) })), (o) => Tutorial.allowsOption(o.id) && (phase === 'phone' || phase === 'move')));
     }
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of A.calls) {
+    for (const c of A.calls) { if (!c.ok) continue; // only calls you can make
       const arr = c.id.replace(/^call:/, ''), def = Data.ARRANGEMENTS[arr];
       const label = c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
-      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><ul class="preview">${c.preview.concat(c.hours ? [sosaDuring({ hours: c.hours })] : []).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
+      if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b><div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
   }
@@ -312,7 +350,7 @@ const UI = (() => {
   // ---- export and replay ------------------------------------------------------------
   // A run is its seed, who played, where they were going and every accepted action, in order.
   function exportRun() {
-    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
   }
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
@@ -333,7 +371,7 @@ const UI = (() => {
     replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
     if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
     $('start').hidden = true;
-    if (rec.kind === 'gov') newGovRun(false, rec.seed); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed);
+    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion);
     replaying.timer = setInterval(replayTick, 150);
   }
   function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
@@ -378,10 +416,12 @@ const UI = (() => {
     if (Tutorial.active()) Render.enqueue({ dur: 10, start() { Tutorial.sync(s); renderAll(); } });
     const sid = String(id), sm = summarize(r.events, T('result.your_move'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
-    if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
+    if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = sm.hours === 1 ? T('result.lay_low_title') : cap(T('result.hours_pass', { hours: Sim.num(sm.hours) })); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
+      // owner, Nov. 1, 2026: "the screen in the animation should just show time passing ... the cards and tags are doing all the work"
+      autoNext(); }
     renderAll(); saveRun();
   }
 
@@ -396,6 +436,23 @@ const UI = (() => {
     if (gov) { const v = Gov.view(gov); return v.messages.some(m => m.options.some(o => Tutorial.allowsOption(o.id))); }
     const A = Sim.actions(s);
     return A.messages.some(m => m.options.some(o => o.ok && Tutorial.allowsOption(o.id)));
+  }
+  // After a move the scene plays out the hours; what you did shows at the top of the screen and the next turn starts.
+  // A card appears only for a choice (news, a police stop, a call). The demos keep their cards: the coach teaches with them.
+  function autoNext() {
+    if (!result || s.over || Tutorial.active() || replaying) return;
+    result.auto = true;
+    const lines = [result.line].concat(result.mine.filter(t => !t.quiet).map(t => t.t)).filter(Boolean);
+    const progress = roundSum.theirs.filter(t => t.long).map(t => t.t); // an ally's step forward, in their words
+    if (!lines.length && !progress.length && !roundSum.theirs.length) Render.float(Render.W * Render.SCALE / 2, 160, T('sosa.safe'), '#7FE0B0');
+    Render.enqueue({ dur: 10, start() { for (const l of lines.concat(progress)) toast(l); startRound(false); } });
+  }
+  // after you answer news, what it did shows at the top of the screen and the turn goes on; no card to click past
+  function autoNews() {
+    if (!result || s.over || Tutorial.active() || replaying) return;
+    result.auto = true;
+    const lines = [result.line].concat(result.mine.filter(t => !t.quiet).map(t => t.t)).filter(Boolean);
+    Render.enqueue({ dur: 10, start() { for (const l of lines) toast(l); result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); renderAll(); } });
   }
   function startRound(first) {
     if (!s || s.over) return;
@@ -471,6 +528,30 @@ const UI = (() => {
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
   const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  // A small map of the route (owner, Nov. 1, 2026: "it would be so much better if it had a little map ... instead of a
+  // line"): Valdória and Costamar, the border as a dashed line, the stops where they sit, the road you have travelled
+  // solid and the road ahead dashed. Wide in the scene and on a desktop stop screen; tall on a phone.
+  const MAPXY = { wide: [[54, 58], [150, 104], [246, 56], [342, 106], [444, 60], [548, 106]], tall: [[44, 34], [150, 86], [60, 140], [168, 192], [96, 250], [196, 304]] };
+  function routeMap(marks, tall, upto) {
+    const P = MAPXY[tall ? 'tall' : 'wide'], n = Data.LEVELS.length;
+    let h = tall
+      ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
+      : '<rect class="land" x="4" y="4" width="438" height="152" rx="18"/><rect class="land far" x="446" y="4" width="190" height="152" rx="18"/><line class="border" x1="444" y1="4" x2="444" y2="156"/>';
+    for (let i = 0; i < n - 1; i++) h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[i + 1][0]}" y2="${P[i + 1][1]}"/>`;
+    const said = [];
+    Data.LEVELS.forEach((L, i) => {
+      const [x, y] = P[i], m = marks[i] || [], here = m.some(k => k[0] === 'you');
+      h += `<circle class="stopdot${here ? ' here' : ''}${i === n - 1 ? ' end' : ''}${i < upto ? ' went' : ''}" cx="${x}" cy="${y}" r="${here ? 9 : 7}"/>`;
+      h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
+      m.forEach((k, j) => {
+        const w = Math.round(k[1].length * 7.6 + 18), px = tall ? x + 16 + j * (w + 6) : x - w / 2, py = tall ? y + 12 : y - 34 - j * 26;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
+        said.push(`${L.short}: ${k[1]}`);
+      });
+    });
+    const label = Data.LEVELS.map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
+    return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+  }
   function briefRoute(marks) {
     return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
@@ -487,7 +568,7 @@ const UI = (() => {
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
-    $('b-route').innerHTML = briefRoute(b.marks);
+    $('b-route').innerHTML = routeMap(b.marks, window.innerWidth < 640, gov ? 0 : s.pos);
     $('b-stats').innerHTML = b.stats.map(st => `<div><b${st.cls ? ` class="${st.cls}"` : ''}>${esc(st.big)}</b><p>${esc(st.text)}${st.bar ? `<span class="segs">${Array.from({ length: st.bar[1] }, (_, k) => `<i class="${k < st.bar[0] ? 'on' : ''}"></i>`).join('')}</span>` : ''}</p></div>`).join('');
     $('b-job').innerHTML = b.job.map(P).join('');
     $('b-needlead').textContent = gov ? T('brief.gov_win') : T('brief.escape_win');
@@ -500,7 +581,7 @@ const UI = (() => {
   function toast(main, sub) {
     const el = $('toast'); toast.q = toast.q || []; toast.q.push([main, sub]);
     if (!el.hidden) return;
-    const next = () => { const it = toast.q.shift(); if (!it) { el.hidden = true; return; } $('t-main').textContent = it[0]; $('t-sub').textContent = it[1]; $('t-sub').hidden = !it[1]; el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); toast.t = setTimeout(next, 3200); };
+    const next = () => { const it = toast.q.shift(); if (!it) { el.hidden = true; return; } $('t-main').textContent = sibNamed(it[0]); $('t-sub').textContent = it[1]; $('t-sub').hidden = !it[1]; el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); toast.t = setTimeout(next, 3200); };
     el.onclick = () => { clearTimeout(toast.t); next(); };
     next();
   }
@@ -533,11 +614,11 @@ const UI = (() => {
     const idx = PH.indexOf(phase);
     document.querySelectorAll('#phases li').forEach((li, i) => { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; li.textContent = T(PH_LABEL[PH[i]][gov ? 1 : 0]); });
     $('phasedone').textContent = T(gov ? 'phase.done_desk' : 'phase.done_phone');
-    $('phasehint').textContent = T(`hint.${gov ? 'gov_' : ''}${phase}`);
+    $('phasehint').textContent = ''; $('phasehint').hidden = true;
     requestAnimationFrame(() => document.body.style.setProperty('--phaseh', $('phasebar').offsetHeight + 'px'));
     document.body.classList.toggle('ringing', phase === 'phone');
     $('phasedone').hidden = true; // one call or one answer ends the phone step; nobody has to hang up
-    const card = $('phasecard'), showCard = phase === 'news' || phase === 'roll' || phase === 'sosa';
+    const card = $('phasecard'), showCard = (phase === 'news' && !(result && result.auto)) || phase === 'roll' || (phase === 'sosa' && !(result && result.auto));
     const was = card.dataset.ph; card.dataset.ph = phase;
     card.hidden = !showCard; $('herehead').hidden = showCard; $('approaches').hidden = showCard; $('lvlhead2').hidden = showCard;
     if (was !== phase) { $('tab-here').scrollTop = 0; $('tab-phone').scrollTop = 0; }
@@ -559,7 +640,7 @@ const UI = (() => {
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: Sim.num(v.rung) }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.ok ? mks(c.tags) : `<span class="why">${esc(c.why)}</span>`}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   // owner, Nov. 1, 2026 ("Ask Theo to walk you through" then "Theo walks you through" is redundant): when the move
   // has its own line, that line is the result. The move's name, the outcome word and the gains it already
@@ -580,8 +661,7 @@ const UI = (() => {
     const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
-    if (exp && !gov) list.unshift({ k: exp > 0 ? 'enemy' : 'gain', t: T(exp > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
-    else if (exp) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
+    if (exp && gov) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
     const rows = list.length ? list.map(t => `<li class="${t.k}"><i></i><span>${esc(t.t)}</span></li>`).join('') : `<li class="${gov ? 'news' : 'gain'}"><i></i><span>${quiet}</span></li>`;
     card.innerHTML = head + `<ul class="rows">${rows}</ul>`;
     const b = document.createElement('button'); b.className = 'primary next'; b.textContent = T('action.next_round'); b.onclick = () => { Sfx.click(); startRound(false); }; card.appendChild(b);
@@ -611,7 +691,7 @@ const UI = (() => {
         case 'card': bucket.push({ k: 'gain', quiet: !after, t: T('sum.card', { name: inSentence(e.name) }) }); break;
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
         case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', quiet: !after && e.delta > 0, t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
-        case 'belief': if (!gov) bucket.push({ k: e.belief === s.pos ? 'enemy' : 'gain', t: e.belief === s.pos ? T('sum.search_here') : T('sum.search_elsewhere') }); break;
+        case 'belief': break; // owner, Nov. 1, 2026: the police box and the map show where they search; the card does not repeat it
         case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
@@ -624,8 +704,7 @@ const UI = (() => {
         default: break;
       }
     }
-    if (expMine) r.mine.unshift({ k: expMine > 0 ? 'up' : 'down', t: T(expMine > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
-    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down', { level: attnWord(s.exposure).toLowerCase() }) });
+    if (expTheirs) r.theirs.unshift({ k: expTheirs > 0 ? 'enemy' : 'gain', exp: expTheirs, t: T(expTheirs > 0 ? 'sum.attention_up' : 'sum.attention_down') });
     return r;
   }
 
@@ -692,7 +771,7 @@ const UI = (() => {
     if (!v.messages.length) inbox.innerHTML = `<p class="hint">${T('desk.empty')}</p>`;
     for (const m of v.messages) inbox.appendChild(thread(m.from, m.role, m.text, m.options.map(o => Object.assign({}, o, { go: () => doGov(m.id, o.id) })), (o) => (phase === 'phone' || phase === 'move') && Tutorial.allowsOption(o.id)));
     const calls = $('calls'); calls.innerHTML = '';
-    for (const c of v.calls) { if (sel === c.id && c.ok) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><ul class="preview">${c.preview.map(x => `<li>${esc(x)}</li>`).join('')}</ul><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
+    for (const c of v.calls) { if (!c.ok) continue; if (sel === c.id) { const bx = document.createElement('div'); bx.className = 'callbox'; bx.innerHTML = `<b>${esc(c.name)}</b><div class="row"><button class="primary commit">${T('action.send')}</button><button class="cancel">${T('action.cancel')}</button></div>`; bx.querySelector('.commit').onclick = () => doGov(c.id); bx.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(bx); } else calls.appendChild(callBtn(c, (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1 && Tutorial.allowsCall(c.id), c.name)); }
   }
   function renderGovRoute() {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
@@ -713,29 +792,111 @@ const UI = (() => {
     if (Tutorial.active()) Render.enqueue({ dur: 10, start() { Tutorial.sync(gov); renderAll(); } });
     const sid = String(id), sm = summarize(r.events, T('result.your_order'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
-    if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; }
+    if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); }
+    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); autoNext(); }
     renderAll(); saveRun();
   }
 
   // ---- start, title, boot --------------------------------------------------------------
   function showStart() {
-    const box = $('start-chars'); box.innerHTML = '';
     const first = !seen(), saved = savedRun();
-    $('continue').hidden = !saved; if (saved) $('continue').textContent = T('start.continue', { name: saved.gov ? Data.GOV.name : Data.CHARACTERS[saved.who].name });
-    $('start-demo-note').textContent = T('start.demo_note', { name: Data.CHARACTERS[Tutorial.WHO].name });
+    $('continue').hidden = !saved; if (saved) $('continue').textContent = T('start.continue');
     $('start-tutorial').className = first ? 'primary' : 'pill ghost';
-    $('start-free').textContent = T('start.pick');
-    let n = 0;
-    for (const k in Data.CHARACTERS) { const c = Data.CHARACTERS[k]; n += 1; const b = document.createElement('button'); b.className = 'whobtn w' + n; b.innerHTML = `<span class="avatar" aria-hidden="true">${initials(c.name)}</span><span class="n"><b>${esc(c.name)}</b><span>${esc(T(c.pronoun === 'she' ? 'start.sibling_her' : 'start.sibling_his', { rel: c.sibling.rel.replace('your ', ''), name: c.sibling.short }))}</span><span class="blurb">${esc(c.blurb)}</span></span>`; b.onclick = () => { Sfx.unlock(); Sfx.click(); showMap((d) => newRun(k, false, false, d)); }; box.appendChild(b); }
-    const g = document.createElement('button'); g.className = 'whobtn w3'; g.innerHTML = `<span class="avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="n"><b>${esc(Data.GOV.name)}</b><span>${esc(Data.GOV.title[0].toUpperCase() + Data.GOV.title.slice(1))}</span><span class="blurb">${esc(Data.GOV.blurb)}</span></span>`; g.onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(); }; box.appendChild(g);
     const url = Render.runwayStill(); if (url) { $('start-art').style.backgroundImage = `url(${url})`; $('start').style.setProperty('--runway', `url(${url})`); }
     const D = dailyInfo(), done = dailyResult(D.key);
     $('daily-date').textContent = D.label; $('daily-note').textContent = done ? T('daily.done_note', { line: done.line }) : T('daily.note');
     if (Sfx.ambience) Sfx.ambience(null);
     $('start').hidden = false; document.body.classList.remove('phased');
+  }
+  // ---- choose your character (owner, Nov. 1, 2026) ----------------------------------------
+  // Three steps like a fighting game's select screen: the character, then the companion who travels with you, then the
+  // cards you add to your deck ("choosing cards means adding cards to the deck, not selecting a limited number").
+  // Cards the starting hand or the companion already covers at the same stops are not offered.
+  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who';
+  const ROSTER = () => [
+    { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name },
+    { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name },
+    { k: 'gov', role: 'sofia', name: Data.GOV.name },
+  ];
+  const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
+  const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
+  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc([c.text, c.does].filter(Boolean).join(' '))}</span>`;
+  function tiles(list, chosen, onPick) {
+    const grid = $('pick-grid'); grid.innerHTML = '';
+    for (const r of list) {
+      const b = document.createElement('button'); b.className = 'picktile' + (chosen === r.k ? ' sel' : ''); b.dataset.k = r.k;
+      b.innerHTML = `<span class="face"></span><b>${esc(r.name)}</b>`; const url = Render.portrait(r.role); if (url) b.firstChild.style.backgroundImage = `url(${url})`;
+      b.onclick = () => { Sfx.unlock(); Sfx.select(); onPick(r.k); renderPicker(); };
+      grid.appendChild(b);
+    }
+  }
+  function showPicker(demo) {
+    pickWho = null; pickMate = null; picked = []; pickDemo = !!demo; pickStage = 'who';
+    $('start').hidden = true; $('picker').hidden = false; Sfx.ambience('select');
+    renderPicker();
+  }
+  function renderPicker() {
+    const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go'), grid = $('pick-grid');
+    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = '';
+    if (pickStage === 'who') {
+      $('pick-title').textContent = T('pick.title');
+      tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
+      if (!pickWho) return;
+      det.hidden = false; go.hidden = false;
+      if (pickWho === 'gov') {
+        const [a, b] = ['watch', 'desk'].map(id => Data.GOV_CARDS[id]);
+        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, does: a.does })}</li><li>${cardLine({ name: b.name, does: b.does })}</li></ul>`;
+      } else {
+        const ch = Data.CHARACTERS[pickWho], sp = Data.CARDS[ch.hand[ch.hand.length - 1]];
+        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
+      }
+      go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
+      return;
+    }
+    if (pickStage === 'mate') {
+      $('pick-title').textContent = T('pick.mate_title');
+      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; });
+      if (!pickMate) return;
+      const m = Data.COMPANIONS[pickMate], c = Data.CARDS[m.card];
+      det.hidden = false; go.hidden = false;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p>${esc(pickWho === 'gov' ? m.govDoes : c.does)}</p>`;
+      go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
+      return;
+    }
+    // cards: add any number to your deck
+    $('pick-title').textContent = picked.length ? cap(T(picked.length === 1 ? 'pick.added_one' : 'pick.added', { n: Sim.num(picked.length) })) : T('pick.cards_title');
+    cards.hidden = false; go.hidden = false; cards.innerHTML = '';
+    for (const id of poolFor(pickWho)) {
+      const c = Data.CARDS[id], on = picked.includes(id);
+      const b = document.createElement('button'); b.className = 'pickcard' + (on ? ' sel' : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.innerHTML = cardLine(c);
+      b.onclick = () => { Sfx.unlock(); picked = on ? picked.filter(x => x !== id) : picked.concat([id]); Sfx.select(); renderPicker(); };
+      cards.appendChild(b);
+    }
+    go.textContent = T('pick.go');
+  }
+  function pickerGo() {
+    if (!pickWho) return;
+    Sfx.unlock(); Sfx.click();
+    if (pickStage === 'who') {
+      if (pickDemo) { $('picker').hidden = true; if (pickWho === 'gov') newGovRun(true); else newRun(null, true); return; }
+      pickStage = 'mate'; renderPicker(); return;
+    }
+    if (pickStage === 'mate') {
+      if (!pickMate) return;
+      if (pickWho === 'gov') { $('picker').hidden = true; newGovRun(false, undefined, pickMate); return; }
+      pickStage = 'cards'; renderPicker(); return;
+    }
+    const k = pickWho, extra = picked.slice(), mate = pickMate; $('picker').hidden = true;
+    showMap((d) => newRun(k, false, false, d, undefined, extra, mate));
+  }
+  function pickerBack() {
+    Sfx.unlock(); Sfx.click();
+    if (pickStage === 'cards') { pickStage = 'mate'; picked = []; renderPicker(); return; }
+    if (pickStage === 'mate') { pickStage = 'who'; pickMate = null; renderPicker(); return; }
+    $('picker').hidden = true; showStart();
   }
   // The map: Valdória, the strip you fly from, and the three countries that might take you. The player picks one
   // with no more information than the blurbs; which country has actually agreed is never shown.
@@ -804,8 +965,9 @@ const UI = (() => {
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
-    $('start-gov-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newGovRun(true); };
-    $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); newRun(null, true); };
+    $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
+    $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;
+    $('start-tutorial').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(true); }; // one demo: pick Teresa or Sofia
     $('continue').onclick = () => { Sfx.unlock(); Sfx.click(); resumeRun(); };
     let creditsFrom = null;
     let creditsHad = null; // what was playing before the credits: restored on close
