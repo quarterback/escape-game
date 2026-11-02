@@ -754,7 +754,11 @@ const UI = (() => {
   function shareGrid() {
     const SQ = ['\u{1F7E9}', '\u{1F7E7}', '\u{1F7E5}'], NUM = [0, 1, 2, 3, 4, 5].map(i => String.fromCodePoint(0x31 + i, 0xFE0F, 0x20E3));
     const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F3E0}';
-    const rows = []; for (let p = 0; p <= s.pos; p++) { const t = (s.trail || []).filter(x => x.p === p).map(x => SQ[x.k]).join(''); rows.push(`${NUM[p]} ${t}${p === s.pos ? END : ''}`); }
+    // owner, Nov. 2, 2026: "I like pins, time of day and symbols". Each row says whether you left that stop by day or at night
+    // (the last row: when the run ended), and a pin marks where it ended, before the symbol for how.
+    const rows = []; for (let p = 0; p <= s.pos; p++) { const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
+      const tod = (last ? last.n : Sim.isNight(s)) ? '\u{1F319}' : '\u2600\uFE0F';
+      rows.push(`${NUM[p]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });

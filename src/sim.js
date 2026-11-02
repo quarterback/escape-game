@@ -440,7 +440,7 @@ const Sim = (() => {
     const r = _commit(s, actionId, optionId);
     // the share card's grid: one square per move or news answer at each stop. k: 0 attention held or fell, 1 it rose, 2 a police stop
     const move = !/^(msg:|call:|hurry:|lodge$)/.test(actionId);
-    if (r.ok && move) (s.trail = s.trail || []).push({ p: at, k: s.holds > holds ? 2 : s.exposure > was ? 1 : 0 });
+    if (r.ok && move) (s.trail = s.trail || []).push({ p: at, k: s.holds > holds ? 2 : s.exposure > was ? 1 : 0, n: isNight(s) ? 1 : 0 }); // n: it was night when the move ended
     if (r.ok) (s.actions = s.actions || []).push(optionId === undefined ? [actionId] : [actionId, optionId]);
     return r;
   }
