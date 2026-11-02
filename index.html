@@ -146,16 +146,25 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 
 /* frame: header (desktop) / scene / one scrolling panel / tab bar */
 #frame{display:flex;flex-direction:column;height:100dvh}
-#top{display:none;align-items:center;gap:16px 40px;padding:14px 32px;background:var(--s1);flex:none}
+#top{display:flex;align-items:stretch;gap:10px;padding:calc(6px + var(--sat)) 10px 6px;background:var(--s1);flex:none;position:relative;z-index:12}
 #top .wordmark{font:400 30px/1 var(--font-display);color:var(--gold);letter-spacing:.03em}
-#top .whoami{font-size:15px;color:var(--mute)}
-#top .menu{display:flex;gap:8px;margin-left:auto}
+#top .wordmark,#top .whoami,#top .menuwrap{display:none}
+/* the top bar is the game's status bar (owner, Nov. 2, 2026): the clock and the police box live here, so nothing covers the scene */
+#top .hudpart{position:static!important;background:transparent!important;padding:0!important;max-width:none!important;border-radius:0!important}
+#top #clockbox{flex:1;min-width:0}#top #sosa{flex:none;max-width:48%!important;justify-content:center}
+#top #sosa .exp:not([hidden]){display:flex!important;gap:6px;justify-content:flex-end}#top #sosa [hidden]{display:none!important}
+#top #sosa .row2:not(.exp):not(.arrive){display:none!important} /* the last report already shows on the line above */
+#top #sosa .where:not([hidden]){display:block!important;font-size:14px} /* both sides: where the police search, or how old Sofia's last report is */
+#top #clockbox{gap:4px!important}#top #clockbox .clock{padding-bottom:2px}
+.menuwrap{position:relative;margin-left:auto;align-self:center}
+#top .menu{display:flex;flex-direction:column;gap:8px;position:absolute;right:0;top:calc(100% + 8px);min-width:240px;padding:12px;background:var(--s2);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+#top .menu[hidden]{display:none}#top .menu button{justify-content:flex-start;text-align:left}
 #top .menu button{min-height:44px}#mute{width:44px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
 
-#world{position:relative;flex:none;height:min(260px,32dvh);min-height:200px;overflow:hidden;background:#000;padding-top:var(--sat)}
+#world{position:relative;flex:none;height:min(260px,32dvh);min-height:200px;overflow:hidden;background:#000}
 #scene{position:absolute;inset:0;line-height:0}
 #scene canvas{width:100%!important;height:100%!important;object-fit:cover;object-position:center bottom;image-rendering:pixelated;display:block}
-#world .shade{position:absolute;left:0;right:0;pointer-events:none}
+#world .shade{display:none}#goalbox,#expline{display:none!important} /* the status bar carries the clock, the goal's deadline and police attention now */
 #world .shade.top{top:0;height:60%;background:linear-gradient(180deg,rgba(21,15,46,.95) 0%,rgba(21,15,46,0) 100%)}
 #world .shade.bottom{bottom:0;height:34%;background:linear-gradient(0deg,rgba(21,15,46,.95) 0%,rgba(21,15,46,0) 100%)}
 #clockbox{position:absolute;top:calc(10px + var(--sat));left:10px;display:flex;flex-direction:column;gap:2px;max-width:calc(56% - 10px);padding:6px 8px;background:rgba(21,15,46,.84);border-radius:10px}
@@ -329,7 +338,11 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 /* ---------- desktop: the same parts spread out ---------- */
 @media(min-width:1000px){
   #frame{height:auto;min-height:100dvh}
-  #top{display:flex}
+  #top{align-items:center;gap:16px 32px;padding:12px 32px}
+  #top .wordmark{display:block;font-size:26px}#top .menuwrap{display:block}
+  #top #clockbox{flex:none;flex-direction:row;align-items:center;gap:16px}#top #clockbox .clock{font-size:40px}#top #clockbox>span:not(.clock){font-size:16px}
+  #top #clockbox{display:grid!important;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:16px;row-gap:2px}#top #clockbox .clock{grid-row:1/3}
+  #top #sosa{margin-left:auto;max-width:none!important;width:auto!important;flex-direction:column!important;align-items:flex-end!important;gap:2px!important}#top #sosa .row2{font-size:16px}#top #sosa .name{font-size:17px}
   #world{height:auto;aspect-ratio:320/150;max-height:680px}
   #world .shade.top{height:34%;background:linear-gradient(180deg,rgba(21,15,46,.9) 0%,rgba(21,15,46,0) 100%)}
   #clockbox{top:24px;left:32px;gap:8px}#clockbox .clock{font-size:56px}#clockbox .left{font:400 20px/1.2 var(--font-body)}#clockbox .left .num{font-size:22px}
@@ -600,6 +613,7 @@ body.ringing #phoneh{color:var(--mint)}
 .pickbox .row{display:flex;gap:10px;justify-content:space-between;position:sticky;bottom:0;padding:10px 0;background:linear-gradient(transparent,var(--bg) 30%)}
 .pickbox .row .primary{flex:1}
 .choosebtn{font-size:20px;min-height:60px}
+@media(min-width:1000px) and (max-width:1279px){#top .wordmark{display:none!important}#top #clockbox .clock{font-size:32px!important}#top{gap:16px 20px!important;padding:12px 20px!important}}
 @media(min-width:1000px){#pick-grid{gap:16px}.picktile .face{max-height:240px}}
 /* companions: all 11 on one phone screen, four across, small faces; the detail follows below */
 #pick-grid.mates{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
@@ -650,23 +664,8 @@ body.ringing #phoneh{color:var(--mint)}
 <header id="top">
   <div class="wordmark">Coalition</div>
   <span class="whoami" id="whoami"></span>
-  <nav class="menu" aria-label="Game">
-    <button id="demo">Play the demo</button>
-    <button id="startscreen">Go to the start screen</button>
-    <button id="help">Help</button>
-    <button id="credits-open">Credits</button>
-    <button id="install" hidden>Install</button>
-    <button id="mute" aria-label="Sound on" title="Sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
-  </nav>
-</header>
-
-<div id="world">
-  <div id="scene" aria-label="Pixel-art view of the current stop"></div>
-  <div class="shade top" aria-hidden="true"></div>
-  <div class="shade bottom" aria-hidden="true"></div>
-  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span id="left"></span> <span class="mono gold" id="deadline"></span></span><span class="bodyline" id="bodyline" hidden></span></div>
-  <div id="goalbox"><span class="lbl">Goal</span><span class="txt"><span id="goaltxt">Leave Costamaran airspace by</span> <span class="mono gold" id="deadline2"></span></span></div>
-  <div id="sosa">
+  <div id="clockbox" class="hudpart"><span class="clock" id="clock"></span><span class="left"><span id="left"></span> <span class="mono gold" id="deadline"></span></span><span class="bodyline" id="bodyline" hidden></span></div>
+  <div id="sosa" class="hudpart">
     <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">The police are searching where you are</span></span>
     <span class="where" id="sosa-where"></span>
     <span class="row2"><span id="sosa-nextl"></span> <span class="num coral" id="sosa-next"></span></span>
@@ -674,6 +673,22 @@ body.ringing #phoneh{color:var(--mint)}
     <span class="bar" id="heat"></span>
     <span class="row2 arrive" hidden></span>
   </div>
+  <div class="menuwrap"><button id="menubtn" class="menubtn" aria-expanded="false" aria-controls="topmenu">Menu</button>
+  <nav class="menu" id="topmenu" hidden aria-label="Game">
+    <button id="demo">Play the demo</button>
+    <button id="startscreen">Go to the start screen</button>
+    <button id="help">Help</button>
+    <button id="credits-open">Credits</button>
+    <button id="install" hidden>Install</button>
+    <button id="mute" aria-label="Sound on" title="Sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path id="mute-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg></button>
+  </nav></div>
+</header>
+
+<div id="world">
+  <div id="scene" aria-label="Pixel-art view of the current stop"></div>
+  <div class="shade top" aria-hidden="true"></div>
+  <div class="shade bottom" aria-hidden="true"></div>
+  <div id="goalbox"><span class="lbl">Goal</span><span class="txt"><span id="goaltxt">Leave Costamaran airspace by</span> <span class="mono gold" id="deadline2"></span></span></div>
   <div id="routemap" class="routemap scenemap"></div>
   <div id="expline"><span id="expl"><span id="expl-l">Police attention</span> <b id="expl-b"></b></span><span class="bar" id="heat2"></span><span class="mono orange" id="heatnum2"></span></div>
   <div id="lvlhead"><h1 id="lvlname"></h1><p id="lvlobj"></p></div>
@@ -7150,6 +7165,12 @@ const UI = (() => {
     $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
+    // desktop: one Menu button holds the demo, start screen, help, credits and sound; the top bar is for the game
+    { const mb = $('menubtn'), mn = $('topmenu'), close = () => { mn.hidden = true; mb.setAttribute('aria-expanded', 'false'); };
+      mb.onclick = (e) => { e.stopPropagation(); mn.hidden = !mn.hidden; mb.setAttribute('aria-expanded', mn.hidden ? 'false' : 'true'); };
+      mn.addEventListener('click', (e) => { if (e.target.closest('button') && e.target.closest('button').id !== 'mute') close(); });
+      document.addEventListener('click', (e) => { if (!mn.hidden && !e.target.closest('.menuwrap')) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mn.hidden) { close(); mb.focus(); } }); }
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
     $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
     $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;

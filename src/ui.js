@@ -976,6 +976,12 @@ const UI = (() => {
     $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
+    // desktop: one Menu button holds the demo, start screen, help, credits and sound; the top bar is for the game
+    { const mb = $('menubtn'), mn = $('topmenu'), close = () => { mn.hidden = true; mb.setAttribute('aria-expanded', 'false'); };
+      mb.onclick = (e) => { e.stopPropagation(); mn.hidden = !mn.hidden; mb.setAttribute('aria-expanded', mn.hidden ? 'false' : 'true'); };
+      mn.addEventListener('click', (e) => { if (e.target.closest('button') && e.target.closest('button').id !== 'mute') close(); });
+      document.addEventListener('click', (e) => { if (!mn.hidden && !e.target.closest('.menuwrap')) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mn.hidden) { close(); mb.focus(); } }); }
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
     $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
     $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;
