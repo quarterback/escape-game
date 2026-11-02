@@ -4187,6 +4187,31 @@
    ]
   },
   {
+   "id": "escape.share",
+   "pattern": "P14",
+   "text": "Coalition, playing {name}. {result}.\n{grid}\n{why}\n{url}",
+   "args": [
+    "name",
+    "result",
+    "grid",
+    "why",
+    "url"
+   ]
+  },
+  {
+   "id": "escape.share_mate",
+   "pattern": "P14",
+   "text": "Coalition, playing {name} with {mate}. {result}.\n{grid}\n{why}\n{url}",
+   "args": [
+    "name",
+    "mate",
+    "result",
+    "grid",
+    "why",
+    "url"
+   ]
+  },
+  {
    "id": "daily.at",
    "pattern": "P14",
    "text": "{when}",

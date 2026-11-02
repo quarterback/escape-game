@@ -354,12 +354,10 @@ const UI = (() => {
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
     const won = gov ? !s.over.win : s.over.win;
     $('overtitle').textContent = T(won ? 'over.win' : 'over.lose');
-    const k = s.over.kind;
-    const why = gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
-      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest');
+    const why = endWhy();
     $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : ''); // owner, Nov. 2, 2026: the result and nothing more
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
-    $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
+    $('share').hidden = false; $('share').textContent = T('over.share'); $('saverun').hidden = true; // owner, Nov. 2, 2026: every run can be shared; a finished run needs no saved copy
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
@@ -744,7 +742,14 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
-  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  // the ending's one sentence, shared by the ending screen and the share card
+  function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
+      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
+  // the route as squares: green for each stop you got through, red where the run ended, white for stops never reached, a plane when you got out
+  function routeGrid() { const last = Math.max(...s.visited); return Data.LEVELS.map((L, i) => i < last || (s.over.win && i === last) ? '\u{1F7E9}' : i === last ? '\u{1F7E5}' : '\u2B1C').join('') + (s.over.win ? ' \u2708\uFE0F' : ''); }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
+    const mate = s.companion ? Data.CARDS[Data.COMPANIONS[s.companion].card].name : '';
+    return T(mate ? 'escape.share_mate' : 'escape.share', { name: Data.CHARACTERS[s.who].name, mate, result: T(s.over.win ? 'over.win' : 'over.lose'), grid: routeGrid(), why: endWhy(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
