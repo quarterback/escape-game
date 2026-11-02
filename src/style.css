@@ -547,3 +547,6 @@ body.ringing #phoneh{color:var(--mint)}
 .segs.lvl-low i.on{background:var(--mint)}.segs.lvl-rising i.on{background:var(--orange)}.segs.lvl-high i.on{background:var(--coral2)}
 #top .bodyline{display:flex;flex-wrap:wrap;gap:2px 0}#top #sosa .exp .lv{margin-right:0}
 @media(min-width:1000px){.lv{font-size:16px}.segs i{width:16px;height:10px}}
+
+/* what is next when no move leaves this stop: plain sentences above the waits */
+.nextbox{display:flex;flex-direction:column;gap:6px;padding:14px 16px;margin-bottom:10px;background:var(--s3);border-left:4px solid var(--gold);border-radius:12px}.nextbox p{margin:0;font-size:16px;line-height:1.45}

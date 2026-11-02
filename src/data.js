@@ -171,6 +171,10 @@ const Data = (() => {
           mods: { information: 1 }, text: "A river captain who owes your father takes you up to Nova Trentô.",
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
+        { id: 'cover_road', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You swap cars twice and leave the old one in a farmer's barn.",
+          success: { exposure: -1, say: "You swap cars behind a grain store, and the police lose the trail." },
+          fail: { exposure: 1, say: "A boy on a bicycle watches you swap the plates and rides off toward the police post." } },
         { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [], plain: 'mechanic',
           mods: { delay: 2, decoy: 2, mechanic: 2 }, text: "You drive on in your own car, which the police know.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
@@ -187,6 +191,10 @@ const Data = (() => {
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
           mods: {}, text: "You use Nonā Rosa's phone to push on the jet, your welcome in Costamar and your visa.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
+        { id: 'cover_colonia', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "Nonā Rosa's cousins spread a story that you went north.",
+          success: { exposure: -1, say: "The story spreads through the colônia, and the police hear you went north." },
+          fail: { exposure: 1, say: "A neighbor tells the police the story is a lie." } },
         { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
           mods: {}, text: "Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
@@ -207,6 +215,10 @@ const Data = (() => {
           mods: { vehicle: 2, information: 1, influence: 1 }, text: "Theo runs the rail yard and can walk you past the yard office to the train.",
           success: { card: 'yard_walk', trust: 'theo', say: 'Theo agrees to walk you across the yard tonight. Nobody interrupts a foreman.' },
           fail: { exposure: 1, say: 'The registry window is open late tonight. Theo shakes his head and tells you to come back at the shift change.' } },
+        { id: 'cover_salta', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You change clothes and move to a boarding house across the tracks.",
+          success: { exposure: -1, say: "Nobody at the boarding house knows your face." },
+          fail: { exposure: 1, say: "The landlady keeps the newspaper with your photo by the door." } },
         { id: 'buy_seat', name: 'Pay the yardmaster', hours: 1, dc: 7, needs: [], pay: true,
           mods: {}, text: "The yardmaster offers you a seat on the freight for cash.",
           success: { exposure: 2, say: "Three men watch the yardmaster take your money." },
@@ -229,6 +241,10 @@ const Data = (() => {
           mods: { introduction: 2, border: 1 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
           success: { say: 'After a long climb, the sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
+        { id: 'cover_border', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You wait in a trucker's cab away from the posts.",
+          success: { exposure: -1, say: "The trucks come and go, and nobody looks into the cab." },
+          fail: { exposure: 1, say: "A guard on his break walks past the cab twice." } },
         { id: 'post_coast', post: 'coast', name: 'Pay the Punta Marēa crossing', hours: 2, dc: 4, needs: [], pay: true,
           mods: { delay: 2, information: 2, border: 2 }, text: "The merchants' crossing to the coast, where the guards take money.",
           success: { exposure: 1, say: 'The barrier goes up. Nobody says thank you.' },
@@ -249,6 +265,10 @@ const Data = (() => {
           mods: { introduction: 1, permission: 2 }, text: "You ask Capitān Olsēn to fly without the visa.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
           fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.' } },
+        { id: 'cover_airfield', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You wait in a hangar office with the blinds down.",
+          success: { exposure: -1, say: "The hangar crews go home, and nobody asks who is in the office." },
+          fail: { exposure: 1, say: "A mechanic photographs the office window." } },
         { id: 'fuel_now', name: 'Pay the fuel agent yourself', hours: 1, dc: 2, needs: [{ arr: 'aircraft', stage: 2 }], pay: true,
           mods: {}, text: "You pay the fuel agent in cash to get the jet ready sooner.",
           success: { advance: ['aircraft'], exposure: 1, say: "The fuel truck arrives. People on the apron recognize you." },
@@ -538,6 +558,31 @@ const Data = (() => {
     { id: 'rival_deal', at: ['airfield', 'border'], title: 'The president calls', text: 'Concede on camera, come home, and the case quietly closes.', choices: [
       { id: 'take_deal', label: 'Take the deal', fx: { end: { kind: 'deal', reason: 'You concede on camera at noon. The case closes quietly. The party never forgives you.' } } },
       { id: 'hang_up', label: 'Hang up', fx: {} } ] },
+    // owner, Nov. 2, 2026: things happen while you wait, and some open another way through
+    { id: 'night_bus', at: ['road'], title: 'A night bus south', text: 'The night bus to Nova Trentô leaves in an hour, and the driver takes cash without looking up.', choices: [
+      { id: 'take_bus', label: 'Take the bus', fx: { roll: { need: 3, win: { advance: true, say: 'You sleep against the window, and the bus drops you at the colônia gate at dawn.' }, lose: { exposure: 2, say: 'A passenger recognizes you and makes a call from the first stop.' } } } },
+      { id: 'skip_bus', label: 'Let it go', fx: {} } ] },
+    { id: 'wine_truck', at: ['colonia'], title: 'A wine truck to Salta', text: 'A wine truck leaves for Salta within the hour, and there is room under the tarp.', choices: [
+      { id: 'ride_tarp', label: 'Ride under the tarp', fx: { roll: { need: 3, win: { advance: true, say: 'You ride three hours between the barrels and climb out in the Salta yard.' }, lose: { hours: 2, exposure: 1, say: 'The truck is stopped at a checkpoint, and you walk back to the colônia through the vines.' } } } },
+      { id: 'stay_put', label: 'Stay at Nonā Rosa\'s', fx: {} } ] },
+    { id: 'early_freight', at: ['salta'], title: 'The freight leaves early', text: 'The yard moved tonight\'s freight up, and it pulls out in 20 minutes.', choices: [
+      { id: 'run_for_it', label: 'Run for the train', fx: { roll: { need: 4, win: { advance: true, say: 'You catch the last car as it clears the yard.' }, lose: { exposure: 2, say: 'A guard sees you running along the train, and the yard office rings the police.' } } } },
+      { id: 'let_it_go', label: 'Wait for the next one', fx: {} } ] },
+    { id: 'card_game', at: ['salta'], title: 'A card game in the shed', text: 'The night crew plays cards in the tool shed and talks about who rides the freight.', choices: [
+      { id: 'join_game', label: 'Join the game', fx: { hours: 2, roll: { need: 3, win: { card: 'yard_walk', say: 'You lose a little money on purpose, and a brakeman offers to walk you past the yard office.' }, lose: { exposure: 1, say: 'One of the players knows your face from the news.' } } } },
+      { id: 'stay_away', label: 'Stay away', fx: {} } ] },
+    { id: 'smuggler_gap', at: ['border'], title: 'A smuggler knows a gap', text: 'A smuggler offers to walk you around the posts tonight for cash.', choices: [
+      { id: 'pay_smuggler', label: 'Pay the smuggler', fx: { roll: { need: 4, win: { advance: true, say: 'You walk four hours through the brush and come out on the Costamaran road.' }, lose: { hours: 2, exposure: 3, say: 'A patrol catches the smuggler, and you run back to the car.' } } } },
+      { id: 'no_smuggler', label: 'Say no', fx: {} } ] },
+    { id: 'night_mechanic', at: ['airfield'], title: 'A mechanic offers a shortcut', text: 'A mechanic says he can have your jet ready tonight if you pay him in cash.', choices: [
+      { id: 'pay_mechanic', label: 'Pay the mechanic', fx: { roll: { need: 4, win: { stage: { aircraft: 1 }, exposure: 1, say: 'He works through the night, and the jet is one step closer to ready.' }, lose: { exposure: 2, say: 'He takes the money and tells the tower who paid it.' } } } },
+      { id: 'no_mechanic', label: 'Say no', fx: {} } ] },
+    { id: 'consul', at: ['airfield'], title: 'A consul with a stamp', text: 'An honorary consul in Portalba can stamp an entry visa tonight for a fee.', choices: [
+      { id: 'pay_consul', label: 'Pay the consul', fx: { hours: 1, roll: { need: 4, win: { stage: { permission: 1 }, say: 'The consul stamps your papers, and your visa is one step closer.' }, lose: { exposure: 1, say: 'The consul takes the fee and calls Valdória\'s embassy.' } } } },
+      { id: 'no_consul', label: 'Say no', fx: {} } ] },
+    { id: 'customs_sweep', at: ['airfield'], title: 'Customs searches the hangars', text: 'Two customs officers are checking every hangar on the apron.', choices: [
+      { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
+      { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
     // anywhere
     { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed abroad. You are still at {here}.', choices: [
       { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, and every reply you ask for now comes two hours later.' } },
