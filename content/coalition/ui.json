@@ -1133,40 +1133,20 @@
    "text": "Special investigator"
   },
   {
-   "id": "pick.goal_candidate",
-   "pattern": "P08",
-   "text": "Escape the country by jet before Tuesday at 2 p.m."
-  },
-  {
-   "id": "pick.goal_investigator",
-   "pattern": "P08",
-   "text": "Catch the candidate before her jet leaves on Tuesday at 2 p.m."
-  },
-  {
-   "id": "pick.gov_team",
+   "id": "pick.one_woman",
    "pattern": "P09",
-   "text": "You never see where she is. You read reports and send the police.",
+   "text": "Teresa has a friend in the police, but every border guard knows her face."
+  },
+  {
+   "id": "pick.one_man",
+   "pattern": "P09",
+   "text": "Mateu has his family's river barges, but the police already watch him."
+  },
+  {
+   "id": "pick.one_gov",
+   "pattern": "P09",
+   "text": "Sofia leads the police hunt for the candidate.",
    "role": "gov"
-  },
-  {
-   "id": "pick.edge_woman",
-   "pattern": "P09",
-   "text": "A friend in the police helps her slip past them."
-  },
-  {
-   "id": "pick.edge_man",
-   "pattern": "P09",
-   "text": "His family's river barges give him another way south."
-  },
-  {
-   "id": "pick.face",
-   "pattern": "P03",
-   "text": "But every border guard knows her face."
-  },
-  {
-   "id": "pick.watched",
-   "pattern": "P03",
-   "text": "But the police already watch him closely."
   },
   {
    "id": "pick.next",

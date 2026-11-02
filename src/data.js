@@ -84,17 +84,17 @@ const Data = (() => {
                     text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
     // Cards you choose before the run (owner, Nov. 1, 2026: "Add cards to help a user navigate, find support ... we don't
     // even have a way for them to eat for 72 hours"). Each uses a kind the game already has; `does` is the picker's sentence.
-    supporters:   { does: "Gets you aboard the freight train more easily.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
+    supporters:   { does: "Your supporters can find you a way onto a train.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
                     text: 'People who voted for you lend you trucks and drivers.' },
-    food:         { does: "The police start out paying you less attention.", name: 'Food for three days', tag: 'supplies', from: 'self', reach: [], works: 'From the start of the run.', pick: true, startLower: 1,
+    food:         { does: "You won't have to stop for food.", name: 'Food for three days', tag: 'supplies', from: 'self', reach: [], works: 'From the start of the run.', pick: true, startLower: 1,
                     text: 'You carry bread, cheese, and water, so you never stop at a store where people would see you.' },
-    lawyer:       { does: "Weakens the travel ban and gets your own car through.", name: "A lawyer's appeal", tag: 'delay', from: 'self', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.', pick: true,
+    lawyer:       { does: "Your lawyer can tie up the travel ban.", name: "A lawyer's appeal", tag: 'delay', from: 'self', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.', pick: true,
                     text: 'Your lawyer files an appeal that holds up police paperwork.' },
-    rail_friend:  { does: "Gets you aboard the freight train on your own.", name: 'A friend in the rail yard', tag: 'passage', from: 'self', reach: ['salta'], works: 'Boarding the midnight freight.', pick: true,
+    rail_friend:  { does: "Your friend can get you onto the train.", name: 'A friend in the rail yard', tag: 'passage', from: 'self', reach: ['salta'], works: 'Boarding the midnight freight.', pick: true,
                     text: 'A rail worker in Salta who voted for you knows which boxcar the guards skip.' },
-    broker:       { does: "Makes the border and the airfield easier.", name: "A customs broker's number", tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', pick: true,
+    broker:       { does: "The broker can smooth your way across the border.", name: "A customs broker's number", tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', pick: true,
                     text: 'A broker who moves goods across the border knows the officers at the posts.' },
-    pilot_owes:   { does: "Makes taking off without a visa easier.", name: "Your campaign's pilot", tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', pick: true,
+    pilot_owes:   { does: "Your old pilot can help you take off.", name: "Your campaign's pilot", tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', pick: true,
                     text: 'The pilot who flew your campaign still owes you a favor.' },
     // companions (owner, Nov. 1, 2026: "an ally you travel with who is trustworthy throughout ... one specific thing
     // they're good at"). A companion never turns on you; the card is yours for the whole run.
@@ -131,7 +131,7 @@ const Data = (() => {
     // union: a train the crew holds in Salta, and the strike.
     comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
                     text: 'Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait.' },
-    road_map:     { does: "Helps you slip past the police.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
+    road_map:     { does: "The map can keep you out of the police's sight.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
                     text: 'Every checkpoint and back road between here and the line is marked.' },
   };
 

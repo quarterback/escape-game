@@ -851,8 +851,7 @@ const UI = (() => {
       if (!pickWho) return;
       det.hidden = false; go.hidden = false;
       // owner, Nov. 2, 2026: plain sentences, no restated card boxes
-      if (pickWho === 'gov') det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.gov_team'))}</p>`;
-      else det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T(pickWho === 'man' ? 'pick.edge_man' : 'pick.edge_woman'))}</p><p>${esc(T(Data.CHARACTERS[pickWho].faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
+      det.innerHTML = `<h3>${esc(T(pickWho === 'gov' ? 'pick.role_investigator' : 'pick.role_candidate'))}</h3><p>${esc(T(({ woman: 'pick.one_woman', man: 'pick.one_man', gov: 'pick.one_gov' })[pickWho]))}</p>`;
       go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
       return;
     }
