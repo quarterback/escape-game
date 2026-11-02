@@ -4436,27 +4436,27 @@
   {
    "id": "over.why_gov_time",
    "pattern": "P14",
-   "text": "It is Tuesday at 2 p.m. Her immunity is gone, and she can no longer fly out."
+   "text": "Time ran out before she could fly out."
   },
   {
    "id": "over.why_gov_escaped",
    "pattern": "P14",
-   "text": "She flew out of Costamar before her immunity ran out."
+   "text": "Her jet took off, and she got away."
   },
   {
    "id": "over.why_out",
    "pattern": "P14",
-   "text": "You flew out of Costamar before your immunity ran out."
+   "text": "Your jet took off, and you got away."
   },
   {
    "id": "over.why_time",
    "pattern": "P14",
-   "text": "It is Tuesday at 2 p.m. Your immunity is gone, and you can no longer fly out."
+   "text": "Time ran out before you could fly out."
   },
   {
    "id": "over.why_deal",
    "pattern": "P14",
-   "text": "You took the president's deal, conceded on camera, and came home."
+   "text": "You took the president's deal and gave up."
   },
   {
    "id": "brief.need_jet",
@@ -4554,7 +4554,7 @@
   {
    "id": "over.why_gov_deal",
    "pattern": "P14",
-   "text": "She took the president's deal, conceded on camera, and came home."
+   "text": "She took the president's deal and gave up."
   },
   {
    "id": "over.why_arrest",
