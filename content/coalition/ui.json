@@ -4187,6 +4187,18 @@
    ]
   },
   {
+   "id": "escape.share",
+   "pattern": "P14",
+   "text": "Coalition Run #{n}, Level {level}, {hours} hr left\n{grid}\n{url}",
+   "args": [
+    "n",
+    "level",
+    "hours",
+    "grid",
+    "url"
+   ]
+  },
+  {
    "id": "daily.at",
    "pattern": "P14",
    "text": "{when}",

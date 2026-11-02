@@ -68,6 +68,7 @@ const UI = (() => {
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null }); Tutorial.stop(); }
+    if (!demo && !replaying) s.runNo = nextRunNo(); // "Coalition Run #12" in the share card: this player's runs, counted on this device
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -354,12 +355,10 @@ const UI = (() => {
     if (s.over.win && !gov) { const url = Render.runwayStill(); if (url) o.style.backgroundImage = `url(${url})`; }
     const won = gov ? !s.over.win : s.over.win;
     $('overtitle').textContent = T(won ? 'over.win' : 'over.lose');
-    const k = s.over.kind;
-    const why = gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
-      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest');
+    const why = endWhy();
     $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : ''); // owner, Nov. 2, 2026: the result and nothing more
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
-    $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
+    $('share').hidden = false; $('share').textContent = T('over.share'); $('saverun').hidden = true; // owner, Nov. 2, 2026: every run can be shared; a finished run needs no saved copy
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
   }
@@ -744,7 +743,24 @@ const UI = (() => {
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
-  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] }); }
+  // the ending's one sentence, shared by the ending screen and the share card
+  function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
+      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
+  function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
+  // owner, Nov. 2, 2026: a grid like Wordle's. One row per stop reached, numbered; one square per move there: green when
+  // police attention held or fell, orange when it rose, red for a police stop. The last row ends with how the run ended.
+  function shareGrid() {
+    const SQ = ['\u{1F7E9}', '\u{1F7E7}', '\u{1F7E5}'], NUM = [0, 1, 2, 3, 4, 5].map(i => String.fromCodePoint(0x31 + i, 0xFE0F, 0x20E3));
+    const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F694}\u26D3\uFE0F'; // house arrest: police car and chains
+    // owner, Nov. 2, 2026: "I like pins, time of day and symbols". Each row says whether you left that stop by day or at night
+    // (the last row: when the run ended), and a pin marks where it ended, before the symbol for how.
+    const rows = []; for (let p = 0; p <= s.pos; p++) { const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
+      const tod = (last ? last.n : Sim.isNight(s)) ? '\u{1F319}' : '\u2600\uFE0F';
+      rows.push(`${NUM[p]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
+    return rows.join('\n');
+  }
+  function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
+    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
