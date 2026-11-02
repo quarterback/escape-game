@@ -1133,43 +1133,20 @@
    "text": "Special investigator"
   },
   {
-   "id": "pick.goal_candidate",
-   "pattern": "P08",
-   "text": "Reach the jet at Portalba and fly out before Tuesday at 2 p.m."
+   "id": "pick.one_woman",
+   "pattern": "P09",
+   "text": "Teresa has a friend in the police, but every border guard knows her face."
   },
   {
-   "id": "pick.goal_investigator",
-   "pattern": "P08",
-   "text": "Stop the candidate from flying out before Tuesday at 2 p.m."
+   "id": "pick.one_man",
+   "pattern": "P09",
+   "text": "Mateu has his family's river barges, but the police already watch him."
   },
   {
-   "id": "pick.starts_with",
-   "pattern": "P03",
-   "text": "{name} starts with {card}.",
-   "args": [
-    "name",
-    "card"
-   ]
-  },
-  {
-   "id": "pick.starts_with_two",
-   "pattern": "P03",
-   "text": "{name} starts with {a} and {b}.",
-   "args": [
-    "name",
-    "a",
-    "b"
-   ]
-  },
-  {
-   "id": "pick.face",
-   "pattern": "P03",
-   "text": "Every border officer knows her face, so crossing the border is harder."
-  },
-  {
-   "id": "pick.watched",
-   "pattern": "P03",
-   "text": "The police have watched him since the count, so his police attention starts higher."
+   "id": "pick.one_gov",
+   "pattern": "P09",
+   "text": "Sofia leads the police hunt for the candidate.",
+   "role": "gov"
   },
   {
    "id": "pick.next",
@@ -1328,87 +1305,47 @@
    "role": "gov"
   },
   {
-   "id": "mate.bruno.title",
-   "pattern": "P02",
-   "text": "Truck driver"
-  },
-  {
-   "id": "mate.bruno.who",
-   "pattern": "P09",
-   "text": "Bruno drives trucks for a living and knows every back road."
-  },
-  {
    "id": "mate.bruno.escape",
    "pattern": "P03",
-   "text": "In Salta, he makes Holt and Theo easier to deal with."
+   "text": "Bruno can find you a way onto a train."
   },
   {
    "id": "mate.bruno.gov",
    "pattern": "P03",
-   "text": "He knows the freight crews, so you start with a railway contact in Salta.",
+   "text": "Bruno can tell you what moves through the rail yard.",
    "role": "gov"
-  },
-  {
-   "id": "mate.clara.title",
-   "pattern": "P02",
-   "text": "Interpreter from Costamar"
-  },
-  {
-   "id": "mate.clara.who",
-   "pattern": "P09",
-   "text": "Clara grew up in Costamar and still has family there."
   },
   {
    "id": "mate.clara.escape",
    "pattern": "P03",
-   "text": "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier."
+   "text": "Clara can open doors for you across the border."
   },
   {
    "id": "mate.clara.gov",
    "pattern": "P03",
-   "text": "Your search, checkpoint and call-in orders work in Portalba.",
+   "text": "Clara can reach people across the border for you.",
    "role": "gov"
-  },
-  {
-   "id": "mate.rita.title",
-   "pattern": "P02",
-   "text": "Cargo pilot"
-  },
-  {
-   "id": "mate.rita.who",
-   "pattern": "P09",
-   "text": "Rita flies cargo planes out of the coast and knows the charter crews."
   },
   {
    "id": "mate.rita.escape",
    "pattern": "P03",
-   "text": "Leaving Portalba without the visa gets easier."
+   "text": "Rita can get your jet off the ground."
   },
   {
    "id": "mate.rita.gov",
    "pattern": "P03",
-   "text": "She knows the charter operator, so you can lean on him from the start.",
+   "text": "Rita can make trouble for her jet.",
    "role": "gov"
-  },
-  {
-   "id": "mate.marta.title",
-   "pattern": "P02",
-   "text": "Auto mechanic"
-  },
-  {
-   "id": "mate.marta.who",
-   "pattern": "P09",
-   "text": "Marta has kept campaign cars running for years and knows how to make a recognizable car look ordinary."
   },
   {
    "id": "mate.marta.escape",
    "pattern": "P03",
-   "text": "She makes your own car look ordinary on the road out of Pedra Branca, so driving it is easier and does not raise your police attention. Police checkpoints in Valdória do not slow you down, and when you leave a stop the police are searching, she swaps the plates and your police attention drops by one. Hiring a plain car and getting past a flooded road get easier too."
+   "text": "Marta can keep your car out of trouble."
   },
   {
    "id": "mate.marta.gov",
    "pattern": "P03",
-   "text": "You start with her vehicle records. Searches and checkpoints at the residence, Pedra Branca and Nova Trentô get easier, the decoy cars are spotted, and the toll records catch every car on the road south.",
+   "text": "Marta can track the cars she uses.",
    "role": "gov"
   },
   {
@@ -1417,150 +1354,80 @@
    "text": "Marta swaps the plates before you leave, and the police searching here lose track of the car."
   },
   {
-   "id": "mate.ines.title",
-   "pattern": "P02",
-   "text": "Nurse"
-  },
-  {
-   "id": "mate.ines.who",
-   "pattern": "P09",
-   "text": "Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions."
-  },
-  {
    "id": "mate.ines.escape",
    "pattern": "P03",
-   "text": "While you lie low, wait for dark, sleep or sit out a long delay, a police search where you are does not raise your police attention. She buys food so nobody sees your face, a night in the car is a full night's sleep with her, and she treats your youngest herself if she falls sick."
+   "text": "Inês can keep your family on its feet."
   },
   {
    "id": "mate.ines.gov",
    "pattern": "P03",
-   "text": "When a clinic treats the candidate's sick child, the doctor calls the local police, who search there. The clinic's report reaches you three hours late, and you can also ask the clinics yourself. She also teaches the patrols what a worn-out family looks like, so a search stops a tired or starving candidate from Rising police attention.",
+   "text": "Inês can tell you when her family is worn out.",
    "role": "gov"
-  },
-  {
-   "id": "mate.paulo.title",
-   "pattern": "P02",
-   "text": "Former court clerk"
-  },
-  {
-   "id": "mate.paulo.who",
-   "pattern": "P09",
-   "text": "Paulo worked in the court clerk's office for 18 years. He knows which orders move immediately and which ones sit in an outbox."
   },
   {
    "id": "mate.paulo.escape",
    "pattern": "P03",
-   "text": "When the travel ban is sent, it sits in the clerk's outbox for 12 hours before it reaches the posts. He can also stop the court summons and the early hearing from sending the ban at all."
+   "text": "Paulo can tie up the court's paperwork."
   },
   {
    "id": "mate.paulo.gov",
    "pattern": "P03",
-   "text": "You start with his friends at the court. Circulating the travel ban gets easier, and when the duty judge stalls, Paulo takes the order to a judge who signs it.",
+   "text": "Paulo can push the court's paperwork through.",
    "role": "gov"
-  },
-  {
-   "id": "mate.celina.title",
-   "pattern": "P02",
-   "text": "Radio producer"
-  },
-  {
-   "id": "mate.celina.who",
-   "pattern": "P09",
-   "text": "Celina produces the morning news at a regional radio station. She knows what gets repeated before anyone checks it."
   },
   {
    "id": "mate.celina.escape",
    "pattern": "P03",
-   "text": "When the radio asks about the yacht, a photo leaks, a reporter finds you or your family talks too soon, she can turn the story so the police search somewhere else. The first time the police close in at each stop in Valdória, her station sends them one stop back."
+   "text": "Celina can send the police the wrong way."
   },
   {
    "id": "mate.celina.gov",
    "pattern": "P03",
-   "text": "You start with her newsroom. Briefing the papers gets easier, you can put the candidate's photo on the morning news, and leaks, photos and press conferences give you new choices.",
+   "text": "Celina can put the public on her trail.",
    "role": "gov"
-  },
-  {
-   "id": "mate.tomas.title",
-   "pattern": "P02",
-   "text": "Retired border officer"
-  },
-  {
-   "id": "mate.tomas.who",
-   "pattern": "P09",
-   "text": "Tomás spent 22 years working border posts. He knows when the paperwork reaches the booth and when the booth is pretending it has not."
   },
   {
    "id": "mate.tomas.escape",
    "pattern": "P03",
-   "text": "Every crossing at the line gets easier with him. He also names a post that Valdória has not paid to stop you, and crossing there is easier still. For six hours after the travel ban goes out, the paperwork has not reached the booth, so the ban does not make crossing harder."
+   "text": "Tomás can get you across the border."
   },
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "You start with his border command. Searches and checkpoints at the line get easier. Once the travel ban is sent, the sergeants who served under him enforce it, so her crossings at the line are harder still.",
+   "text": "Tomás can close the border tighter.",
    "role": "gov"
-  },
-  {
-   "id": "mate.nadia.title",
-   "pattern": "P02",
-   "text": "Telephone engineer"
-  },
-  {
-   "id": "mate.nadia.who",
-   "pattern": "P09",
-   "text": "Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment."
   },
   {
    "id": "mate.nadia.escape",
    "pattern": "P03",
-   "text": "The police trace your calls and find nothing. Once, when the police tap your family's phone, she moves the calls to another line so nothing they arrange slows down."
+   "text": "Nadia can keep your calls private."
   },
   {
    "id": "mate.nadia.gov",
    "pattern": "P03",
-   "text": "You start with her exchange records. You can pull the logs for calls from the candidate's side, and they name the town a call came from, an hour late.",
+   "text": "Nadia can follow her side's phone calls.",
    "role": "gov"
-  },
-  {
-   "id": "mate.emilio.title",
-   "pattern": "P02",
-   "text": "Hotel manager"
-  },
-  {
-   "id": "mate.emilio.who",
-   "pattern": "P09",
-   "text": "Emilio manages small hotels along the south road. He can find a room under someone else's reservation."
   },
   {
    "id": "mate.emilio.escape",
    "pattern": "P03",
-   "text": "At Pedra Branca, Nova Trentô and Salta, his room is one of the places to eat and sleep. It is booked under another name, so it leaves your name out of the register, lowers your police attention, and a police search there finds nobody while you stay."
+   "text": "Emilio can find you a safe place to rest."
   },
   {
    "id": "mate.emilio.gov",
    "pattern": "P03",
-   "text": "You start with his guest registers. You can check the hotels at Pedra Branca, Nova Trentô or Salta for a room the candidate's family took, with the hour, two hours late, and the police watch those hotels afterward.",
+   "text": "Emilio can find out where she sleeps.",
    "role": "gov"
-  },
-  {
-   "id": "mate.joana.title",
-   "pattern": "P02",
-   "text": "Union organizer"
-  },
-  {
-   "id": "mate.joana.who",
-   "pattern": "P09",
-   "text": "Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait."
   },
   {
    "id": "mate.joana.escape",
    "pattern": "P03",
-   "text": "In Salta, the yard crew can hold a train for you at any hour, without Holt or Theo. She can also get the strikers to let you through."
+   "text": "Joana can get the railway working for you."
   },
   {
    "id": "mate.joana.gov",
    "pattern": "P03",
-   "text": "You start with her union contacts. Yard crews report every passenger who leaves on the Salta freight, and a stranger asking about it 10 hours late. Calling in helpers in Salta gets easier, and she can end the rail strike.",
+   "text": "Joana can make the railway watch for her.",
    "role": "gov"
   },
   {

@@ -30,16 +30,25 @@ body.busy .act,body.busy #wait,body.busy #waitdark,body.busy .opt,body.busy .cal
 
 /* frame: header (desktop) / scene / one scrolling panel / tab bar */
 #frame{display:flex;flex-direction:column;height:100dvh}
-#top{display:none;align-items:center;gap:16px 40px;padding:14px 32px;background:var(--s1);flex:none}
+#top{display:flex;align-items:stretch;gap:10px;padding:calc(6px + var(--sat)) 10px 6px;background:var(--s1);flex:none;position:relative;z-index:12}
 #top .wordmark{font:400 30px/1 var(--font-display);color:var(--gold);letter-spacing:.03em}
-#top .whoami{font-size:15px;color:var(--mute)}
-#top .menu{display:flex;gap:8px;margin-left:auto}
+#top .wordmark,#top .whoami,#top .menuwrap{display:none}
+/* the top bar is the game's status bar (owner, Nov. 2, 2026): the clock and the police box live here, so nothing covers the scene */
+#top .hudpart{position:static!important;background:transparent!important;padding:0!important;max-width:none!important;border-radius:0!important}
+#top #clockbox{flex:1;min-width:0}#top #sosa{flex:none;max-width:48%!important;justify-content:center}
+#top #sosa .exp:not([hidden]){display:flex!important;gap:6px;justify-content:flex-end}#top #sosa [hidden]{display:none!important}
+#top #sosa .row2:not(.exp):not(.arrive){display:none!important} /* the last report already shows on the line above */
+#top #sosa .where:not([hidden]){display:block!important;font-size:14px} /* both sides: where the police search, or how old Sofia's last report is */
+#top #clockbox{gap:4px!important}#top #clockbox .clock{padding-bottom:2px}
+.menuwrap{position:relative;margin-left:auto;align-self:center}
+#top .menu{display:flex;flex-direction:column;gap:8px;position:absolute;right:0;top:calc(100% + 8px);min-width:240px;padding:12px;background:var(--s2);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+#top .menu[hidden]{display:none}#top .menu button{justify-content:flex-start;text-align:left}
 #top .menu button{min-height:44px}#mute{width:44px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
 
-#world{position:relative;flex:none;height:min(260px,32dvh);min-height:200px;overflow:hidden;background:#000;padding-top:var(--sat)}
+#world{position:relative;flex:none;height:min(260px,32dvh);min-height:200px;overflow:hidden;background:#000}
 #scene{position:absolute;inset:0;line-height:0}
 #scene canvas{width:100%!important;height:100%!important;object-fit:cover;object-position:center bottom;image-rendering:pixelated;display:block}
-#world .shade{position:absolute;left:0;right:0;pointer-events:none}
+#world .shade{display:none}#goalbox,#expline{display:none!important} /* the status bar carries the clock, the goal's deadline and police attention now */
 #world .shade.top{top:0;height:60%;background:linear-gradient(180deg,rgba(21,15,46,.95) 0%,rgba(21,15,46,0) 100%)}
 #world .shade.bottom{bottom:0;height:34%;background:linear-gradient(0deg,rgba(21,15,46,.95) 0%,rgba(21,15,46,0) 100%)}
 #clockbox{position:absolute;top:calc(10px + var(--sat));left:10px;display:flex;flex-direction:column;gap:2px;max-width:calc(56% - 10px);padding:6px 8px;background:rgba(21,15,46,.84);border-radius:10px}
@@ -213,7 +222,11 @@ body.gov #rail li.current .dot{background:transparent;box-shadow:inset 0 0 0 3px
 /* ---------- desktop: the same parts spread out ---------- */
 @media(min-width:1000px){
   #frame{height:auto;min-height:100dvh}
-  #top{display:flex}
+  #top{align-items:center;gap:16px 32px;padding:12px 32px}
+  #top .wordmark{display:block;font-size:26px}#top .menuwrap{display:block}
+  #top #clockbox{flex:none;flex-direction:row;align-items:center;gap:16px}#top #clockbox .clock{font-size:40px}#top #clockbox>span:not(.clock){font-size:16px}
+  #top #clockbox{display:grid!important;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:16px;row-gap:2px}#top #clockbox .clock{grid-row:1/3}
+  #top #sosa{margin-left:auto;max-width:none!important;width:auto!important;flex-direction:column!important;align-items:flex-end!important;gap:2px!important}#top #sosa .row2{font-size:16px}#top #sosa .name{font-size:17px}
   #world{height:auto;aspect-ratio:320/150;max-height:680px}
   #world .shade.top{height:34%;background:linear-gradient(180deg,rgba(21,15,46,.9) 0%,rgba(21,15,46,0) 100%)}
   #clockbox{top:24px;left:32px;gap:8px}#clockbox .clock{font-size:56px}#clockbox .left{font:400 20px/1.2 var(--font-body)}#clockbox .left .num{font-size:22px}
@@ -469,11 +482,22 @@ body.ringing #phoneh{color:var(--mint)}
 .pickcards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .pickcards li,.pickcard{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;background:#241a46;border-radius:12px;color:var(--ink);font-size:16px;line-height:1.4}
 .pickcards b,.pickcard b{font-family:var(--font-title);font-weight:400}
-#pick-cards{display:flex;flex-direction:column;gap:10px}
-.pickcard{border:3px solid transparent;min-height:60px}.pickcard.sel{border-color:var(--gold)}
+#pick-cards{display:grid;grid-template-columns:1fr;gap:10px}
+/* the cards you add, designed as game cards: a colored art panel with a pixel icon, the name, one line, and a check when chosen */
+.pickcard{position:relative;display:grid!important;grid-template-columns:76px 1fr;align-items:stretch;gap:0!important;padding:0!important;border:3px solid var(--line);min-height:84px;overflow:hidden;background:linear-gradient(135deg,#2A2157,#1C1540)!important;box-shadow:0 4px 0 #0c0820;transition:transform .12s,border-color .12s}
+.pickcard .art{display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--kc) 22%,#150F2E);border-right:3px solid color-mix(in srgb,var(--kc) 55%,#150F2E)}
+.pickcard .art svg{width:52px;height:auto;image-rendering:pixelated}
+.pickcard .txt{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:12px 40px 12px 14px}
+.pickcard .txt b{font-size:17px;line-height:1.25}.pickcard .txt span{font-size:16px;line-height:1.35;color:var(--soft)}
+.pickcard .chk{position:absolute;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:2px solid var(--line2);color:transparent}
+.pickcard.sel,.pickcard.sel:hover:not(:disabled){border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 0 #0c0820,0 0 0 3px rgba(255,201,60,.22)}
+.pickcard.sel .chk{background:var(--gold);border-color:var(--gold);color:#150F2E}
+.pickcard.sel .txt span{color:var(--ink)}
+@media(min-width:700px){#pick-cards{grid-template-columns:1fr 1fr}}
 .pickbox .row{display:flex;gap:10px;justify-content:space-between;position:sticky;bottom:0;padding:10px 0;background:linear-gradient(transparent,var(--bg) 30%)}
 .pickbox .row .primary{flex:1}
 .choosebtn{font-size:20px;min-height:60px}
+@media(min-width:1000px) and (max-width:1279px){#top .wordmark{display:none!important}#top #clockbox .clock{font-size:32px!important}#top{gap:16px 20px!important;padding:12px 20px!important}}
 @media(min-width:1000px){#pick-grid{gap:16px}.picktile .face{max-height:240px}}
 /* companions: all 11 on one phone screen, four across, small faces; the detail follows below */
 #pick-grid.mates{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
@@ -516,3 +540,10 @@ body.ringing #phoneh{color:var(--mint)}
 .callpane .answer .hrs{font-size:15px;opacity:.8;white-space:nowrap}
 .actbox .ctx{margin:0;font-size:16px;line-height:1.4;color:var(--ink)}
 .callpane .answer:hover:not(:disabled){background:#d9bfff;border-color:transparent}
+
+/* level bars in the status bar: three steps and the word, colored by level */
+.lv{display:inline-flex;align-items:center;gap:6px;margin-right:12px;font-size:14px}.lv .lbl{color:var(--mute)}
+.segs{display:inline-flex;gap:2px}.segs i{display:block;width:12px;height:8px;border-radius:2px;background:#3A3170}
+.segs.lvl-low i.on{background:var(--mint)}.segs.lvl-rising i.on{background:var(--orange)}.segs.lvl-high i.on{background:var(--coral2)}
+#top .bodyline{display:flex;flex-wrap:wrap;gap:2px 0}#top #sosa .exp .lv{margin-right:0}
+@media(min-width:1000px){.lv{font-size:16px}.segs i{width:16px;height:10px}}

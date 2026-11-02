@@ -126,8 +126,8 @@ const UI = (() => {
     $('sosa-next').parentElement.hidden = true;
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
-    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); h.textContent = attnWord(s.exposure); h.className = 'mono lvl-' + attnLevel(s.exposure); } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
-    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.textContent = T('body.status', { tire: w.tire.toLowerCase(), hunger: w.hunger.toLowerCase() }); bl.className = 'bodyline lvl-' + ['low', 'rising', 'high'][Math.max(b.tire, b.hunger)]; }
+    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
@@ -507,6 +507,9 @@ const UI = (() => {
     { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
   ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
+  // a level as a bar of three steps with its word beside it, never a number (owner, Nov. 2, 2026: "Rest or food can be a level bar")
+  // filled: how many steps are lit; sev: 0 good, 1 warning, 2 bad, which sets the color
+  const levelBar = (label, word, filled, sev) => `<span class="lv" role="img" aria-label="${esc((label ? label + ': ' : '') + word)}">${label ? `<span class="lbl">${esc(label)}</span>` : ''}<span class="segs lvl-${['low', 'rising', 'high'][sev]}">${[0, 1, 2].map(i => `<i class="${i < filled ? 'on' : ''}"></i>`).join('')}</span><b class="lvl-${['low', 'rising', 'high'][sev]}">${esc(word)}</b></span>`;
   // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
   const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
@@ -827,7 +830,17 @@ const UI = (() => {
   ];
   const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
   const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
-  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc([c.text, c.does].filter(Boolean).join(' '))}</span>`;
+  // ---- the cards you add: designed as game cards (owner, Nov. 2, 2026: "why didn't you design these instead of making them words?")
+  // Each card's 12-by-8 pixel icon comes from Art.ITEMS (the scene carries the same icons), drawn here as SVG squares.
+  const CARD_ART = Art.ITEMS, KIND_COLOR = Art.ITEM_COLOR;
+  function cardArt(id, tag) {
+    const rows = CARD_ART[id] || CARD_ART.road_map, col = KIND_COLOR[tag] || '#FFC93C', fill = { 1: col, 2: '#F6F1FF', 3: '#150F2E' };
+    let r = ''; rows.forEach((row, y) => [...row].forEach((ch, x) => { if (fill[ch]) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${fill[ch]}"/>`; }));
+    return `<svg viewBox="0 0 12 8" width="60" height="40" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+  }
+  const CHECK = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>`;
+  const cardFace = (id, c) => `<span class="art" style="--kc:${KIND_COLOR[c.tag] || '#FFC93C'}">${cardArt(id, c.tag)}</span><span class="txt"><b>${esc(c.name)}</b><span>${esc(c.does || c.text)}</span></span><span class="chk">${CHECK}</span>`;
+  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc(c.does || c.text)}</span>`; // the name and what it does (owner, Nov. 2, 2026: too much detail for a new player)
   function tiles(list, chosen, onPick) {
     const grid = $('pick-grid'); grid.innerHTML = '';
     for (const r of list) {
@@ -850,13 +863,8 @@ const UI = (() => {
       tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
       if (!pickWho) return;
       det.hidden = false; go.hidden = false;
-      if (pickWho === 'gov') {
-        const [a, b] = ['watch', 'desk'].map(id => Data.GOV_CARDS[id]);
-        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, does: a.does })}</li><li>${cardLine({ name: b.name, does: b.does })}</li></ul>`;
-      } else {
-        const ch = Data.CHARACTERS[pickWho], sp = Data.CARDS[ch.hand[ch.hand.length - 1]];
-        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
-      }
+      // owner, Nov. 2, 2026: plain sentences, no restated card boxes
+      det.innerHTML = `<h3>${esc(T(pickWho === 'gov' ? 'pick.role_investigator' : 'pick.role_candidate'))}</h3><p>${esc(T(({ woman: 'pick.one_woman', man: 'pick.one_man', gov: 'pick.one_gov' })[pickWho]))}</p>`;
       go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
       return;
     }
@@ -867,7 +875,7 @@ const UI = (() => {
       if (!pickMate) return;
       const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
       if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
@@ -878,7 +886,7 @@ const UI = (() => {
     for (const id of poolFor(pickWho)) {
       const c = Data.CARDS[id], on = picked.includes(id);
       const b = document.createElement('button'); b.className = 'pickcard' + (on ? ' sel' : ''); b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      b.innerHTML = cardLine(c);
+      b.innerHTML = cardFace(id, c); b.style.setProperty('--kc', KIND_COLOR[c.tag] || '#FFC93C');
       b.onclick = () => { Sfx.unlock(); picked = on ? picked.filter(x => x !== id) : picked.concat([id]); Sfx.select(); renderPicker(); };
       cards.appendChild(b);
     }
@@ -971,6 +979,12 @@ const UI = (() => {
     $('overclose').onclick = closeOver;
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
+    // desktop: one Menu button holds the demo, start screen, help, credits and sound; the top bar is for the game
+    { const mb = $('menubtn'), mn = $('topmenu'), close = () => { mn.hidden = true; mb.setAttribute('aria-expanded', 'false'); };
+      mb.onclick = (e) => { e.stopPropagation(); mn.hidden = !mn.hidden; mb.setAttribute('aria-expanded', mn.hidden ? 'false' : 'true'); };
+      mn.addEventListener('click', (e) => { if (e.target.closest('button') && e.target.closest('button').id !== 'mute') close(); });
+      document.addEventListener('click', (e) => { if (!mn.hidden && !e.target.closest('.menuwrap')) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mn.hidden) { close(); mb.focus(); } }); }
     $('demo').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; if (gov) newGovRun(true); else newRun(null, true); };
     $('start-choose').onclick = () => { Sfx.unlock(); Sfx.click(); showPicker(); };
     $('pick-go').onclick = pickerGo; $('pick-back').onclick = pickerBack;

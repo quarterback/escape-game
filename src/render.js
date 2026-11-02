@@ -91,20 +91,28 @@ const Render = (() => {
     if (g) {
       const pos = g.belief >= 0 ? g.belief : 0;
       const shown = { hidden: true, who: s.who, pos, hour: s.hour, people: {}, arr: { aircraft: { stage: 0 }, reception: { stage: 0 } } };
-      return { s: shown, pos, gov: true, night: Sim.isNight(s), hour: s.hour };
+      return { s: shown, pos, gov: true, night: Sim.isNight(s), hour: s.hour, mate: g.companion || null };
     }
-    return { s, pos: s.pos, gov: false, night: Sim.isNight(s), hour: s.hour };
+    return { s, pos: s.pos, gov: false, night: Sim.isNight(s), hour: s.hour, mate: s.companion || null };
   }
   function sceneKey(f) {
     const s = f.s; const turned = s.people ? Object.keys(s.people).map(k => (s.people[k].turned ? 1 : 0) + (s.people[k].trust >= 2 ? 2 : 0)).join('') : '';
-    return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who].join('|');
+    return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who, f.mate || '', (s.picked || []).join(',')].join('|');
   }
   const sceneId = (f) => Data.LEVELS[f.pos].scene;
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
     const x = Art.PLAYER_X[sceneId(f)] || 110;
-    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }], marker: '#FF7A90', label: T('render.you', { name: Data.GOV ? Data.GOV.name : T('render.search_team') }), w: 26 };
-    return { x, list: [{ dx: 0, role: f.s.who === 'woman' ? 'teresa' : 'mateu' }], marker: '#FFD24A', label: T('render.you', { name: Data.CHARACTERS[f.s.who].name }), w: 12 };
+    // the companion walks a step behind; the cards you added ride along as items at your feet
+    const mate = f.mate && Data.COMPANIONS[f.mate] ? [{ dx: -14, role: Data.COMPANIONS[f.mate].sprite, mate: f.mate }] : [];
+    const items = f.gov ? [] : (f.s.picked || []).filter(id => Art.ITEMS[id] && Data.CARDS[id]).map((id, i) => ({ id, dx: -30 - i * 14 - (mate.length ? 0 : -14) }));
+    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }].concat(mate.map(m => Object.assign({}, m, { dx: -21 }))), items: [], marker: '#FF7A90', label: T('render.you', { name: Data.GOV ? Data.GOV.name : T('render.search_team') }), w: 26 };
+    return { x, list: [{ dx: 0, role: f.s.who === 'woman' ? 'teresa' : 'mateu' }].concat(mate), items, marker: '#FFD24A', label: T('render.you', { name: Data.CHARACTERS[f.s.who].name }), w: 12 };
+  }
+  // tap targets for the companion and each card the party carries: the name, nothing more
+  function partySpots(p) {
+    return p.list.filter(m => m.mate).map(m => ({ id: 'mate', x: (p.x + m.dx - 6) * SCALE, y: (GROUND - 23) * SCALE, w: 12 * SCALE, h: 23 * SCALE, label: Data.CARDS[Data.COMPANIONS[m.mate].card].name }))
+      .concat(p.items.map(it => ({ id: 'item:' + it.id, x: (p.x + it.dx - 6) * SCALE, y: (GROUND - 9) * SCALE, w: 12 * SCALE, h: 9 * SCALE, label: Data.CARDS[it.id].name })));
   }
   function grade(f) {
     const h = (Sim.START_HOUR + f.hour) % 24;
@@ -118,6 +126,7 @@ const Render = (() => {
   function flatScene(c, f) {
     const g = painter(c, false, f.s); Art.SCENES[sceneId(f)](g, f.s, 4000, f.night);
     const p = playerSpec(f); g.layer('near'); for (const m of p.list) Art.drawSprite(g, m.role, p.x + m.dx, GROUND, 'idle0');
+    for (const it of p.items) g.px(p.x + it.dx - 6, GROUND - 8, Art.ITEMS[it.id], Art.itemPalette(Data.CARDS[it.id].tag));
     g.fill(p.marker); g.rect(p.x - 1, GROUND - 26, 3, 2); return g;
   }
   function still(s) { const c = mkCanvas(W, H); flatScene(c, { s, pos: s.pos, gov: false, night: Sim.isNight(s), hour: s.hour }); return c.toDataURL('image/png'); }
@@ -153,6 +162,11 @@ const Render = (() => {
     const key = role + '|' + frameName + '|' + (turned ? 1 : 0); if (texCache.has(key)) return texCache.get(key);
     const sz = Art.size(role), c = mkCanvas(sz.w, sz.h), g = painter(c, false, null);
     g.px(0, 0, Art.rows(role, frameName), Art.palette(Art.KIDS[role] || Art.ROLES[role] || Art.ROLES.local, turned));
+    const t = canvasTexture(c); texCache.set(key, t); return t;
+  }
+  function itemTex(id) {
+    const key = 'item|' + id; if (texCache.has(key)) return texCache.get(key);
+    const c = mkCanvas(12, 8), g = painter(c, false, null); g.px(0, 0, Art.ITEMS[id], Art.itemPalette(Data.CARDS[id].tag));
     const t = canvasTexture(c); texCache.set(key, t); return t;
   }
   function radialTex(size, stops) {
@@ -222,9 +236,10 @@ const Render = (() => {
     }
     const p = playerSpec(f); X.player = { x: p.x, sprites: [], marker: null };
     for (const m of p.list) { const sp = new PIXI.Sprite(spriteTex(m.role, 'idle0')); sp.position.set(p.x + m.dx - 6, GROUND - 22); X.actors.addChild(sp); X.player.sprites.push({ sp, role: m.role, dx: m.dx, f: '' }); }
+    X.player.items = p.items.map(it => { const sp = new PIXI.Sprite(itemTex(it.id)); sp.position.set(p.x + it.dx - 6, GROUND - 8); X.actors.addChild(sp); return { sp, dx: it.dx }; });
     X.player.marker = dot(X.actors, hexNum(p.marker), 3, 2);
     X.cops = [0, 1].map(i => { const sp = new PIXI.Sprite(spriteTex('police', 'idle0')); sp.visible = false; X.actors.addChild(sp); return { sp, f: '' }; });
-    hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }]);
+    hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }], partySpots(p));
     for (const L of g.glows) { const sp = new PIXI.Sprite(X.glowTex); sp.anchor.set(0.5); sp.position.set(L.x, L.y); sp.width = sp.height = L.r * 2; sp.tint = hexNum(L.col); sp.blendMode = 'add'; X.lights.addChild(sp); X.lightList.push({ sp, a: L.a, flicker: L.flicker, ph: L.x * 13, x0: L.x, layer: L.layer }); }
     for (const e of g.fxList) {
       const layer = fxLayer(e.layer);
@@ -276,6 +291,7 @@ const Render = (() => {
     // The player walks in, then breathes; the marker bobs over the head.
     for (const m of X.player.sprites) { setFrame(m, m.role, striding ? 'walk' + (Math.floor(view.walk.t / 120) % 4) : (((now + m.dx * 97) % 3600) > 1800 && ((now + m.dx * 97) % 3600) < 2240 ? 'idle1' : 'idle0')); m.sp.x = px0 + m.dx - 6 - X.actors.x; }
     X.player.marker.position.set(px0 - 1 - X.actors.x, GROUND - 27 + Math.round(Math.sin(now / 300)));
+    for (const it of X.player.items || []) { it.sp.x = px0 + it.dx - 6 - X.actors.x; it.sp.y = GROUND - 8 - (striding && (Math.floor(view.walk.t / 120) + it.dx) % 2 ? 1 : 0); } // the cards bounce along when you walk
     // A detention: two officers walk in from the right and stop beside the player.
     const d = view.detain;
     X.cops.forEach((c, i) => {
@@ -341,7 +357,7 @@ const Render = (() => {
     const key = sceneKey(f);
     if (key !== X.key) {
       X.key = key; const fc = X.flat.getContext('2d'); fc.clearRect(0, 0, W, H); const g = flatScene(X.flat, f), p = playerSpec(f);
-      hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }]);
+      hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }], partySpots(p));
     }
     view.walk = null; for (const fl of view.floats) fl.t += dt; view.floats = view.floats.filter(fl => fl.t < fl.life);
     ctx.save(); ctx.translate(Math.round((Math.random() - 0.5) * view.shake) * SCALE, 0); ctx.drawImage(X.flat, 0, 0, CW, CH); ctx.restore();
