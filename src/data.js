@@ -286,24 +286,24 @@ const Data = (() => {
   const DESTS = {
     atlanta:   { name: 'Altamira', city: 'Lagoa Funda', lon: -13.2, lat: 27.2, hours: 10,
                  sponsor: { name: 'Bīr Amādū Salek', short: 'Salek', pronoun: 'he', role: 'a banker abroad and an old client of your family',
-                            asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return, and agreeing makes the visa more likely.',
+                            asks: 'Salek, a banker who knows your family, can ask the ministry for your visa. He wants the family accounts in return, and agreeing makes him work harder for you.',
                             wants: 'the family accounts moved to his bank',
                             terms: 'He wants the family accounts moved to his bank.', slow: 0,
-                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you. His visa answer is now more likely to come through.', heat: 0 },
+                            demand: { text: '"The transfer papers are with your brother-in-law. Sign them and the ministry hears from me tonight."', accept: 'Sign and move the accounts', effect: 'Salek takes the family accounts and works harder for you.', heat: 0 },
                             kept: 'Salek now holds the family accounts.' } },
     tarun:     { name: 'Ardésia', city: 'Almatau', lon: 76.9, lat: 43.2, hours: 14,
                  sponsor: { name: 'Dēvan Rāo', short: 'Rāo', pronoun: 'he', role: 'a magistrate in Almatau who has taken in exiles before',
-                            asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics. Agreeing makes the visa more likely.',
+                            asks: 'Rāo, a magistrate in Almatau, can write to the ministry for your visa. He is slow, and he wants your word that you will stay out of politics. Agreeing makes him work harder for you.',
                             wants: 'your word that you will stay out of politics',
                             terms: 'He wants your word that you will stay out of politics while you are his guest.', slow: 6,
-                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Ardésia. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you. His visa answer is now more likely to come through.', heat: 0 },
+                            demand: { text: '"I have drafted the letter. It says you will hold no office and give no interviews from Ardésia. I need your signature under mine."', accept: 'Sign and give your word', effect: 'Rāo has your word and works harder for you.', heat: 0 },
                             kept: 'Rāo has your word that you are out of politics.' } },
     zaryanova: { name: 'Nordavia', city: 'Krasnomor', lon: 131.9, lat: 43.1, hours: 8,
                  sponsor: { name: 'Mirēlā Vosk', short: 'Vosk', pronoun: 'she', role: 'a former trade envoy in Krasnomor with friends at the foreign ministry',
-                            asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes the visa more likely.',
+                            asks: 'Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes him work harder for you.',
                             wants: 'mineral rights you do not control',
                             terms: 'She wants mineral rights you do not control.', slow: 0,
-                            demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so her visa answer is now more likely to come through. Word reaches home, and your police attention rises by one.', heat: 1 },
+                            demand: { text: '"The ministry wants the northern concessions in writing. Sign, and I take it to them tonight."', accept: 'Sign the concession', effect: 'Vosk takes the concession and works harder for you, so she works harder for you. Word reaches home, and your police attention rises by one.', heat: 1 },
                             kept: 'Your signature on the concessions is in Krasnomor.' } },
   };
   const PLACES = { valdoria: { name: 'Valdória', city: 'Portô Venla', lon: -77.0, lat: -12.0 }, susana: { name: 'Portalba', city: 'Costamar', lon: -79.9, lat: -2.2 } };
@@ -365,7 +365,7 @@ const Data = (() => {
   // fx: hours, lead (a true report of where she is now; delay in hours), false (a report that points elsewhere),
   // follow (move the search to the newest report), card / lose (government card ids), act (an inquiry action at the
   // search), press (her exposure up), warn (her side learns something: her exposure down), stall (her bookings slip,
-  // hours), crossing (the line is closed for n hours), ban (the ban is confirmed at the post), unban (the post loses it),
+  // hours), crossing (every move at the line is harder for n hours), ban (the ban is in force), unban (the post at the line lets it slide),
   // holdup (the Costamaran request moves forward), dc (orders easier or harder: [delta, hours]), minister (+1 pleased,
   // -1 angry), sooner (the minister's deadline moves up, hours), roll {need, win, lose}, say.
   const GOV_EVENTS = [
@@ -583,7 +583,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.', choices: [
       { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the railway hotel under another guest\'s name. The night clerk never asks to see a passport.' } },
-      { id: 'rail_hotel', label: 'Take a room at the railway hotel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
+      { id: 'rail_hotel', label: 'Take a railway hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the freight sidings.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
       { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },

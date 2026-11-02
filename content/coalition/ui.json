@@ -1333,17 +1333,6 @@
    "text": "Truck driver"
   },
   {
-   "id": "mate.bruno.pick",
-   "pattern": "P09",
-   "text": "Pick Bruno if you plan to get aboard the Salta freight with Holt or Theo."
-  },
-  {
-   "id": "mate.bruno.govpick",
-   "pattern": "P09",
-   "text": "Pick Bruno to watch the Salta freight from the start.",
-   "role": "gov"
-  },
-  {
    "id": "mate.bruno.who",
    "pattern": "P09",
    "text": "Bruno drives trucks for a living and knows every back road."
@@ -1363,17 +1352,6 @@
    "id": "mate.clara.title",
    "pattern": "P02",
    "text": "Interpreter from Costamar"
-  },
-  {
-   "id": "mate.clara.pick",
-   "pattern": "P09",
-   "text": "Pick Clara if Costamar worries you most, from its border posts to the airfield."
-  },
-  {
-   "id": "mate.clara.govpick",
-   "pattern": "P09",
-   "text": "Pick Clara to reach her once she crosses into Costamar.",
-   "role": "gov"
   },
   {
    "id": "mate.clara.who",
@@ -1397,17 +1375,6 @@
    "text": "Cargo pilot"
   },
   {
-   "id": "mate.rita.pick",
-   "pattern": "P09",
-   "text": "Pick Rita if your visa might not come through before the jet is ready."
-  },
-  {
-   "id": "mate.rita.govpick",
-   "pattern": "P09",
-   "text": "Pick Rita to go after her jet.",
-   "role": "gov"
-  },
-  {
    "id": "mate.rita.who",
    "pattern": "P09",
    "text": "Rita flies cargo planes out of the coast and knows the charter crews."
@@ -1427,17 +1394,6 @@
    "id": "mate.marta.title",
    "pattern": "P02",
    "text": "Auto mechanic"
-  },
-  {
-   "id": "mate.marta.pick",
-   "pattern": "P09",
-   "text": "Pick Marta if the road south and police checkpoints worry you most."
-  },
-  {
-   "id": "mate.marta.govpick",
-   "pattern": "P09",
-   "text": "Pick Marta to catch her early, on the road south.",
-   "role": "gov"
   },
   {
    "id": "mate.marta.who",
@@ -1466,17 +1422,6 @@
    "text": "Nurse"
   },
   {
-   "id": "mate.ines.pick",
-   "pattern": "P09",
-   "text": "Pick Inês if you expect long waits and need food and sleep without being seen."
-  },
-  {
-   "id": "mate.ines.govpick",
-   "pattern": "P09",
-   "text": "Pick Inês to catch her when her family is worn out.",
-   "role": "gov"
-  },
-  {
    "id": "mate.ines.who",
    "pattern": "P09",
    "text": "Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions."
@@ -1496,17 +1441,6 @@
    "id": "mate.paulo.title",
    "pattern": "P02",
    "text": "Former court clerk"
-  },
-  {
-   "id": "mate.paulo.pick",
-   "pattern": "P09",
-   "text": "Pick Paulo if the travel ban worries you most."
-  },
-  {
-   "id": "mate.paulo.govpick",
-   "pattern": "P09",
-   "text": "Pick Paulo to get the travel ban out fast and keep it in force.",
-   "role": "gov"
   },
   {
    "id": "mate.paulo.who",
@@ -1530,17 +1464,6 @@
    "text": "Radio producer"
   },
   {
-   "id": "mate.celina.pick",
-   "pattern": "P09",
-   "text": "Pick Celina if you want the police searching in the wrong place."
-  },
-  {
-   "id": "mate.celina.govpick",
-   "pattern": "P09",
-   "text": "Pick Celina to put the public to work looking for her.",
-   "role": "gov"
-  },
-  {
    "id": "mate.celina.who",
    "pattern": "P09",
    "text": "Celina produces the morning news at a regional radio station. She knows what gets repeated before anyone checks it."
@@ -1560,17 +1483,6 @@
    "id": "mate.tomas.title",
    "pattern": "P02",
    "text": "Retired border officer"
-  },
-  {
-   "id": "mate.tomas.pick",
-   "pattern": "P09",
-   "text": "Pick Tomás if crossing the line worries you most."
-  },
-  {
-   "id": "mate.tomas.govpick",
-   "pattern": "P09",
-   "text": "Pick Tomás to close the line.",
-   "role": "gov"
   },
   {
    "id": "mate.tomas.who",
@@ -1594,17 +1506,6 @@
    "text": "Telephone engineer"
   },
   {
-   "id": "mate.nadia.pick",
-   "pattern": "P09",
-   "text": "Pick Nadia if you will spend the run on the phone arranging the jet, the visa and your welcome."
-  },
-  {
-   "id": "mate.nadia.govpick",
-   "pattern": "P09",
-   "text": "Pick Nadia to follow her phone calls.",
-   "role": "gov"
-  },
-  {
    "id": "mate.nadia.who",
    "pattern": "P09",
    "text": "Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment."
@@ -1626,17 +1527,6 @@
    "text": "Hotel manager"
   },
   {
-   "id": "mate.emilio.pick",
-   "pattern": "P09",
-   "text": "Pick Emilio if you want safe places to eat and sleep along the south road."
-  },
-  {
-   "id": "mate.emilio.govpick",
-   "pattern": "P09",
-   "text": "Pick Emilio to find out where she sleeps.",
-   "role": "gov"
-  },
-  {
    "id": "mate.emilio.who",
    "pattern": "P09",
    "text": "Emilio manages small hotels along the south road. He can find a room under someone else's reservation."
@@ -1656,17 +1546,6 @@
    "id": "mate.joana.title",
    "pattern": "P02",
    "text": "Union organizer"
-  },
-  {
-   "id": "mate.joana.pick",
-   "pattern": "P09",
-   "text": "Pick Joana if you want a way out of Salta that does not depend on Holt, Theo or midnight."
-  },
-  {
-   "id": "mate.joana.govpick",
-   "pattern": "P09",
-   "text": "Pick Joana to watch the Salta yard through its workers.",
-   "role": "gov"
   },
   {
    "id": "mate.joana.who",
@@ -3986,7 +3865,7 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, though agreeing is optional and only makes the visa more likely.",
+   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, and agreeing is optional.",
    "args": [
     "sponsor",
     "wants"
