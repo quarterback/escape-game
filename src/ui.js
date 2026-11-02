@@ -867,7 +867,7 @@ const UI = (() => {
       if (!pickMate) return;
       const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p><b>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.govpick` : `mate.${pickMate}.pick`))}</b></p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
       if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
