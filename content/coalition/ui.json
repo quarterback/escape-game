@@ -1325,67 +1325,47 @@
    "role": "gov"
   },
   {
-   "id": "mate.bruno.title",
-   "pattern": "P02",
-   "text": "Truck driver"
-  },
-  {
    "id": "mate.bruno.escape",
    "pattern": "P03",
-   "text": "Gets you aboard the freight train more easily."
+   "text": "Bruno can find you a way onto a train."
   },
   {
    "id": "mate.bruno.gov",
    "pattern": "P03",
-   "text": "Gives you a contact in the railway yard.",
+   "text": "Bruno can tell you what moves through the rail yard.",
    "role": "gov"
-  },
-  {
-   "id": "mate.clara.title",
-   "pattern": "P02",
-   "text": "Interpreter from Costamar"
   },
   {
    "id": "mate.clara.escape",
    "pattern": "P03",
-   "text": "Makes the border and the airfield easier."
+   "text": "Clara can open doors for you across the border."
   },
   {
    "id": "mate.clara.gov",
    "pattern": "P03",
-   "text": "Lets your police search the airfield across the border.",
+   "text": "Clara can reach people across the border for you.",
    "role": "gov"
-  },
-  {
-   "id": "mate.rita.title",
-   "pattern": "P02",
-   "text": "Cargo pilot"
   },
   {
    "id": "mate.rita.escape",
    "pattern": "P03",
-   "text": "Makes taking off without a visa easier."
+   "text": "Rita can get your jet off the ground."
   },
   {
    "id": "mate.rita.gov",
    "pattern": "P03",
-   "text": "Lets you pressure the company flying her out.",
+   "text": "Rita can make trouble for her jet.",
    "role": "gov"
-  },
-  {
-   "id": "mate.marta.title",
-   "pattern": "P02",
-   "text": "Auto mechanic"
   },
   {
    "id": "mate.marta.escape",
    "pattern": "P03",
-   "text": "Gets your car past police checkpoints."
+   "text": "Marta can keep your car out of trouble."
   },
   {
    "id": "mate.marta.gov",
    "pattern": "P03",
-   "text": "Tracks her cars by their license plates.",
+   "text": "Marta can track the cars she uses.",
    "role": "gov"
   },
   {
@@ -1394,115 +1374,80 @@
    "text": "Marta swaps the plates before you leave, and the police searching here lose track of the car."
   },
   {
-   "id": "mate.ines.title",
-   "pattern": "P02",
-   "text": "Nurse"
-  },
-  {
    "id": "mate.ines.escape",
    "pattern": "P03",
-   "text": "Keeps your family fed and rested out of sight."
+   "text": "Inês can keep your family on its feet."
   },
   {
    "id": "mate.ines.gov",
    "pattern": "P03",
-   "text": "Helps your patrols spot a worn-out family.",
+   "text": "Inês can tell you when her family is worn out.",
    "role": "gov"
-  },
-  {
-   "id": "mate.paulo.title",
-   "pattern": "P02",
-   "text": "Former court clerk"
   },
   {
    "id": "mate.paulo.escape",
    "pattern": "P03",
-   "text": "Slows down the travel ban."
+   "text": "Paulo can tie up the court's paperwork."
   },
   {
    "id": "mate.paulo.gov",
    "pattern": "P03",
-   "text": "Gets the travel ban out faster.",
+   "text": "Paulo can push the court's paperwork through.",
    "role": "gov"
-  },
-  {
-   "id": "mate.celina.title",
-   "pattern": "P02",
-   "text": "Radio producer"
   },
   {
    "id": "mate.celina.escape",
    "pattern": "P03",
-   "text": "Sends the police after false stories."
+   "text": "Celina can send the police the wrong way."
   },
   {
    "id": "mate.celina.gov",
    "pattern": "P03",
-   "text": "Puts her face on the news.",
+   "text": "Celina can put the public on her trail.",
    "role": "gov"
-  },
-  {
-   "id": "mate.tomas.title",
-   "pattern": "P02",
-   "text": "Retired border officer"
   },
   {
    "id": "mate.tomas.escape",
    "pattern": "P03",
-   "text": "Makes crossing the border easier."
+   "text": "Tomás can get you across the border."
   },
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "Tightens the border against her.",
+   "text": "Tomás can close the border tighter.",
    "role": "gov"
-  },
-  {
-   "id": "mate.nadia.title",
-   "pattern": "P02",
-   "text": "Telephone engineer"
   },
   {
    "id": "mate.nadia.escape",
    "pattern": "P03",
-   "text": "Keeps the police from tracing your calls."
+   "text": "Nadia can keep your calls private."
   },
   {
    "id": "mate.nadia.gov",
    "pattern": "P03",
-   "text": "Traces her side's phone calls.",
+   "text": "Nadia can follow her side's phone calls.",
    "role": "gov"
-  },
-  {
-   "id": "mate.emilio.title",
-   "pattern": "P02",
-   "text": "Hotel manager"
   },
   {
    "id": "mate.emilio.escape",
    "pattern": "P03",
-   "text": "Gives you hidden rooms to eat and sleep in."
+   "text": "Emilio can find you a safe place to rest."
   },
   {
    "id": "mate.emilio.gov",
    "pattern": "P03",
-   "text": "Checks hotels for where she stayed.",
+   "text": "Emilio can find out where she sleeps.",
    "role": "gov"
-  },
-  {
-   "id": "mate.joana.title",
-   "pattern": "P02",
-   "text": "Union organizer"
   },
   {
    "id": "mate.joana.escape",
    "pattern": "P03",
-   "text": "Gets a train to wait for you."
+   "text": "Joana can get the railway working for you."
   },
   {
    "id": "mate.joana.gov",
    "pattern": "P03",
-   "text": "Railway workers tell you when she leaves.",
+   "text": "Joana can make the railway watch for her.",
    "role": "gov"
   },
   {

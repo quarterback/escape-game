@@ -135,7 +135,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const govCards = new Set();
   for (const k of keys) { const m = M[k], c = Data.CARDS[m.card], gc = Data.GOV_CARDS[m.gov];
     if (!c || !c.companion) bad.push(`${k}: escape card`); if (!gc) bad.push(`${k}: police card`); else if (govCards.has(m.gov)) bad.push(`${k}: shares a police card`); govCards.add(m.gov);
-    for (const f of ['title', 'escape', 'gov']) if (!cat.has(`mate.${k}.${f}`)) bad.push(`${k}: no mate.${k}.${f}`);
+    for (const f of ['escape', 'gov']) if (!cat.has(`mate.${k}.${f}`)) bad.push(`${k}: no mate.${k}.${f}`);
     if (!new RegExp(`\\n\\s+${m.sprite}: \\{`).test(art)) bad.push(`${k}: no sprite`);
     for (const t of [c && c.tag, gc && gc.tag]) if (t && !cat.has('tag.' + t)) bad.push(`${k}: tag.${t} has no player words`); }
   // the eight later companions each carry a kind of help no other card has (Bruno, Clara and Rita keep theirs)
