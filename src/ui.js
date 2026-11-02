@@ -340,8 +340,9 @@ const UI = (() => {
     const k = s.over.kind;
     const why = gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest');
-    const story = !gov && s.over.story ? `<h3 class="overh">${T('over.what_happened')}</h3><p class="overstory">${esc(s.over.story)}</p>` : '';
-    const after = !gov && s.over.after ? `<h3 class="overh">${T('over.afterward')}</h3><p class="overafter">${esc(s.over.after)}</p>` : '';
+    // owner, Nov. 2, 2026 ("what is this slop language"): plain sentences in order, no headings over single lines
+    const story = !gov && s.over.story ? `<p class="overstory">${esc(s.over.story)}</p>` : '';
+    const after = !gov && s.over.after ? `<p class="overafter">${esc(s.over.after)}</p>` : '';
     $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + story + after + (gov ? Gov.debrief(gov) : '');
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
     $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');

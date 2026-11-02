@@ -1910,7 +1910,7 @@
   {
    "id": "sim.end.is_named_on_the_warrant",
    "pattern": "P14",
-   "text": "{name} is named on the warrant too.",
+   "text": "There is a warrant for {name} too.",
    "args": [
     "name"
    ]
@@ -1918,7 +1918,7 @@
   {
    "id": "sim.end.you_were_held_times_along",
    "pattern": "P14",
-   "text": "You were held {holds} times along the way.",
+   "text": "The police stopped you {holds} times along the way.",
    "args": [
     "holds"
    ]
@@ -1926,7 +1926,7 @@
   {
    "id": "sim.end.you_were_held_once_along",
    "pattern": "P14",
-   "text": "You were held once along the way."
+   "text": "The police stopped you once along the way."
   },
   {
    "id": "sim.end.nona_rosa_s_truck_runs",
@@ -4549,7 +4549,7 @@
   {
    "id": "over.why_gov_arrest",
    "pattern": "P14",
-   "text": "Police stops climbed to house arrest, and she did not get away."
+   "text": "The police put her under house arrest, and she never got out."
   },
   {
    "id": "over.why_gov_deal",
@@ -4559,7 +4559,7 @@
   {
    "id": "over.why_arrest",
    "pattern": "P14",
-   "text": "Police stops climbed to house arrest, and you did not get away."
+   "text": "The police put you under house arrest, and you never got out."
   },
   {
    "id": "brief.hours_gov",
@@ -4853,16 +4853,6 @@
    "args": [
     "what"
    ]
-  },
-  {
-   "id": "over.what_happened",
-   "pattern": "P02",
-   "text": "What happened"
-  },
-  {
-   "id": "over.afterward",
-   "pattern": "P02",
-   "text": "Afterward"
   },
   {
    "id": "gov.inquiry.found",

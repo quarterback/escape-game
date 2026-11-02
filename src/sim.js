@@ -646,7 +646,7 @@ const Sim = (() => {
     const out = [], first = (id) => shortName(s, id);
     const turned = Object.keys(s.people).filter(k => s.people[k].turned && k !== 'sponsor');
     if (win) out.push(s.arr.permission.stage >= 2 ? T('sim.end.a_car_meets_the_aircraft', { city: dest(s).city }) : T('sim.end.lets_the_jet_land', { name: dest(s).name }));
-    if (!win && kind !== 'deal') out.push(T('sim.end.is_named_on_the_warrant', { name: personName(s, 'sibling') })); // the deal closes the case
+    if (!win && kind !== 'deal') out.push(T('sim.end.is_named_on_the_warrant', { name: `${ch(s).sibling.rel} ${personName(s, 'sibling')}` })); // the deal closes the case
     if (s.holds) out.push(s.holds === 1 ? T('sim.end.you_were_held_once_along') : T('sim.end.you_were_held_times_along', { holds: num(s.holds) }));
     if (turned.length) out.push(T('sim.end.talked_to_the_inquiry_will', { and: turned.map(first).join(' and ') }));
     for (const c of s.commitments) {
