@@ -210,12 +210,12 @@
   {
    "code": "ban.confirmed",
    "pattern": "P03",
-   "text": "The post confirms the travel ban"
+   "text": "The travel ban holds at every post"
   },
   {
    "code": "ban.lost",
    "pattern": "P03",
-   "text": "The ban is no longer confirmed at the post"
+   "text": "The post at the line lets the ban slide"
   },
   {
    "code": "hold.esmeralda_moves",

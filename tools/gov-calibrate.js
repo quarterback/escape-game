@@ -13,7 +13,7 @@ function round(g) {
   // desk: messages first, then one request
   while (v.messages.length && !g.over) { const m = v.messages[0]; const fresh = v.reports[0] && v.reports[0].age === 'just now'; const o = m.options.find(x => x.id === (fresh ? 'tell_now' : 'ask_time')) || m.options.find(x => x.id === 'admit') || m.options[0]; Gov.commit(g, m.id, o.id); v = Gov.view(g); }
   if (g.over) return;
-  const call = ['req:ban', 'req:hold', 'req:operator'].map(id => v.calls.find(c => c.id === id && c.ok)).find(Boolean);
+  const call = ['req:hold', 'req:operator'].map(id => v.calls.find(c => c.id === id && c.ok)).find(Boolean);
   if (call) { Gov.commit(g, call.id); v = Gov.view(g); }
   if (g.over || v.event) return;
   // order: follow a newer lead, circulate the ban, then search or block

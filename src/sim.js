@@ -208,8 +208,8 @@ const Sim = (() => {
       let dc = a.dc; const why = [];
       const escorted = !!(a.post && s.arr.reception.stage >= 3 && s.escortPost === a.post);
       // the sheet is on the desk unless Gianlūka's contact held it, or Tomás knows it has not reached the booth (six hours after it goes out)
-      if (L.border && s.flags.restriction && !hasTag(s, 'delay') && !(hasTag(s, 'border') && s.hour < (s.flags.banAt || 0) + BOOTH_LAG)) { dc += 1; why.push(T('sim.preview.harder_ban')); }
-      if (L.border && s.flags.enforced) { dc += 1; why.push(T('sim.preview.harder_enforced')); } // the government side's border command confirmed the ban at the post
+      if (L.border && s.flags.restriction && !s.flags.lax && !hasTag(s, 'delay') && !(hasTag(s, 'border') && s.hour < (s.flags.banAt || 0) + BOOTH_LAG)) { dc += 1; why.push(T('sim.preview.harder_ban')); }
+      if (L.border && s.flags.enforced && s.flags.restriction && !s.flags.lax) { dc += 1; why.push(T('sim.preview.harder_enforced')); } // the government side's border command: Tomás's old sergeants enforce the ban
       // Marta: a car that looks ordinary goes through police checkpoints in Valdória like any other car
       if (s.flags.roadblock && s.flags.roadblock.pos === s.pos && s.hour < s.flags.roadblock.until && !hasTag(s, 'mechanic')) { dc += 1; why.push(T('sim.preview.harder_checkpoint', { time: clockText(s.flags.roadblock.until) })); }
       if (L.final && s.flags.asked && s.arr.reception.stage < 2) { dc += 2; why.push(T('sim.preview.harder_asked')); }

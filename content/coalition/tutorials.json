@@ -470,24 +470,6 @@
      }
     },
     {
-     "id": "confirm",
-     "kind": "act",
-     "title": "Confirming the ban",
-     "goal": "Confirm a request reached the people who act on it",
-     "body": "The ban is in force, so every crossing she tries is harder, but nobody at the post has confirmed it yet. Pick **Confirm the ban at the post**, then **Confirm**, to have the post confirm it.",
-     "highlight": [
-      "#calls"
-     ],
-     "allow": {
-      "calls": [
-       "req:ban"
-      ]
-     },
-     "done": {
-      "request": "ban"
-     }
-    },
-    {
      "id": "search",
      "kind": "act",
      "title": "Act on the lead",

@@ -92,7 +92,7 @@ function check(pkg) {
 
   // C02: tutorial references point at real actions, calls, options and controls
   const approaches = new Set([...D.LEVELS.flatMap(L => L.approaches.map(a => a.id)), ...D.GOV_ORDERS.map(o => o.id)]);
-  const calls = new Set([...Object.keys(D.ARRANGEMENTS), 'req:hold', 'req:ban', 'req:operator']);
+  const calls = new Set([...Object.keys(D.ARRANGEMENTS), 'req:hold', 'req:operator']);
   const ids = new Set(); for (const s of [pkg.sources['src/data.js'], pkg.sources['src/sim.js'], pkg.sources['src/gov.js']]) for (const r of s.matchAll(/\bid: '([a-z_0-9]+)'/g)) ids.add(r[1]);
   const shell = pkg.sources['src/shell.html'] || '';
   for (const t of pkg.tutorials.tutorials) for (const st of t.steps) {
