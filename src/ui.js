@@ -747,13 +747,11 @@ const UI = (() => {
   function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
   function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
-  // where the run ended, as the share card says it: "in Salta", "at the border"
-  const endPlace = () => T(({ residence: 'share.at_residence', road: 'share.at_road', colonia: 'share.at_colonia', salta: 'share.at_salta', border: 'share.at_border', airfield: 'share.at_airfield' })[Data.LEVELS[s.pos].id]);
   // owner, Nov. 2, 2026: a grid like Wordle's. One row per stop reached, numbered; one square per move there: green when
   // police attention held or fell, orange when it rose, red for a police stop. The last row ends with how the run ended.
   function shareGrid() {
     const SQ = ['\u{1F7E9}', '\u{1F7E7}', '\u{1F7E5}'], NUM = [0, 1, 2, 3, 4, 5].map(i => String.fromCodePoint(0x31 + i, 0xFE0F, 0x20E3));
-    const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F3E0}';
+    const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F694}\u26D3\uFE0F'; // house arrest: police car and chains
     // owner, Nov. 2, 2026: "I like pins, time of day and symbols". Each row says whether you left that stop by day or at night
     // (the last row: when the run ended), and a pin marks where it ended, before the symbol for how.
     const rows = []; for (let p = 0; p <= s.pos; p++) { const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
@@ -762,9 +760,7 @@ const UI = (() => {
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    // owner, Nov. 2, 2026: "Coalition Run #, Level x, 18 hrs left / House Arrest in Punto Arenas"
-    const k = s.over.kind, at = endPlace(), line = s.over.win ? T('share.end_out') : k === 'clock' ? T('share.end_clock', { at }) : k === 'deal' ? T('share.end_deal', { at }) : T('share.end_arrest', { at });
-    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), line, url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {

@@ -436,11 +436,13 @@ const Sim = (() => {
   // ---- commit ----------------------------------------------------
   // Every accepted action goes on s.actions, so seed + actions replays the run (the replay link, the recorder).
   function commit(s, actionId, optionId) {
-    const at = s.pos, was = s.exposure, holds = s.holds;
+    const at = s.pos;
     const r = _commit(s, actionId, optionId);
-    // the share card's grid: one square per move or news answer at each stop. k: 0 attention held or fell, 1 it rose, 2 a police stop
-    const move = !/^(msg:|call:|hurry:|lodge$)/.test(actionId);
-    if (r.ok && move) (s.trail = s.trail || []).push({ p: at, k: s.holds > holds ? 2 : s.exposure > was ? 1 : 0, n: isNight(s) ? 1 : 0 }); // n: it was night when the move ended
+    // the share card's grid: one square per round, closed by the round's move (owner, Nov. 2, 2026: "one block per round").
+    // k: 0 attention held or fell over the round, 1 it rose, 2 a police stop; n: it was night when the round ended
+    const move = !/^(msg:|call:|hurry:|lodge$|evt:)/.test(actionId), rs = s._round || { e: s.exposure, h: s.holds };
+    if (r.ok && move) { (s.trail = s.trail || []).push({ p: at, k: s.holds > rs.h ? 2 : s.exposure > rs.e ? 1 : 0, n: isNight(s) ? 1 : 0 }); s._round = { e: s.exposure, h: s.holds }; }
+    else if (!s._round) s._round = rs;
     if (r.ok) (s.actions = s.actions || []).push(optionId === undefined ? [actionId] : [actionId, optionId]);
     return r;
   }
