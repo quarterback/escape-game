@@ -4189,11 +4189,12 @@
   {
    "id": "escape.share",
    "pattern": "P14",
-   "text": "Coalition Run #{n}, Level {level}, {hours} hr left\n{line}\n{url}",
+   "text": "Coalition Run #{n}, Level {level}, {hours} hr left\n{grid}\n{line}\n{url}",
    "args": [
     "n",
     "level",
     "hours",
+    "grid",
     "line",
     "url"
    ]

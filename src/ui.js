@@ -749,10 +749,14 @@ const UI = (() => {
   function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
   // where the run ended, as the share card says it: "in Salta", "at the border"
   const endPlace = () => T(({ residence: 'share.at_residence', road: 'share.at_road', colonia: 'share.at_colonia', salta: 'share.at_salta', border: 'share.at_border', airfield: 'share.at_airfield' })[Data.LEVELS[s.pos].id]);
+  // one square per stop, colored by police attention when you left it (as the game colors it): green Low, orange Rising,
+  // red High; the stop where the run ended by attention at the end; white for stops never reached; a plane when you got out
+  function shareGrid() { const sq = (x) => x >= 7 ? '\u{1F7E5}' : x >= 4 ? '\u{1F7E7}' : '\u{1F7E9}', L = s.leftAttn || {};
+    return Data.LEVELS.map((lv, i) => i < s.pos ? sq(L[i] !== undefined ? L[i] : 0) : i === s.pos ? sq(s.exposure) : '\u2B1C').join('') + (s.over.win ? '\u2708\uFE0F' : ''); }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
     // owner, Nov. 2, 2026: "Coalition Run #, Level x, 18 hrs left / House Arrest in Punto Arenas"
     const k = s.over.kind, at = endPlace(), line = s.over.win ? T('share.end_out') : k === 'clock' ? T('share.end_clock', { at }) : k === 'deal' ? T('share.end_deal', { at }) : T('share.end_arrest', { at });
-    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), line, url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), line, url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {

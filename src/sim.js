@@ -536,6 +536,7 @@ const Sim = (() => {
   }
   function advanceLevel(s, events) {
     if (s.pos >= D.LEVELS.length - 1) return;
+    (s.leftAttn = s.leftAttn || {})[s.pos] = s.exposure; // police attention as you left each stop, for the share card's squares
     const left = level(s).id; // a way onto the freight is gone once you leave the stop where it counts, not before you get there
     // Marta: leaving a stop the police are searching, she swaps the plates and the police lose the car
     if (hasTag(s, 'mechanic') && s.belief === s.pos && s.pos < 4) { say(events, 'narrator', T('mate.marta.plates')); heat(s, -1, events); }
