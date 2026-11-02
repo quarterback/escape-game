@@ -170,14 +170,31 @@ const UI = (() => {
     requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons stay on screen
     return box;
   }
+  // a person by name: "your sister Līviā" for the sibling (owner, Nov. 1, 2026: name people every time)
+  const sibNamed1 = (id) => id === 'sibling' ? `${Data.CHARACTERS[s.who].sibling.rel} ${Data.CHARACTERS[s.who].sibling.name}` : pname(id);
+  // owner, Nov. 2, 2026 ("I don't understand why I can't board the plane"): when no move leaves this stop, say what is next
+  function nextLines(A) {
+    const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], exits = L.approaches.filter(a => !a.mate && (!ex || ex.includes(a.id)));
+    if (!exits.length || A.approaches.some(a => a.ok && exits.some(e => e.id === a.id))) return [];
+    const out = [], seen = {}, what = { aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') };
+    for (const a of exits) for (const n of a.needs) {
+      if (n.arr && s.arr[n.arr].stage < n.stage && !seen[n.arr]) { seen[n.arr] = 1; const job = s.jobs.find(j => j.arr === n.arr && !j.stall), call = A.calls.find(c => c.arr === n.arr && c.ally);
+        if (job) out.push(T('next.waiting', { name: cap(sibNamed1(job.ally)), what: what[n.arr], time: short(job.due) }));
+        else if (call) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] })); }
+      else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name })); }
+    }
+    return out.slice(0, 2);
+  }
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
+    { const nx = nextLines(A); if (nx.length && phase === 'move' && !s.event) { const d = document.createElement('div'); d.className = 'nextbox'; d.innerHTML = nx.map(x => `<p>${esc(x)}</p>`).join(''); box.appendChild(d); } }
     for (const a of A.approaches) { if (!a.ok) continue; if (sel === a.id) box.appendChild(expanded(a, T('action.commit'), () => doCommit(a.id))); else box.appendChild(approachBtn(a, Tutorial.allowsApproach(a.id) && phase === 'move')); } // only moves you can make
     // waiting is a choice like any move: it says how long it takes and what can happen while you wait
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
     if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
+    if (A.waitJob.ok) waits.push({ id: 'wait_job', name: T('action.wait_job', { name: sibNamed1(A.waitJob.ally) }), hours: A.waitJob.hours, lines: [] });
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
@@ -420,7 +437,7 @@ const UI = (() => {
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // the food and sleep screen is a choice card, not a move
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark' || sid === 'wait_job') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
       // owner, Nov. 1, 2026: "the screen in the animation should just show time passing ... the cards and tags are doing all the work"
       autoNext(); }
     renderAll(); saveRun();

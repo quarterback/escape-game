@@ -153,6 +153,41 @@
    "text": "Wait until dark"
   },
   {
+   "id": "action.wait_job",
+   "pattern": "P01",
+   "text": "Wait for {name}'s answer",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "next.waiting",
+   "pattern": "P05",
+   "text": "{name} is working on {what} and answers by {time}.",
+   "args": [
+    "name",
+    "what",
+    "time"
+   ]
+  },
+  {
+   "id": "next.call",
+   "pattern": "P05",
+   "text": "Call {name} about {what} on the Phone tab.",
+   "args": [
+    "name",
+    "what"
+   ]
+  },
+  {
+   "id": "next.night",
+   "pattern": "P05",
+   "text": "{move} opens at 10 p.m.",
+   "args": [
+    "move"
+   ]
+  },
+  {
    "id": "wait.dark_for",
    "pattern": "P03",
    "text": "Wait until 10 p.m., when you can {move}.",
