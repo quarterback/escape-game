@@ -340,9 +340,7 @@ const UI = (() => {
     const k = s.over.kind;
     const why = gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest');
-    const story = !gov && s.over.story ? `<h3 class="overh">${T('over.what_happened')}</h3><p class="overstory">${esc(s.over.story)}</p>` : '';
-    const after = !gov && s.over.after ? `<h3 class="overh">${T('over.afterward')}</h3><p class="overafter">${esc(s.over.after)}</p>` : '';
-    $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + story + after + (gov ? Gov.debrief(gov) : '');
+    $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : ''); // owner, Nov. 2, 2026: the result and nothing more
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
     $('share').hidden = !(gov || daily); $('share').textContent = T('over.share');
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
@@ -616,7 +614,8 @@ const UI = (() => {
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
       if (phase === 'phone') phase = 'move';
-      if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
+      // news that is waiting always shows: a call answered before the round wrapped up once left news hidden and every move locked (owner, Nov. 2, 2026)
+      if ((phase === 'phone' || phase === 'move') && pendingEvent()) phase = 'news';
     }
     $('round').textContent = T('round.label', { n: round });
     const idx = PH.indexOf(phase);

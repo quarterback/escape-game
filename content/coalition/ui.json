@@ -1910,7 +1910,7 @@
   {
    "id": "sim.end.is_named_on_the_warrant",
    "pattern": "P14",
-   "text": "{name} is named on the warrant too.",
+   "text": "There is a warrant for {name} too.",
    "args": [
     "name"
    ]
@@ -1918,7 +1918,7 @@
   {
    "id": "sim.end.you_were_held_times_along",
    "pattern": "P14",
-   "text": "You were held {holds} times along the way.",
+   "text": "The police stopped you {holds} times along the way.",
    "args": [
     "holds"
    ]
@@ -1926,7 +1926,7 @@
   {
    "id": "sim.end.you_were_held_once_along",
    "pattern": "P14",
-   "text": "You were held once along the way."
+   "text": "The police stopped you once along the way."
   },
   {
    "id": "sim.end.nona_rosa_s_truck_runs",
@@ -2566,7 +2566,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and the police move their search to Pedra Branca."
+   "text": "Gianlūka stays with you, you get \"A friend in the police\" if you lack it, and the police move their search to Pedra Branca."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -4436,27 +4436,27 @@
   {
    "id": "over.why_gov_time",
    "pattern": "P14",
-   "text": "It is Tuesday at 2 p.m. Her immunity is gone, and she can no longer fly out."
+   "text": "Time ran out before she could fly out."
   },
   {
    "id": "over.why_gov_escaped",
    "pattern": "P14",
-   "text": "She flew out of Costamar before her immunity ran out."
+   "text": "Her jet took off, and she got away."
   },
   {
    "id": "over.why_out",
    "pattern": "P14",
-   "text": "You flew out of Costamar before your immunity ran out."
+   "text": "Your jet took off, and you got away."
   },
   {
    "id": "over.why_time",
    "pattern": "P14",
-   "text": "It is Tuesday at 2 p.m. Your immunity is gone, and you can no longer fly out."
+   "text": "Time ran out before you could fly out."
   },
   {
    "id": "over.why_deal",
    "pattern": "P14",
-   "text": "You took the president's deal, conceded on camera, and came home."
+   "text": "You took the president's deal and gave up."
   },
   {
    "id": "brief.need_jet",
@@ -4549,17 +4549,17 @@
   {
    "id": "over.why_gov_arrest",
    "pattern": "P14",
-   "text": "Police stops climbed to house arrest, and she did not get away."
+   "text": "The police put her under house arrest."
   },
   {
    "id": "over.why_gov_deal",
    "pattern": "P14",
-   "text": "She took the president's deal, conceded on camera, and came home."
+   "text": "She took the president's deal and gave up."
   },
   {
    "id": "over.why_arrest",
    "pattern": "P14",
-   "text": "Police stops climbed to house arrest, and you did not get away."
+   "text": "The police put you under house arrest."
   },
   {
    "id": "brief.hours_gov",
@@ -4853,16 +4853,6 @@
    "args": [
     "what"
    ]
-  },
-  {
-   "id": "over.what_happened",
-   "pattern": "P02",
-   "text": "What happened"
-  },
-  {
-   "id": "over.afterward",
-   "pattern": "P02",
-   "text": "Afterward"
   },
   {
    "id": "gov.inquiry.found",
