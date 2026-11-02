@@ -12,16 +12,16 @@ Picker wording is in `content/coalition/ui.json` as `mate.<id>.title`, `.pick`, 
 
 | Companion | Escape side (Teresa and Mateu) | Police side (Sofia) |
 | --- | --- | --- |
-| Bruno, truck driver | `vehicle`: Holt and Theo are easier to deal with in Salta | Starts with the railway contact |
+| Bruno, truck driver | `vehicle`: Holt and Theo are easier to deal with in Salta | Starts with the railway contact; searches and checkpoints in Salta are easier (Nov. 2) |
 | Clara, interpreter from Costamar | `introduction`: Paso Huhūi, Ālto Verdē and the Portalba departure are easier | Starts with the Costamaran introduction |
-| Rita, cargo pilot | `permission`: leaving Portalba without the visa is easier | Starts with the operator's license |
+| Rita, cargo pilot | `permission`: leaving Portalba without the visa is easier | Starts with the operator's license; the charter crews drag their feet, so each step of her jet takes three hours longer (Nov. 2) |
 | Marta, auto mechanic | `mechanic`: driving your own car out of Pedra Branca is easier and costs no attention; police checkpoints in Valdória do not slow you; leaving a stop the police are searching, she swaps the plates and attention drops one; the plain car is easier; "Let Marta drive through" at the flooded bridge | `plates`: searches and checkpoints at the residence, Pedra Branca and Nova Trentô are easier; the decoy sedan is reported as a decoy; every car on the road south shows in the toll records; "Run the plates" in the three sightings |
-| Inês, nurse | `care`: lying low, waiting for dark, sleeping and long waits never raise police attention from a search where you are; on the food and sleep screen, "Have Inês buy food" feeds everyone unseen, and a night in the car is a full night's sleep; she treats a sick child herself | `clinics`: a clinic that treats her sick child calls the local police, who search there, and the report reaches Sofia three hours late; "Ask the clinics" (1 hr) asks again; patrols stop a tired or starving candidate from Rising police attention instead of High |
+| Inês, nurse | `care`: lying low, waiting for dark, sleeping and long waits never raise police attention from a search where you are; on the food and sleep screen, "Have Inês buy food" feeds everyone unseen, and a night in the car is a full night's sleep; she treats a sick child herself | `clinics`: a clinic that treats her sick child calls the local police and reports to Sofia three hours later; her patrols stop a tired or hungry candidate at Rising police attention instead of High (Nov. 2) |
 | Paulo, former court clerk | `court`: a sent travel ban sits in the outbox 12 hours before it reaches the posts; "Let Paulo take the summons" and "Have Paulo slow the order" keep the ban from going out | `clerk`: circulating the ban is easier and takes 1 hr; when her lawyers ask the duty judge to suspend the ban at the line, "Have Paulo answer the motion" keeps it in force at no cost |
 | Celina, radio producer | `media`: an extra answer to the radio's yacht question, and choices on the kitchen photo, the hitchhiking reporter and the family's early story; the first time the police close in at each stop in Valdória, her station sends them one stop back | `newsroom`: briefing the papers is easier; "Put her photo on the morning news" raises her attention and brings a caller, true or false, three hours later; new choices at the leak, the photo and the press conference |
 | Tomás, retired border officer | `border`: every crossing at the line is easier; on arrival he names the post that is neither bought nor covered by Vélez's people, and that post is easier still; the ban adds nothing at the line for six hours after it goes out; "Follow Tomás over the ridge" in the blizzard | `post_cmd`: searches and checkpoints at the line are easier; once the travel ban is sent, his old sergeants enforce it and her crossings at the line are harder; "Have Tomás take the shift" in the sergeant event |
-| Nadia, telephone engineer | `phone`: police call traces find nothing; once, the tap on your family's phone slows nothing | `exchange`: "Pull the exchange records" (1 hr) names the town of her side's last call in four hours, an hour late; "Have Nadia read the tower log" |
-| Emilio, hotel manager | `lodging`: "Take Emilio's room" on the food and sleep screen at Pedra Branca, Nova Trentô and Salta: six hours, everyone eats and sleeps, attention down one, no name in the register, and a police search there finds nobody while you stay | `registers`: "Check the guest registers" (1 hr) at Pedra Branca, Nova Trentô or Salta reports a room her family took, with the hour, two hours late; the police watch the hotels there afterward |
+| Nadia, telephone engineer | `phone`: police call traces find nothing; once, the tap on your family's phone slows nothing | `exchange`: every call from her side reaches Sofia an hour later with the town (Nov. 2); "Pull the exchange records" (1 hr) asks for the last four hours; "Have Nadia read the tower log" |
+| Emilio, hotel manager | `lodging`: "Take Emilio's room" on the food and sleep screen at Pedra Branca, Nova Trentô and Salta: six hours, everyone eats and sleeps, attention down one, no name in the register, and a police search there finds nobody while you stay | `registers`: every room her family takes in her name reaches Sofia two hours later, every time (Nov. 2); searches at Pedra Branca, Nova Trentô and Salta are easier; "Check the guest registers" (1 hr) |
 | Joana, union organizer | `union`: "Ride the train the crew holds" in Salta at any hour, without Holt or Theo; "Have Joana talk to the strikers" | `union`: a passenger leaving on the freight is always reported, and a stranger asking about it 10 hours late; calling in helpers in Salta is easier; "Have Joana talk to the union" ends the strike |
 
 ## Food and sleep (Nov. 2, 2026)
@@ -74,3 +74,19 @@ Bruno and Rita still show no effect for Sofia in the harness, because the police
 Fixed when food and sleep went in: Marta showed no effect on the escape side, so police checkpoints no longer slow her car and she swaps the plates when you leave a stop the police are searching. Paulo showed no effect for Sofia, so his ban goes out in an hour. Inês and Nadia cost Sofia time, so their orders take an hour, Nadia reads four hours of calls instead of eight, and Inês's clinics call the police and brief the patrols.
 
 Nov. 2, 2026, later: the travel ban is in force for Sofia the moment it is sent (owner, Nov. 1, 2026: the ban "makes crossing harder but does not close the border"; it is in force at every post once sent, and a post can let it slide). "Confirm the ban at the post" is gone, with its demo step. The duty judge and the sergeant can now get the post at the line to let the ban slide, which makes her crossings there easier again. Police side, 600 runs, no companion: 38.2% before and after; with each companion: Bruno 38.2%, Clara 36.5%, Rita 38.2%, Marta 34.7%, Inês 36.0%, Paulo 34.8%, Celina 31.3%, Tomás 36.7%, Nadia 40.3%, Emilio 35.8%, Joana 33.0%. Nadia still does not help the police bot, because her reports name a town the candidate may have left.
+
+## Police-side companions made useful (Nov. 2, 2026, issue #46)
+
+Owner: "I've been saying I want companions who are useful." First, a bot bug: the computer-played candidate on Sofia's side, and the escape calibration bot, treated each new "hurry" call as a call to make. She hurried everything at the residence and never left, so the candidate escaped Sofia only 3.3% of the time. Both bots now make plain calls only. Then Bruno, Rita, Inês, Nadia and Emilio each got a direct, always-on effect (see the table). Police harness, 400 runs, she escapes Sofia:
+
+| Companion | Before | After |
+| --- | --- | --- |
+| None | 35.8% | 35.0% |
+| Bruno | 35.8% | 32.8% |
+| Rita | 35.8% | 32.3% |
+| Inês | 32.5% | 31.8% |
+| Nadia | 35.5% | 28.5% |
+| Emilio | 34.0% | 31.3% |
+
+The base game moved because the railway contact, which Sofia can also win in play, now makes her Salta searches easier.
+

@@ -63,11 +63,14 @@ How to work under it:
   kind of a canard"): Low (0 to 3), Rising (4 to 6), High (7 to 9), with the word and
   its color. Only 7 and 10 change anything: from 7 a search where you are ends in a
   stop, and at 10 they stop you anyway. The police box says where they are searching,
-  "You are not there." when it is elsewhere, and the level. No bar, no countdown. There is no Deck screen:
+  "You are not there." when it is elsewhere, and the level. The level shows as a bar of three steps
+  with its word, never a number (owner, Nov. 2, 2026: "Rest or food can be a level bar, along with
+  other things"); Sleep and Food use the same bars. No countdown. There is no Deck screen:
   cards work in the background and show as short notices (owner, Oct. 31,
   2026). Never ask the player to manage or play a card during a run. Before a
   run, the character picker lets the player choose three extra cards, each with
-  a sentence saying what it does (owner, Nov. 1, 2026: "Choosing cards in my
+  one sentence on how it helps, without saying exactly how (owner, Nov. 2, 2026: "It should be a
+  sentence of how they can help without telling you exactly how. No more than that"; Nov. 1, 2026: "Choosing cards in my
   mind means ADDING cards to the deck ... I don't care if it makes the game
   easier, I chose what I wanted"). New cards use kinds the game already has.
   There is no cap: the player adds any number of cards to the deck.
@@ -79,7 +82,8 @@ How to work under it:
   has a kind of help no other card carries and a police-side source of their
   own; [docs/companions.md](docs/companions.md) lists what each one does on both
   sides and the calibration for each. A companion's card is never lost. A new
-  companion needs both sides, picker wording (`mate.<id>.*` in the catalog), a
+  companion needs both sides, picker wording (one sentence each for the escape side and the police
+  side: `mate.<id>.escape` and `mate.<id>.gov`), a
   sprite and a calibration; contract test C21 checks the roster. Police-side
   sources report a past moment at one place, late, never her live position.
 - **Food and sleep** (owner, Nov. 2, 2026: build the lodging system in the game).
@@ -131,7 +135,21 @@ How to work under it:
   Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
   Internal ids keep the old names.
 - **The opponent is "the police"**, never Sosā. Owner, Nov. 1, 2026: "no one knows who Sosā is ... it's too confusing for people," then "Just say police or cops, the precision isn't required." Use a plural verb ("the police act once during these three hours"). Where one person is needed, say "the police inspector" (the phone shows "Police"). Internal ids keep `sosa` and `enemy`.
-- **Endings** read "You win" or "You lose", then the reason in a full sentence.
+- **Endings** read "You win" or "You lose", then one short sentence ("The police put you under house
+  arrest."), and nothing more (owner, Nov. 2, 2026: "None of this detail is helpful or necessary").
+  Sofia's ending keeps her debrief below the sentence.
+- **The picker is one sentence each.** A character shows its role and one sentence; a companion its name
+  and one sentence for the side being played; a card its name and one sentence. The cards are designed
+  game cards with a pixel icon (`Art.ITEMS`), and the companion and the chosen cards walk with the party in
+  the scene.
+- **The top bar is the game's status bar** (owner, Nov. 2, 2026: "The nav should have game stuff in it").
+  It holds the clock, the deadline, Sleep and Food, and the police box; Play the demo, the start screen,
+  Help, Credits and sound sit behind one Menu on desktop. Nothing covers the scene.
+- **The share card** (owner, Nov. 2, 2026), for every escape run:
+  `Coalition Run #12, Level 4, 18 hr left`, then one numbered row per stop reached (1️⃣ to 6️⃣), ☀️ or 🌙
+  for when you left it, one square per round (🟩 police attention held or fell, 🟧 it rose, 🟥 a police
+  stop), and on the last row 📍 and the ending: 🚔⛓️ house arrest, ✈️ got away, ⌛ out of time, 🤝 the
+  deal. Run # counts this player's runs on this device. No text line, no saved copy of a finished run.
 - **Every clock says whose it is.** Owner, October 31, 2026: "whenever a number
   appears with a unit of time, tell the player whose clock it is and what
   happens when it runs out." The vocabulary is fixed: the escape deadline
@@ -241,7 +259,7 @@ The owner selected these faces after reporting that the game was hard to read:
 
 - Little Grandad Fat: the Coalition title only.
 - GC North Sans SemiBold: section, level and tutorial headings.
-- Overbit Shadow Bold: the big clock on the scene and the interstitial clock, and nothing else. Owner, October 30, 2026, from a phone screenshot: the pixel faces are unreadable at small sizes, so the hours left, the inquiry's next move, odds and hour chips and the exposure number are all set in GC North Sans. Never use any Overbit face below the clock size, and never for headings, instructions or dialogue.
+- Overbit Shadow Bold: the big clock in the status bar (the top bar since Nov. 2, 2026) and the interstitial clock, and nothing else. Owner, October 30, 2026, from a phone screenshot: the pixel faces are unreadable at small sizes, so the hours left, the inquiry's next move, odds and hour chips and the exposure number are all set in GC North Sans. Never use any Overbit face below the clock size, and never for headings, instructions or dialogue.
 - GC North Sans Regular: dialogue, instructions, buttons, cards and status text.
 - GC North Sans SemiBold: emphasis. Use Arial/sans-serif as the fallback for
   macrons missing from GC North Sans; preserve the spelling of names.

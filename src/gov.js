@@ -69,7 +69,7 @@ const Gov = (() => {
     if (A.event && (A.event.kind === 'lodging' || A.event.kind === 'sick')) { const pick = A.event.kind === 'lodging' ? (S.lodgePick(c) || 'keep_going') : (A.event.choices.find(x => x.ok && x.id === 'clinic') || A.event.choices.find(x => x.ok)).id; return S.commit(c, 'evt:' + pick).events; }
     if (A.event) { const score = (x) => (x.rolls ? 1 : 0) + x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: c.belief === c.pos ? 3 : 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
-    const calls = A.calls.filter(x => x.ok), lvl = c.pos;
+    const calls = A.calls.filter(x => x.ok && !x.hurry), lvl = c.pos; // hurrying is a player's gamble; the computer-played candidate makes plain calls
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     if (A.lodge.ok && S.lodgePick(c)) return S.commit(c, 'lodge').events;
     const L = D.LEVELS[c.pos];
@@ -104,9 +104,13 @@ const Gov = (() => {
       if (e.type === 'enemy' && e.id === 'press_ally' && e.talked) { g.belief = c.belief; report(g, events, c.pos, 'enemy', e.text, T('gov.report.where_she_was_last_seen'), T('gov.inquiry.where_she_is_now'), 0, c.hour); }
       if (e.type === 'hold') report(g, events, c.pos, 'desk', stopReport(e.rung, place(c.pos)), T('gov.report.where_she_was_stopped'), T('gov.report.where_she_goes_after_release'), 1, c.hour);
       // a room with her name in the register: the clerk tells the desk half the time, three hours later
-      if (e.type === 'chose') for (const st of (c.stays || []).filter(x => x.kind === 'room' && !x.told)) { st.told = true; if (g._rng() < LEAK) report(g, events, st.pos, 'desk', T('gov.report.room_clerk', { place: place(st.pos), time: S.clockText(st.hour) }), T('gov.report.room_clerk_proves', { place: place(st.pos) }), T('gov.report.where_she_goes_next'), 3, c.hour); }
+      if (e.type === 'chose') for (const st of (c.stays || []).filter(x => x.kind === 'room' && !x.told)) { st.told = true; if (g._rng() < LEAK || g.hand.includes('registers')) report(g, events, st.pos, 'desk', T('gov.report.room_clerk', { place: place(st.pos), time: S.clockText(st.hour) }), T('gov.report.room_clerk_proves', { place: place(st.pos) }), T('gov.report.where_she_goes_next'), 3, c.hour); }
       // Inês's clinics call Sofia themselves when they treat her child: the visit reaches the desk three hours late
       if (e.type === 'chose' && g.hand.includes('clinics') && (c.clinics || []).length > (g.clinicTold || 0)) { const v = c.clinics[c.clinics.length - 1]; if (v.pos === c.pos) c.belief = c.pos; clinics(g, events); } // the doctor also calls the local police, who search there
+      // owner, Nov. 2, 2026 ("I want companions who are useful"): Nadia hears every call from her side, an hour late, with the town;
+      // Rita's charter crews drag their feet, so each step of her jet takes three hours longer
+      if (e.type === 'job' && g.hand.includes('exchange')) report(g, events, c.pos, 'nadia', T('gov.report.exchange_call', { place: place(c.pos), time: S.clockText(c.hour) }), T('gov.report.exchange_proves', { place: place(c.pos) }), T('gov.inquiry.where_she_is_now'), 1, c.hour);
+      if (e.type === 'job' && e.arr === 'aircraft' && g.companion === 'rita') { const j = c.jobs.find(x => x.arr === 'aircraft' && !x.slowed); if (j) { j.slowed = true; j.due += 3; } }
       if (e.type === 'over') g.over = e;
     }
   }
