@@ -4189,27 +4189,79 @@
   {
    "id": "escape.share",
    "pattern": "P14",
-   "text": "Coalition, playing {name}. {result}.\n{grid}\n{why}\n{url}",
+   "text": "Coalition Run #{n}, Level {level}, {hours} hr left\n{line}\n{url}",
    "args": [
-    "name",
-    "result",
-    "grid",
-    "why",
+    "n",
+    "level",
+    "hours",
+    "line",
     "url"
    ]
   },
   {
-   "id": "escape.share_mate",
+   "id": "share.end_arrest",
    "pattern": "P14",
-   "text": "Coalition, playing {name} with {mate}. {result}.\n{grid}\n{why}\n{url}",
+   "text": "House arrest {at}",
    "args": [
-    "name",
-    "mate",
-    "result",
-    "grid",
-    "why",
-    "url"
+    "at"
    ]
+  },
+  {
+   "id": "share.end_clock",
+   "pattern": "P14",
+   "text": "Out of time {at}",
+   "args": [
+    "at"
+   ]
+  },
+  {
+   "id": "share.end_deal",
+   "pattern": "P14",
+   "text": "Took the deal {at}",
+   "args": [
+    "at"
+   ]
+  },
+  {
+   "id": "share.end_out",
+   "pattern": "P14",
+   "text": "Flew out of Portalba"
+  },
+  {
+   "id": "share.at_residence",
+   "pattern": "P14",
+   "text": "in Portô Venla",
+   "fragment": true
+  },
+  {
+   "id": "share.at_road",
+   "pattern": "P14",
+   "text": "in Pedra Branca",
+   "fragment": true
+  },
+  {
+   "id": "share.at_colonia",
+   "pattern": "P14",
+   "text": "in Nova Trentô",
+   "fragment": true
+  },
+  {
+   "id": "share.at_salta",
+   "pattern": "P14",
+   "text": "in Salta",
+   "fragment": true
+  },
+  {
+   "id": "share.at_border",
+   "pattern": "P14",
+   "text": "at the border",
+   "fragment": true
+  },
+  {
+   "id": "share.at_airfield",
+   "pattern": "P14",
+   "text": "in Portalba",
+   "fragment": true
   },
   {
    "id": "daily.at",

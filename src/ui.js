@@ -68,6 +68,7 @@ const UI = (() => {
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
     else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null }); Tutorial.stop(); }
+    if (!demo && !replaying) s.runNo = nextRunNo(); // "Coalition Run #12" in the share card: this player's runs, counted on this device
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
@@ -745,11 +746,13 @@ const UI = (() => {
   // the ending's one sentence, shared by the ending screen and the share card
   function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
-  // the route as squares: green for each stop you got through, red where the run ended, white for stops never reached, a plane when you got out
-  function routeGrid() { const last = Math.max(...s.visited); return Data.LEVELS.map((L, i) => i < last || (s.over.win && i === last) ? '\u{1F7E9}' : i === last ? '\u{1F7E5}' : '\u2B1C').join('') + (s.over.win ? ' \u2708\uFE0F' : ''); }
+  function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
+  // where the run ended, as the share card says it: "in Salta", "at the border"
+  const endPlace = () => T(({ residence: 'share.at_residence', road: 'share.at_road', colonia: 'share.at_colonia', salta: 'share.at_salta', border: 'share.at_border', airfield: 'share.at_airfield' })[Data.LEVELS[s.pos].id]);
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    const mate = s.companion ? Data.CARDS[Data.COMPANIONS[s.companion].card].name : '';
-    return T(mate ? 'escape.share_mate' : 'escape.share', { name: Data.CHARACTERS[s.who].name, mate, result: T(s.over.win ? 'over.win' : 'over.lose'), grid: routeGrid(), why: endWhy(), url: location.href.split('#')[0] }); }
+    // owner, Nov. 2, 2026: "Coalition Run #, Level x, 18 hrs left / House Arrest in Punto Arenas"
+    const k = s.over.kind, at = endPlace(), line = s.over.win ? T('share.end_out') : k === 'clock' ? T('share.end_clock', { at }) : k === 'deal' ? T('share.end_deal', { at }) : T('share.end_arrest', { at });
+    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), line, url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
