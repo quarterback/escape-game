@@ -126,8 +126,8 @@ const UI = (() => {
     $('sosa-next').parentElement.hidden = true;
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
-    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); h.textContent = attnWord(s.exposure); h.className = 'mono lvl-' + attnLevel(s.exposure); } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
-    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.textContent = T('body.status', { tire: w.tire.toLowerCase(), hunger: w.hunger.toLowerCase() }); bl.className = 'bodyline lvl-' + ['low', 'rising', 'high'][Math.max(b.tire, b.hunger)]; }
+    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
@@ -507,6 +507,9 @@ const UI = (() => {
     { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
   ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
+  // a level as a bar of three steps with its word beside it, never a number (owner, Nov. 2, 2026: "Rest or food can be a level bar")
+  // filled: how many steps are lit; sev: 0 good, 1 warning, 2 bad, which sets the color
+  const levelBar = (label, word, filled, sev) => `<span class="lv" role="img" aria-label="${esc((label ? label + ': ' : '') + word)}">${label ? `<span class="lbl">${esc(label)}</span>` : ''}<span class="segs lvl-${['low', 'rising', 'high'][sev]}">${[0, 1, 2].map(i => `<i class="${i < filled ? 'on' : ''}"></i>`).join('')}</span><b class="lvl-${['low', 'rising', 'high'][sev]}">${esc(word)}</b></span>`;
   // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
   const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
