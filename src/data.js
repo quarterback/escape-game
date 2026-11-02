@@ -14,7 +14,7 @@ const Data = (() => {
              sibling: { id: 'sibling', name: 'Duartē', short: 'Duartē', rel: 'your brother' },
              // Distinct runs: Teresa starts with a friend in the inquiry, but every officer knows her face.
              hand: ['passport', 'decoy_cars', 'aide_word', 'informant'], handAlt: ['delay_report'], exposure: 1, faceKnown: true,
-             edge: 'A friend inside the inquiry', flaw: 'Every officer knows your face' },
+             edge: 'A friend inside the police', flaw: 'Every officer knows your face' },
     man:   { id: 'man', name: 'Mateu', short: 'Mateu', title: 'the defeated candidate', pronoun: 'he',
              sibling: { id: 'sibling', name: 'Līviā', short: 'Līviā', rel: 'your sister' },
              // Mateu has the family barges, but he has been watched since the count.
@@ -40,7 +40,7 @@ const Data = (() => {
   };
 
   // The enemy. Inspector Valentīn Sosā, Interior Ministry. Each action is concrete and visible.
-  const ENEMY = { name: 'Police', role: "head of the Interior Ministry's departure inquiry" };
+  const ENEMY = { name: 'Police', role: 'the police inspector leading the search' };
 
   // Continuing arrangements: ordered stages. A stage is a promise until the ally delivers.
   const ARRANGEMENTS = {
@@ -80,7 +80,7 @@ const Data = (() => {
                     text: "Your father's barges still run the river, and their captains owe him." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
-    informant:    { does: "Helps you slip past the police.", name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
+    informant:    { does: "Helps you slip past the police.", name: 'A friend in the police', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
     // Cards you choose before the run (owner, Nov. 1, 2026: "Add cards to help a user navigate, find support ... we don't
     // even have a way for them to eat for 72 hours"). Each uses a kind the game already has; `does` is the picker's sentence.
@@ -554,9 +554,9 @@ const Data = (() => {
       { id: 'noted', label: 'Keep going', fx: { ban: true, say: 'The court sends the travel ban to every post.' } },
       { id: 'paulo_hearing', label: 'Have Paulo slow the order', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo calls an old colleague in the clerk's office. The order goes into the outbox, and the travel ban does not go out." } },
       { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the court\'s order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
-    { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios, and the inquiry go quiet.', choices: [
-      { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
-      { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
+    { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm knocks out the power across the province, and the police lose touch with each other.', choices: [
+      { id: 'dark', label: 'Move before the power returns', fx: { exposure: -1, skipEnemy: true } },
+      { id: 'sit', label: 'Wait until the power returns', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
   ];
   // ---- Food and sleep (owner, Nov. 2, 2026: build the lodging system). "Stop to eat and sleep" opens the screen for the
   // stop you are at. fx: hours, meal (everyone eats), sleep ('full' | 'car': a few hours in the car), stay ('room': a

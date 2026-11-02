@@ -2566,7 +2566,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays with you, you get \"A friend in the inquiry\" if you lack it, and the police move their search to Pedra Branca."
+   "text": "Gianlūka stays with you, you get \"A friend in the police\" if you lack it, and the police move their search to Pedra Branca."
   },
   {
    "id": "sim.opt.send_the_statement",
