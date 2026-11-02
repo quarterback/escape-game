@@ -1135,38 +1135,38 @@
   {
    "id": "pick.goal_candidate",
    "pattern": "P08",
-   "text": "You lost the election, and the court won't let you leave the country. Reach your jet across the border and fly out before Tuesday at 2 p.m."
+   "text": "Escape the country by jet before Tuesday at 2 p.m."
   },
   {
    "id": "pick.goal_investigator",
    "pattern": "P08",
-   "text": "You work for the new government. Stop the candidate before she flies out on Tuesday at 2 p.m."
+   "text": "Catch the candidate before her jet leaves on Tuesday at 2 p.m."
   },
   {
    "id": "pick.gov_team",
    "pattern": "P09",
-   "text": "You never see where she is. Reports come in late, and some are false. You decide where the police search. You start with a team watching her house and police patrols across the country.",
+   "text": "You never see where she is. You read reports and send the police.",
    "role": "gov"
   },
   {
    "id": "pick.edge_woman",
    "pattern": "P09",
-   "text": "Teresa has a friend inside the police who tells her where they are looking, so she slips past them more easily."
+   "text": "A friend in the police helps her slip past them."
   },
   {
    "id": "pick.edge_man",
    "pattern": "P09",
-   "text": "Mateu's family owns river barges, so he has an extra way to travel south."
+   "text": "His family's river barges give him another way south."
   },
   {
    "id": "pick.face",
    "pattern": "P03",
-   "text": "But every border guard knows her face, so crossing the border is harder."
+   "text": "But every border guard knows her face."
   },
   {
    "id": "pick.watched",
    "pattern": "P03",
-   "text": "But the police have watched him since the election, so they start out paying him more attention."
+   "text": "But the police already watch him closely."
   },
   {
    "id": "pick.next",
@@ -1330,19 +1330,14 @@
    "text": "Truck driver"
   },
   {
-   "id": "mate.bruno.who",
-   "pattern": "P09",
-   "text": "Bruno drives trucks for a living and knows every back road."
-  },
-  {
    "id": "mate.bruno.escape",
    "pattern": "P03",
-   "text": "He makes it easier to get aboard the freight train in the railway town."
+   "text": "Gets you aboard the freight train more easily."
   },
   {
    "id": "mate.bruno.gov",
    "pattern": "P03",
-   "text": "He knows the freight crews, so you start with a contact in the railway yard.",
+   "text": "Gives you a contact in the railway yard.",
    "role": "gov"
   },
   {
@@ -1351,19 +1346,14 @@
    "text": "Interpreter from Costamar"
   },
   {
-   "id": "mate.clara.who",
-   "pattern": "P09",
-   "text": "Clara grew up in Costamar and still has family there."
-  },
-  {
    "id": "mate.clara.escape",
    "pattern": "P03",
-   "text": "She makes it easier to cross the border and to take off from the airfield on the other side."
+   "text": "Makes the border and the airfield easier."
   },
   {
    "id": "mate.clara.gov",
    "pattern": "P03",
-   "text": "Your police can't act across the border. With her help, they can search the airfield where the candidate's jet waits.",
+   "text": "Lets your police search the airfield across the border.",
    "role": "gov"
   },
   {
@@ -1372,19 +1362,14 @@
    "text": "Cargo pilot"
   },
   {
-   "id": "mate.rita.who",
-   "pattern": "P09",
-   "text": "Rita flies cargo planes out of the coast and knows the charter crews."
-  },
-  {
    "id": "mate.rita.escape",
    "pattern": "P03",
-   "text": "She makes it easier to take off even if your visa hasn't come through."
+   "text": "Makes taking off without a visa easier."
   },
   {
    "id": "mate.rita.gov",
    "pattern": "P03",
-   "text": "She knows the company chartering the candidate's jet. From early Sunday, you can pressure it to pull the jet's crew.",
+   "text": "Lets you pressure the company flying her out.",
    "role": "gov"
   },
   {
@@ -1393,19 +1378,14 @@
    "text": "Auto mechanic"
   },
   {
-   "id": "mate.marta.who",
-   "pattern": "P09",
-   "text": "Marta has kept campaign cars running for years and knows how to make a recognizable car look ordinary."
-  },
-  {
    "id": "mate.marta.escape",
    "pattern": "P03",
-   "text": "Police checkpoints don't slow you down, and the police pay you less attention when you drive away from a town they are searching."
+   "text": "Gets your car past police checkpoints."
   },
   {
    "id": "mate.marta.gov",
    "pattern": "P03",
-   "text": "She tracks cars through license plates and toll records. You get better reports from the road south, and you can tell the candidate's decoy cars from the real one.",
+   "text": "Tracks her cars by their license plates.",
    "role": "gov"
   },
   {
@@ -1419,19 +1399,14 @@
    "text": "Nurse"
   },
   {
-   "id": "mate.ines.who",
-   "pattern": "P09",
-   "text": "Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions."
-  },
-  {
    "id": "mate.ines.escape",
    "pattern": "P03",
-   "text": "Waiting and sleeping don't draw police attention with her, and she cares for your youngest if she gets sick."
+   "text": "Keeps your family fed and rested out of sight."
   },
   {
    "id": "mate.ines.gov",
    "pattern": "P03",
-   "text": "Clinics call her when the candidate's sick child is treated, and the police go there. Your patrols also catch a tired or hungry candidate more easily.",
+   "text": "Helps your patrols spot a worn-out family.",
    "role": "gov"
   },
   {
@@ -1440,19 +1415,14 @@
    "text": "Former court clerk"
   },
   {
-   "id": "mate.paulo.who",
-   "pattern": "P09",
-   "text": "Paulo worked in the court clerk's office for 18 years. He knows which orders move immediately and which ones sit in an outbox."
-  },
-  {
    "id": "mate.paulo.escape",
    "pattern": "P03",
-   "text": "He slows down the travel ban. When the court sends it, it takes 12 hours to reach the border, and if the court tries to serve you papers, he can stop the ban from going out at all."
+   "text": "Slows down the travel ban."
   },
   {
    "id": "mate.paulo.gov",
    "pattern": "P03",
-   "text": "He gets the travel ban out faster and stops the candidate's lawyers from suspending it.",
+   "text": "Gets the travel ban out faster.",
    "role": "gov"
   },
   {
@@ -1461,19 +1431,14 @@
    "text": "Radio producer"
   },
   {
-   "id": "mate.celina.who",
-   "pattern": "P09",
-   "text": "Celina produces the morning news at a regional radio station. She knows what gets repeated before anyone checks it."
-  },
-  {
    "id": "mate.celina.escape",
    "pattern": "P03",
-   "text": "She puts false stories on the radio, so the police search in the wrong place."
+   "text": "Sends the police after false stories."
   },
   {
    "id": "mate.celina.gov",
    "pattern": "P03",
-   "text": "She puts the candidate's photo on the news, which brings in tips and makes her easier for the police to spot.",
+   "text": "Puts her face on the news.",
    "role": "gov"
   },
   {
@@ -1482,19 +1447,14 @@
    "text": "Retired border officer"
   },
   {
-   "id": "mate.tomas.who",
-   "pattern": "P09",
-   "text": "Tomás spent 22 years working border posts. He knows when the paperwork reaches the booth and when the booth is pretending it has not."
-  },
-  {
    "id": "mate.tomas.escape",
    "pattern": "P03",
-   "text": "He makes the border crossing easier and tells you which border post hasn't been paid to stop you."
+   "text": "Makes crossing the border easier."
   },
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "His old sergeants guard the border for you. Searches at the border are easier, and the travel ban is harder for her to get past.",
+   "text": "Tightens the border against her.",
    "role": "gov"
   },
   {
@@ -1503,22 +1463,14 @@
    "text": "Telephone engineer"
   },
   {
-   "id": "mate.nadia.who",
-   "pattern": "P09",
-   "text": "Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment."
-  },
-  {
    "id": "mate.nadia.escape",
    "pattern": "P03",
-   "text": "The police can't trace your phone calls. Once, she also keeps a police wiretap from slowing down what {sib} is arranging for you.",
-   "args": [
-    "sib"
-   ]
+   "text": "Keeps the police from tracing your calls."
   },
   {
    "id": "mate.nadia.gov",
    "pattern": "P03",
-   "text": "She reads the phone company's records, so you learn which town the candidate's side called from, an hour late.",
+   "text": "Traces her side's phone calls.",
    "role": "gov"
   },
   {
@@ -1527,19 +1479,14 @@
    "text": "Hotel manager"
   },
   {
-   "id": "mate.emilio.who",
-   "pattern": "P09",
-   "text": "Emilio manages small hotels along the south road. He can find a room under someone else's reservation."
-  },
-  {
    "id": "mate.emilio.escape",
    "pattern": "P03",
-   "text": "You can eat and sleep in his rooms along the road south, and the police won't find you while you stay."
+   "text": "Gives you hidden rooms to eat and sleep in."
   },
   {
    "id": "mate.emilio.gov",
    "pattern": "P03",
-   "text": "He checks hotel guest books along the road south, so you learn where the candidate's family stayed.",
+   "text": "Checks hotels for where she stayed.",
    "role": "gov"
   },
   {
@@ -1548,19 +1495,14 @@
    "text": "Union organizer"
   },
   {
-   "id": "mate.joana.who",
-   "pattern": "P09",
-   "text": "Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait."
-  },
-  {
    "id": "mate.joana.escape",
    "pattern": "P03",
-   "text": "In the railway town, her workers can hold a train for you at any hour, so you don't have to wait for the midnight freight."
+   "text": "Gets a train to wait for you."
   },
   {
    "id": "mate.joana.gov",
    "pattern": "P03",
-   "text": "Railway workers report to her, so you hear when the candidate leaves on the freight train.",
+   "text": "Railway workers tell you when she leaves.",
    "role": "gov"
   },
   {

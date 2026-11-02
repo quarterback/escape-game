@@ -827,7 +827,7 @@ const UI = (() => {
   ];
   const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
   const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
-  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc([c.text, c.does].filter(Boolean).join(' '))}</span>`;
+  const cardLine = (c) => `<b>${esc(c.name)}</b><span>${esc(c.does || c.text)}</span>`; // the name and what it does (owner, Nov. 2, 2026: too much detail for a new player)
   function tiles(list, chosen, onPick) {
     const grid = $('pick-grid'); grid.innerHTML = '';
     for (const r of list) {
@@ -863,7 +863,7 @@ const UI = (() => {
       if (!pickMate) return;
       const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`, { sib: pickWho === 'gov' ? '' : `${Data.CHARACTERS[pickWho].sibling.rel} ${Data.CHARACTERS[pickWho].sibling.name}` }))}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`, { sib: pickWho === 'gov' ? '' : `${Data.CHARACTERS[pickWho].sibling.rel} ${Data.CHARACTERS[pickWho].sibling.name}` }))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
       if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
