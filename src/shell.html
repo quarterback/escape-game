@@ -51,7 +51,7 @@
   <div id="scene" aria-label="{{c:scene.label}}"></div>
   <div class="shade top" aria-hidden="true"></div>
   <div class="shade bottom" aria-hidden="true"></div>
-  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span id="left"></span> <span class="mono gold" id="deadline"></span></span></div>
+  <div id="clockbox"><span class="clock" id="clock"></span><span class="left"><span id="left"></span> <span class="mono gold" id="deadline"></span></span><span class="bodyline" id="bodyline" hidden></span></div>
   <div id="goalbox"><span class="lbl">{{c:scene.goal_label}}</span><span class="txt"><span id="goaltxt">{{c:scene.goal}}</span> <span class="mono gold" id="deadline2"></span></span></div>
   <div id="sosa">
     <span class="name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><span id="sosa-name">{{c:scene.sosa_here}}</span></span>
@@ -94,6 +94,7 @@
       <p>{{b:help.approach}}</p>
       <p>{{b:help.cards}}</p>
       <p>{{b:help.rounds}}</p>
+      <p>{{b:help.body}}</p>
       <p id="ioshint" hidden>{{c:help.ios}}</p>
     </div>
   </aside>

@@ -127,6 +127,7 @@ const UI = (() => {
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
     for (const id of ['heatnum', 'heatnum2']) { const h = $(id); h.textContent = attnWord(s.exposure); h.className = 'mono lvl-' + attnLevel(s.exposure); } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.textContent = T('body.status', { tire: w.tire.toLowerCase(), hunger: w.hunger.toLowerCase() }); bl.className = 'bodyline lvl-' + ['low', 'rising', 'high'][Math.max(b.tire, b.hunger)]; }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
@@ -149,7 +150,7 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
+  const tagName = (tag) => { const id = ['tag', tag].join('.'); return Content.has(id) ? T(id) : tag; }; // a card kind in player words
   // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
   // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
   const warnMark = (a) => { if (!a.with || a.with === 'self' || !s.people[a.with]) return ''; const [c, t] = whoMark(a.with); return c === 'doubt' || c === 'talked' ? mks([{ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }]) : ''; };
@@ -178,14 +179,15 @@ const UI = (() => {
     const waits = [];
     if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
+    if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
-  const waitMeta = (w) => w.id === 'wait' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
+  const waitMeta = (w) => w.id === 'wait' || w.id === 'lodge' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
-    b.onclick = () => { Sfx.unlock(); sel = w.id; Sfx.select(); renderAll(); };
+    b.onclick = () => { Sfx.unlock(); if (w.id === 'lodge') { doCommit('lodge'); return; } sel = w.id; Sfx.select(); renderAll(); };
     return b;
   }
   function waitBox(w) {
@@ -272,7 +274,7 @@ const UI = (() => {
   function needCells(L) {
     // what gates the good exits of this stop, in one of three states
     const out = [], seen = {};
-    for (const a of L.approaches) for (const n of a.needs) {
+    for (const a of L.approaches) for (const n of (a.mate ? [] : a.needs)) { // a companion's own move is not a need of the stop
       let key, title, sub, state;
       if (n.arr) { const def = Data.ARRANGEMENTS[n.arr], cur = s.arr[n.arr], job = s.jobs.find(j => j.arr === n.arr); key = n.arr;
         if (seen[key] && seen[key] >= n.stage) continue; if (seen[key]) out.splice(out.findIndex(x => x.key === key), 1);
@@ -298,7 +300,7 @@ const UI = (() => {
   const inSentence = (n) => /^(Your|Two|A|An|The)\b/.test(n) ? n[0].toLowerCase() + n.slice(1) : n; // card names mid-sentence
   function cardNotes(i) {
     const notes = [];
-    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
     if (i === 4 && !s.hand.includes('intro_vel')) notes.push(`<span class="s">${esc(T('route.velez_starts'))}</span>`);
     return notes.join(' ');
   }
@@ -418,6 +420,7 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // the food and sleep screen is a choice card, not a move
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
     else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
       // owner, Nov. 1, 2026: "the screen in the animation should just show time passing ... the cards and tags are doing all the work"
@@ -503,7 +506,9 @@ const UI = (() => {
   const shortStats = () => [
     { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
-  ];
+  ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
+  // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
+  const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
     const m = { 5: [['jet', T('brief.jet')]] };
     m[s.belief] = [['sosa', T('brief.sosa')]];
@@ -517,7 +522,7 @@ const UI = (() => {
     out.story.push(r ? (c.hour - r.hour <= 0 ? T('brief.gov_report_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_report_hour', { place: placeName(r.at) }) : T('brief.gov_report_hours', { place: placeName(r.at), n: c.hour - r.hour })) : T('brief.gov_no_report'));
     if (r) out.story.push(T('brief.gov_reports_caveat'));
     const ban = v.requests[0].state, hold = v.requests[1].state;
-    out.need = [{ name: T('brief.gov_need_ban'), have: ban !== 'notyet' ? 1 : 0, of: 1, done: ban !== 'notyet', now: ban === 'promised' ? T('brief.gov_not_confirmed') : '' },
+    out.need = [{ name: T('brief.gov_need_ban'), have: ban !== 'notyet' ? 1 : 0, of: 1, done: ban !== 'notyet', now: '' },
       { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
     out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
     out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
@@ -634,7 +639,7 @@ const UI = (() => {
     el.hidden = !parts.length || !s || !!s.over;
     el.innerHTML = parts.length ? `<details open><summary>${T('recap.title')}</summary><div class="recapbody">${parts.join('')}</div></details>` : '';
   }
-  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold' };
+  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick' };
   function newsCard(card) {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
@@ -814,7 +819,7 @@ const UI = (() => {
   // Three steps like a fighting game's select screen: the character, then the companion who travels with you, then the
   // cards you add to your deck ("choosing cards means adding cards to the deck, not selecting a limited number").
   // Cards the starting hand or the companion already covers at the same stops are not offered.
-  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who';
+  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who', mateTapped = false;
   const ROSTER = () => [
     { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name },
     { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name },
@@ -839,7 +844,7 @@ const UI = (() => {
   }
   function renderPicker() {
     const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go'), grid = $('pick-grid');
-    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = '';
+    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = ''; grid.classList.toggle('mates', pickStage === 'mate');
     if (pickStage === 'who') {
       $('pick-title').textContent = T('pick.title');
       tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
@@ -856,13 +861,15 @@ const UI = (() => {
       return;
     }
     if (pickStage === 'mate') {
+      // all 11 on one screen: a compact grid of faces, and the detail for the one you tap (who, what they know, what they do for your side)
       $('pick-title').textContent = T('pick.mate_title');
-      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; });
+      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; mateTapped = true; });
       if (!pickMate) return;
-      const m = Data.COMPANIONS[pickMate], c = Data.CARDS[m.card];
+      const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p>${esc(pickWho === 'gov' ? m.govDoes : c.does)}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p><b>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.govpick` : `mate.${pickMate}.pick`))}</b></p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
+      if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
     }
     // cards: add any number to your deck

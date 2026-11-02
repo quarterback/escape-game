@@ -65,7 +65,7 @@ function check(pkg) {
   const dup = (list, key, file, label) => { const seen = new Set(); list.forEach((e, i) => { if (seen.has(e[key])) add('C01', 'error', file, e[key], `${label}[${i}].${key}`, 'a unique ID', e[key], 'Rename one of the entries; IDs never repeat.'); seen.add(e[key]); }); };
   dup(pkg.ui.entries, 'id', P + 'ui.json', 'entries'); dup(pkg.markers.markers, 'code', P + 'markers.json', 'markers');
   for (const t of pkg.tutorials.tutorials) dup(t.steps, 'id', P + 'tutorials.json', `tutorials.${t.id}.steps`);
-  for (const [coll, list] of [['EVENTS', D.EVENTS], ['GOV_EVENTS', D.GOV_EVENTS]]) { dup(list, 'id', 'src/data.js', coll); for (const e of list) dup(e.choices, 'id', 'src/data.js', `${coll}.${e.id}.choices`); }
+  for (const [coll, list] of [['EVENTS', D.EVENTS], ['GOV_EVENTS', D.GOV_EVENTS], ['LODGING', D.LODGING || []]]) { dup(list, 'id', 'src/data.js', coll); for (const e of list) dup(e.choices, 'id', 'src/data.js', `${coll}.${e.id}.choices`); }
 
   // C02: placeholders and declared arguments agree
   const UI = {}; for (const e of pkg.ui.entries) UI[e.id] = e;
@@ -92,7 +92,7 @@ function check(pkg) {
 
   // C02: tutorial references point at real actions, calls, options and controls
   const approaches = new Set([...D.LEVELS.flatMap(L => L.approaches.map(a => a.id)), ...D.GOV_ORDERS.map(o => o.id)]);
-  const calls = new Set([...Object.keys(D.ARRANGEMENTS), 'req:hold', 'req:ban', 'req:operator']);
+  const calls = new Set([...Object.keys(D.ARRANGEMENTS), 'req:hold', 'req:operator']);
   const ids = new Set(); for (const s of [pkg.sources['src/data.js'], pkg.sources['src/sim.js'], pkg.sources['src/gov.js']]) for (const r of s.matchAll(/\bid: '([a-z_0-9]+)'/g)) ids.add(r[1]);
   const shell = pkg.sources['src/shell.html'] || '';
   for (const t of pkg.tutorials.tutorials) for (const st of t.steps) {
@@ -113,10 +113,11 @@ function check(pkg) {
     if (k === 'trust') for (const p in fx.trust) if (!D.PEOPLE[p]) add('C02', 'error', 'src/data.js', cid, at + '.trust.' + p, 'a person ID', p, 'Use a person from PEOPLE.');
   } };
   for (const e of D.EVENTS) { for (const e2 of schemaErrors(pkg.schemas.records.$defs.event, e, 'EVENTS.' + e.id, pkg.schemas.records)) add('C01', 'error', 'src/data.js', 'event.' + e.id, e2.at, e2.expected, e2.observed, 'Fix the record shape.'); for (const c of e.choices) walkFx(c.fx, 'escape', `event.${e.id}.${c.id}`, 'fx'); }
+  for (const e of (D.LODGING || []).concat(D.SICK ? [D.SICK] : [])) { for (const e2 of schemaErrors(pkg.schemas.records.$defs.event, e, 'LODGING.' + e.id, pkg.schemas.records)) add('C01', 'error', 'src/data.js', 'lodging.' + e.id, e2.at, e2.expected, e2.observed, 'Fix the record shape.'); for (const c of e.choices) walkFx(c.fx, 'escape', `lodging.${e.id}.${c.id}`, 'fx'); }
   for (const e of D.GOV_EVENTS) { for (const e2 of schemaErrors(pkg.schemas.records.$defs.event, e, 'GOV_EVENTS.' + e.id, pkg.schemas.records)) add('C01', 'error', 'src/data.js', 'gov_event.' + e.id, e2.at, e2.expected, e2.observed, 'Fix the record shape.'); for (const c of e.choices) walkFx(c.fx, 'gov', `gov_event.${e.id}.${c.id}`, 'fx'); }
   // C02: declarative conditions name a declared fact, and the operator and value suit its type (pbbg-content-schema CONDITION)
   const FACTS = {}; for (const f of pkg.facts.facts) FACTS[f.id] = f;
-  for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event']]) for (const e of list) {
+  for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event'], ['LODGING', (D.LODGING || []).concat(D.SICK ? [D.SICK] : []), 'lodging']]) for (const e of list) {
     if (typeof e.cond === 'function') add('C02', 'error', 'src/data.js', `${pre}.${e.id}`, 'cond', 'a declarative when condition', 'a function', 'Express the test as { ref, op, value } against a fact in content/coalition/facts.json.');
     (e.when || []).forEach((c, i) => { const f = FACTS[c.ref], at = `when[${i}]`;
       if (!f) { add('C02', 'error', 'src/data.js', `${pre}.${e.id}`, at + '.ref', 'a fact declared in facts.json', c.ref, 'Declare the fact or correct the reference.'); return; }
@@ -131,7 +132,7 @@ function check(pkg) {
   { const cr = pkg.credits; for (const f of ['title', 'lede', 'licenses', 'back', 'closing']) texts.push({ file: P + 'credits.json', id: 'credits', field: f, text: cr[f], scope: 'system', pattern: 'P02' });
     cr.sections.forEach((s, i) => { texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'heading', text: s.heading, scope: 'system', pattern: 'P02' }); if (s.note) texts.push({ file: P + 'credits.json', id: `credits.${i}`, field: 'note', text: s.note, scope: 'system', pattern: 'P09' });
       s.items.forEach((it, n) => { for (const f of ['role', 'name', 'note']) if (it[f]) texts.push({ file: P + 'credits.json', id: `credits.${i}.${n}`, field: f, text: it[f], scope: 'system', pattern: 'P09' }); }); }); }
-  for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event']]) for (const e of list) {
+  for (const [coll, list, pre] of [['EVENTS', D.EVENTS, 'event'], ['GOV_EVENTS', D.GOV_EVENTS, 'gov_event'], ['LODGING', (D.LODGING || []).concat(D.SICK ? [D.SICK] : []), 'lodging']]) for (const e of list) {
     for (const f of ['title', 'text']) texts.push({ file: 'src/data.js', id: `${pre}.${e.id}`, field: f, text: e[f], scope: 'narrative', pattern: f === 'title' ? 'P10' : 'P07' });
     for (const c of e.choices) { texts.push({ file: 'src/data.js', id: `${pre}.${e.id}.${c.id}`, field: 'label', text: c.label, scope: 'narrative', pattern: 'P01' }); const says = []; const walk = (fx) => { if (!fx) return; if (fx.say) says.push(fx.say); if (fx.roll) { walk(fx.roll.win); walk(fx.roll.lose); } }; walk(c.fx); says.forEach((s, i) => texts.push({ file: 'src/data.js', id: `${pre}.${e.id}.${c.id}`, field: `say[${i}]`, text: s, scope: 'narrative', pattern: 'P10' })); }
   }

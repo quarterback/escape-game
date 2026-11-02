@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* COALITION harness: plays many seeded runs with a simple policy and reports
    win rate, loss causes, hours used, and which approaches carried the wins.
-   It describes the tables; it fits nothing.   node tools/calibrate.js [runs] [--dest=atlanta|tarun|zaryanova] */
+   It describes the tables; it fits nothing.   node tools/calibrate.js [runs] [--dest=atlanta|tarun|zaryanova] [--extra=id,id] [--companion=bruno|...|all]
+   --companion=all prints one line per companion (and none) for both candidates. */
 'use strict';
 const path = require('path');
 global.Data = require(path.join(__dirname, '..', 'src', 'data.js'));
@@ -9,9 +10,10 @@ const Sim = require(path.join(__dirname, '..', 'src', 'sim.js'));
 const N = parseInt(process.argv[2], 10) || 300;
 const DEST = (process.argv.find(a => a.startsWith('--dest=')) || '--dest=atlanta').slice(7); // which country the policy flies to
 const EXTRA = ((process.argv.find(a => a.startsWith('--extra=')) || '--extra=').slice(8)).split(',').filter(Boolean); // cards chosen before the run
-const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0 };
-function play(seed, who) {
-  const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily'), extra: EXTRA }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
+const MATE = (process.argv.find(a => a.startsWith('--companion=')) || '--companion=').slice(12) || null; // who travels with you
+const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, celina_yacht: 2 };
+function play(seed, who, mate) {
+  const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily'), extra: EXTRA, companion: mate === undefined ? MATE : mate }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 800) {
     const A = Sim.actions(s);
     // dispatches and holds come first; take the choice whose markers look cheapest
@@ -19,6 +21,8 @@ function play(seed, who) {
     if (A.event) { const score = (c) => (c.rolls ? 1 : 0) + c.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const c = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; Sim.commit(s, 'evt:' + c.id); continue; }
     // answer messages first, preferring the committed options above
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; Sim.commit(s, m.id, opt.id); continue; }
+    // food and sleep: stop when exhausted, starving, tired at night or hungry, at the best bed or meal this stop offers
+    { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
     // push arrangements that are not pending and not complete, before trying the border or the airfield
     const calls = A.calls.filter(c => c.ok);
     const lvl = s.pos;
@@ -36,6 +40,13 @@ function play(seed, who) {
   if (!s.over) throw new Error('stuck seed ' + seed + ' ' + JSON.stringify({ hour: s.hour, pos: s.pos, ev: s.event }));
   lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour);
   return { cards, lvlHours, win: s.over.win, reason: s.over.win ? 'win' : s.over.kind === 'clock' ? 'clock' : s.over.kind === 'deal' ? 'deal' : 'house arrest', holds: s.holds, hour: s.hour, exposure: s.exposure, used, arr: Object.fromEntries(Object.entries(s.arr).map(([k, v]) => [k, v.stage])) };
+}
+if (MATE === 'all') {
+  for (const mate of [null].concat(Object.keys(Data.COMPANIONS))) {
+    const rate = (who) => { let w = 0; for (let i = 1; i <= N; i++) if (play(i, who, mate).win) w += 1; return (100 * w / N).toFixed(1); };
+    console.log(`${(mate || 'none').padEnd(7)} Teresa ${rate('woman').padStart(5)}%  Mateu ${rate('man').padStart(5)}%`);
+  }
+  process.exit(0);
 }
 for (const who of ['woman', 'man']) {
   const rows = []; for (let i = 1; i <= N; i++) rows.push(play(i, who));

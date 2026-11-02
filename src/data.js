@@ -104,6 +104,33 @@ const Data = (() => {
                     text: 'Clara grew up in Costamar and still has family there.' },
     comp_rita:    { does: "Leaving Portalba without the visa gets easier.", name: 'Rita', tag: 'permission', from: 'self', reach: ['airfield'], works: 'Leaving Portalba without the visa.', companion: true,
                     text: 'Rita flies cargo planes out of the coast and knows the charter crews.' },
+    // Eight more companions (owner, Nov. 2, 2026). Each card's tag is a kind no other card carries, so the help it
+    // gives is the companion's own: the moves and news choices that look for that kind are listed under each.
+    // mechanic: driving your own car out of Pedra Branca, the plain car, the decoy convoy, the flooded bridge.
+    comp_marta:   { name: 'Marta', tag: 'mechanic', from: 'self', reach: ['residence', 'road', 'colonia', 'salta'], works: 'Cars and roads in Valdória.', companion: true,
+                    text: 'Marta has kept campaign cars running for years and knows how to make a recognizable car look ordinary.' },
+    // care: quiet hours (lying low, waiting for dark, sleeping, long waits in the news) never raise police attention; she buys
+    // food without anyone seeing you, a night in the car is a full night's sleep, and she treats a sick child herself.
+    comp_ines:    { name: 'Inês', tag: 'care', from: 'self', reach: ALL, works: 'Every wait and every night of rest.', companion: true,
+                    text: 'Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions.' },
+    // court: the travel ban reaches the posts 12 hours after it is sent; the summons and the hearing have a way around the ban.
+    comp_paulo:   { name: 'Paulo', tag: 'court', from: 'self', reach: VALDORIA, works: 'Court orders and the travel ban in Valdória.', companion: true,
+                    text: "Paulo worked in the court clerk's office for 18 years. He knows which orders move immediately and which ones sit in an outbox." },
+    // media: the radio's yacht story, the kitchen photo, the hitchhiking reporter and your family's early story.
+    comp_celina:  { name: 'Celina', tag: 'media', from: 'self', reach: VALDORIA, works: 'The radio and the papers in Valdória.', companion: true,
+                    text: 'Celina produces the morning news at a regional radio station. She knows what gets repeated before anyone checks it.' },
+    // border: every crossing at the line, which post is clean, the ban's lag at the booth and the ridge path.
+    comp_tomas:   { name: 'Tomás', tag: 'border', from: 'self', reach: ['border'], works: 'The three crossings at the line.', companion: true,
+                    text: 'Tomás spent 22 years working border posts. He knows when the paperwork reaches the booth and when the booth is pretending it has not.' },
+    // phone: the police's call traces find nothing, and once a run the tap on your family's phone slows nothing.
+    comp_nadia:   { name: 'Nadia', tag: 'phone', from: 'self', reach: ALL, works: 'Every call you make.', companion: true,
+                    text: 'Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment.' },
+    // lodging: Emilio's room under another name at Pedra Branca, Nova Trentô and Salta, in the food and sleep screen.
+    comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Pedra Branca, Nova Trentô and Salta.', companion: true,
+                    text: "Emilio manages small hotels along the south road. He can find a room under someone else's reservation." },
+    // union: a train the crew holds in Salta, and the strike.
+    comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
+                    text: 'Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait.' },
     road_map:     { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
                     text: 'Every checkpoint and back road between here and the line is marked.' },
   };
@@ -133,7 +160,7 @@ const Data = (() => {
       arrive: 'The radio says you are on a yacht in Portô Venla.',
       approaches: [
         { id: 'second_driver', with: 'nando', name: 'Hire a plain car and driver', hours: 2, dc: 3, needs: [], pay: true,
-          mods: { information: 1 }, text: "Nando's cousin drives a taxi and keeps quiet for cash.",
+          mods: { information: 1, mechanic: 1 }, text: "Nando's cousin drives a taxi and keeps quiet for cash.",
           success: { say: 'You leave by taxi while Nando drives your sedan back north.' },
           fail: { exposure: 1, hours: 2, say: "Nando's cousin wants more money, then backs out. You lose four hours." } },
         { id: 'siblings_driver', with: 'sibling', name: "Leave with your sibling's driver", hours: 2, dc: 2, needs: [{ arr: 'aircraft', stage: 1 }],
@@ -144,8 +171,8 @@ const Data = (() => {
           mods: { information: 1 }, text: "A river captain who owes your father takes you up to Nova Trentô.",
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
-        { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [],
-          mods: { delay: 2, decoy: 2 }, text: "You drive on in your own car, which the police know.",
+        { id: 'known_car', name: 'Drive on in your own car', hours: 1, dc: 5, needs: [], plain: 'mechanic',
+          mods: { delay: 2, decoy: 2, mechanic: 2 }, text: "You drive on in your own car, which the police know.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
           fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and report you." } },
       ] },
@@ -160,9 +187,6 @@ const Data = (() => {
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
           mods: {}, text: "You use Nonā Rosa's phone to push on the jet, your welcome in Costamar and your visa.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
-        { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
-          mods: {}, text: "You sleep for six hours in Nonā Rosa's spare room.",
-          success: { exposure: -2, say: 'Nobody knocks for six hours, and you wake to a quiet house.' }, fail: { say: '' } },
         { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
           mods: {}, text: "Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
@@ -187,6 +211,10 @@ const Data = (() => {
           mods: {}, text: "The yardmaster offers you a seat on the freight for cash.",
           success: { exposure: 2, say: "Three men watch the yardmaster take your money." },
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
+        { id: 'crew_train', mate: 'joana', name: 'Ride the train the crew holds', hours: 2, dc: 3, needs: [{ card: 'union' }],
+          mods: {}, text: "Joana asks the yard crew to hold a freight car until you are aboard, at any hour.",
+          success: { say: 'The crew holds the car at the end of the platform. Joana shakes hands with the driver, and the train leaves with you in it.' },
+          fail: { exposure: 1, say: 'The yard boss walks the platform, and the crew cannot hold the car while he watches. Joana says to try again after he leaves.' } },
       ] },
     { id: 'border', name: 'The line at the Huhūi passes', short: 'The line', scene: 'border',
       objective: 'Cross into Costamar.',
@@ -194,15 +222,15 @@ const Data = (() => {
       border: true,
       approaches: [
         { id: 'post_rail', post: 'rail', name: 'Cross at the Paso Huhūi post', hours: 1, dc: 4, needs: [{ card: 'document' }],
-          mods: { introduction: 2, influence: 1 }, text: "The freight's own crossing, where you show your second passport.",
+          mods: { introduction: 2, influence: 1, border: 1 }, text: "The freight's own crossing, where you show your second passport.",
           success: { say: 'The guard turns the pages, looks at a sheet on the desk, and stamps it.' },
           fail: { exposure: 2, hours: 3, say: 'The guard reads the sheet first. You spend three hours in a cold room and come out on the Valdórian side.' } },
         { id: 'post_high', post: 'high', name: 'Take the Ālto Verdē road post', hours: 3, dc: 3, needs: [],
-          mods: { introduction: 2 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
+          mods: { introduction: 2, border: 1 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
           success: { say: 'After a long climb, the sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
         { id: 'post_coast', post: 'coast', name: 'Pay the Punta Marēa crossing', hours: 2, dc: 4, needs: [], pay: true,
-          mods: { delay: 2, information: 2 }, text: "The merchants' crossing to the coast, where the guards take money.",
+          mods: { delay: 2, information: 2, border: 2 }, text: "The merchants' crossing to the coast, where the guards take money.",
           success: { exposure: 1, say: 'The barrier goes up. Nobody says thank you.' },
           fail: { exposure: 2, hours: 2, say: 'The older guard takes the money and the younger one calls the ministry. You wait two hours in the salt wind.' } },
       ],
@@ -288,6 +316,15 @@ const Data = (() => {
     desk:      { does: "Searches and checkpoints anywhere in Valdória get easier.", name: "The provincial desk's patrol", tag: 'patrol', from: 'The Pedra Branca commander', reach: VALDORIA, works: 'Any stop in Valdória, up to and including the line.', text: "The commander's patrol makes your searches and checkpoints easier." },
     rail:      { name: 'A railway contact', tag: 'rail', from: 'The Salta yardmaster', reach: ['salta'], works: 'The Salta yard and the midnight freight.', text: 'He takes money from anyone and tells you about it.' },
     operator:  { name: "The operator's license", tag: 'operator', from: 'The aviation desk', reach: ['airfield'], works: 'The Portalba charter operator, through his Valdórian license.', text: 'A review can pause a booking. It cannot find the passenger.' },
+    // what each of the eight later companions gives Sofia (owner, Nov. 2, 2026): one bounded source each, never her live position
+    plates:    { name: "Marta's vehicle records", tag: 'vehicles', from: 'Marta', companion: 'marta', reach: ['residence', 'road', 'colonia'], works: 'The residence, Pedra Branca and Nova Trentô.', text: 'Plates, repair shops and toll booths. They tell you about cars, not about who is in them.' },
+    clinics:   { name: "Inês's clinic contacts", tag: 'medical', from: 'Inês', companion: 'ines', reach: VALDORIA, works: 'Every clinic in Valdória.', text: 'A clinic reports a visit a few hours late, and only where it happened.' },
+    clerk:     { name: "Paulo's friends at the court", tag: 'court', from: 'Paulo', companion: 'paulo', reach: ALL, works: 'Court orders and the travel ban.', text: 'He knows which desk an order is sitting on and who can sign it tonight.' },
+    newsroom:  { name: "Celina's newsroom", tag: 'media', from: 'Celina', companion: 'celina', reach: ALL, works: 'The radio, the papers and the press office.', text: 'She knows which reporter will run a story and which one will check it first.' },
+    post_cmd:  { name: "Tomás's border command", tag: 'border', from: 'Tomás', companion: 'tomas', reach: ['border'], works: 'The Valdórian posts at the line.', text: 'The sergeants at the line served under him. They answer his calls.' },
+    exchange:  { name: "Nadia's exchange records", tag: 'phone', from: 'Nadia', companion: 'nadia', reach: ALL, works: 'Calls on the provincial network.', text: 'An exchange logs which town a call came from, hours later. It never says who is holding the phone.' },
+    registers: { name: "Emilio's guest registers", tag: 'lodging', from: 'Emilio', companion: 'emilio', reach: ['road', 'colonia', 'salta'], works: 'Hotels in Pedra Branca, Nova Trentô and Salta.', text: 'A register shows who checked in and when, under whatever name they gave.' },
+    union:     { name: "Joana's union contacts", tag: 'union', from: 'Joana', companion: 'joana', reach: ['salta'], works: 'The Salta rail yard and its workers.', text: 'The yard crews talk to her, and they see every passenger the freight carries.' },
     esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
   };
   // A companion on the government side: the same people, and what each gives Sofia
@@ -295,17 +332,31 @@ const Data = (() => {
     bruno: { card: 'comp_bruno', sprite: 'bruno', gov: 'rail', govDoes: 'He knows the freight crews, so you start with a railway contact in Salta.' },
     clara: { card: 'comp_clara', sprite: 'clara', gov: 'esm_intro', govDoes: 'Your search, checkpoint and call-in orders work in Portalba.' },
     rita:  { card: 'comp_rita', sprite: 'rita', gov: 'operator', govDoes: 'She knows the charter operator, so you can lean on him from the start.' },
+    // Nov. 2, 2026: eight more. Picker wording is in content/coalition/ui.json under mate.<id>.
+    marta:  { card: 'comp_marta', sprite: 'marta', gov: 'plates' },
+    ines:   { card: 'comp_ines', sprite: 'ines', gov: 'clinics' },
+    paulo:  { card: 'comp_paulo', sprite: 'paulo', gov: 'clerk' },
+    celina: { card: 'comp_celina', sprite: 'celina', gov: 'newsroom' },
+    tomas:  { card: 'comp_tomas', sprite: 'tomas', gov: 'post_cmd' },
+    nadia:  { card: 'comp_nadia', sprite: 'nadia', gov: 'exchange' },
+    emilio: { card: 'comp_emilio', sprite: 'emilio', gov: 'registers' },
+    joana:  { card: 'comp_joana', sprite: 'joana', gov: 'union' },
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
-    { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and her police attention is 7 or higher, they stop her. The police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
+    { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1, vehicles: 1, border: 2 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and her police attention is 7 or higher, they stop her. The police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'The watch team tells you whether anyone is still in the house.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Move your search to ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you order a search or a checkpoint at the new stop.' },
-    { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: {}, act: 'circulate', text: 'Every post and the border get the ban. From then on, police who stop her take her straight to the station. A sent message does not close the border until the post confirms.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
-    { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'the police', mods: {}, act: 'press_ally', text: 'The police question one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
-    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that can fail is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
-    { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: {}, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
-    { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
+    { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: { court: 2 }, act: 'circulate', text: 'Every post and the border get the ban, and it is in force as soon as it is sent. From then on, police who stop her take her straight to the station, and her crossings at the line are harder.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
+    { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'the police', mods: { union: 2 }, act: 'press_ally', text: 'The police question one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper, but you are not told the place.', fail: 'Nobody answers the summons today.' },
+    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2, vehicles: 1, border: 2 }, act: 'roadblock', text: 'For the next six hours, every move she makes at that stop that can fail is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
+    { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: { media: 2 }, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
+    { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2, union: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
+    // the later companions' orders: needs is the government card that opens the order
+    { id: 'clinics', needs: 'clinics', name: () => 'Ask the clinics about her family', hours: 1, dc: 3, who: 'Inês', mods: { medical: 2 }, text: 'Inês asks the clinics in Valdória whether anyone from her family has been seen. A clinic names the stop three hours later, and it names each stop once.', fail: 'The clinics will not talk without a court order.' },
+    { id: 'exchange', needs: 'exchange', name: () => 'Pull the exchange records', hours: 1, dc: 3, who: 'Nadia', mods: { phone: 2 }, text: 'Nadia reads the exchange logs for calls to her family in the last four hours. A log names the town a call came from, not where she is now.', fail: 'The exchange supervisor wants the request in writing.' },
+    { id: 'registers', needs: 'registers', where: [1, 2, 3], name: (lv) => `Check the guest registers at ${lv}`, hours: 1, dc: 3, who: 'Emilio', mods: { lodging: 2 }, text: 'Emilio reads the hotel registers at the stop you are watching for a guest who gave another name, and you hear two hours later. The police watch the hotels there afterward.', fail: 'The hotel owners close their books to you.' },
+    { id: 'appeal', needs: 'newsroom', name: () => 'Put her photo on the morning news', hours: 2, dc: 3, who: 'Celina', mods: { media: 2 }, text: "Celina's station runs her photo and a number to call. Her police attention rises by one. Three hours later a caller says where he saw her, and not every caller is right.", fail: 'The station runs a story about the weather instead.' },
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
   ];
 
@@ -324,14 +375,17 @@ const Data = (() => {
     { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}. It runs in the morning edition.', choices: [
       { id: 'confirm', label: 'Confirm it on the record', fx: { minister: 1, warn: 1, say: 'The minister likes the headline. So does she.' } },
       { id: 'deny', label: 'Deny it', fx: { minister: -1, say: 'The minister reads your denial in his own paper.' } },
+      { id: 'celina_kill', label: 'Have Celina bury the story', needs: 'newsroom', fx: { hours: 1, say: 'Celina gives the columnist a better story for the morning edition. Your lead stays out of the paper, and the minister never hears of it.' } },
       { id: 'spin', label: 'Tell the paper she has crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
-    { id: 'judge', after: 4, title: 'The duty judge wants a hearing', text: 'He will not sign the order that has the border post confirm the travel ban until a hearing. The ban is in force either way.', choices: [
-      { id: 'wait_judge', label: 'Wait for the hearing', fx: { unban: true, say: 'The post has not confirmed the ban, and it will wait for the hearing.' } },
-      { id: 'other_judge', label: 'Find another judge', fx: { hours: 2, roll: { need: 4, win: { ban: true, say: 'A judge in Pedra Branca signs at his kitchen table.' }, lose: { hours: 2, say: 'Every judge you call has heard from the first one.' } } } },
-      { id: 'around', label: 'Have the minister call the post', fx: { ban: true, minister: -1, warn: 1, say: 'The post confirms the ban. Her lawyers call it irregular on the radio.' } } ] },
+    { id: 'judge', after: 4, when: [{ ref: 'flag.restriction', op: 'eq', value: true }], title: 'Her lawyers go to the duty judge', text: 'Her lawyers ask the duty judge to suspend the travel ban at the line until a hearing. If he agrees, the post lets the ban slide.', choices: [
+      { id: 'wait_judge', label: 'Let the judge decide', fx: { unban: true, say: 'The judge suspends the ban at the line until the hearing, and the post lets it slide.' } },
+      { id: 'other_judge', label: 'Argue it before him tonight', fx: { hours: 2, roll: { need: 4, win: { say: 'The judge refuses the lawyers, and the ban stands at the line.' }, lose: { unban: true, say: 'The judge sides with her lawyers, and the post lets the ban slide.' } } } },
+      { id: 'paulo_judge', label: 'Have Paulo answer the motion', needs: 'clerk', fx: { hours: 1, say: 'Paulo files the answer before the lawyers finish theirs. The judge refuses them, and the ban stands at the line.' } },
+      { id: 'around', label: 'Have the minister call the judge', fx: { minister: -1, warn: 1, say: 'The judge drops the motion. Her lawyers call it irregular on the radio.' } } ] },
     { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Pedra Branca, in Salta and on the coast road, all in the same hour.', choices: [
       { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols go out at once, and the desk is stretched thin.' } },
       { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
+      { id: 'marta_plates', label: "Run the plates through Marta's records", needs: 'plates', fx: { hours: 1, lead: 2, say: 'Marta matches the plates to a car that left the capital on Saturday. The toll records place it, two hours late.' } },
       { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
     { id: 'sosa_alone', title: 'Your police inspector wants to drive out himself', text: 'He wants to take two officers to {there} without telling the desk.', choices: [
       { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'The inspector takes the unmarked car.' } },
@@ -342,10 +396,12 @@ const Data = (() => {
       { id: 'refuse_driver', label: 'Refuse', fx: {} } ] },
     { id: 'strike', after: 8, title: 'The rail union walks out', text: 'Salta yard workers go on strike.', choices: [
       { id: 'let_strike', label: 'Let the strike stand', fx: { stall: 4, minister: -1, say: "Her helpers' answers come four hours late. The minister hates strikes." } },
-      { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } } ] },
+      { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } },
+      { id: 'joana_strike', label: 'Have Joana talk to the union', needs: 'union', fx: { hours: 1, card: 'rail', minister: 1, say: 'Joana settles the strike by supper. The yard crews go back to work and agree to tell you who rides the freight.' } } ] },
     { id: 'photo', title: 'A paper has a photo', text: 'A newspaper has a blurred photo of her at a gas station, and it wants to run it.', choices: [
       { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The gas station has a sign with a town on it.' } },
-      { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } } ] },
+      { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } },
+      { id: 'celina_photo', label: "Run it on Celina's station", needs: 'newsroom', fx: { hours: 1, press: 1, lead: 3, say: "Celina's station runs the photo with a number to call. A caller names the gas station's town." } } ] },
     { id: 'dinner', after: 6, title: 'Dinner at the Costamaran embassy', text: 'The ambassador invites you to dinner tonight. Dinner takes three hours, and he likes to talk.', choices: [
       { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: "Somewhere after the fish he promises to hurry Cerro Alto's answer." } },
       { id: 'deputy', label: 'Send your deputy', fx: { roll: { need: 5, win: { holdup: true, say: 'Your deputy is a better guest than you.' }, lose: { say: 'The ambassador talks about horses all night.' } } } },
@@ -361,20 +417,23 @@ const Data = (() => {
       { id: 'report_it', label: 'Report the offer', fx: { press: 1, minister: 1, say: 'A bribery file opens. Her lawyers stop answering their phones.' } },
       { id: 'play_along', label: 'Pretend to accept', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'The lawyer tells you where to send the money.' }, lose: { warn: 2, say: 'The lawyer knows a trap when he hears one.' } } } },
       { id: 'hang_up_bribe', label: 'Hang up', fx: {} } ] },
-    { id: 'sergeant', after: 14, title: 'The sergeant is family', text: 'The desk says the sergeant on duty at the border post is married to her cousin.', choices: [
-      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift. He reads every name.' } },
-      { id: 'watch_him', label: 'Watch him', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'He makes a call from the guardhouse. You hear every word.' }, lose: { unban: true, say: 'He notices the watcher, and the post no longer confirms the ban.' } } } },
-      { id: 'leave_him', label: 'Leave him on duty', fx: { unban: true } } ] },
+    { id: 'sergeant', after: 14, title: 'The sergeant is family', text: 'The desk says the sergeant on duty at the border post is married to her cousin. He can let the travel ban slide.', choices: [
+      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift. He reads every name and holds to the ban.' } },
+      { id: 'watch_him', label: 'Watch him', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'He makes a call from the guardhouse. You hear every word.' }, lose: { unban: true, say: 'He notices the watcher, and he lets the ban slide on his shift.' } } } },
+      { id: 'leave_him', label: 'Leave him on duty', fx: { unban: true, say: 'He keeps the shift, and he lets the ban slide.' } },
+      { id: 'tomas_shift', label: 'Have Tomás take the shift', needs: 'post_cmd', fx: { hours: 1, ban: true, crossing: 4, say: 'Tomás drives up and stands the shift himself. He holds to the ban and searches every car for four hours.' } } ] },
     { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch from the air for eight hours. The general wants a signature.', choices: [
       { id: 'sign', label: 'Sign for it', fx: { dc: [-1, 8], minister: -1, say: 'The drone goes up. The minister reads about it in the morning.' } },
       { id: 'no_drone', label: 'Decline', fx: {} } ] },
     { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at 6 p.m. to promise that she will be found by Monday.', choices: [
       { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
       { id: 'send_sosa', label: 'Send the inspector instead', fx: { dc: [1, 4], say: 'The inspector hates cameras. He takes it out on the desk.' } },
-      { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } } ] },
+      { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } },
+      { id: 'celina_brief', label: 'Have Celina write his statement', needs: 'newsroom', fx: { hours: 1, minister: 1, say: 'Celina writes a statement that promises nothing and names no town. The minister reads it well.' } } ] },
     { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says one of her family\'s phone numbers pinged a tower an hour ago.', choices: [
       { id: 'tower_now', label: 'Demand the tower now', fx: { hours: 2, roll: { need: 4, win: { lead: 0, say: 'The carrier sends the tower and a map.' }, lose: { warn: 1, say: 'The carrier tells its lawyers, who tell hers.' } } } },
-      { id: 'paperwork', label: 'File the paperwork', fx: { lead: 6, say: 'The answer will come through the proper channel.' } } ] },
+      { id: 'paperwork', label: 'File the paperwork', fx: { lead: 6, say: 'The answer will come through the proper channel.' } },
+      { id: 'nadia_tower', label: 'Have Nadia read the tower log', needs: 'exchange', fx: { hours: 1, lead: 2, say: "Nadia reads the tower's log at the exchange. It names the town, two hours after the call." } } ] },
   ];
 
   // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
@@ -388,6 +447,7 @@ const Data = (() => {
     { id: 'selfie', at: ['residence'], title: 'A photo from the kitchen', text: "The cook's nephew posted a photo. You are in the window behind him.", choices: [
       { id: 'buy_phone', label: "Buy the nephew's phone", fx: { hours: 1, exposure: -1, say: 'Nando pays twice what the phone is worth.' } },
       { id: 'beach', label: 'Post an old beach photo', needs: [{ card: 'influence' }], fx: { belief: 'away', exposure: -1, flag: { lied: true }, say: "Gianlūka's people post you on the coast." } },
+      { id: 'celina_beach', label: 'Have Celina run a beach photo', needs: [{ card: 'media' }], fx: { belief: 'away', exposure: -1, say: "Celina's station reads out a listener's sighting of you on the coast, and two papers repeat it." } },
       { id: 'let_it', label: 'Let it stand', fx: { exposure: 2 } } ] },
     { id: 'dog', at: ['residence'], title: 'The dog will not stay', text: 'Your youngest will not leave without the dog. The dog barks at strangers.', choices: [
       { id: 'bring_dog', label: 'Bring the dog', fx: { flag: { dog: true }, trust: { sibling: 1 }, say: 'The dog sleeps across your feet.' } },
@@ -395,6 +455,7 @@ const Data = (() => {
     { id: 'summons', at: ['residence'], when: [{ ref: 'flag.restriction', op: 'eq', value: false }], title: 'A court officer at the gate', text: 'He has a summons and orders to hand it to you in person.', choices: [
       { id: 'accept', label: 'Take the summons', fx: { ban: true, say: 'The court now has your signature, and it sends the travel ban to every post.' } },
       { id: 'lawyer', label: "Send Gianlūka's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer argues at the gate for two hours.' } },
+      { id: 'paulo_summons', label: 'Let Paulo take the summons', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo signs for the summons and files a motion against it. The order waits in the clerk's office, and the travel ban does not go out." } },
       { id: 'ignore', label: 'Keep the gate shut', fx: { exposure: 1 } } ] },
     { id: 'cameras', at: ['residence'], title: 'Gianlūka wants cameras', text: 'He wants you on the steps tonight, calling the election stolen.', choices: [
       { id: 'speak', label: 'Speak on the steps', fx: { exposure: 3, trust: { aide: 1 }, card: 'delay_report', say: "The party loves the speech, and the police watch every minute of it." } },
@@ -407,11 +468,13 @@ const Data = (() => {
     { id: 'hitchhiker', at: ['road'], title: 'A hitchhiker knows your face', text: 'A young reporter flags you down. She recognizes you before the door closes.', choices: [
       { id: 'interview', label: 'Give her the interview', fx: { exposure: 2, belief: 'away', say: 'Her story puts you on the coast road.' } },
       { id: 'silence', label: 'Buy her silence', fx: { roll: { need: 4, win: { say: 'She keeps the money and the story.' }, lose: { exposure: 3, say: 'She takes the money and files anyway.' } } } },
-      { id: 'drop', label: 'Drop her at the next town', fx: { hours: 1 } } ] },
+      { id: 'drop', label: 'Drop her at the next town', fx: { hours: 1 } },
+      { id: 'celina_reporter', label: 'Give her to Celina', needs: [{ card: 'media' }], fx: { belief: 'away', say: 'Celina offers the reporter a job and a better story. Her story puts you on the coast road, and your face is not in it.' } } ] },
     { id: 'flood', at: ['road'], title: 'Flash flood at the bridge', text: 'The river is over the road. Trucks are turning back.', choices: [
-      { id: 'wait_water', label: 'Wait for the water', fx: { hours: 4 } },
+      { id: 'wait_water', label: 'Wait for the water', fx: { hours: 4, rest: true } },
       { id: 'ford', label: 'Drive through it', fx: { roll: { need: 4, win: { exposure: -1, say: 'The water comes up to the doors, and then the road is dry.' }, lose: { hours: 2, exposure: 1, lose: 'random', say: 'The engine floods. You leave something in the car.' } } } },
-      { id: 'ferry', label: "Pay a smuggler's ferry", fx: { hours: 1, exposure: 1, say: 'The ferryman knows who you are and says nothing.' } } ] },
+      { id: 'ferry', label: "Pay a smuggler's ferry", fx: { hours: 1, exposure: 1, say: 'The ferryman knows who you are and says nothing.' } },
+      { id: 'marta_ford', label: 'Let Marta drive through', needs: [{ card: 'mechanic' }], fx: { hours: 1, say: 'Marta seals the engine with tape and drives through slowly. The car comes out the other side with everything in it.' } } ] },
     { id: 'decoy_ditch', at: ['road'], when: [{ ref: 'hand.decoy_cars', op: 'eq', value: true }], title: 'A decoy on the evening news', text: 'One of your spare sedans rolled into a ditch on camera. The plates are yours.', choices: [
       { id: 'claim', label: 'Say it was you', fx: { belief: 'away', exposure: -2, lose: 'decoy_cars', say: 'For one evening you are in a ditch 200 kilometers away.' } },
       { id: 'quiet', label: 'Say nothing', fx: { exposure: 1 } } ] },
@@ -426,11 +489,12 @@ const Data = (() => {
       { id: 'take', label: 'Take him with you', fx: { card: 'grandson' } },
       { id: 'no', label: 'Say no', fx: { trust: { host: -1 } } } ] },
     { id: 'raid', at: ['colonia'], title: 'Police raid the next farm', text: 'Police are searching the neighbor\'s farm for contraband. They are not looking for you yet.', choices: [
-      { id: 'cellar', label: 'Hide in the wine cellar', fx: { hours: 4 } },
+      { id: 'cellar', label: 'Hide in the wine cellar', fx: { hours: 4, rest: true } },
       { id: 'slip', label: 'Lie low nearby for an hour', fx: { roll: { need: 3, win: { hours: 1 }, lose: { hold: 1 } } } } ] },
     // Salta
     { id: 'strike', at: ['salta'], title: 'The rail yard is on strike', text: 'The union has stopped work in the yard, and the strikers watch everyone who comes near the freight.', choices: [
-      { id: 'wait_strike', label: 'Wait it out', fx: { hours: 8 } },
+      { id: 'wait_strike', label: 'Wait it out', fx: { hours: 8, rest: true } },
+      { id: 'joana_strike', label: 'Have Joana talk to the strikers', needs: [{ card: 'union' }], fx: { hours: 1, say: 'Joana talks to the strike committee for an hour. The pickets let you through and tell nobody.' } },
       { id: 'union', label: 'Pay the union boss', fx: { exposure: 2, say: 'The union boss takes the money, and the strikers let you pass.' } },
       { id: 'scabs', label: 'Walk in with the strikebreakers', fx: { roll: { need: 4, win: { say: 'Nobody looks at a scab twice.' }, lose: { hold: 1 } } } } ] },
     { id: 'tourbus', at: ['salta'], title: 'A tour bus to the waterfalls', text: 'A bus of tourists leaves for the falls at the border at dawn. One seat is empty.', choices: [
@@ -446,13 +510,14 @@ const Data = (() => {
     // the line
     { id: 'old_guard', at: ['border'], title: 'A guard you know', text: 'The night guard once worked for your family. He is staring at you.', choices: [
       { id: 'loyalty', label: 'Appeal to old loyalty', fx: { roll: { need: 3, win: { mod: -2, say: 'He looks at his boots and lets the queue move faster, so crossing here gets easier.' }, lose: { hold: 1 } } } },
-      { id: 'next_shift', label: 'Wait for the next shift', fx: { hours: 3 } } ] },
+      { id: 'next_shift', label: 'Wait for the next shift', fx: { hours: 3, rest: true } } ] },
     { id: 'pilgrims', at: ['border'], title: 'Pilgrims at the barrier', text: 'The post is full of 40 pilgrims and their luggage. The guards are tired.', choices: [
       { id: 'queue_pilgrims', label: 'Join the queue', fx: { mod: -1 } },
-      { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2 } } ] },
+      { id: 'wait_pilgrims', label: 'Wait for them to clear', fx: { hours: 2, rest: true } } ] },
     { id: 'blizzard', at: ['border'], title: 'A blizzard over the pass', text: "Snow is piling up at the post, and a smugglers' path runs over the ridge.", choices: [
-      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, say: 'You spend six hours in the snow, and the storm costs the police their next move.' } },
-      { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Costamar with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } } ] },
+      { id: 'storm', label: 'Wait out the storm', fx: { hours: 6, skipEnemy: true, rest: true, say: 'You spend six hours in the snow, and the storm costs the police their next move.' } },
+      { id: 'ridge', label: 'Walk the ridge path', fx: { roll: { need: 4, win: { advance: true, say: 'You come down into Costamar with no stamp at all.' }, lose: { hours: 3, exposure: 3, say: 'You turn back half frozen. The post saw your flashlight.' } } } },
+      { id: 'tomas_ridge', label: 'Follow Tomás over the ridge', needs: [{ card: 'border' }], fx: { roll: { need: 3, win: { advance: true, say: 'Tomás walks the path the patrols use and knows when they turn back. You come down into Costamar with no stamp at all.' }, lose: { hours: 3, exposure: 2, say: 'The patrol is late tonight, and Tomás turns you back before it sees you.' } } } } ] },
     { id: 'dog_bark', at: ['border'], when: [{ ref: 'flag.dog', op: 'eq', value: true }], title: 'The dog barks at the post', text: 'The guards look up at the dog barking in your car.', choices: [
       { id: 'calm', label: 'Let your daughter calm him', fx: { roll: { need: 3, win: {}, lose: { exposure: 3 } } } },
       { id: 'give_dog', label: 'Give the dog to a trucker', fx: { trust: { sibling: -1 }, say: 'Your daughter does not speak to you until Costamar.' } } ] },
@@ -463,9 +528,9 @@ const Data = (() => {
     { id: 'crew_double', at: ['airfield'], title: 'The crew wants double', text: "The operator's insurer called. The pilot wants twice the fee or a guarantee.", choices: [
       { id: 'pay_double', label: 'Pay double', fx: { exposure: 1 } },
       { id: 'guarantee', label: 'Have your sponsor guarantee it', needs: [{ card: 'permission' }], fx: { trust: { sponsor: -1 }, say: 'It goes on what you owe your sponsor.' } },
-      { id: 'other_pilot', label: 'Find another pilot', fx: { hours: 4 } } ] },
+      { id: 'other_pilot', label: 'Find another pilot', fx: { hours: 4, rest: true } } ] },
     { id: 'overflight', at: ['airfield'], title: 'No overflight permit', text: 'The refuel stop will not let the jet cross. The long route adds hours.', choices: [
-      { id: 'long', label: 'Take the long route', fx: { hours: 3 } },
+      { id: 'long', label: 'Take the long route', fx: { hours: 3, rest: true } },
       { id: 'short', label: 'File the short route', fx: { mod: 1, say: 'The pilot files the short route anyway, so the tower will look harder when you try to leave.' } } ] },
     { id: 'goodbye_post', at: ['airfield'], title: 'A goodbye online', text: 'Your daughter posted a photo from the airfield lounge. It is everywhere.', choices: [
       { id: 'takedown', label: 'Get it taken down', fx: { roll: { need: 4, win: {}, lose: { exposure: 3 } } } },
@@ -476,7 +541,8 @@ const Data = (() => {
     // anywhere
     { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed abroad. You are still at {here}.', choices: [
       { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, and every reply you ask for now comes two hours later.' } },
-      { id: 'correct', label: 'Correct it', fx: { exposure: 1 } } ] },
+      { id: 'correct', label: 'Correct it', fx: { exposure: 1 } },
+      { id: 'celina_story', label: 'Have Celina keep the story going', needs: [{ card: 'media' }], fx: { belief: 'away', exposure: -1, say: "Celina's station reads the story every hour. Your own people know the truth, so their replies come on time." } } ] },
     { id: 'bodyguard', at: null, title: 'An old bodyguard wants money', text: 'He knows your route. He will sell it tonight unless you pay.', choices: [
       { id: 'pay_guard', label: 'Pay him', fx: { exposure: 1 } },
       { id: 'bluff', label: 'Call his bluff', fx: { roll: { need: 3, win: { say: 'He never calls anyone.' }, lose: { belief: 'here', exposure: 3, say: 'He calls the police, who now search where you are.' } } } },
@@ -486,11 +552,56 @@ const Data = (() => {
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
     { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 } /* before hour 30 */, { ref: 'flag.restriction', op: 'eq', value: false }], title: 'The hearing moves up', text: 'The court moved your hearing forward, and it wants the travel ban at every post today.', choices: [
       { id: 'noted', label: 'Keep going', fx: { ban: true, say: 'The court sends the travel ban to every post.' } },
+      { id: 'paulo_hearing', label: 'Have Paulo slow the order', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo calls an old colleague in the clerk's office. The order goes into the outbox, and the travel ban does not go out." } },
       { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the court\'s order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
     { id: 'blackout', at: null, title: 'The province goes dark', text: 'A storm took down the grid. Phones, radios, and the inquiry go quiet.', choices: [
       { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
-      { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
+      { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
   ];
+  // ---- Food and sleep (owner, Nov. 2, 2026: build the lodging system). "Stop to eat and sleep" opens the screen for the
+  // stop you are at. fx: hours, meal (everyone eats), sleep ('full' | 'car': a few hours in the car), stay ('room': a
+  // register with your name in it | 'emilio': a room under another name), hide (a police search here finds nobody while
+  // you stay), exposure, rest (hours out of sight: with Inês, no attention from a search here), say. A choice with no fx
+  // closes the screen. needs: a card kind, as on news choices.
+  const LODGING = [
+    { id: 'lodge_residence', at: ['residence'], title: 'Eat and sleep at home', text: 'You are still in your own house, with the watch outside. The kitchen is full, and your bed is upstairs.', choices: [
+      { id: 'home_sleep', label: 'Sleep in your own bed', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'You eat, and everyone sleeps six hours behind drawn curtains.' } },
+      { id: 'home_meal', label: 'Eat in the kitchen', fx: { hours: 1, meal: true, rest: true, say: 'The cook feeds everyone before she goes home.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_road', at: ['road'], title: 'A place to stop in Pedra Branca', text: 'The motel by the river asks every guest for a name and a passport. The truck stop sells hot food to anyone who stands in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room over a garage under another guest\'s name. Everyone eats and sleeps six hours, and nobody asks who you are.' } },
+      { id: 'motel', label: 'Take a room at the motel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You park behind a grain store and sleep four hours sitting up.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês goes into the truck stop alone and comes back with food for everyone.' } },
+      { id: 'truck_stop', label: 'Eat at the truck stop', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at the counter. The man beside you looks twice at your face.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_colonia', at: ['colonia'], title: "Nonā Rosa's house", text: 'Nonā Rosa has a spare room and a long table, and nobody in the colônia talks to the police.', choices: [
+      { id: 'nona_room', label: "Sleep in Nonā Rosa's spare room", fx: { hours: 6, sleep: 'full', meal: true, rest: true, exposure: -2, say: 'Nonā Rosa feeds everyone, and nobody knocks for six hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room at the inn", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the inn under another guest\'s name. The innkeeper calls you by that name all night.' } },
+      { id: 'nona_meal', label: "Eat at Nonā Rosa's table", fx: { hours: 1, meal: true, rest: true, say: 'Nonā Rosa serves soup and bread and asks nothing.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car behind the cooperative shed.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the railway hotel under another guest\'s name. The night clerk never asks to see a passport.' } },
+      { id: 'rail_hotel', label: 'Take a room at the railway hotel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the freight sidings.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
+      { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a name and a passport.', choices: [
+      { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps five hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car with the engine off and the windows white with frost.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys bread and soup at the hostel kitchen and brings it to the car.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_airfield', at: ['airfield'], title: 'The crew lounge at Portalba', text: 'The charter crews have a lounge behind the hangar with bunks and a kitchen.', choices: [
+      { id: 'lounge', label: 'Rest in the crew lounge', fx: { hours: 4, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps four hours on the crew bunks.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+  ];
+  // Too long without food or sleep makes the youngest sick, once at each stop. A clinic visit goes on a clinic's record.
+  const SICK = { id: 'sick', title: 'Your youngest is sick', text: 'Too many hours without food or sleep have caught up with your youngest. She has a fever and cannot keep water down.', choices: [
+    { id: 'ines_treat', label: 'Let Inês treat her', needs: [{ card: 'care' }], fx: { hours: 1, sleep: 'car', meal: true, say: 'Inês cools the fever, makes everyone eat, and keeps your youngest asleep across your lap.' } },
+    { id: 'clinic', label: 'Take her to a clinic', fx: { hours: 2, clinic: true, meal: true, exposure: 1, say: 'A doctor sees her in 20 minutes and writes her name in the clinic book. The fever breaks by morning.' } },
+    { id: 'push_on', label: 'Keep going with her sick', fx: { mod: 1, say: 'She cries in the back seat, and every move here is harder while you look after her.' } } ] };
   // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
   const HOLDS = {
     1: { title: 'Stopped and questioned', text: 'A patrol stops you at {here}. An officer wants to know where you are going.', choices: [
@@ -528,6 +639,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  return { LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

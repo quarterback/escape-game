@@ -491,7 +491,7 @@
   {
    "id": "route.cards_count",
    "pattern": "P02",
-   "text": "Where your cards count"
+   "text": "Who helps you, and where"
   },
   {
    "id": "route.card_stops_line",
@@ -1213,6 +1213,710 @@
    "id": "pick.back",
    "pattern": "P01",
    "text": "Back"
+  },
+  {
+   "id": "action.lodge",
+   "pattern": "P01",
+   "text": "Stop to eat and sleep"
+  },
+  {
+   "id": "card.kind_lodging",
+   "pattern": "P02",
+   "text": "Food and sleep"
+  },
+  {
+   "id": "card.kind_sick",
+   "pattern": "P02",
+   "text": "Your family"
+  },
+  {
+   "id": "body.preview_harder",
+   "pattern": "P03",
+   "text": "Your family is worn out from too little sleep or food, so this is harder."
+  },
+  {
+   "id": "body.now_tired",
+   "pattern": "P10",
+   "text": "After 18 hours awake you are tired, and every move that rolls is harder until you sleep."
+  },
+  {
+   "id": "body.now_exhausted",
+   "pattern": "P10",
+   "text": "After 30 hours awake you are exhausted, and every move that rolls is much harder until you sleep."
+  },
+  {
+   "id": "body.now_hungry",
+   "pattern": "P10",
+   "text": "After 12 hours without food you are hungry, and 12 more hours without a meal will make your moves harder."
+  },
+  {
+   "id": "body.now_starving",
+   "pattern": "P10",
+   "text": "After a day without food you are starving, and every move that rolls is harder until everyone eats."
+  },
+  {
+   "id": "body.status",
+   "pattern": "P05",
+   "text": "You are {tire} and {hunger}.",
+   "args": [
+    "tire",
+    "hunger"
+   ]
+  },
+  {
+   "id": "body.w_rested",
+   "pattern": "P02",
+   "text": "Rested"
+  },
+  {
+   "id": "body.w_tired",
+   "pattern": "P02",
+   "text": "Tired"
+  },
+  {
+   "id": "body.w_exhausted",
+   "pattern": "P02",
+   "text": "Exhausted"
+  },
+  {
+   "id": "body.w_fed",
+   "pattern": "P02",
+   "text": "Fed"
+  },
+  {
+   "id": "body.w_hungry",
+   "pattern": "P02",
+   "text": "Hungry"
+  },
+  {
+   "id": "body.w_starving",
+   "pattern": "P02",
+   "text": "Starving"
+  },
+  {
+   "id": "body.brief_sleep",
+   "pattern": "P02",
+   "text": "Sleep"
+  },
+  {
+   "id": "body.brief_food",
+   "pattern": "P02",
+   "text": "Food"
+  },
+  {
+   "id": "help.body",
+   "pattern": "P09",
+   "text": "**Food and sleep.** Everyone in your car needs both. After 18 hours awake you are tired, and after 30 you are exhausted. After 12 hours without a meal you are hungry, and after 24 you are starving. Tired or starving makes every move that rolls harder, and exhausted makes it much harder. Pick **Stop to eat and sleep** to see where you can stop at this stop. A room with your name in the register or a meal in public raises your police attention. If you go too long without food or sleep, your youngest falls sick."
+  },
+  {
+   "id": "gov.report.room_clerk",
+   "pattern": "P06",
+   "text": "A clerk at {place} remembers a family that took a room at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.room_clerk_proves",
+   "pattern": "P06",
+   "text": "Her family stopped at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "mate.bruno.title",
+   "pattern": "P02",
+   "text": "Truck driver"
+  },
+  {
+   "id": "mate.bruno.pick",
+   "pattern": "P09",
+   "text": "Pick Bruno if you plan to get aboard the Salta freight with Holt or Theo."
+  },
+  {
+   "id": "mate.bruno.govpick",
+   "pattern": "P09",
+   "text": "Pick Bruno to watch the Salta freight from the start.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.bruno.who",
+   "pattern": "P09",
+   "text": "Bruno drives trucks for a living and knows every back road."
+  },
+  {
+   "id": "mate.bruno.escape",
+   "pattern": "P03",
+   "text": "In Salta, he makes Holt and Theo easier to deal with."
+  },
+  {
+   "id": "mate.bruno.gov",
+   "pattern": "P03",
+   "text": "He knows the freight crews, so you start with a railway contact in Salta.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.clara.title",
+   "pattern": "P02",
+   "text": "Interpreter from Costamar"
+  },
+  {
+   "id": "mate.clara.pick",
+   "pattern": "P09",
+   "text": "Pick Clara if Costamar worries you most, from its border posts to the airfield."
+  },
+  {
+   "id": "mate.clara.govpick",
+   "pattern": "P09",
+   "text": "Pick Clara to reach her once she crosses into Costamar.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.clara.who",
+   "pattern": "P09",
+   "text": "Clara grew up in Costamar and still has family there."
+  },
+  {
+   "id": "mate.clara.escape",
+   "pattern": "P03",
+   "text": "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier."
+  },
+  {
+   "id": "mate.clara.gov",
+   "pattern": "P03",
+   "text": "Your search, checkpoint and call-in orders work in Portalba.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.rita.title",
+   "pattern": "P02",
+   "text": "Cargo pilot"
+  },
+  {
+   "id": "mate.rita.pick",
+   "pattern": "P09",
+   "text": "Pick Rita if your visa might not come through before the jet is ready."
+  },
+  {
+   "id": "mate.rita.govpick",
+   "pattern": "P09",
+   "text": "Pick Rita to go after her jet.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.rita.who",
+   "pattern": "P09",
+   "text": "Rita flies cargo planes out of the coast and knows the charter crews."
+  },
+  {
+   "id": "mate.rita.escape",
+   "pattern": "P03",
+   "text": "Leaving Portalba without the visa gets easier."
+  },
+  {
+   "id": "mate.rita.gov",
+   "pattern": "P03",
+   "text": "She knows the charter operator, so you can lean on him from the start.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.marta.title",
+   "pattern": "P02",
+   "text": "Auto mechanic"
+  },
+  {
+   "id": "mate.marta.pick",
+   "pattern": "P09",
+   "text": "Pick Marta if the road south and police checkpoints worry you most."
+  },
+  {
+   "id": "mate.marta.govpick",
+   "pattern": "P09",
+   "text": "Pick Marta to catch her early, on the road south.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.marta.who",
+   "pattern": "P09",
+   "text": "Marta has kept campaign cars running for years and knows how to make a recognizable car look ordinary."
+  },
+  {
+   "id": "mate.marta.escape",
+   "pattern": "P03",
+   "text": "She makes your own car look ordinary on the road out of Pedra Branca, so driving it is easier and does not raise your police attention. Police checkpoints in Valdória do not slow you down, and when you leave a stop the police are searching, she swaps the plates and your police attention drops by one. Hiring a plain car and getting past a flooded road get easier too."
+  },
+  {
+   "id": "mate.marta.gov",
+   "pattern": "P03",
+   "text": "You start with her vehicle records. Searches and checkpoints at the residence, Pedra Branca and Nova Trentô get easier, the decoy cars are spotted, and the toll records catch every car on the road south.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.marta.plates",
+   "pattern": "P10",
+   "text": "Marta swaps the plates before you leave, and the police searching here lose track of the car."
+  },
+  {
+   "id": "mate.ines.title",
+   "pattern": "P02",
+   "text": "Nurse"
+  },
+  {
+   "id": "mate.ines.pick",
+   "pattern": "P09",
+   "text": "Pick Inês if you expect long waits and need food and sleep without being seen."
+  },
+  {
+   "id": "mate.ines.govpick",
+   "pattern": "P09",
+   "text": "Pick Inês to catch her when her family is worn out.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.ines.who",
+   "pattern": "P09",
+   "text": "Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions."
+  },
+  {
+   "id": "mate.ines.escape",
+   "pattern": "P03",
+   "text": "While you lie low, wait for dark, sleep or sit out a long delay, a police search where you are does not raise your police attention. She buys food so nobody sees your face, a night in the car is a full night's sleep with her, and she treats your youngest herself if she falls sick."
+  },
+  {
+   "id": "mate.ines.gov",
+   "pattern": "P03",
+   "text": "When a clinic treats the candidate's sick child, the doctor calls the local police, who search there. The clinic's report reaches you three hours late, and you can also ask the clinics yourself. She also teaches the patrols what a worn-out family looks like, so a search stops a tired or starving candidate from Rising police attention.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.paulo.title",
+   "pattern": "P02",
+   "text": "Former court clerk"
+  },
+  {
+   "id": "mate.paulo.pick",
+   "pattern": "P09",
+   "text": "Pick Paulo if the travel ban worries you most."
+  },
+  {
+   "id": "mate.paulo.govpick",
+   "pattern": "P09",
+   "text": "Pick Paulo to get the travel ban out fast and keep it in force.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.paulo.who",
+   "pattern": "P09",
+   "text": "Paulo worked in the court clerk's office for 18 years. He knows which orders move immediately and which ones sit in an outbox."
+  },
+  {
+   "id": "mate.paulo.escape",
+   "pattern": "P03",
+   "text": "When the travel ban is sent, it sits in the clerk's outbox for 12 hours before it reaches the posts. He can also stop the court summons and the early hearing from sending the ban at all."
+  },
+  {
+   "id": "mate.paulo.gov",
+   "pattern": "P03",
+   "text": "You start with his friends at the court. Circulating the travel ban gets easier, and when the duty judge stalls, Paulo takes the order to a judge who signs it.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.celina.title",
+   "pattern": "P02",
+   "text": "Radio producer"
+  },
+  {
+   "id": "mate.celina.pick",
+   "pattern": "P09",
+   "text": "Pick Celina if you want the police searching in the wrong place."
+  },
+  {
+   "id": "mate.celina.govpick",
+   "pattern": "P09",
+   "text": "Pick Celina to put the public to work looking for her.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.celina.who",
+   "pattern": "P09",
+   "text": "Celina produces the morning news at a regional radio station. She knows what gets repeated before anyone checks it."
+  },
+  {
+   "id": "mate.celina.escape",
+   "pattern": "P03",
+   "text": "When the radio asks about the yacht, a photo leaks, a reporter finds you or your family talks too soon, she can turn the story so the police search somewhere else. The first time the police close in at each stop in Valdória, her station sends them one stop back."
+  },
+  {
+   "id": "mate.celina.gov",
+   "pattern": "P03",
+   "text": "You start with her newsroom. Briefing the papers gets easier, you can put the candidate's photo on the morning news, and leaks, photos and press conferences give you new choices.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.tomas.title",
+   "pattern": "P02",
+   "text": "Retired border officer"
+  },
+  {
+   "id": "mate.tomas.pick",
+   "pattern": "P09",
+   "text": "Pick Tomás if crossing the line worries you most."
+  },
+  {
+   "id": "mate.tomas.govpick",
+   "pattern": "P09",
+   "text": "Pick Tomás to close the line.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.tomas.who",
+   "pattern": "P09",
+   "text": "Tomás spent 22 years working border posts. He knows when the paperwork reaches the booth and when the booth is pretending it has not."
+  },
+  {
+   "id": "mate.tomas.escape",
+   "pattern": "P03",
+   "text": "Every crossing at the line gets easier with him. He also names a post that Valdória has not paid to stop you, and crossing there is easier still. For six hours after the travel ban goes out, the paperwork has not reached the booth, so the ban does not make crossing harder."
+  },
+  {
+   "id": "mate.tomas.gov",
+   "pattern": "P03",
+   "text": "You start with his border command. Searches and checkpoints at the line get easier. Once the travel ban is sent, the sergeants who served under him enforce it, so her crossings at the line are harder still.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.nadia.title",
+   "pattern": "P02",
+   "text": "Telephone engineer"
+  },
+  {
+   "id": "mate.nadia.pick",
+   "pattern": "P09",
+   "text": "Pick Nadia if you will spend the run on the phone arranging the jet, the visa and your welcome."
+  },
+  {
+   "id": "mate.nadia.govpick",
+   "pattern": "P09",
+   "text": "Pick Nadia to follow her phone calls.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.nadia.who",
+   "pattern": "P09",
+   "text": "Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment."
+  },
+  {
+   "id": "mate.nadia.escape",
+   "pattern": "P03",
+   "text": "The police trace your calls and find nothing. Once, when the police tap your family's phone, she moves the calls to another line so nothing they arrange slows down."
+  },
+  {
+   "id": "mate.nadia.gov",
+   "pattern": "P03",
+   "text": "You start with her exchange records. You can pull the logs for calls from the candidate's side, and they name the town a call came from, an hour late.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.emilio.title",
+   "pattern": "P02",
+   "text": "Hotel manager"
+  },
+  {
+   "id": "mate.emilio.pick",
+   "pattern": "P09",
+   "text": "Pick Emilio if you want safe places to eat and sleep along the south road."
+  },
+  {
+   "id": "mate.emilio.govpick",
+   "pattern": "P09",
+   "text": "Pick Emilio to find out where she sleeps.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.emilio.who",
+   "pattern": "P09",
+   "text": "Emilio manages small hotels along the south road. He can find a room under someone else's reservation."
+  },
+  {
+   "id": "mate.emilio.escape",
+   "pattern": "P03",
+   "text": "At Pedra Branca, Nova Trentô and Salta, his room is one of the places to eat and sleep. It is booked under another name, so it leaves your name out of the register, lowers your police attention, and a police search there finds nobody while you stay."
+  },
+  {
+   "id": "mate.emilio.gov",
+   "pattern": "P03",
+   "text": "You start with his guest registers. You can check the hotels at Pedra Branca, Nova Trentô or Salta for a room the candidate's family took, with the hour, two hours late, and the police watch those hotels afterward.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.joana.title",
+   "pattern": "P02",
+   "text": "Union organizer"
+  },
+  {
+   "id": "mate.joana.pick",
+   "pattern": "P09",
+   "text": "Pick Joana if you want a way out of Salta that does not depend on Holt, Theo or midnight."
+  },
+  {
+   "id": "mate.joana.govpick",
+   "pattern": "P09",
+   "text": "Pick Joana to watch the Salta yard through its workers.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.joana.who",
+   "pattern": "P09",
+   "text": "Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait."
+  },
+  {
+   "id": "mate.joana.escape",
+   "pattern": "P03",
+   "text": "In Salta, the yard crew can hold a train for you at any hour, without Holt or Theo. She can also get the strikers to let you through."
+  },
+  {
+   "id": "mate.joana.gov",
+   "pattern": "P03",
+   "text": "You start with her union contacts. Yard crews report every passenger who leaves on the Salta freight, and a stranger asking about it 10 hours late. Calling in helpers in Salta gets easier, and she can end the rail strike.",
+   "role": "gov"
+  },
+  {
+   "id": "mate.celina.yacht_label",
+   "pattern": "P01",
+   "text": "Have Celina run the story"
+  },
+  {
+   "id": "mate.celina.yacht_effect",
+   "pattern": "P03",
+   "text": "The police go back to searching the residence, and your police attention drops by two. The story comes from Celina's newsroom, not from you, so it costs you nothing if one of your people later talks to the police."
+  },
+  {
+   "id": "mate.celina.yacht_say",
+   "pattern": "P10",
+   "text": "Celina's station reads the yacht story at the top of every hour, and two other stations repeat it."
+  },
+  {
+   "id": "mate.celina.spin",
+   "pattern": "P10",
+   "text": " Celina's station puts a listener's sighting of you at {place} on the air, and the police go there next.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "mate.tomas.clean_post",
+   "pattern": "P10",
+   "text": "Tomás knows the {post}, and he says Valdória has not paid anyone there to stop you.",
+   "args": [
+    "post"
+   ]
+  },
+  {
+   "id": "mate.paulo.ban_slow",
+   "pattern": "P10",
+   "text": "Paulo says the order will sit in the clerk's outbox, and the travel ban will not reach the posts until {time}.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "mate.paulo.ban_lands",
+   "pattern": "P10",
+   "text": "The travel ban leaves the clerk's outbox and reaches every post."
+  },
+  {
+   "id": "mate.ines.quiet",
+   "pattern": "P10",
+   "text": "Inês keeps everyone inside and fed, so nobody here sees you while you wait."
+  },
+  {
+   "id": "mate.emilio.hidden",
+   "pattern": "P10",
+   "text": " The police check the hotels, but your room is under another guest's name."
+  },
+  {
+   "id": "mate.nadia.untraced",
+   "pattern": "P10",
+   "text": " Nadia sent your calls through an old exchange that keeps no records, so they learn nothing."
+  },
+  {
+   "id": "mate.nadia.rerouted",
+   "pattern": "P10",
+   "text": " Nadia moves {name}'s calls to another line, so nothing slows down.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.preview.harder_enforced",
+   "pattern": "P03",
+   "text": "The sergeants who served under Tomás enforce the travel ban at this post, so this is harder."
+  },
+  {
+   "id": "tag.mechanic",
+   "pattern": "P02",
+   "text": "A mechanic"
+  },
+  {
+   "id": "tag.care",
+   "pattern": "P02",
+   "text": "A nurse"
+  },
+  {
+   "id": "tag.court",
+   "pattern": "P02",
+   "text": "Court paperwork"
+  },
+  {
+   "id": "tag.media",
+   "pattern": "P02",
+   "text": "The newsroom"
+  },
+  {
+   "id": "tag.border",
+   "pattern": "P02",
+   "text": "Border know-how"
+  },
+  {
+   "id": "tag.phone",
+   "pattern": "P02",
+   "text": "The telephone network"
+  },
+  {
+   "id": "tag.lodging",
+   "pattern": "P02",
+   "text": "A room under another name"
+  },
+  {
+   "id": "tag.union",
+   "pattern": "P02",
+   "text": "The yard workers"
+  },
+  {
+   "id": "tag.vehicles",
+   "pattern": "P02",
+   "text": "Vehicle records"
+  },
+  {
+   "id": "tag.medical",
+   "pattern": "P02",
+   "text": "Clinic records"
+  },
+  {
+   "id": "gov.report.plates_decoys",
+   "pattern": "P06",
+   "text": "Marta ran the plates of the cars that left the residence, and the red sedan is a decoy.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.plates_decoys_proves",
+   "pattern": "P06",
+   "text": "The red sedan heading south is a decoy.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.clinic_none",
+   "pattern": "P06",
+   "text": "No clinic in Valdória has treated anyone from her family since the last report.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.clinic_none_proves",
+   "pattern": "P06",
+   "text": "Nobody in her family has been to a clinic since the last report.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.clinic_saw",
+   "pattern": "P06",
+   "text": "A clinic near {place} treated her youngest at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.clinic_proves",
+   "pattern": "P06",
+   "text": "Her family was at {place} at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.exchange_none",
+   "pattern": "P06",
+   "text": "No call from her side went through the exchanges in the last eight hours.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.exchange_none_proves",
+   "pattern": "P06",
+   "text": "Her side has made no calls for eight hours.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.exchange_call",
+   "pattern": "P06",
+   "text": "A call to her family's lines went through the exchange near {place} at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.exchange_proves",
+   "pattern": "P06",
+   "text": "Someone on her side called from near {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.register_none",
+   "pattern": "P06",
+   "text": "No family took a room at {place} under her name.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.register_none_proves",
+   "pattern": "P06",
+   "text": "Her family has not taken a room at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.register_guest",
+   "pattern": "P06",
+   "text": "Her family took a room at {place} at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.register_proves",
+   "pattern": "P06",
+   "text": "Her family stayed at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
   },
   {
    "id": "daily.done_note",
@@ -2398,20 +3102,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.line.the_sergeant_is_off_shift",
-   "pattern": "P07",
-   "text": "\"The sergeant is off shift, so nobody at the post has confirmed the ban yet.\"",
-   "role": "gov",
-   "speaker": "desk"
-  },
-  {
-   "id": "gov.line.the_post_confirms_the_sergeant",
-   "pattern": "P07",
-   "text": "\"The post confirms the ban, and the sergeant has her name on the desk.\"",
-   "role": "gov",
-   "speaker": "desk"
-  },
-  {
    "id": "gov.line.legal_wants_the_file_first",
    "pattern": "P07",
    "text": "\"Legal wants the file first. Ask again.\"",
@@ -2551,13 +3241,6 @@
    "role": "gov"
   },
   {
-   "id": "gov.line.the_post_will_confirm_when",
-   "pattern": "P07",
-   "text": "\"The ban is already in force. The post will confirm it when the sergeant reads it, in four hours.\"",
-   "role": "gov",
-   "speaker": "desk"
-  },
-  {
    "id": "gov.line.we_can_open_a_review",
    "pattern": "P07",
    "text": "\"We can open a review. Six hours to get it on paper.\"",
@@ -2689,21 +3372,21 @@
    "role": "gov"
   },
   {
+   "id": "gov.status.ban_in_force",
+   "pattern": "P05",
+   "text": "The travel ban is in force at every post.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.ban_slides",
+   "pattern": "P05",
+   "text": "The travel ban is out, but the post at the line lets it slide.",
+   "role": "gov"
+  },
+  {
    "id": "gov.status.not_sent",
    "pattern": "P05",
    "text": "Not sent.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.status.ban_sent_not_confirmed_at",
-   "pattern": "P05",
-   "text": "The travel ban is in force, and the post has not confirmed it",
-   "role": "gov"
-  },
-  {
-   "id": "gov.status.confirmed_the_post_has_her",
-   "pattern": "P05",
-   "text": "The post has confirmed the travel ban",
    "role": "gov"
   },
   {
@@ -2794,24 +3477,6 @@
    "id": "gov.scene.the_assignment_port_venla",
    "pattern": "P08",
    "text": "The assignment, Portô Venla",
-   "role": "gov"
-  },
-  {
-   "id": "gov.status.confirmed_at_the_post",
-   "pattern": "P05",
-   "text": "The post has confirmed it.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.why.circulate_the_ban_first",
-   "pattern": "P04",
-   "text": "Circulate the ban first.",
-   "role": "gov"
-  },
-  {
-   "id": "gov.label.confirm_the_travel_ban_reached",
-   "pattern": "P01",
-   "text": "Confirm the ban at the post",
    "role": "gov"
   },
   {
@@ -4103,11 +4768,6 @@
    "text": "To win"
   },
   {
-   "id": "brief.gov_not_confirmed",
-   "pattern": "P05",
-   "text": "The ban is out, but the post has not confirmed it."
-  },
-  {
    "id": "brief.gov_asked",
    "pattern": "P05",
    "text": "The embassy has not answered yet."
@@ -4439,11 +5099,6 @@
    "args": [
     "list"
    ]
-  },
-  {
-   "id": "gov.preview.the_post_answers",
-   "pattern": "P03",
-   "text": "The post answers four hours after your call. The ban is in force either way, and this tells you the post has it."
   },
   {
    "id": "card.counts_for",

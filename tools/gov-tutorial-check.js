@@ -16,7 +16,6 @@ const actions = {
   hold: () => must(Gov.commit(g, 'req:hold'), 'ask Costamar'),
   ban: () => must(Gov.commit(g, 'circulate'), 'circulate'),
   news: () => { if (!v().event) throw new Error('no news waiting at ' + g.c.hour); return must(Gov.commit(g, 'evt:plates'), 'plates'); },
-  confirm: () => must(Gov.commit(g, 'req:ban'), 'confirm ban'),
   search: () => { const o = v().orders.find(x => x.id === 'follow' && x.ok) || v().orders.find(x => x.id === 'search'); return must(Gov.commit(g, o.id), o.id); },
 };
 Tutorial.start('gov');

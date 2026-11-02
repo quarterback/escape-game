@@ -210,12 +210,12 @@
   {
    "code": "ban.confirmed",
    "pattern": "P03",
-   "text": "The post confirms the travel ban"
+   "text": "The travel ban holds at every post"
   },
   {
    "code": "ban.lost",
    "pattern": "P03",
-   "text": "The ban is no longer confirmed at the post"
+   "text": "The post at the line lets the ban slide"
   },
   {
    "code": "hold.esmeralda_moves",
@@ -255,6 +255,36 @@
    "args": [
     "hours"
    ]
+  },
+  {
+   "code": "body.sleep",
+   "pattern": "P03",
+   "text": "Everyone sleeps"
+  },
+  {
+   "code": "body.car",
+   "pattern": "P03",
+   "text": "A few hours of sleep in the car"
+  },
+  {
+   "code": "body.meal",
+   "pattern": "P03",
+   "text": "Everyone eats"
+  },
+  {
+   "code": "body.register",
+   "pattern": "P03",
+   "text": "Your name goes in the register"
+  },
+  {
+   "code": "body.hidden",
+   "pattern": "P03",
+   "text": "A police search here finds nobody while you stay"
+  },
+  {
+   "code": "body.clinic",
+   "pattern": "P03",
+   "text": "Her name goes in the clinic book"
   }
  ]
 }
