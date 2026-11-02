@@ -469,8 +469,18 @@ body.ringing #phoneh{color:var(--mint)}
 .pickcards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .pickcards li,.pickcard{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;background:#241a46;border-radius:12px;color:var(--ink);font-size:16px;line-height:1.4}
 .pickcards b,.pickcard b{font-family:var(--font-title);font-weight:400}
-#pick-cards{display:flex;flex-direction:column;gap:10px}
-.pickcard{border:3px solid transparent;min-height:60px}.pickcard.sel{border-color:var(--gold)}
+#pick-cards{display:grid;grid-template-columns:1fr;gap:10px}
+/* the cards you add, designed as game cards: a colored art panel with a pixel icon, the name, one line, and a check when chosen */
+.pickcard{position:relative;display:grid!important;grid-template-columns:76px 1fr;align-items:stretch;gap:0!important;padding:0!important;border:3px solid var(--line);min-height:84px;overflow:hidden;background:linear-gradient(135deg,#2A2157,#1C1540)!important;box-shadow:0 4px 0 #0c0820;transition:transform .12s,border-color .12s}
+.pickcard .art{display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--kc) 22%,#150F2E);border-right:3px solid color-mix(in srgb,var(--kc) 55%,#150F2E)}
+.pickcard .art svg{width:52px;height:auto;image-rendering:pixelated}
+.pickcard .txt{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:12px 40px 12px 14px}
+.pickcard .txt b{font-size:17px;line-height:1.25}.pickcard .txt span{font-size:16px;line-height:1.35;color:var(--soft)}
+.pickcard .chk{position:absolute;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:2px solid var(--line2);color:transparent}
+.pickcard.sel,.pickcard.sel:hover:not(:disabled){border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 0 #0c0820,0 0 0 3px rgba(255,201,60,.22)}
+.pickcard.sel .chk{background:var(--gold);border-color:var(--gold);color:#150F2E}
+.pickcard.sel .txt span{color:var(--ink)}
+@media(min-width:700px){#pick-cards{grid-template-columns:1fr 1fr}}
 .pickbox .row{display:flex;gap:10px;justify-content:space-between;position:sticky;bottom:0;padding:10px 0;background:linear-gradient(transparent,var(--bg) 30%)}
 .pickbox .row .primary{flex:1}
 .choosebtn{font-size:20px;min-height:60px}
