@@ -109,6 +109,7 @@ const UI = (() => {
     if (gov) {
       const v = Gov.view(gov);
       $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
+      { const bl = $('bodyline'), b = v.body, w = { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; bl.hidden = !!gov.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); } // Sofia's own food and sleep
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
       $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label'); $('sosa-next').parentElement.hidden = false; $('sosa-where').hidden = false; $('sosa').querySelector('.arrive').hidden = false;
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
@@ -205,7 +206,7 @@ const UI = (() => {
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
-    b.onclick = () => { Sfx.unlock(); if (w.id === 'lodge' || w.id === 'wait_on') { doCommit(w.id); return; } sel = w.id; Sfx.select(); renderAll(); }; // lodging and skip ahead: one tap, no confirm
+    b.onclick = () => { Sfx.unlock(); if (w.id === 'lodge' || w.id === 'wait_on') { if (gov) doGov(w.id); else doCommit(w.id); return; } sel = w.id; Sfx.select(); renderAll(); }; // lodging and skip ahead: one tap, no confirm
     return b;
   }
   function waitBox(w) {
@@ -800,8 +801,14 @@ const UI = (() => {
   function renderGovHere() {
     const box = $('approaches'); box.innerHTML = '';
     const v = Gov.view(gov);
+    if (v.next.length && phase === 'move' && !v.event) { const d = document.createElement('div'); d.className = 'nextbox'; d.innerHTML = v.next.map(x => `<p>${esc(x)}</p>`).join(''); box.appendChild(d); }
     for (const a of v.orders) { if (!a.ok) continue; if (sel === a.id) box.appendChild(expanded(a, T('action.send_order'), () => doGov(a.id))); else box.appendChild(approachBtn(a, phase === 'move' && Tutorial.allowsApproach(a.id))); }
     const rep = document.createElement('div'); rep.className = 'reports'; rep.innerHTML = `<h2>${T('nav.reports')}</h2>` + (v.reports.length ? v.reports.map(r => `<article class="report"><div class="src"><span>${esc(r.source)}</span><span>${r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: `<span class="mono">${r.age}</span>` })}</span></div><p>${esc(r.text)}</p><div class="pv"><span><b>${T('report.proves')}</b><span>${esc(r.proves)}</span></span><span><b>${T('report.not_prove')}</b><span>${esc(r.doesnt)}</span></span></div></article>`).join('') : `<p class="hint">${T('report.empty')}</p>`);
+    // the same waits as the candidate's side: skip to the next thing, and food and sleep (owner, Nov. 2, 2026)
+    { const can = !s.over && phase === 'move' && Tutorial.allowsWait() && !v.event, ws = [];
+      if (v.waitOn.ok) ws.push({ id: 'wait_on', name: T('action.wait_on'), hours: 12, lines: [], upTo: true });
+      if (v.lodge.ok) ws.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] });
+      const at = box.querySelector('.reports'); for (const w of ws) box.insertBefore(waitBtn(w, can), at); }
     box.appendChild(rep);
     $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait(); $('waitdark').hidden = true;
   }
@@ -835,7 +842,8 @@ const UI = (() => {
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); }
-    else { movedThisRound = true; result = sm; if (sid === 'wait') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); autoNext(); }
+    else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // her rest screen is a choice card
+    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_on') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); autoNext(); }
     renderAll(); saveRun();
   }
 

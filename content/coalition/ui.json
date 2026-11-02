@@ -153,6 +153,27 @@
    "text": "Wait until dark"
   },
   {
+   "id": "gov.next.abroad",
+   "pattern": "P05",
+   "text": "Your police can't act in Costamar until it agrees to hold her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.next.ask_hold",
+   "pattern": "P05",
+   "text": "Ask Costamar to hold her on the desk.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.next.hold_due",
+   "pattern": "P05",
+   "text": "Costamar answers by {time}.",
+   "args": [
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
    "id": "action.wait_on",
    "pattern": "P01",
    "text": "Skip to what happens next"

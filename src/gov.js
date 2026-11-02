@@ -17,7 +17,7 @@ const Gov = (() => {
   const T = (id, args) => C.t(id, args);
   const ev = (type, data) => Object.assign({ type }, data);
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
-  const EVERY = 5, LEAK = 0.5; // a stop she reaches is reported only some of the time
+  const EVERY = 4, LEAK = 0.5; // a stop she reaches is reported only some of the time
   const place = (i) => i === 0 ? 'the residence' : i === 4 ? 'the line' : LV(i).short;
 
   function newRun(seed, target, opts) {
@@ -27,7 +27,7 @@ const Gov = (() => {
     const c = S.newRun(seed, target, { manualEnemy: true, dest: (opts && opts.dest) || pick });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
       timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
-      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0 };
+      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0, awake: 6, fed: 2 };
     // a companion gives Sofia one police card from the start
     g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
     if (g.companion && !g.hand.includes(D.COMPANIONS[g.companion].gov)) g.hand.push(D.COMPANIONS[g.companion].gov);
@@ -110,9 +110,13 @@ const Gov = (() => {
       if (e.type === 'over') g.over = e;
     }
   }
+  // Sofia's food and sleep (owner, Nov. 2, 2026): the same levels as the candidate's, and the same penalty on orders that roll
+  const TIRED = 18, EXHAUSTED = 30, HUNGRY = 12, STARVING = 24;
+  function body(g) { const t = (g.awake || 0) >= EXHAUSTED ? 2 : (g.awake || 0) >= TIRED ? 1 : 0, h = (g.fed || 0) >= STARVING ? 2 : (g.fed || 0) >= HUNGRY ? 1 : 0; return { tire: t, hunger: h, harder: g.tutorial ? 0 : Math.min(2, t + (h === 2 ? 1 : 0)) }; }
   function pass(g, events, hours) {
     const target = g.c.hour + hours, from = g.c.hour;
     while (g.c.hour < target && !g.c.over) { leak(g, events, herStep(g)); }
+    if (!g.tutorial) { g.awake = (g.awake || 0) + (g.c.hour - from); g.fed = (g.fed || 0) + (g.c.hour - from); }
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
@@ -141,7 +145,7 @@ const Gov = (() => {
       const abroad = g.belief === 5 && (o.id === 'search' || o.id === 'roadblock' || o.id === 'press');
       const why = abroad && !g.hand.includes('esm_intro') ? T('gov.why.your_ministry_does_not_command') : '';
       const dcm = g.dcMods.filter(d => d.until > g.c.hour).reduce((n, d) => n + d.delta, 0);
-      const real = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm); // the target the roll uses; it never reaches the view
+      const real = tgt(o.dc - bonus + (abroad ? 1 : 0) + dcm + body(g).harder); // the target the roll uses; it never reaches the view; tired or starving makes it harder
       // an order with nothing written for failure and a difficulty of 1 (watching the house, following a report) is a choice, not a chance
       if (o.dc <= 1 && !o.fail) { out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, real: null, ok: !why, why, text: o.text, who: T('gov.preview.who_acts', { who: o.who }), pay: false, odds: '', noRoll: true, bonus: [], bonusFrom: [],
         preview: [o.text, T('gov.preview.takes_hour_acts', { who: o.who }), T('gov.preview.cannot_fail')] }); continue; }
@@ -158,6 +162,12 @@ const Gov = (() => {
     add('req:operator', T('gov.label.open_a_licence_review_on'), g.req.operator === 'notyet' && c.hour >= 6, g.req.operator !== 'notyet' ? T('gov.status.the_aviation_desk_has_it') : T('gov.why.the_aviation_desk_opens_on'), 1, [T('gov.preview.the_aviation_desk_takes_six')]);
     return out;
   }
+  // what is next when the orders here cannot reach her: across the line, nothing works until Costamar agrees to hold her
+  function nextLines(g) {
+    if (g.belief !== 5 || g.hand.includes('esm_intro')) return [];
+    const job = g.pending.find(j => j.job === 'hold');
+    return [T('gov.next.abroad'), g.req.hold === 'promised' && job ? T('gov.next.hold_due', { time: S.clockText(job.hour) }) : T('gov.next.ask_hold')];
+  }
   function view(g) {
     const c = g.c, age = (h) => { const d = c.hour - h; return d <= 0 ? 'just now' : `${d} h`; };
     return {
@@ -166,7 +176,9 @@ const Gov = (() => {
       levelName: [T('gov.scene.the_assignment_port_venla'), T('gov.scene.provincial_desks_santa_laura'), T('gov.scene.the_support_network_nova_trent'), T('gov.scene.the_freight_salta'), T('gov.scene.the_huhui_border'), T('gov.scene.susana_airfield')][g.belief],
       objective: [T('gov.scene.the_watched_convoy_splits_the'), T('gov.scene.reports_conflict_a_patrol_can'), T('gov.scene.someone_is_sheltering_her_your'), T('gov.scene.a_departure_window_is_approaching'), T('gov.scene.the_crossing_could_happen_before'), T('gov.scene.she_may_be_across_the')][g.belief],
       reports: g.reports.map(r => Object.assign({}, r, { age: age(r.hour), source: personName(g, r.source) })),
-      event: eventView(g), orders: orders(g), calls: calls(g),
+      event: eventView(g), orders: orders(g), calls: calls(g), body: body(g),
+      waitOn: { id: 'wait_on', hours: 12, ok: !g.over && !c.over && !g.event }, lodge: { id: 'lodge', ok: !g.over && !c.over && !g.event && !g.tutorial },
+      next: nextLines(g),
       messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? T('gov.name.interior_minister') : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
       requests: [
         { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: c.flags.restriction ? 'inhand' : 'notyet', sub: c.flags.restriction ? T(c.flags.lax ? 'gov.status.ban_slides' : 'gov.status.ban_in_force') : T('gov.status.not_sent') }, // the ban is in force once it is sent (owner, Nov. 2, 2026)
@@ -200,6 +212,10 @@ const Gov = (() => {
     if (id.startsWith('evt:')) { if (!g.event) return { ok: false, why: T('sim.why.no_news_waiting') }; resolveEvent(g, id.slice(4), events); return done(g, events); }
     if (g.event && !id.startsWith('msg:')) return { ok: false, why: T('gov.why.deal_with_the_news_first') };
     if (id === 'wait') { pass(g, events, 1); return done(g, events); }
+    if (id === 'lodge') { g.event = { id: 'desk_rest' }; events.push(ev('dispatch', { title: D.GOV_EVENTS.find(e => e.id === 'desk_rest').title })); return { ok: true, events }; }
+    // one click to the next thing: a report, a message, a request answered, or the news (at most 12 hours)
+    if (id === 'wait_on') { const sig = () => [g.reports.length, g.inbox.length, JSON.stringify(g.req), g.hand.length].join('|'), before = sig(), until = c.hour + 12;
+      do pass(g, events, 1); while (c.hour < until && !c.over && sig() === before && c.hour < g.nextEventAt); return done(g, events); }
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: T('sim.why.that_message_is_gone') };
       const chosen = (g.inbox[i].options || []).find(o => o.id === optionId); g.inbox.splice(i, 1); g.answered.push(optionId); events.push(ev('answered', { label: chosen ? chosen.label : optionId }));
@@ -238,6 +254,7 @@ const Gov = (() => {
         if (id === 'search') { const close = c.pos === g.belief; report(g, events, g.belief, 'desk', close ? T('gov.report.the_patrol_finds_the_room', { place: place(g.belief) }) : T('gov.report.the_patrol_searches_nobody_there', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
         if (id === 'circulate') { g.req.ban = 'inhand'; enforce(g); }
       }
+      if (def.fx) applyFx(g, Object.assign({}, def.fx), events); // a stop's own order: its effect when it works
     } else { events.push(ev('say', { who: 'narrator', text: def.fail || T('gov.report.nothing_comes_of_it') })); if (id === 'circulate') { c.belief = -1; report(g, events, g.belief, 'desk', T('gov.report.a_clerk_at_the_provincial'), T('gov.report.her_side_knows_the_ban'), T('gov.report.where_she_is'), 0, c.hour); } }
     pass(g, events, o.hours); return done(g, events);
   }
@@ -283,6 +300,7 @@ const Gov = (() => {
     if (fx.dc) out.push(M(fx.dc[0] < 0 ? 'gain' : 'lose', fx.dc[0] < 0 ? 'orders.easier' : 'orders.harder', { hours: hrsText(fx.dc[1]) }));
     if (fx.minister) out.push(M(fx.minister > 0 ? 'gain' : 'lose', fx.minister > 0 ? 'minister.pleased' : 'minister.angry'));
     if (fx.sooner) out.push(M('lose', 'minister.sooner', { hours: hrsText(fx.sooner) }));
+    if (fx.sleep) out.push(M('gain', 'body.sleep')); if (fx.meal) out.push(M('gain', 'body.meal'));
     return out;
   }
   function eventView(g) {
@@ -347,6 +365,7 @@ const Gov = (() => {
     if (fx.false) falseLead(g, events);
     if (fx.lead !== undefined) trueLead(g, events, fx.lead);
     if (fx.hours) pass(g, events, fx.hours);
+    if (fx.sleep) g.awake = 0; if (fx.meal) g.fed = 0;
   }
 
   // ---- the debrief: a result you can read at a glance, then why, then the detail ---------------
