@@ -82,6 +82,12 @@ How to work under it:
   companion needs both sides, picker wording (`mate.<id>.*` in the catalog), a
   sprite and a calibration; contract test C21 checks the roster. Police-side
   sources report a past moment at one place, late, never her live position.
+- **Food and sleep** (owner, Nov. 2, 2026: build the lodging system in the game).
+  Rested, Tired, Exhausted and Fed, Hungry, Starving show as words under the
+  clock and in the briefing, never as hours. "Stop to eat and sleep" opens the
+  stop's lodging screen. The thresholds and effects are in
+  [docs/companions.md](docs/companions.md); they are a balance rule like any
+  other and change only with the owner's words and a calibration.
 - **Name people every time.** Owner, Nov. 1, 2026: "'your sibling' users will
   have no idea who that person is." The screen says "your brother Duartē" or
   "your sister Līviā"; a move's opened line says who a person is and why.

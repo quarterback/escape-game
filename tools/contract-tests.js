@@ -152,6 +152,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
     for (let k = 0; k < 400 && !s.over; k++) { const A = Sim.actions(s);
       if (A.event) { const score = (c) => (c.rolls ? 1 : 0) + c.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); Sim.commit(s, 'evt:' + A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0].id); continue; }
       if (A.messages.length) { const o = A.messages[0].options.filter(x => x.ok); Sim.commit(s, A.messages[0].id, (o.find(x => x.id.startsWith('celina')) || o[0]).id); continue; }
+      { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
       const calls = A.calls.filter(c => c.ok); if (calls.length && s.pos < 4) { Sim.commit(s, calls[0].id); continue; }
       const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
       const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => out(a) - out(b) || (a.real || 0) - (b.real || 0));

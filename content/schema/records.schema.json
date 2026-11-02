@@ -114,6 +114,11 @@
    "end",
    "roll",
    "rest",
+   "sleep",
+   "meal",
+   "stay",
+   "hide",
+   "clinic",
    "say"
   ],
   "gov": [

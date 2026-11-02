@@ -21,6 +21,8 @@ function play(seed, who, mate) {
     if (A.event) { const score = (c) => (c.rolls ? 1 : 0) + c.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); const c = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; Sim.commit(s, 'evt:' + c.id); continue; }
     // answer messages first, preferring the committed options above
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; Sim.commit(s, m.id, opt.id); continue; }
+    // food and sleep: stop when exhausted, starving, tired at night or hungry, at the best bed or meal this stop offers
+    { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
     // push arrangements that are not pending and not complete, before trying the border or the airfield
     const calls = A.calls.filter(c => c.ok);
     const lvl = s.pos;

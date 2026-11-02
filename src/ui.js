@@ -127,6 +127,7 @@ const UI = (() => {
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
     for (const id of ['heatnum', 'heatnum2']) { const h = $(id); h.textContent = attnWord(s.exposure); h.className = 'mono lvl-' + attnLevel(s.exposure); } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.textContent = T('body.status', { tire: w.tire.toLowerCase(), hunger: w.hunger.toLowerCase() }); bl.className = 'bodyline lvl-' + ['low', 'rising', 'high'][Math.max(b.tire, b.hunger)]; }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
     $('whoami').textContent = `${Data.CHARACTERS[who].name}, ${Data.CHARACTERS[who].title}`;
@@ -178,14 +179,15 @@ const UI = (() => {
     const waits = [];
     if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
+    if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
-  const waitMeta = (w) => w.id === 'wait' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
+  const waitMeta = (w) => w.id === 'wait' || w.id === 'lodge' ? '' : `<span class="meta"><span class="hrs">${esc(T('action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
   function waitBtn(w, allowed) {
     const b = document.createElement('button'); b.className = 'act approach waitact' + (allowed ? '' : ' off'); b.disabled = !allowed;
     b.innerHTML = `${CLOCK}<span class="body"><span class="nm">${esc(w.name)}</span>${waitMeta(w)}</span>`;
-    b.onclick = () => { Sfx.unlock(); sel = w.id; Sfx.select(); renderAll(); };
+    b.onclick = () => { Sfx.unlock(); if (w.id === 'lodge') { doCommit('lodge'); return; } sel = w.id; Sfx.select(); renderAll(); };
     return b;
   }
   function waitBox(w) {
@@ -418,6 +420,7 @@ const UI = (() => {
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
     else if (sid.startsWith('call:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // the food and sleep screen is a choice card, not a move
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
     else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
       // owner, Nov. 1, 2026: "the screen in the animation should just show time passing ... the cards and tags are doing all the work"
@@ -503,7 +506,9 @@ const UI = (() => {
   const shortStats = () => [
     { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
-  ];
+  ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
+  // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
+  const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
     const m = { 5: [['jet', T('brief.jet')]] };
     m[s.belief] = [['sosa', T('brief.sosa')]];
@@ -634,7 +639,7 @@ const UI = (() => {
     el.hidden = !parts.length || !s || !!s.over;
     el.innerHTML = parts.length ? `<details open><summary>${T('recap.title')}</summary><div class="recapbody">${parts.join('')}</div></details>` : '';
   }
-  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold' };
+  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick' };
   function newsCard(card) {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }

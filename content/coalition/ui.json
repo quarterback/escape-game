@@ -1215,6 +1215,119 @@
    "text": "Back"
   },
   {
+   "id": "action.lodge",
+   "pattern": "P01",
+   "text": "Stop to eat and sleep"
+  },
+  {
+   "id": "card.kind_lodging",
+   "pattern": "P02",
+   "text": "Food and sleep"
+  },
+  {
+   "id": "card.kind_sick",
+   "pattern": "P02",
+   "text": "Your family"
+  },
+  {
+   "id": "body.preview_harder",
+   "pattern": "P03",
+   "text": "Your family is worn out from too little sleep or food, so this is harder."
+  },
+  {
+   "id": "body.now_tired",
+   "pattern": "P10",
+   "text": "After 18 hours awake you are tired, and every move that rolls is harder until you sleep."
+  },
+  {
+   "id": "body.now_exhausted",
+   "pattern": "P10",
+   "text": "After 30 hours awake you are exhausted, and every move that rolls is much harder until you sleep."
+  },
+  {
+   "id": "body.now_hungry",
+   "pattern": "P10",
+   "text": "After 12 hours without food you are hungry, and 12 more hours without a meal will make your moves harder."
+  },
+  {
+   "id": "body.now_starving",
+   "pattern": "P10",
+   "text": "After a day without food you are starving, and every move that rolls is harder until everyone eats."
+  },
+  {
+   "id": "body.status",
+   "pattern": "P05",
+   "text": "You are {tire} and {hunger}.",
+   "args": [
+    "tire",
+    "hunger"
+   ]
+  },
+  {
+   "id": "body.w_rested",
+   "pattern": "P02",
+   "text": "Rested"
+  },
+  {
+   "id": "body.w_tired",
+   "pattern": "P02",
+   "text": "Tired"
+  },
+  {
+   "id": "body.w_exhausted",
+   "pattern": "P02",
+   "text": "Exhausted"
+  },
+  {
+   "id": "body.w_fed",
+   "pattern": "P02",
+   "text": "Fed"
+  },
+  {
+   "id": "body.w_hungry",
+   "pattern": "P02",
+   "text": "Hungry"
+  },
+  {
+   "id": "body.w_starving",
+   "pattern": "P02",
+   "text": "Starving"
+  },
+  {
+   "id": "body.brief_sleep",
+   "pattern": "P02",
+   "text": "Sleep"
+  },
+  {
+   "id": "body.brief_food",
+   "pattern": "P02",
+   "text": "Food"
+  },
+  {
+   "id": "help.body",
+   "pattern": "P09",
+   "text": "**Food and sleep.** Everyone in your car needs both. After 18 hours awake you are tired, and after 30 you are exhausted. After 12 hours without a meal you are hungry, and after 24 you are starving. Tired or starving makes every move that rolls harder, and exhausted makes it much harder. Pick **Stop to eat and sleep** to see where you can stop at this stop. A room with your name in the register or a meal in public raises your police attention. If you go too long without food or sleep, your youngest falls sick."
+  },
+  {
+   "id": "gov.report.room_clerk",
+   "pattern": "P06",
+   "text": "A clerk at {place} remembers a family that took a room at {time}.",
+   "args": [
+    "place",
+    "time"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.room_clerk_proves",
+   "pattern": "P06",
+   "text": "Her family stopped at {place}.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
    "id": "mate.bruno.title",
    "pattern": "P02",
    "text": "Truck driver"
@@ -1290,13 +1403,18 @@
   {
    "id": "mate.marta.escape",
    "pattern": "P03",
-   "text": "She makes your own car look ordinary on the road out of Pedra Branca, so driving it is easier and does not raise your police attention. Hiring a plain car and getting past a flooded road get easier too."
+   "text": "She makes your own car look ordinary on the road out of Pedra Branca, so driving it is easier and does not raise your police attention. Police checkpoints in Valdória do not slow you down, and when you leave a stop the police are searching, she swaps the plates and your police attention drops by one. Hiring a plain car and getting past a flooded road get easier too."
   },
   {
    "id": "mate.marta.gov",
    "pattern": "P03",
    "text": "You start with her vehicle records. Searches and checkpoints at the residence, Pedra Branca and Nova Trentô get easier, the decoy cars are spotted, and the toll records catch every car on the road south.",
    "role": "gov"
+  },
+  {
+   "id": "mate.marta.plates",
+   "pattern": "P10",
+   "text": "Marta swaps the plates before you leave, and the police searching here lose track of the car."
   },
   {
    "id": "mate.ines.title",
@@ -1311,12 +1429,12 @@
   {
    "id": "mate.ines.escape",
    "pattern": "P03",
-   "text": "While you lie low, wait for dark, sleep or sit out a long delay, the police searching where you are do not raise your police attention. Sleeping at Nova Trentô lowers it by one more."
+   "text": "While you lie low, wait for dark, sleep or sit out a long delay, a police search where you are does not raise your police attention. She buys food so nobody sees your face, a night in the car is a full night's sleep with her, and she treats your youngest herself if she falls sick."
   },
   {
    "id": "mate.ines.gov",
    "pattern": "P03",
-   "text": "You start with her clinic contacts. You can ask the clinics about the candidate's family. A clinic names the stop where her family was seen, three hours late and once for each stop.",
+   "text": "When a clinic treats the candidate's sick child, the doctor calls the local police, who search there. The clinic's report reaches you three hours late, and you can also ask the clinics yourself. She also teaches the patrols what a worn-out family looks like, so a search stops a tired or starving candidate from Rising police attention.",
    "role": "gov"
   },
   {
@@ -1416,12 +1534,12 @@
   {
    "id": "mate.emilio.escape",
    "pattern": "P03",
-   "text": "At Pedra Branca, Nova Trentô and Salta, you can spend four hours in a room booked under another name. Your police attention drops, and a police search there finds nobody while you stay."
+   "text": "At Pedra Branca, Nova Trentô and Salta, his room is one of the places to eat and sleep. It is booked under another name, so it leaves your name out of the register, lowers your police attention, and a police search there finds nobody while you stay."
   },
   {
    "id": "mate.emilio.gov",
    "pattern": "P03",
-   "text": "You start with his guest registers. You can check the hotels at Pedra Branca, Nova Trentô or Salta for a guest who gave another name, two hours late, and the police watch those hotels afterward.",
+   "text": "You start with his guest registers. You can check the hotels at Pedra Branca, Nova Trentô or Salta for a room the candidate's family took, with the hour, two hours late, and the police watch those hotels afterward.",
    "role": "gov"
   },
   {
@@ -1506,11 +1624,6 @@
    "id": "mate.ines.quiet",
    "pattern": "P10",
    "text": "Inês keeps everyone inside and fed, so nobody here sees you while you wait."
-  },
-  {
-   "id": "mate.ines.sleep",
-   "pattern": "P10",
-   "text": "Inês makes sure everyone eats and sleeps, and nobody leaves the room."
   },
   {
    "id": "mate.emilio.hidden",
@@ -1600,30 +1713,32 @@
   {
    "id": "gov.report.clinic_none",
    "pattern": "P06",
-   "text": "No clinic in Valdória has anything new on her family.",
+   "text": "No clinic in Valdória has treated anyone from her family since the last report.",
    "role": "gov"
   },
   {
    "id": "gov.report.clinic_none_proves",
    "pattern": "P06",
-   "text": "No clinic has seen her family since the last report.",
+   "text": "Nobody in her family has been to a clinic since the last report.",
    "role": "gov"
   },
   {
    "id": "gov.report.clinic_saw",
    "pattern": "P06",
-   "text": "A clinic near {place} saw someone from her family.",
+   "text": "A clinic near {place} treated her youngest at {time}.",
    "args": [
-    "place"
+    "place",
+    "time"
    ],
    "role": "gov"
   },
   {
    "id": "gov.report.clinic_proves",
    "pattern": "P06",
-   "text": "Her family was at {place} three hours ago.",
+   "text": "Her family was at {place} at {time}.",
    "args": [
-    "place"
+    "place",
+    "time"
    ],
    "role": "gov"
   },
@@ -1661,7 +1776,7 @@
   {
    "id": "gov.report.register_none",
    "pattern": "P06",
-   "text": "No guest at {place} gave another name.",
+   "text": "No family took a room at {place} under her name.",
    "args": [
     "place"
    ],
@@ -1670,7 +1785,7 @@
   {
    "id": "gov.report.register_none_proves",
    "pattern": "P06",
-   "text": "Her party has not stayed at {place}.",
+   "text": "Her family has not taken a room at {place}.",
    "args": [
     "place"
    ],
@@ -1679,7 +1794,7 @@
   {
    "id": "gov.report.register_guest",
    "pattern": "P06",
-   "text": "A guest who gave another name checked in at {place} at {time}.",
+   "text": "Her family took a room at {place} at {time}.",
    "args": [
     "place",
     "time"
@@ -1689,7 +1804,7 @@
   {
    "id": "gov.report.register_proves",
    "pattern": "P06",
-   "text": "Someone gave a false name at {place}.",
+   "text": "Her family stayed at {place}.",
    "args": [
     "place"
    ],

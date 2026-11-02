@@ -109,7 +109,8 @@ const Data = (() => {
     // mechanic: driving your own car out of Pedra Branca, the plain car, the decoy convoy, the flooded bridge.
     comp_marta:   { name: 'Marta', tag: 'mechanic', from: 'self', reach: ['residence', 'road', 'colonia', 'salta'], works: 'Cars and roads in Valdória.', companion: true,
                     text: 'Marta has kept campaign cars running for years and knows how to make a recognizable car look ordinary.' },
-    // care: quiet hours (lying low, waiting for dark, sleeping, long waits in the news) never raise police attention; sleep rests more.
+    // care: quiet hours (lying low, waiting for dark, sleeping, long waits in the news) never raise police attention; she buys
+    // food without anyone seeing you, a night in the car is a full night's sleep, and she treats a sick child herself.
     comp_ines:    { name: 'Inês', tag: 'care', from: 'self', reach: ALL, works: 'Every wait and every night of rest.', companion: true,
                     text: 'Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions.' },
     // court: the travel ban reaches the posts 12 hours after it is sent; the summons and the hearing have a way around the ban.
@@ -124,7 +125,7 @@ const Data = (() => {
     // phone: the police's call traces find nothing, and once a run the tap on your family's phone slows nothing.
     comp_nadia:   { name: 'Nadia', tag: 'phone', from: 'self', reach: ALL, works: 'Every call you make.', companion: true,
                     text: 'Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment.' },
-    // lodging: a room under another name at Pedra Branca, Nova Trentô and Salta.
+    // lodging: Emilio's room under another name at Pedra Branca, Nova Trentô and Salta, in the food and sleep screen.
     comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Pedra Branca, Nova Trentô and Salta.', companion: true,
                     text: "Emilio manages small hotels along the south road. He can find a room under someone else's reservation." },
     // union: a train the crew holds in Salta, and the strike.
@@ -174,9 +175,6 @@ const Data = (() => {
           mods: { delay: 2, decoy: 2, mechanic: 2 }, text: "You drive on in your own car, which the police know.",
           success: { exposure: 1, say: 'You pass the first post before the fax does.' },
           fail: { exposure: 3, belief: 1, say: "The post at the river has your plate. They turn you back and report you." } },
-        { id: 'room_road', mate: 'emilio', name: "Stay in Emilio's room", hours: 4, dc: 1, noRoll: true, once: true, stay: true, needs: [{ card: 'lodging' }],
-          mods: {}, text: "Emilio has a room above a garage in Pedra Branca booked under another guest's name.",
-          success: { exposure: -1, hide: true, say: 'You spend four hours in a room over the garage. The guest book has another name in it.' }, fail: { say: '' } },
       ] },
     { id: 'colonia', name: 'The colônia, Nova Trentô', short: 'Nova Trentô', scene: 'colonia',
       objective: "Get to Salta. The road opens once Costamar expects you, or after you free Nonā Rosa's truck.",
@@ -189,15 +187,9 @@ const Data = (() => {
         { id: 'work_phone', name: "Call your contacts", hours: 3, dc: 1, noRoll: true, once: true, needs: [],
           mods: {}, text: "You use Nonā Rosa's phone to push on the jet, your welcome in Costamar and your visa.",
           success: { advance: ['aircraft', 'reception', 'permission'], say: 'Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.' }, fail: { say: '' } },
-        { id: 'sleep', name: 'Sleep', hours: 6, dc: 1, noRoll: true, needs: [],
-          mods: {}, text: "You sleep for six hours in Nonā Rosa's spare room.",
-          success: { exposure: -2, say: 'Nobody knocks for six hours, and you wake to a quiet house.' }, fail: { say: '' } },
         { id: 'leave', name: 'Take the road to Salta', hours: 2, dc: 1, noRoll: true, needs: [{ arr: 'reception', stage: 1 }],
           mods: {}, text: "Nonā Rosa's cousin drives you up to Salta.",
           success: { say: 'Nonā Rosa\'s cousin drives. The road climbs and the radio loses the station.' }, fail: { say: '' } },
-        { id: 'room_colonia', mate: 'emilio', name: "Stay in Emilio's room", hours: 4, dc: 1, noRoll: true, once: true, stay: true, needs: [{ card: 'lodging' }],
-          mods: {}, text: "Emilio has a room at the inn in Nova Trentô booked under another guest's name.",
-          success: { exposure: -1, hide: true, say: 'You spend four hours at the inn. The innkeeper calls you by the name on the booking.' }, fail: { say: '' } },
       ] },
     { id: 'salta', name: 'The rail town, Salta', short: 'Salta', scene: 'salta',
       objective: 'Get on the midnight freight.',
@@ -219,9 +211,6 @@ const Data = (() => {
           mods: {}, text: "The yardmaster offers you a seat on the freight for cash.",
           success: { exposure: 2, say: "Three men watch the yardmaster take your money." },
           fail: { exposure: 2, say: 'He takes the envelope, thanks you by your real name, and walks to the telephone. The yard knows who is here.' } },
-        { id: 'room_salta', mate: 'emilio', name: "Stay in Emilio's room", hours: 4, dc: 1, noRoll: true, once: true, stay: true, needs: [{ card: 'lodging' }],
-          mods: {}, text: "Emilio has a room at the railway hotel in Salta booked under another guest's name.",
-          success: { exposure: -1, hide: true, say: 'You spend four hours at the railway hotel. The night clerk never asks to see a passport.' }, fail: { say: '' } },
         { id: 'crew_train', mate: 'joana', name: 'Ride the train the crew holds', hours: 2, dc: 3, needs: [{ card: 'union' }],
           mods: {}, text: "Joana asks the yard crew to hold a freight car until you are aboard, at any hour.",
           success: { say: 'The crew holds the car at the end of the platform. Joana shakes hands with the driver, and the train leaves with you in it.' },
@@ -364,8 +353,8 @@ const Data = (() => {
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: { media: 2 }, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
     { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2, union: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
     // the later companions' orders: needs is the government card that opens the order
-    { id: 'clinics', needs: 'clinics', name: () => 'Ask the clinics about her family', hours: 2, dc: 3, who: 'Inês', mods: { medical: 2 }, text: 'Inês asks the clinics in Valdória whether anyone from her family has been seen. A clinic names the stop three hours later, and it names each stop once.', fail: 'The clinics will not talk without a court order.' },
-    { id: 'exchange', needs: 'exchange', name: () => 'Pull the exchange records', hours: 2, dc: 3, who: 'Nadia', mods: { phone: 2 }, text: 'Nadia reads the exchange logs for calls to her family in the last eight hours. A log names the town a call came from, not where she is now.', fail: 'The exchange supervisor wants the request in writing.' },
+    { id: 'clinics', needs: 'clinics', name: () => 'Ask the clinics about her family', hours: 1, dc: 3, who: 'Inês', mods: { medical: 2 }, text: 'Inês asks the clinics in Valdória whether anyone from her family has been seen. A clinic names the stop three hours later, and it names each stop once.', fail: 'The clinics will not talk without a court order.' },
+    { id: 'exchange', needs: 'exchange', name: () => 'Pull the exchange records', hours: 1, dc: 3, who: 'Nadia', mods: { phone: 2 }, text: 'Nadia reads the exchange logs for calls to her family in the last four hours. A log names the town a call came from, not where she is now.', fail: 'The exchange supervisor wants the request in writing.' },
     { id: 'registers', needs: 'registers', where: [1, 2, 3], name: (lv) => `Check the guest registers at ${lv}`, hours: 1, dc: 3, who: 'Emilio', mods: { lodging: 2 }, text: 'Emilio reads the hotel registers at the stop you are watching for a guest who gave another name, and you hear two hours later. The police watch the hotels there afterward.', fail: 'The hotel owners close their books to you.' },
     { id: 'appeal', needs: 'newsroom', name: () => 'Put her photo on the morning news', hours: 2, dc: 3, who: 'Celina', mods: { media: 2 }, text: "Celina's station runs her photo and a number to call. Her police attention rises by one. Three hours later a caller says where he saw her, and not every caller is right.", fail: 'The station runs a story about the weather instead.' },
     { id: 'lean', name: () => 'Press the charter operator', hours: 3, dc: 3, who: 'the aviation desk', mods: { operator: 2 }, act: 'lean_operator', text: 'If her jet already has a crew, the operator pulls the crew until she reassures him.', after: 12 },
@@ -569,6 +558,50 @@ const Data = (() => {
       { id: 'dark', label: 'Move while they are blind', fx: { exposure: -1, skipEnemy: true } },
       { id: 'sit', label: 'Sit tight until the lights return', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
   ];
+  // ---- Food and sleep (owner, Nov. 2, 2026: build the lodging system). "Stop to eat and sleep" opens the screen for the
+  // stop you are at. fx: hours, meal (everyone eats), sleep ('full' | 'car': a few hours in the car), stay ('room': a
+  // register with your name in it | 'emilio': a room under another name), hide (a police search here finds nobody while
+  // you stay), exposure, rest (hours out of sight: with Inês, no attention from a search here), say. A choice with no fx
+  // closes the screen. needs: a card kind, as on news choices.
+  const LODGING = [
+    { id: 'lodge_residence', at: ['residence'], title: 'Eat and sleep at home', text: 'You are still in your own house, with the watch outside. The kitchen is full, and your bed is upstairs.', choices: [
+      { id: 'home_sleep', label: 'Sleep in your own bed', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'You eat, and everyone sleeps six hours behind drawn curtains.' } },
+      { id: 'home_meal', label: 'Eat in the kitchen', fx: { hours: 1, meal: true, rest: true, say: 'The cook feeds everyone before she goes home.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_road', at: ['road'], title: 'A place to stop in Pedra Branca', text: 'The motel by the river asks every guest for a name and a passport. The truck stop sells hot food to anyone who stands in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room over a garage under another guest\'s name. Everyone eats and sleeps six hours, and nobody asks who you are.' } },
+      { id: 'motel', label: 'Take a room at the motel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You park behind a grain store and sleep four hours sitting up.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês goes into the truck stop alone and comes back with food for everyone.' } },
+      { id: 'truck_stop', label: 'Eat at the truck stop', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at the counter. The man beside you looks twice at your face.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_colonia', at: ['colonia'], title: "Nonā Rosa's house", text: 'Nonā Rosa has a spare room and a long table, and nobody in the colônia talks to the police.', choices: [
+      { id: 'nona_room', label: "Sleep in Nonā Rosa's spare room", fx: { hours: 6, sleep: 'full', meal: true, rest: true, exposure: -2, say: 'Nonā Rosa feeds everyone, and nobody knocks for six hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room at the inn", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the inn under another guest\'s name. The innkeeper calls you by that name all night.' } },
+      { id: 'nona_meal', label: "Eat at Nonā Rosa's table", fx: { hours: 1, meal: true, rest: true, say: 'Nonā Rosa serves soup and bread and asks nothing.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car behind the cooperative shed.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the railway hotel under another guest\'s name. The night clerk never asks to see a passport.' } },
+      { id: 'rail_hotel', label: 'Take a room at the railway hotel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the freight sidings.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
+      { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a name and a passport.', choices: [
+      { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps five hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car with the engine off and the windows white with frost.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys bread and soup at the hostel kitchen and brings it to the car.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_airfield', at: ['airfield'], title: 'The crew lounge at Portalba', text: 'The charter crews have a lounge behind the hangar with bunks and a kitchen.', choices: [
+      { id: 'lounge', label: 'Rest in the crew lounge', fx: { hours: 4, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps four hours on the crew bunks.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+  ];
+  // Too long without food or sleep makes the youngest sick, once at each stop. A clinic visit goes on a clinic's record.
+  const SICK = { id: 'sick', title: 'Your youngest is sick', text: 'Too many hours without food or sleep have caught up with your youngest. She has a fever and cannot keep water down.', choices: [
+    { id: 'ines_treat', label: 'Let Inês treat her', needs: [{ card: 'care' }], fx: { hours: 1, sleep: 'car', meal: true, say: 'Inês cools the fever, makes everyone eat, and keeps your youngest asleep across your lap.' } },
+    { id: 'clinic', label: 'Take her to a clinic', fx: { hours: 2, clinic: true, meal: true, exposure: 1, say: 'A doctor sees her in 20 minutes and writes her name in the clinic book. The fever breaks by morning.' } },
+    { id: 'push_on', label: 'Keep going with her sick', fx: { mod: 1, say: 'She cries in the back seat, and every move here is harder while you look after her.' } } ] };
   // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
   const HOLDS = {
     1: { title: 'Stopped and questioned', text: 'A patrol stops you at {here}. An officer wants to know where you are going.', choices: [
@@ -606,6 +639,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  return { LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;
