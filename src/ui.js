@@ -614,7 +614,8 @@ const UI = (() => {
     if (!on) { $('phasecard').hidden = true; $('herehead').hidden = false; $('approaches').hidden = false; $('lvlhead2').hidden = false; $('phasedone').hidden = true; return; }
     if (!Render.busy()) {
       if (phase === 'phone') phase = 'move';
-      if ((phase === 'phone' || phase === 'move') && pendingEvent() && !movedThisRound) phase = 'news';
+      // news that is waiting always shows: a call answered before the round wrapped up once left news hidden and every move locked (owner, Nov. 2, 2026)
+      if ((phase === 'phone' || phase === 'move') && pendingEvent()) phase = 'news';
     }
     $('round').textContent = T('round.label', { n: round });
     const idx = PH.indexOf(phase);
