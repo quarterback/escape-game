@@ -74,8 +74,14 @@ How to work under it:
 - **Companions.** After the character, the player picks one companion who
   travels with them, never turns, and has one specialty (owner, Nov. 1, 2026).
   The list is the same for every character; on the police side each gives
-  Sofia a different police card. Bruno, Clara and Rita exist; more need a
-  police-side effect first.
+  Sofia a different police card. There are 11 (owner, Nov. 2, 2026): Bruno,
+  Clara, Rita, Marta, Inês, Paulo, Celina, Tomás, Nadia, Emilio and Joana. Each
+  has a kind of help no other card carries and a police-side source of their
+  own; [docs/companions.md](docs/companions.md) lists what each one does on both
+  sides and the calibration for each. A companion's card is never lost. A new
+  companion needs both sides, picker wording (`mate.<id>.*` in the catalog), a
+  sprite and a calibration; contract test C21 checks the roster. Police-side
+  sources report a past moment at one place, late, never her live position.
 - **Name people every time.** Owner, Nov. 1, 2026: "'your sibling' users will
   have no idea who that person is." The screen says "your brother Duartē" or
   "your sister Līviā"; a move's opened line says who a person is and why.

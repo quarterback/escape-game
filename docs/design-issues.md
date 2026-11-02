@@ -266,3 +266,9 @@ Every player-facing string (1,483) was checked against Humanizer, AP style and t
 - 34: The About page says the game's map places the countries on the real globe.
 - 35: The blizzard costs Sosā his next move.
 - 36: Removed 13 strings no code reaches, after checking for IDs built at runtime.
+
+## Companions, November 2, 2026: questions for the owner
+
+37. **Confirming the travel ban at the post changes nothing unless Tomás is Sofia's companion.** The circulate order says "A sent message does not close the border until the post confirms", but the rules apply the ban to her crossings as soon as it is sent; confirmation only changes the request's status (related to FLAG-3). With Tomás, a confirmed ban now makes her crossings at the line harder. Decide whether confirmation should matter without him.
+38. **The police's circulate line says "From now on"** even when Paulo holds the order in the outbox for 12 hours. His sentence follows it and gives the real time, but the first sentence is still wrong for that run.
+39. **Inês and Emilio stand in for the lodging, food and long-wait systems that do not exist yet.** Inês works on lying low, waiting for dark, sleeping and the news choices that are long waits (marked `rest` in `src/data.js`); Emilio adds a four-hour room at three stops. When lodging and food are built, both should move onto that system.

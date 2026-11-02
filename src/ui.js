@@ -149,7 +149,7 @@ const UI = (() => {
   }
 
   // ---- Here: approaches with a die face -------------------------------------
-  const tagName = (tag) => ({ boat: T('tag.boat'), decoy: T('tag.decoy'), delay: T('tag.delay'), document: T('tag.document'), influence: T('tag.influence'), information: T('tag.information'), introduction: T('tag.introduction'), operator: T('tag.operator'), passage: T('tag.passage'), patrol: T('tag.patrol'), permission: T('tag.permission'), rail: T('tag.rail'), records: T('tag.records'), vehicle: T('tag.vehicle'), watch: T('tag.watch') })[tag] || tag;
+  const tagName = (tag) => { const id = ['tag', tag].join('.'); return Content.has(id) ? T(id) : tag; }; // a card kind in player words
   // owner, Nov. 1, 2026: a move shows what it is and how long it takes, nothing else. Only moves you can make
   // are listed. A person's tag shows only as a warning (doubted, or talked to the police).
   const warnMark = (a) => { if (!a.with || a.with === 'self' || !s.people[a.with]) return ''; const [c, t] = whoMark(a.with); return c === 'doubt' || c === 'talked' ? mks([{ k: c, t: `${Sim.shortName(gov ? gov.c : s, a.with)}: ${t}` }]) : ''; };
@@ -272,7 +272,7 @@ const UI = (() => {
   function needCells(L) {
     // what gates the good exits of this stop, in one of three states
     const out = [], seen = {};
-    for (const a of L.approaches) for (const n of a.needs) {
+    for (const a of L.approaches) for (const n of (a.mate ? [] : a.needs)) { // a companion's own move is not a need of the stop
       let key, title, sub, state;
       if (n.arr) { const def = Data.ARRANGEMENTS[n.arr], cur = s.arr[n.arr], job = s.jobs.find(j => j.arr === n.arr); key = n.arr;
         if (seen[key] && seen[key] >= n.stage) continue; if (seen[key]) out.splice(out.findIndex(x => x.key === key), 1);
@@ -298,7 +298,7 @@ const UI = (() => {
   const inSentence = (n) => /^(Your|Two|A|An|The)\b/.test(n) ? n[0].toLowerCase() + n.slice(1) : n; // card names mid-sentence
   function cardNotes(i) {
     const notes = [];
-    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
     if (i === 4 && !s.hand.includes('intro_vel')) notes.push(`<span class="s">${esc(T('route.velez_starts'))}</span>`);
     return notes.join(' ');
   }
@@ -814,7 +814,7 @@ const UI = (() => {
   // Three steps like a fighting game's select screen: the character, then the companion who travels with you, then the
   // cards you add to your deck ("choosing cards means adding cards to the deck, not selecting a limited number").
   // Cards the starting hand or the companion already covers at the same stops are not offered.
-  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who';
+  let pickWho = null, pickMate = null, picked = [], pickDemo = false, pickStage = 'who', mateTapped = false;
   const ROSTER = () => [
     { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name },
     { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name },
@@ -839,7 +839,7 @@ const UI = (() => {
   }
   function renderPicker() {
     const det = $('pick-detail'), cards = $('pick-cards'), go = $('pick-go'), grid = $('pick-grid');
-    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = '';
+    det.hidden = true; cards.hidden = true; grid.hidden = pickStage === 'cards'; go.hidden = true; det.innerHTML = ''; grid.classList.toggle('mates', pickStage === 'mate');
     if (pickStage === 'who') {
       $('pick-title').textContent = T('pick.title');
       tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
@@ -856,13 +856,15 @@ const UI = (() => {
       return;
     }
     if (pickStage === 'mate') {
+      // all 11 on one screen: a compact grid of faces, and the detail for the one you tap (who, what they know, what they do for your side)
       $('pick-title').textContent = T('pick.mate_title');
-      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; });
+      tiles(Object.keys(Data.COMPANIONS).map(k => ({ k, role: Data.COMPANIONS[k].sprite, name: Data.CARDS[Data.COMPANIONS[k].card].name })), pickMate, (k) => { pickMate = k; mateTapped = true; });
       if (!pickMate) return;
-      const m = Data.COMPANIONS[pickMate], c = Data.CARDS[m.card];
+      const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(c.text)}</p><p>${esc(pickWho === 'gov' ? m.govDoes : c.does)}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
+      if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
     }
     // cards: add any number to your deck

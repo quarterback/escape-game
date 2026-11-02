@@ -474,6 +474,13 @@ body.ringing #phoneh{color:var(--mint)}
 .pickbox .row .primary{flex:1}
 .choosebtn{font-size:20px;min-height:60px}
 @media(min-width:1000px){#pick-grid{gap:16px}.picktile .face{max-height:240px}}
+/* companions: all 11 on one phone screen, four across, small faces; the detail follows below */
+#pick-grid.mates{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#pick-grid.mates .picktile{padding:6px 2px 8px;gap:4px;border-radius:12px}
+#pick-grid.mates .picktile .face{max-height:84px;border-radius:8px}
+#pick-grid.mates .picktile b{font-size:16px}
+#pick-detail .small{font-size:14px;color:var(--gold)}
+@media(min-width:700px){#pick-grid.mates{grid-template-columns:repeat(6,minmax(0,1fr))}#pick-grid.mates .picktile .face{max-height:120px}}
 /* the route map (owner, Nov. 1, 2026): on the stop screen, and in the scene's empty road at desktop width */
 .routemap svg{display:block;width:100%;height:auto}
 #b-route{max-width:640px;margin:0 auto;width:100%}

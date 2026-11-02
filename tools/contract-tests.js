@@ -126,5 +126,61 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   for (const f of ['src/gov.js', 'tools/calibrate.js', 'tools/sample-run.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { if (/\.tags\.reduce\([^)]*\broll\b/.test(l) || /\btags\.(some|find)\([^)]*(roll|need)/.test(l)) hits.push(`${f}:${i + 1}`); });
   ok(!hits.length, `C19 no bot reads a roll from a display chip${hits.length ? ': ' + hits.join(', ') : ''}`); }
 
+// ---- C21: companions (owner, Nov. 1 and Nov. 2, 2026). Eleven people, each with one escape-side card that never leaves the
+// hand, one police-side card of their own, picker wording, a sprite, and an effect on both sides.
+{ const fs = require('fs'), R = path.join(__dirname, '..'), cat = new Set(JSON.parse(fs.readFileSync(path.join(R, 'content/coalition/ui.json'), 'utf8')).entries.map(e => e.id));
+  const art = fs.readFileSync(path.join(R, 'src/art.js'), 'utf8'), M = Data.COMPANIONS, keys = Object.keys(M), bad = [];
+  const ROSTER = ['bruno', 'clara', 'rita', 'marta', 'ines', 'paulo', 'celina', 'tomas', 'nadia', 'emilio', 'joana'];
+  if (keys.join() !== ROSTER.join()) bad.push(`roster is ${keys.join(', ')}`);
+  const govCards = new Set();
+  for (const k of keys) { const m = M[k], c = Data.CARDS[m.card], gc = Data.GOV_CARDS[m.gov];
+    if (!c || !c.companion) bad.push(`${k}: escape card`); if (!gc) bad.push(`${k}: police card`); else if (govCards.has(m.gov)) bad.push(`${k}: shares a police card`); govCards.add(m.gov);
+    for (const f of ['title', 'who', 'escape', 'gov']) if (!cat.has(`mate.${k}.${f}`)) bad.push(`${k}: no mate.${k}.${f}`);
+    if (!new RegExp(`\\n\\s+${m.sprite}: \\{`).test(art)) bad.push(`${k}: no sprite`);
+    for (const t of [c && c.tag, gc && gc.tag]) if (t && !cat.has('tag.' + t)) bad.push(`${k}: tag.${t} has no player words`); }
+  // the eight later companions each carry a kind of help no other card has (Bruno, Clara and Rita keep theirs)
+  for (const k of keys.slice(3)) { const t = Data.CARDS[M[k].card].tag; if (Object.keys(Data.CARDS).some(id => id !== M[k].card && Data.CARDS[id].tag === t)) bad.push(`${k}: tag ${t} is shared`); }
+  ok(!bad.length, `C21 ${keys.length} companions each have a card, a police card, picker wording, a sprite and player words for their help${bad.length ? ': ' + bad.slice(0, 4).join('; ') : ''}`);
+  // a companion travels with you: losing a card at random, or the best card at the station, never takes theirs
+  let tries = 0; const lost = [];
+  for (const k of keys) for (let i = 0; i < 6; i++) { const s = Sim.newRun(40 + i, 'woman', { companion: k }); s.event = { kind: 'hold', rung: 2 }; s.nextEventAt = 999; s._dice = [1, 1];
+    for (const id of ['wait_lawyer']) Sim.commit(s, 'evt:' + id); s.event = { kind: 'event', id: 'flood' }; s._dice = [1]; Sim.commit(s, 'evt:ford'); tries += 1; if (!s.hand.includes(M[k].card)) lost.push(k); }
+  ok(!lost.length && tries > 0, `C21 ${tries} stations and floods never take a companion's card${lost.length ? ': ' + [...new Set(lost)].join(', ') : ''}`);
+  // every companion changes play on both sides (seeded runs with a fixed simple policy differ from the same runs without them)
+  // the calibration bot's policy: news by cheapest markers, messages first, calls before the line, then the easiest move that leaves the stop
+  const escape = (seed, who, mate) => { const s = Sim.newRun(seed, who, { dest: 'atlanta', companion: mate });
+    for (let k = 0; k < 400 && !s.over; k++) { const A = Sim.actions(s);
+      if (A.event) { const score = (c) => (c.rolls ? 1 : 0) + c.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); Sim.commit(s, 'evt:' + A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0].id); continue; }
+      if (A.messages.length) { const o = A.messages[0].options.filter(x => x.ok); Sim.commit(s, A.messages[0].id, (o.find(x => x.id.startsWith('celina')) || o[0]).id); continue; }
+      const calls = A.calls.filter(c => c.ok); if (calls.length && s.pos < 4) { Sim.commit(s, calls[0].id); continue; }
+      const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
+      const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => out(a) - out(b) || (a.real || 0) - (b.real || 0));
+      Sim.commit(s, apps.length ? apps[0].id : 'wait'); }
+    return Sim.serialize(s).replace(/"companion":"?\w*"?,?/, '').replace(/"hand":\[[^\]]*\],?/, ''); };
+  const police = (seed, mate) => { const g = Gov.newRun(seed, 'woman', { companion: mate });
+    for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g);
+      if (v.event) { const c = v.event.choices.filter(x => x.ok); Gov.commit(g, 'evt:' + c[c.length - 1].id); continue; }
+      if (v.messages.length) { Gov.commit(g, v.messages[0].id, 'ask_time'); continue; }
+      const call = v.calls.find(c => c.ok); if (call && k % 3 === 0) { Gov.commit(g, call.id); continue; }
+      const o = v.orders.filter(x => x.ok); Gov.commit(g, o.length ? o[(k * 7) % o.length].id : 'wait'); }
+    return JSON.stringify({ over: g.over && g.over.kind, hour: g.c.hour, reports: g.reports.map(r => r.text), pos: g.c.pos }); };
+  const flat = [];
+  for (const k of keys) { const esc = [], gov = [];
+    for (let seed = 1; seed <= 30; seed++) { if (escape(seed, seed % 2 ? 'man' : 'woman', k) !== escape(seed, seed % 2 ? 'man' : 'woman', null)) esc.push(seed); if (police(500 + seed, k) !== police(500 + seed, null)) gov.push(seed); }
+    if (!esc.length) flat.push(`${k} changes no escape run`); if (!gov.length) flat.push(`${k} changes no police run`); }
+  ok(!flat.length, `C21 every companion changes seeded runs on the escape side and the police side${flat.length ? ': ' + flat.join('; ') : ''}`);
+  // the police view with each companion still ignores her hidden state (C04 with every companion's card in hand)
+  let views = 0; const leaks = [];
+  for (const k of keys) for (let i = 0; i < 3; i++) { const g = Gov.newRun(620 + i, 'woman', { companion: k });
+    for (let step = 0; step < 8 && !g.over; step++) { const v = Gov.view(g); if (v.event) Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id); else if (v.messages.length) Gov.commit(g, v.messages[0].id, 'ask_time'); else { const o = v.orders.filter(o => o.ok); Gov.commit(g, o.length ? o[step % o.length].id : 'wait'); } }
+    if (g.over) continue;
+    const want = JSON.stringify(Gov.view(g)), real = { pos: g.c.pos, exp: g.c.exposure, arr: JSON.stringify(g.c.arr), hand: g.c.hand.slice() };
+    for (let p = 0; p < Data.LEVELS.length; p++) { g.c.pos = p; g.c.exposure = (p * 3) % 10; for (const a in g.c.arr) g.c.arr[a].stage = p % 3; g.c.hand = p % 2 ? [] : real.hand; views += 1; if (JSON.stringify(Gov.view(g)) !== want) leaks.push(`${k} seed ${620 + i}`); }
+    g.c.pos = real.pos; g.c.exposure = real.exp; g.c.arr = JSON.parse(real.arr); g.c.hand = real.hand; }
+  ok(!leaks.length && views > 100, `C21 ${views} police views with each companion stay identical when her hidden state changes${leaks.length ? ': ' + leaks.slice(0, 3).join('; ') : ''}`);
+  // a saved run with a companion resumes with them, on both sides
+  const sv = Sim.restore(Sim.serialize(Sim.newRun(9, 'man', { companion: 'joana' }))), gv = Gov.restore(Gov.serialize(Gov.newRun(9, 'woman', { companion: 'nadia' })));
+  ok(sv.companion === 'joana' && sv.hand.includes('comp_joana') && gv.companion === 'nadia' && gv.hand.includes('exchange'), 'C21 saved runs keep the companion on both sides'); }
+
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);
