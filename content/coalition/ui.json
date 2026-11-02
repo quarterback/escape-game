@@ -1581,6 +1581,14 @@
    ]
   },
   {
+   "id": "sim.inquiry.circulate_held",
+   "pattern": "P10",
+   "text": "The police send the travel ban out, but Paulo says it will sit in the clerk's outbox until {time} before it reaches any post.",
+   "args": [
+    "time"
+   ]
+  },
+  {
    "id": "mate.paulo.ban_lands",
    "pattern": "P10",
    "text": "The travel ban leaves the clerk's outbox and reaches every post."
