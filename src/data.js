@@ -554,7 +554,7 @@ const Data = (() => {
       { id: 'noted', label: 'Keep going', fx: { ban: true, say: 'The court sends the travel ban to every post.' } },
       { id: 'paulo_hearing', label: 'Have Paulo slow the order', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo calls an old colleague in the clerk's office. The order goes into the outbox, and the travel ban does not go out." } },
       { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the court\'s order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
-    { id: 'blackout', at: null, title: 'The power is out', text: 'A storm knocks out the power, and the police can't reach each other.', choices: [
+    { id: 'blackout', at: null, title: 'The power is out', text: "A storm knocks out the power, and the police can't reach each other.", choices: [
       { id: 'dark', label: 'Move before the power returns', fx: { exposure: -1, skipEnemy: true } },
       { id: 'sit', label: 'Wait until the power returns', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
   ];
