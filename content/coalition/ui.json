@@ -1135,38 +1135,38 @@
   {
    "id": "pick.goal_candidate",
    "pattern": "P08",
-   "text": "Reach the jet at Portalba and fly out before Tuesday at 2 p.m."
+   "text": "You lost the election, and the court won't let you leave the country. Reach your jet across the border and fly out before Tuesday at 2 p.m."
   },
   {
    "id": "pick.goal_investigator",
    "pattern": "P08",
-   "text": "Stop the candidate from flying out before Tuesday at 2 p.m."
+   "text": "You work for the new government. Stop the candidate before she flies out on Tuesday at 2 p.m."
   },
   {
    "id": "pick.gov_team",
    "pattern": "P09",
-   "text": "Two teams work for you from the start. Four officers in two unmarked cars watch the residence and Pedra Branca and report what passes them. The provincial police patrol makes your searches and checkpoints easier anywhere in Valdória, up to and at the line.",
+   "text": "You never see where she is. Reports come in late, and some are false. You decide where the police search. You start with a team watching her house and police patrols across the country.",
    "role": "gov"
   },
   {
    "id": "pick.edge_woman",
    "pattern": "P09",
-   "text": "Teresa has a friend inside the police inquiry, who tells Gianlūka, her chief of staff, where the police are looking. Slipping past the police is easier for her at every stop up to and at the line."
+   "text": "Teresa has a friend inside the police who tells her where they are looking, so she slips past them more easily."
   },
   {
    "id": "pick.edge_man",
    "pattern": "P09",
-   "text": "Mateu's family owns barges on the river, so he can leave Pedra Branca by water."
+   "text": "Mateu's family owns river barges, so he has an extra way to travel south."
   },
   {
    "id": "pick.face",
    "pattern": "P03",
-   "text": "Every border officer knows her face, so crossing at the line is harder for her."
+   "text": "But every border guard knows her face, so crossing the border is harder."
   },
   {
    "id": "pick.watched",
    "pattern": "P03",
-   "text": "The police have watched him since the election count, so his police attention starts higher."
+   "text": "But the police have watched him since the election, so they start out paying him more attention."
   },
   {
    "id": "pick.next",
@@ -1330,17 +1330,6 @@
    "text": "Truck driver"
   },
   {
-   "id": "mate.bruno.pick",
-   "pattern": "P09",
-   "text": "Pick Bruno if you plan to get aboard the Salta freight with Holt or Theo."
-  },
-  {
-   "id": "mate.bruno.govpick",
-   "pattern": "P09",
-   "text": "Pick Bruno to watch the Salta freight from the start.",
-   "role": "gov"
-  },
-  {
    "id": "mate.bruno.who",
    "pattern": "P09",
    "text": "Bruno drives trucks for a living and knows every back road."
@@ -1348,29 +1337,18 @@
   {
    "id": "mate.bruno.escape",
    "pattern": "P03",
-   "text": "In Salta, paying Holt for a crate and asking Theo to walk you through the yard are both easier with him."
+   "text": "He makes it easier to get aboard the freight train in the railway town."
   },
   {
    "id": "mate.bruno.gov",
    "pattern": "P03",
-   "text": "He knows the freight crews, so you start with a railway contact in Salta.",
+   "text": "He knows the freight crews, so you start with a contact in the railway yard.",
    "role": "gov"
   },
   {
    "id": "mate.clara.title",
    "pattern": "P02",
    "text": "Interpreter from Costamar"
-  },
-  {
-   "id": "mate.clara.pick",
-   "pattern": "P09",
-   "text": "Pick Clara if Costamar worries you most, from its border posts to the airfield."
-  },
-  {
-   "id": "mate.clara.govpick",
-   "pattern": "P09",
-   "text": "Pick Clara to reach her once she crosses into Costamar.",
-   "role": "gov"
   },
   {
    "id": "mate.clara.who",
@@ -1380,29 +1358,18 @@
   {
    "id": "mate.clara.escape",
    "pattern": "P03",
-   "text": "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier."
+   "text": "She makes it easier to cross the border and to take off from the airfield on the other side."
   },
   {
    "id": "mate.clara.gov",
    "pattern": "P03",
-   "text": "Your police have no power in Costamar. With Clara's introduction, your searches, checkpoints and call-ins work at Portalba.",
+   "text": "Your police can't act across the border. With her help, they can search the airfield where the candidate's jet waits.",
    "role": "gov"
   },
   {
    "id": "mate.rita.title",
    "pattern": "P02",
    "text": "Cargo pilot"
-  },
-  {
-   "id": "mate.rita.pick",
-   "pattern": "P09",
-   "text": "Pick Rita if your visa might not come through before the jet is ready."
-  },
-  {
-   "id": "mate.rita.govpick",
-   "pattern": "P09",
-   "text": "Pick Rita to go after her jet.",
-   "role": "gov"
   },
   {
    "id": "mate.rita.who",
@@ -1412,29 +1379,18 @@
   {
    "id": "mate.rita.escape",
    "pattern": "P03",
-   "text": "Leaving Portalba without the visa gets easier."
+   "text": "She makes it easier to take off even if your visa hasn't come through."
   },
   {
    "id": "mate.rita.gov",
    "pattern": "P03",
-   "text": "Rita knows the charter operator. From 2 a.m. Sunday, you can press him to pull the crew from her jet without waiting for a license review.",
+   "text": "She knows the company chartering the candidate's jet. From early Sunday, you can pressure it to pull the jet's crew.",
    "role": "gov"
   },
   {
    "id": "mate.marta.title",
    "pattern": "P02",
    "text": "Auto mechanic"
-  },
-  {
-   "id": "mate.marta.pick",
-   "pattern": "P09",
-   "text": "Pick Marta if the road south and police checkpoints worry you most."
-  },
-  {
-   "id": "mate.marta.govpick",
-   "pattern": "P09",
-   "text": "Pick Marta to catch her early, on the road south.",
-   "role": "gov"
   },
   {
    "id": "mate.marta.who",
@@ -1444,12 +1400,12 @@
   {
    "id": "mate.marta.escape",
    "pattern": "P03",
-   "text": "She makes your own car look ordinary, so driving it out of Pedra Branca is easier and does not raise your police attention. Police checkpoints in Valdória do not make your moves harder. When you leave a stop the police are searching, she swaps the plates, and your police attention drops by one. Hiring a plain car is easier with her, and at a flooded bridge she can drive you through."
+   "text": "Police checkpoints don't slow you down, and the police pay you less attention when you drive away from a town they are searching."
   },
   {
    "id": "mate.marta.gov",
    "pattern": "P03",
-   "text": "You start with her vehicle records. Searches and checkpoints at the residence, Pedra Branca and Nova Trentô are easier. Her plate checks expose the decoy cars, and the toll records catch every car on the road south.",
+   "text": "She tracks cars through license plates and toll records. You get better reports from the road south, and you can tell the candidate's decoy cars from the real one.",
    "role": "gov"
   },
   {
@@ -1463,17 +1419,6 @@
    "text": "Nurse"
   },
   {
-   "id": "mate.ines.pick",
-   "pattern": "P09",
-   "text": "Pick Inês if you expect long waits and need food and sleep without being seen."
-  },
-  {
-   "id": "mate.ines.govpick",
-   "pattern": "P09",
-   "text": "Pick Inês to catch her when her family is worn out.",
-   "role": "gov"
-  },
-  {
    "id": "mate.ines.who",
    "pattern": "P09",
    "text": "Inês is a nurse who worked campaign events. She can keep you fed, rested, and out of places where strangers ask questions."
@@ -1481,29 +1426,18 @@
   {
    "id": "mate.ines.escape",
    "pattern": "P03",
-   "text": "While you lie low, wait for dark, sleep or sit out a delay, a police search where you are does not raise your police attention. She buys food without anyone seeing your face. With her, a night in the car counts as a full night's sleep, and if your youngest falls sick, Inês treats her."
+   "text": "Waiting and sleeping don't draw police attention with her, and she cares for your youngest if she gets sick."
   },
   {
    "id": "mate.ines.gov",
    "pattern": "P03",
-   "text": "When a clinic treats the candidate's sick child, the doctor calls the local police, who search there, and the clinic's report reaches you three hours later. You can also ask the clinics yourself. Inês shows the patrols what a worn-out family looks like, so a search stops a tired or starving candidate at Rising police attention instead of High.",
+   "text": "Clinics call her when the candidate's sick child is treated, and the police go there. Your patrols also catch a tired or hungry candidate more easily.",
    "role": "gov"
   },
   {
    "id": "mate.paulo.title",
    "pattern": "P02",
    "text": "Former court clerk"
-  },
-  {
-   "id": "mate.paulo.pick",
-   "pattern": "P09",
-   "text": "Pick Paulo if the travel ban worries you most."
-  },
-  {
-   "id": "mate.paulo.govpick",
-   "pattern": "P09",
-   "text": "Pick Paulo to get the travel ban out fast and keep it in force.",
-   "role": "gov"
   },
   {
    "id": "mate.paulo.who",
@@ -1513,29 +1447,18 @@
   {
    "id": "mate.paulo.escape",
    "pattern": "P03",
-   "text": "When the travel ban is sent, it sits in the clerk's outbox for 12 hours before it reaches the posts. When a court officer brings a summons or the court moves your hearing up, Paulo can keep the ban from going out at all."
+   "text": "He slows down the travel ban. When the court sends it, it takes 12 hours to reach the border, and if the court tries to serve you papers, he can stop the ban from going out at all."
   },
   {
    "id": "mate.paulo.gov",
    "pattern": "P03",
-   "text": "Circulating the travel ban is easier and takes one hour with him. When her lawyers ask the duty judge to suspend the ban, Paulo answers them, and the ban stays in force.",
+   "text": "He gets the travel ban out faster and stops the candidate's lawyers from suspending it.",
    "role": "gov"
   },
   {
    "id": "mate.celina.title",
    "pattern": "P02",
    "text": "Radio producer"
-  },
-  {
-   "id": "mate.celina.pick",
-   "pattern": "P09",
-   "text": "Pick Celina if you want the police searching in the wrong place."
-  },
-  {
-   "id": "mate.celina.govpick",
-   "pattern": "P09",
-   "text": "Pick Celina to put the public to work looking for her.",
-   "role": "gov"
   },
   {
    "id": "mate.celina.who",
@@ -1545,29 +1468,18 @@
   {
    "id": "mate.celina.escape",
    "pattern": "P03",
-   "text": "When the radio asks about the yacht, a photo leaks, a reporter finds you or your family talks too soon, she can turn the story and send the police somewhere else. The first time the police close in on you at each stop in Valdória, her station sends them one stop back."
+   "text": "She puts false stories on the radio, so the police search in the wrong place."
   },
   {
    "id": "mate.celina.gov",
    "pattern": "P03",
-   "text": "You start with her newsroom. Briefing the papers is easier, and you can put the candidate's photo on the morning news, which raises her police attention. Three hours later a caller says where he saw her, and not every caller is right. Leaks, photos and press conferences give you new choices.",
+   "text": "She puts the candidate's photo on the news, which brings in tips and makes her easier for the police to spot.",
    "role": "gov"
   },
   {
    "id": "mate.tomas.title",
    "pattern": "P02",
    "text": "Retired border officer"
-  },
-  {
-   "id": "mate.tomas.pick",
-   "pattern": "P09",
-   "text": "Pick Tomás if crossing the line worries you most."
-  },
-  {
-   "id": "mate.tomas.govpick",
-   "pattern": "P09",
-   "text": "Pick Tomás to close the line.",
-   "role": "gov"
   },
   {
    "id": "mate.tomas.who",
@@ -1577,29 +1489,18 @@
   {
    "id": "mate.tomas.escape",
    "pattern": "P03",
-   "text": "Every crossing at the line gets easier with him. He also names a post that Valdória has not paid to stop you, and crossing there is easier still. For six hours after the travel ban goes out, the paperwork has not reached the booth, so the ban does not make crossing harder."
+   "text": "He makes the border crossing easier and tells you which border post hasn't been paid to stop you."
   },
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "You start with his border command. Searches and checkpoints at the line get easier. Once the travel ban is sent, the sergeants who served under him enforce it, so her crossings at the line are harder still.",
+   "text": "His old sergeants guard the border for you. Searches at the border are easier, and the travel ban is harder for her to get past.",
    "role": "gov"
   },
   {
    "id": "mate.nadia.title",
    "pattern": "P02",
    "text": "Telephone engineer"
-  },
-  {
-   "id": "mate.nadia.pick",
-   "pattern": "P09",
-   "text": "Pick Nadia if you will spend the run on the phone arranging the jet, the visa and your welcome."
-  },
-  {
-   "id": "mate.nadia.govpick",
-   "pattern": "P09",
-   "text": "Pick Nadia to follow her phone calls.",
-   "role": "gov"
   },
   {
    "id": "mate.nadia.who",
@@ -1609,7 +1510,7 @@
   {
    "id": "mate.nadia.escape",
    "pattern": "P03",
-   "text": "When the police trace your calls, they find nothing. Once in the run, when the police tap {sib}'s phone, she moves the calls to another line, so the jet and your welcome are not delayed.",
+   "text": "The police can't trace your phone calls. Once, she also keeps a police wiretap from slowing down what {sib} is arranging for you.",
    "args": [
     "sib"
    ]
@@ -1617,24 +1518,13 @@
   {
    "id": "mate.nadia.gov",
    "pattern": "P03",
-   "text": "You start with her exchange records. They name the town where someone on the candidate's side last called from in the past four hours, and they reach you an hour later.",
+   "text": "She reads the phone company's records, so you learn which town the candidate's side called from, an hour late.",
    "role": "gov"
   },
   {
    "id": "mate.emilio.title",
    "pattern": "P02",
    "text": "Hotel manager"
-  },
-  {
-   "id": "mate.emilio.pick",
-   "pattern": "P09",
-   "text": "Pick Emilio if you want safe places to eat and sleep along the south road."
-  },
-  {
-   "id": "mate.emilio.govpick",
-   "pattern": "P09",
-   "text": "Pick Emilio to find out where she sleeps.",
-   "role": "gov"
   },
   {
    "id": "mate.emilio.who",
@@ -1644,29 +1534,18 @@
   {
    "id": "mate.emilio.escape",
    "pattern": "P03",
-   "text": "At Pedra Branca, Nova Trentô and Salta, you can eat and sleep in a room he booked under another name. Your name stays out of the register, your police attention drops by one, and a police search there finds nobody while you stay."
+   "text": "You can eat and sleep in his rooms along the road south, and the police won't find you while you stay."
   },
   {
    "id": "mate.emilio.gov",
    "pattern": "P03",
-   "text": "You start with his guest registers. At Pedra Branca, Nova Trentô or Salta, they show whether the candidate's family took a room there and when, two hours later. The police watch those hotels afterward.",
+   "text": "He checks hotel guest books along the road south, so you learn where the candidate's family stayed.",
    "role": "gov"
   },
   {
    "id": "mate.joana.title",
    "pattern": "P02",
    "text": "Union organizer"
-  },
-  {
-   "id": "mate.joana.pick",
-   "pattern": "P09",
-   "text": "Pick Joana if you want a way out of Salta that does not depend on Holt, Theo or midnight."
-  },
-  {
-   "id": "mate.joana.govpick",
-   "pattern": "P09",
-   "text": "Pick Joana to watch the Salta yard through its workers.",
-   "role": "gov"
   },
   {
    "id": "mate.joana.who",
@@ -1676,12 +1555,12 @@
   {
    "id": "mate.joana.escape",
    "pattern": "P03",
-   "text": "In Salta, the yard crew can hold a train for you at any hour, without Holt or Theo. She can also get the strikers to let you through."
+   "text": "In the railway town, her workers can hold a train for you at any hour, so you don't have to wait for the midnight freight."
   },
   {
    "id": "mate.joana.gov",
    "pattern": "P03",
-   "text": "You start with her union contacts. Yard crews report every passenger who leaves on the Salta freight, and they report anyone asking about the freight 10 hours later. Calling in her helpers in Salta is easier, and Joana can end the rail strike.",
+   "text": "Railway workers report to her, so you hear when the candidate leaves on the freight train.",
    "role": "gov"
   },
   {
