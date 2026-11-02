@@ -4549,7 +4549,7 @@
   {
    "id": "over.why_gov_arrest",
    "pattern": "P14",
-   "text": "The police put her under house arrest, and she never got out."
+   "text": "The police put her under house arrest."
   },
   {
    "id": "over.why_gov_deal",
@@ -4559,7 +4559,7 @@
   {
    "id": "over.why_arrest",
    "pattern": "P14",
-   "text": "The police put you under house arrest, and you never got out."
+   "text": "The police put you under house arrest."
   },
   {
    "id": "brief.hours_gov",
