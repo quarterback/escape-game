@@ -558,6 +558,31 @@ const Data = (() => {
     { id: 'rival_deal', at: ['airfield', 'border'], title: 'The president calls', text: 'Concede on camera, come home, and the case quietly closes.', choices: [
       { id: 'take_deal', label: 'Take the deal', fx: { end: { kind: 'deal', reason: 'You concede on camera at noon. The case closes quietly. The party never forgives you.' } } },
       { id: 'hang_up', label: 'Hang up', fx: {} } ] },
+    // owner, Nov. 2, 2026: things happen while you wait, and some open another way through
+    { id: 'night_bus', at: ['road'], title: 'A night bus south', text: 'The night bus to Nova Trentô leaves in an hour, and the driver takes cash without looking up.', choices: [
+      { id: 'take_bus', label: 'Take the bus', fx: { roll: { need: 3, win: { advance: true, say: 'You sleep against the window, and the bus drops you at the colônia gate at dawn.' }, lose: { exposure: 2, say: 'A passenger recognizes you and makes a call from the first stop.' } } } },
+      { id: 'skip_bus', label: 'Let it go', fx: {} } ] },
+    { id: 'wine_truck', at: ['colonia'], title: 'A wine truck to Salta', text: 'A wine truck leaves for Salta within the hour, and there is room under the tarp.', choices: [
+      { id: 'ride_tarp', label: 'Ride under the tarp', fx: { roll: { need: 3, win: { advance: true, say: 'You ride three hours between the barrels and climb out in the Salta yard.' }, lose: { hours: 2, exposure: 1, say: 'The truck is stopped at a checkpoint, and you walk back to the colônia through the vines.' } } } },
+      { id: 'stay_put', label: 'Stay at Nonā Rosa\'s', fx: {} } ] },
+    { id: 'early_freight', at: ['salta'], title: 'The freight leaves early', text: 'The yard moved tonight\'s freight up, and it pulls out in 20 minutes.', choices: [
+      { id: 'run_for_it', label: 'Run for the train', fx: { roll: { need: 4, win: { advance: true, say: 'You catch the last car as it clears the yard.' }, lose: { exposure: 2, say: 'A guard sees you running along the train, and the yard office rings the police.' } } } },
+      { id: 'let_it_go', label: 'Wait for the next one', fx: {} } ] },
+    { id: 'card_game', at: ['salta'], title: 'A card game in the shed', text: 'The night crew plays cards in the tool shed and talks about who rides the freight.', choices: [
+      { id: 'join_game', label: 'Join the game', fx: { hours: 2, roll: { need: 3, win: { card: 'yard_walk', say: 'You lose a little money on purpose, and a brakeman offers to walk you past the yard office.' }, lose: { exposure: 1, say: 'One of the players knows your face from the news.' } } } },
+      { id: 'stay_away', label: 'Stay away', fx: {} } ] },
+    { id: 'smuggler_gap', at: ['border'], title: 'A smuggler knows a gap', text: 'A smuggler offers to walk you around the posts tonight for cash.', choices: [
+      { id: 'pay_smuggler', label: 'Pay the smuggler', fx: { roll: { need: 4, win: { advance: true, say: 'You walk four hours through the brush and come out on the Costamaran road.' }, lose: { hours: 2, exposure: 3, say: 'A patrol catches the smuggler, and you run back to the car.' } } } },
+      { id: 'no_smuggler', label: 'Say no', fx: {} } ] },
+    { id: 'night_mechanic', at: ['airfield'], title: 'A mechanic offers a shortcut', text: 'A mechanic says he can have your jet ready tonight if you pay him in cash.', choices: [
+      { id: 'pay_mechanic', label: 'Pay the mechanic', fx: { roll: { need: 4, win: { stage: { aircraft: 1 }, exposure: 1, say: 'He works through the night, and the jet is one step closer to ready.' }, lose: { exposure: 2, say: 'He takes the money and tells the tower who paid it.' } } } },
+      { id: 'no_mechanic', label: 'Say no', fx: {} } ] },
+    { id: 'consul', at: ['airfield'], title: 'A consul with a stamp', text: 'An honorary consul in Portalba can stamp an entry visa tonight for a fee.', choices: [
+      { id: 'pay_consul', label: 'Pay the consul', fx: { hours: 1, roll: { need: 4, win: { stage: { permission: 1 }, say: 'The consul stamps your papers, and your visa is one step closer.' }, lose: { exposure: 1, say: 'The consul takes the fee and calls Valdória\'s embassy.' } } } },
+      { id: 'no_consul', label: 'Say no', fx: {} } ] },
+    { id: 'customs_sweep', at: ['airfield'], title: 'Customs searches the hangars', text: 'Two customs officers are checking every hangar on the apron.', choices: [
+      { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
+      { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
     // anywhere
     { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed abroad. You are still at {here}.', choices: [
       { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, and every reply you ask for now comes two hours later.' } },

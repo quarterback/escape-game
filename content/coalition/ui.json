@@ -153,6 +153,19 @@
    "text": "Wait until dark"
   },
   {
+   "id": "action.wait_on",
+   "pattern": "P01",
+   "text": "Skip to what happens next"
+  },
+  {
+   "id": "action.up_to",
+   "pattern": "P03",
+   "text": "Up to {hours} hr",
+   "args": [
+    "hours"
+   ]
+  },
+  {
    "id": "sim.label.hurry",
    "pattern": "P01",
    "text": "Ask {name} to hurry {what}",

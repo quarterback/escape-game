@@ -21,8 +21,8 @@ const Sim = (() => {
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
   const SUSPECTS = ['aide', 'nando', 'host', 'holt', 'theo', 'pilot', 'official'];
-  const EVENT_EVERY = 6; // hours at one stop between dispatches
-  const BOOTH_LAG = 6, OUTBOX = 12;
+  const EVENT_EVERY = 4; // hours at one stop between dispatches (owner, Nov. 2, 2026: more happens while you wait)
+  const BOOTH_LAG = 6, OUTBOX = 12, SKIP_MAX = 12; // SKIP_MAX: the longest one skip ahead runs
   // Food and sleep: hours since everyone slept and ate. Tired from 18 hours awake, exhausted from 30; hungry from 12 hours
   // without a meal, starving from 24. Tired makes every move that rolls one step harder, exhausted two, starving one more,
   // never more than two in all. The run opens at 2 p.m. after a night's sleep and lunch.
@@ -272,7 +272,7 @@ const Sim = (() => {
   // waiting for the next answer from an ally: one move instead of an hour at a time; news, a call or a police stop ends it early
   function waitJob(s) { const j = s.jobs.filter(x => !x.stall && x.due > s.hour).sort((a, b) => a.due - b.due)[0]; return { kind: 'wait', id: 'wait_job', ally: j ? j.ally : null, arr: j ? j.arr : null, hours: j ? j.due - s.hour : 0, ok: !!j && !s.over && !s.event && j.due - s.hour > 1 }; }
   function waitDark(s) { const night = level(s).approaches.some(a => a.needs.some(n => n.night)); return { kind: 'wait', id: 'wait_dark', hours: hoursToDark(s), ok: !s.over && !s.event && night && !isNight(s) }; }
-  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 }, waitDark: waitDark(s), waitJob: waitJob(s), lodge: { kind: 'wait', id: 'lodge', ok: !s.over && !s.event && !s.tutorial }, body: body(s) }; }
+  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 }, waitDark: waitDark(s), waitJob: waitJob(s), waitOn: { kind: 'wait', id: 'wait_on', hours: SKIP_MAX, ok: !s.over && !s.event }, lodge: { kind: 'wait', id: 'lodge', ok: !s.over && !s.event && !s.tutorial }, body: body(s) }; }
   // ---- food and sleep ------------------------------------------------------------------
   const tire = (s) => (s.awake || 0) >= EXHAUSTED ? 2 : (s.awake || 0) >= TIRED ? 1 : 0;
   const hunger = (s) => heldTag(s, 'supplies') ? 0 : (s.fed || 0) >= STARVING ? 2 : (s.fed || 0) >= HUNGRY ? 1 : 0; // food for three days: you never go hungry
@@ -447,6 +447,11 @@ const Sim = (() => {
     if (s.event) return { ok: false, why: s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first') };
     if (actionId === 'lodge') { const L = lodgingAt(s); if (s.tutorial || !L) return { ok: false, why: T('sim.why.not_something_you_can_do') }; s.event = { kind: 'lodging', id: L.id }; events.push(ev('dispatch', { id: L.id, title: L.title, text: L.text })); return finish(s, events); }
     if (actionId === 'wait') { careLine(s, events); quietly(s, true, () => pass(s, 1, events)); return finish(s, events); }
+    // owner, Nov. 2, 2026: one click to get to the next thing. Time runs hour by hour until something needs you: news or a
+    // police stop, a call, an answer about the jet, the visa or the welcome, or a move that opens or closes. At most 12 hours.
+    if (actionId === 'wait_on') { if (s.over || s.event) return { ok: false, why: T('sim.why.not_something_you_can_do') };
+      const sig = () => [s.inbox.length, s.jobs.length, Object.values(s.arr).map(a => a.stage).join(), approachList(s).filter(a => a.ok).map(a => a.id).join(), s.hold].join('|'), before = sig(), until = s.hour + SKIP_MAX;
+      careLine(s, events); quietly(s, true, () => { do pass(s, 1, events); while (s.hour < until && !s.event && !s.over && sig() === before); }); return finish(s, events); }
     if (actionId === 'wait_job') { const w = waitJob(s); if (!w.ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; const until = s.hour + w.hours, inbox = s.inbox.length; careLine(s, events); quietly(s, true, () => { while (s.hour < until && !s.event && !s.over && s.inbox.length === inbox) pass(s, 1, events); }); return finish(s, events); }
     if (actionId === 'wait_dark') { if (!waitDark(s).ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; careLine(s, events); quietly(s, true, () => { while (!isNight(s) && !s.event && !s.over) pass(s, 1, events); }); return finish(s, events); }
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
