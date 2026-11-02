@@ -154,7 +154,7 @@
      "id": "call_sponsor",
      "kind": "act",
      "title": "Ask for the visa",
-     "body": "Tap **Bīr Amādū Salek about your visa**, then **Confirm**. He can get Altamira to let you in. Later he asks for the family accounts. Agreeing makes the visa more likely, and if you refuse he still asks at the usual odds.",
+     "body": "Tap **Bīr Amādū Salek about your visa**, then **Confirm**. He can get Altamira to let you in. Later he asks for the family accounts. Agreeing makes him work harder for you, and if you refuse he still asks at the usual odds.",
      "goal": "Ask a sponsor for your visa",
      "highlight": [
       "#calls"
@@ -229,7 +229,7 @@
      "id": "relationships",
      "kind": "read",
      "title": "Help earns trust",
-     "body": "You are in Salta now. Nonā Rosa's truck helps your moves here without you doing anything. Helping her also made her trust you more, and people who trust you are less likely to talk when the police question them.",
+     "body": "You are in Salta now. Nonā Rosa's truck helps your moves here without you doing anything. Helping her also made her trust you more, and people who trust you hold out longer when the police question them.",
      "goal": "Know that trust lowers the risk of betrayal",
      "highlight": [
       "#board",

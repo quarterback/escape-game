@@ -3732,7 +3732,7 @@
   {
    "id": "sim.status.ask_salek_to_seek_visa",
    "pattern": "P05",
-   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, though agreeing is optional and only makes the visa more likely.",
+   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, and agreeing is optional.",
    "args": [
     "sponsor",
     "wants"
