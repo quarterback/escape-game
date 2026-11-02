@@ -436,7 +436,11 @@ const Sim = (() => {
   // ---- commit ----------------------------------------------------
   // Every accepted action goes on s.actions, so seed + actions replays the run (the replay link, the recorder).
   function commit(s, actionId, optionId) {
+    const at = s.pos, was = s.exposure, holds = s.holds;
     const r = _commit(s, actionId, optionId);
+    // the share card's grid: one square per move or news answer at each stop. k: 0 attention held or fell, 1 it rose, 2 a police stop
+    const move = !/^(msg:|call:|hurry:|lodge$)/.test(actionId);
+    if (r.ok && move) (s.trail = s.trail || []).push({ p: at, k: s.holds > holds ? 2 : s.exposure > was ? 1 : 0 });
     if (r.ok) (s.actions = s.actions || []).push(optionId === undefined ? [actionId] : [actionId, optionId]);
     return r;
   }
@@ -536,7 +540,6 @@ const Sim = (() => {
   }
   function advanceLevel(s, events) {
     if (s.pos >= D.LEVELS.length - 1) return;
-    (s.leftAttn = s.leftAttn || {})[s.pos] = s.exposure; // police attention as you left each stop, for the share card's squares
     const left = level(s).id; // a way onto the freight is gone once you leave the stop where it counts, not before you get there
     // Marta: leaving a stop the police are searching, she swaps the plates and the police lose the car
     if (hasTag(s, 'mechanic') && s.belief === s.pos && s.pos < 4) { say(events, 'narrator', T('mate.marta.plates')); heat(s, -1, events); }
