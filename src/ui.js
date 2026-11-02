@@ -850,13 +850,9 @@ const UI = (() => {
       tiles(ROSTER().filter(r => !pickDemo || r.k === Tutorial.WHO || r.k === 'gov'), pickWho, (k) => { pickWho = k; });
       if (!pickWho) return;
       det.hidden = false; go.hidden = false;
-      if (pickWho === 'gov') {
-        const [a, b] = ['watch', 'desk'].map(id => Data.GOV_CARDS[id]);
-        det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.starts_with_two', { name: Data.GOV.name, a: inSentence(a.name), b: inSentence(b.name) }))}</p><ul class="pickcards"><li>${cardLine({ name: a.name, does: a.does })}</li><li>${cardLine({ name: b.name, does: b.does })}</li></ul>`;
-      } else {
-        const ch = Data.CHARACTERS[pickWho], sp = Data.CARDS[ch.hand[ch.hand.length - 1]];
-        det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T('pick.starts_with', { name: ch.name, card: inSentence(sp.name).replace(/^your /, ch.pronoun === 'she' ? 'her ' : 'his ') }))}</p><ul class="pickcards"><li>${cardLine({ name: sp.name, does: sp.does })}</li></ul><p class="small">${esc(T(ch.faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
-      }
+      // owner, Nov. 2, 2026: plain sentences, no restated card boxes
+      if (pickWho === 'gov') det.innerHTML = `<h3>${esc(T('pick.role_investigator'))}</h3><p>${esc(T('pick.goal_investigator'))}</p><p>${esc(T('pick.gov_team'))}</p>`;
+      else det.innerHTML = `<h3>${esc(T('pick.role_candidate'))}</h3><p>${esc(T('pick.goal_candidate'))}</p><p>${esc(T(pickWho === 'man' ? 'pick.edge_man' : 'pick.edge_woman'))}</p><p>${esc(T(Data.CHARACTERS[pickWho].faceKnown ? 'pick.face' : 'pick.watched'))}</p>`;
       go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
       return;
     }
@@ -867,7 +863,7 @@ const UI = (() => {
       if (!pickMate) return;
       const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p><b>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.govpick` : `mate.${pickMate}.pick`))}</b></p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p class="small">${esc(T(`mate.${pickMate}.title`))}</p><p><b>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.govpick` : `mate.${pickMate}.pick`))}</b></p><p>${esc(T(`mate.${pickMate}.who`))}</p><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`, { sib: pickWho === 'gov' ? '' : `${Data.CHARACTERS[pickWho].sibling.rel} ${Data.CHARACTERS[pickWho].sibling.name}` }))}</p>`;
       go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
       if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;

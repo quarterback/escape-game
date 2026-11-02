@@ -80,11 +80,11 @@ const Data = (() => {
                     text: "Your father's barges still run the river, and their captains owe him." },
     grandson:     { name: "Nonā Rosa's grandson", tag: 'passage', from: 'host', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "He is 19, quick, and knows which boxcar the guards skip." },
-    informant:    { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
+    informant:    { does: "Slipping past the police is easier at every stop up to and at the line.", name: 'A friend in the inquiry', tag: 'information', from: 'aide', reach: VALDORIA, works: 'Any move the inquiry could be watching, up to the line.',
                     text: "A clerk tells Gianlūka where the police are looking and who is on duty." },
     // Cards you choose before the run (owner, Nov. 1, 2026: "Add cards to help a user navigate, find support ... we don't
     // even have a way for them to eat for 72 hours"). Each uses a kind the game already has; `does` is the picker's sentence.
-    supporters:   { does: "In Salta, they make Holt and Theo easier to deal with.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
+    supporters:   { does: "In Salta, paying Holt for a crate and asking Theo to walk you through the yard are both easier.", name: 'Your supporters along the route', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', pick: true,
                     text: 'People who voted for you lend you trucks and drivers.' },
     food:         { does: "Your police attention starts one step lower.", name: 'Food for three days', tag: 'supplies', from: 'self', reach: [], works: 'From the start of the run.', pick: true, startLower: 1,
                     text: 'You carry bread, cheese, and water, so you never stop at a store where people would see you.' },
@@ -98,7 +98,7 @@ const Data = (() => {
                     text: 'The pilot who flew your campaign still owes you a favor.' },
     // companions (owner, Nov. 1, 2026: "an ally you travel with who is trustworthy throughout ... one specific thing
     // they're good at"). A companion never turns on you; the card is yours for the whole run.
-    comp_bruno:   { does: "In Salta, he makes Holt and Theo easier to deal with.", name: 'Bruno', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', companion: true,
+    comp_bruno:   { does: "In Salta, paying Holt for a crate and asking Theo to walk you through the yard are both easier with him.", name: 'Bruno', tag: 'vehicle', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Getting help in the Salta rail yard.', companion: true,
                     text: 'Bruno drives trucks for a living and knows every back road.' },
     comp_clara:   { does: "Crossing at Paso Huhūi or Ālto Verdē and leaving from Portalba get easier.", name: 'Clara', tag: 'introduction', from: 'self', reach: ESMERALDA, works: 'Paso Huhūi, Ālto Verdē, and the Portalba departure.', companion: true,
                     text: 'Clara grew up in Costamar and still has family there.' },
@@ -131,7 +131,7 @@ const Data = (() => {
     // union: a train the crew holds in Salta, and the strike.
     comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
                     text: 'Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait.' },
-    road_map:     { does: "Any move the police could be watching gets easier until you reach the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
+    road_map:     { does: "Slipping past the police is easier at every stop up to and at the line.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
                     text: 'Every checkpoint and back road between here and the line is marked.' },
   };
 
@@ -583,7 +583,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.', choices: [
       { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the railway hotel under another guest\'s name. The night clerk never asks to see a passport.' } },
-      { id: 'rail_hotel', label: 'Take a room at the railway hotel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
+      { id: 'rail_hotel', label: 'Take a railway hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the freight sidings.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
       { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
