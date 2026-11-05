@@ -19,6 +19,20 @@ const Gov = (() => {
   const LV = (i) => D.LEVELS[Math.max(0, Math.min(D.LEVELS.length - 1, Number.isFinite(i) ? i : 0))];
   const EVERY = 4, LEAK = 0.5; // a stop she reaches is reported only some of the time
   const place = (i) => i === 0 ? 'the residence' : i === 4 ? 'the line' : LV(i).short;
+  // issue #52: orders that send police to a stop use one of two patrols; moving one takes two hours a stop
+  const PATROL = ['search', 'roadblock', 'staff', 'bridge', 'fuel_watch', 'cooperative'], PATROL_HOURS = 2;
+  const patrolled = (g, i) => (g.patrols || []).includes(i);
+  const nearest = (g) => { const ps = g.patrols || []; let k = 0; ps.forEach((p, j) => { if (Math.abs(p - g.belief) < Math.abs(ps[k] - g.belief)) k = j; }); return k; };
+  const travel = (g, id) => !g.tutorial && PATROL.includes(id) && g.belief >= 0 && g.belief <= 4 && (g.patrols || []).length ? PATROL_HOURS * Math.abs(g.patrols[nearest(g)] - g.belief) : 0;
+  // the minister's patience: a wrong claim, a missed deadline and bad news lower it; when it runs out, the run ends
+  function patience(g, d, events) {
+    if (g.tutorial || g.over || g.c.over) return;
+    const was = g.patience === undefined ? 3 : g.patience; g.patience = Math.max(0, Math.min(3, was + d));
+    if (g.patience === was) return;
+    if (g.patience) events.push(ev('say', { who: 'narrator', text: T(g.patience > was ? 'gov.patience.up' : 'gov.patience.down', { word: patienceWord(g.patience) }) }));
+    if (g.patience === 0) { g.c.over = { win: true, kind: 'fired', story: T('over.why_gov_fired'), after: '', reason: T('over.why_gov_fired') }; g.over = g.c.over; events.push(ev('over', g.c.over)); }
+  }
+  const patienceWord = (n) => [T('gov.patience.w1'), T('gov.patience.w1'), T('gov.patience.w2'), T('gov.patience.w3')][Math.max(0, Math.min(3, n))];
 
   function newRun(seed, target, opts) {
     target = target || 'woman'; opts = opts || {};
@@ -27,9 +41,14 @@ const Gov = (() => {
     const c = S.newRun(seed, target, { manualEnemy: true, dest: (opts && opts.dest) || pick });
     const g = { seed, target, c, belief: 0, hand: ['watch', 'desk'], reports: [], pending: [], req: { ban: 'notyet', hold: 'notyet', operator: 'notyet' }, inbox: [], nextMsg: 1,
       timeline: [], orders: [], ministerBy: 2, ministerTold: null, claims: 0, lastReportHour: null, flags: { askedTime: 0, locationGiven: false, wrongClaim: false }, over: null,
-      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0, awake: 6, fed: 2 };
+      event: null, seenEvents: [], nextEventAt: 3, dcMods: [], standing: 0, answered: [], chosen: 0, awake: 6, fed: 2,
+      // issue #52: the minister's patience (3 steps; at 0 he takes you off the case) and two patrols, by the stop each sits at
+      patience: 3, patrols: [0, 1] };
     // a companion gives Sofia one police card from the start
     g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    // which investigator: Sofia, or Davi with a third patrol that starts at Nova Trentô (issue #33)
+    g.inv = D.GOVS[opts.inv] ? opts.inv : 'sofia';
+    if (g.inv === 'davi' && !opts.tutorial) { g.hand.push('patrol3'); g.patrols.push(2); }
     if (g.companion && !g.hand.includes(D.COMPANIONS[g.companion].gov)) g.hand.push(D.COMPANIONS[g.companion].gov);
     if (g.hand.includes('clinics')) c.flags.spotWorn = true; // Inês briefs the patrols: a worn-out family is stopped from Rising police attention, not High
     if (opts.dice) g._dice = opts.dice.slice();
@@ -69,12 +88,12 @@ const Gov = (() => {
     if (A.event && (A.event.kind === 'lodging' || A.event.kind === 'sick')) { const pick = A.event.kind === 'lodging' ? (S.lodgePick(c) || 'keep_going') : (A.event.choices.find(x => x.ok && x.id === 'clinic') || A.event.choices.find(x => x.ok)).id; return S.commit(c, 'evt:' + pick).events; }
     if (A.event) { const score = (x) => (x.rolls ? 1 : 0) + x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: c.belief === c.pos ? 3 : 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
-    const calls = A.calls.filter(x => x.ok && !x.hurry), lvl = c.pos; // hurrying is a player's gamble; the computer-played candidate makes plain calls
+    const calls = A.calls.filter(x => x.ok && !x.hurry && !x.feed), lvl = c.pos; // hurrying is a player's gamble; the computer-played candidate makes plain calls
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     if (A.lodge.ok && S.lodgePick(c)) return S.commit(c, 'lodge').events;
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.id !== 'river').filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
     apps.sort((a, b) => exits(a) - exits(b) || a.real - b.real); // the computer-played candidate weighs the hidden target; she is the simulation, not a player being told odds
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
@@ -91,7 +110,7 @@ const Gov = (() => {
       if (e.type === 'attempt' && e.id === 'partycar') report(g, events, 0, 'watch', T('gov.report.the_party_s_official_car'), T('gov.report.the_car_left'), T('gov.report.who_was_in_the_back'), 1, c.hour);
       // Marta's toll records always catch the car on the road south. Joana's yard crews always report a passenger leaving on the
       // freight, and a stranger asking about it at shift change, 10 hours late. The roll still happens, so the rest of the run is unchanged.
-      const leaked = e.type === 'travel' && g._rng() < LEAK, crews = e.type === 'travel' && g.hand.includes('union');
+      const leaked = e.type === 'travel' && (g._rng() < LEAK || patrolled(g, e.to)), crews = e.type === 'travel' && g.hand.includes('union');
       if (e.type === 'travel' && !leaked && crews && e.to === 3) report(g, events, 3, 'joana', T('gov.report.somebody_asked_about_the_midnight'), T('gov.report.someone_wants_the_freight'), T('gov.report.that_it_was_her'), 10, c.hour);
       if (leaked || (e.type === 'travel' && ((e.to === 1 && g.hand.includes('plates')) || (e.to === 4 && crews)))) { const to = e.to;
         if (to === 1) report(g, events, 1, 'desk', T('gov.report.a_plain_car_with_capital'), T('gov.report.a_car_from_the_capital'), T('gov.report.whose_it_is'), 3, c.hour);
@@ -124,6 +143,12 @@ const Gov = (() => {
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
+    // issue #52: 18 hours after you answer him, the minister asks again; a missed deadline costs his patience
+    if (!g.c.over && !g.tutorial && g.flags.locationGiven && g.nextAsk && g.c.hour >= g.nextAsk) { g.nextAsk = null; g.flags.locationGiven = false; g.flags.ministerLate = false; g.ministerBy = g.c.hour + 2;
+      msg(g, events, 'minister', T('gov.line.where_now'), [
+        { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
+        { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: '' },
+      ]); }
     if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
       { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
       { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
@@ -153,7 +178,7 @@ const Gov = (() => {
       // an order with nothing written for failure and a difficulty of 1 (watching the house, following a report) is a choice, not a chance
       if (o.dc <= 1 && !o.fail) { out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: o.hours, dc: o.dc, real: null, ok: !why, why, text: o.text, who: T('gov.preview.who_acts', { who: o.who }), pay: false, odds: '', noRoll: true, bonus: [], bonusFrom: [],
         preview: [o.text, T('gov.preview.takes_hour_acts', { who: o.who }), T('gov.preview.cannot_fail')] }); continue; }
-      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: fast ? 1 : o.hours, dc: o.dc, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
+      out.push({ kind: 'approach', id: o.id, name: o.name(place(g.belief), latest ? place(latest.at) : ''), hours: (fast ? 1 : o.hours) + travel(g, o.id), dc: o.dc, ok: !why, why, text: o.text, who: abroad ? T('gov.preview.who_acts_esmeraldan_officials_on') : T('gov.preview.who_acts', { who: o.who }), pay: false,
         odds: '', real, bonus: used, bonusFrom: used.map(u => u.tag),
         preview: [o.text, T('gov.preview.takes_hour_acts', { who: o.who }), o.fail ? T('gov.preview.on_failure', { fail: /^(The|A|He|Nobody)\b/.test(o.fail) ? o.fail[0].toLowerCase() + o.fail.slice(1) : o.fail }) : T('gov.preview.cannot_fail')] });
     }
@@ -182,7 +207,7 @@ const Gov = (() => {
       reports: g.reports.map(r => Object.assign({}, r, { age: age(r.hour), source: personName(g, r.source) })),
       event: eventView(g), orders: orders(g), calls: calls(g), body: body(g),
       waitOn: { id: 'wait_on', hours: 12, ok: !g.over && !c.over && !g.event }, lodge: { id: 'lodge', ok: !g.over && !c.over && !g.event && !g.tutorial },
-      next: nextLines(g),
+      next: nextLines(g), patience: g.patience === undefined ? 3 : g.patience, patrols: (g.patrols || []).slice(),
       messages: g.inbox.map(m => ({ id: 'msg:' + m.id, from: m.from, role: m.from === 'minister' ? T('gov.name.interior_minister') : '', text: m.text, options: m.options.map(o => Object.assign({}, o, { ok: true, why: '' })) })),
       requests: [
         { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: c.flags.restriction ? 'inhand' : 'notyet', sub: c.flags.restriction ? T(c.flags.lax ? 'gov.status.ban_slides' : 'gov.status.ban_in_force') : T('gov.status.not_sent') }, // the ban is in force once it is sent (owner, Nov. 2, 2026)
@@ -223,10 +248,10 @@ const Gov = (() => {
     if (id.startsWith('msg:')) {
       const i = g.inbox.findIndex(m => m.id === +id.slice(4)); if (i < 0) return { ok: false, why: T('sim.why.that_message_is_gone') };
       const chosen = (g.inbox[i].options || []).find(o => o.id === optionId); g.inbox.splice(i, 1); g.answered.push(optionId); events.push(ev('answered', { label: chosen ? chosen.label : optionId }));
-      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) { g.flags.wrongClaim = true; } // the reply and the announcement are the same whether she is there or not: the player learns nothing from them; a wrong claim still sends the police to the wrong stop, unseen
+      if (optionId === 'tell_now') { g.flags.locationGiven = true; g.nextAsk = c.hour + 18; g.ministerTold = g.belief; const right = c.pos === g.belief; g.claims += 1; if (!right) g.flags.wrongClaim = true; g.pending.push({ job: 'claim', hour: c.hour + 6, at: g.belief, right }); // the reply and the announcement are the same whether she is there or not: the player learns nothing from them; a wrong claim still sends the police to the wrong stop, unseen
         events.push(ev('say', { who: 'minister', text: T('gov.line.i_will_say_so_at', { place: place(g.belief)[0].toUpperCase() + place(g.belief).slice(1) }) })); events.push(ev('enemy', { id: 'claim', text: T('gov.inquiry.the_minister_names_on_the', { place: place(g.belief) }) })); if (!right) c.belief = g.belief; }
       if (optionId === 'ask_time') { g.flags.askedTime += 1; g.ministerBy = c.hour + 6; events.push(ev('say', { who: 'minister', text: T('gov.line.six_hours_then_i_want') })); }
-      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; events.push(ev('say', { who: 'minister', text: T('gov.line.then_i_will_tell_them') })); act(g, 'press_story', events); }
+      if (optionId === 'admit') { g.flags.admitted = true; g.flags.locationGiven = true; g.nextAsk = c.hour + 18; patience(g, -1, events); events.push(ev('say', { who: 'minister', text: T('gov.line.then_i_will_tell_them') })); act(g, 'press_story', events); }
       return done(g, events);
     }
     if (id.startsWith('req:')) {
@@ -243,10 +268,12 @@ const Gov = (() => {
     const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.real);
     events.push(ev('roll', o.noRoll ? { die: null, won, auto: true, bonus: [] } : { die, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
+    if (PATROL.includes(id) && g.belief >= 0 && g.belief <= 4 && g.patrols && !g.tutorial) g.patrols[nearest(g)] = g.belief;
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
       if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: T('gov.say.you_move_the_search_to', { place: place(g.belief) }) })); }
       else if (id === 'watch_house') { const home = c.pos === 0; report(g, events, 0, 'watch', home ? T('gov.report.lights_on_someone_moved_past') : T('gov.report.the_house_is_dark_nobody'), home ? T('gov.report.someone_is_inside') : T('gov.report.the_house_is_empty'), home ? T('gov.report.that_it_is_her') : T('gov.report.where_she_went'), 0, c.hour); if (!home && g.belief === 0) { } }
+      else if (id === 'informants') { const near = Object.keys(c.people).filter(k => c.people[k].bad && !c.people[k].known && D.PEOPLE[k].where === c.pos); if (near.length) trueLead(g, events, 1); else report(g, events, g.belief, 'desk', T('gov.report.informants_none'), T('gov.report.informants_none_proves'), T('gov.report.where_she_is'), 1, c.hour); }
       else if (id === 'clinics') clinics(g, events);
       else if (id === 'exchange') exchange(g, events);
       else if (id === 'registers') registers(g, events);
@@ -264,7 +291,9 @@ const Gov = (() => {
   }
   function done(g, events) {
     // resolve requests that came due
-    for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j); const d = roll(g);
+    for (const j of g.pending.slice()) if (j.job && j.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== j);
+      if (j.job === 'claim') { events.push(ev('say', { who: 'narrator', text: j.right ? T('gov.patience.claim_right', { place: place(j.at) }) : T('gov.patience.claim_wrong', { place: place(j.at) }) })); patience(g, j.right ? 1 : -1, events); continue; }
+      const d = roll(g);
       if (j.job === 'hold') { const ok = wins(d, tgt(4)); g.req.hold = ok ? 'inhand' : 'notyet'; if (ok) { if (!g.hand.includes('esm_intro')) g.hand.push('esm_intro'); act(g, 'ask_esmeralda', events); events.push(ev('say', { who: 'embassy', text: T('gov.line.esmeralda_will_hold_her_if') })); } else events.push(ev('say', { who: 'embassy', text: T('gov.line.baca_says_it_is_a') })); }
       if (j.job === 'operator') { const ok = wins(d, tgt(3)); g.req.operator = ok ? 'inhand' : 'notyet'; events.push(ev('say', { who: 'aviation', text: ok ? T('gov.line.the_review_is_open_say') : T('gov.line.legal_wants_the_file_first') })); if (ok) g.hand.push('operator'); } }
     if (g.c.over) { g.over = g.c.over; if (!events.some(e => e.type === 'over')) events.push(ev('over', g.c.over)); }
@@ -363,7 +392,7 @@ const Gov = (() => {
     if (fx.unban) c.flags.lax = true; // the post at the line lets the ban slide: her crossings there are no longer harder because of it
     if (fx.holdup) { const job = g.pending.find(j => j.job === 'hold'); if (job) job.hour = Math.min(job.hour, c.hour + 1); else if (g.req.hold === 'notyet') { g.req.hold = 'promised'; g.pending.push({ job: 'hold', hour: c.hour + 3 }); } }
     if (fx.dc) g.dcMods.push({ delta: fx.dc[0], until: c.hour + fx.dc[1] });
-    if (fx.minister) g.standing += fx.minister;
+    if (fx.minister) { g.standing += fx.minister; patience(g, fx.minister > 0 ? 1 : -1, events); }
     if (fx.sooner) g.ministerBy = Math.max(c.hour, g.ministerBy - fx.sooner);
     if (fx.act) { c.belief = g.belief; const close = c.pos === g.belief; act(g, fx.act, events); report(g, events, g.belief, 'enemy', close ? T('gov.report.sosa_finds_fresh_tracks_at', { place: place(g.belief) }) : T('gov.report.sosa_finds_nothing_at', { place: place(g.belief) }), close ? T('gov.report.she_is_here_or_just') : T('gov.report.she_is_not_there_now'), close ? T('gov.report.that_she_will_stay') : T('gov.report.where_she_is_instead'), 0, c.hour); }
     if (fx.false) falseLead(g, events);
@@ -436,6 +465,6 @@ const Gov = (() => {
   function restore(json) { const g = JSON.parse(json); g.c = S.restore(g.c); g._boot = []; return attach(g); }
   // the guided run ends: rolls and news are no longer scripted
   function endTutorial(g) { delete g._dice; delete g._events; delete g.tutorial; }
-  return { newRun, view, commit, debrief, shareGrid, serialize, restore, personName, endTutorial };
+  return { patienceWord, newRun, view, commit, debrief, shareGrid, serialize, restore, personName, endTutorial };
 })();
 if (typeof module !== 'undefined') module.exports = Gov;

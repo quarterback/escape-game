@@ -123,9 +123,10 @@ How to work under it:
   cannot be won looks like any other move and loses on the table.
 - **Character names are first names without marks.** Owner, Nov. 1, 2026: "The
   names need to not have so many glyphs, it's hard to immerse or read them," and
-  "I would only give a first name." The playable characters are Teresa, Mateu
-  and Sofia, with no surnames; the siblings are Duartē and Līviā. Sofia is the
-  special investigator. Other names keep their spelling until the owner says
+  "I would only give a first name." The playable characters are Teresa, Mateu,
+  Sofia and Davi, with no surnames; the siblings are Duartē and Līviā. Sofia and
+  Davi are the special investigators (Davi added Nov. 5, 2026, issue #33); Davi's
+  own advantage is a third patrol, which starts at Nova Trentô. Other names keep their spelling until the owner says
   otherwise.
 - **Place names sound like places** you could travel to, and none is named
   after a person. Owner, Oct. 31, 2026: "Crucial that all place names sound like

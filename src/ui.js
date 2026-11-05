@@ -76,15 +76,17 @@ const UI = (() => {
     log('sys', esc(T('log.start_escape', { clock: Sim.clockText(0), name: c.name, title: c.title, sibling: c.sibling.name, rel: c.sibling.rel })), 'sys');
     animate(s._boot); renderAll(); startRound(true); saveRun();
   }
-  function newGovRun(demo, seed, mate) {
+  const invName = () => Data.GOVS[(gov && gov.inv) || 'sofia'].name;
+  const isGov = (k) => k === 'gov' || k === 'davi';
+  function newGovRun(demo, seed, mate, inv) {
     closeCall(); callShown.clear();
     markSeen(); recap = null; newsRecap = null; who = 'gov'; sel = null; enemyLog = []; Sfx.theme(false); daily = null;
     if (demo) { const G = Tutorial.RUNS.gov; gov = Gov.newRun(G.seed, 'woman', { dice: G.dice, events: G.eventQueue, tutorial: true }); Tutorial.start('gov'); }
-    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, 'woman', { companion: mate || null }); }
+    else { Tutorial.stop(); gov = Gov.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, 'woman', { companion: mate || null, inv: inv || 'sofia' }); }
     s = gov.c; document.body.classList.add('gov');
     Render.setState(s, gov); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
     $('dialogue').innerHTML = ''; $('start').hidden = true; setTab('here');
-    log('sys', esc(T('log.start_gov', { clock: Sim.clockText(0), name: Data.GOV.name, title: Data.GOV.title, target: Data.CHARACTERS[gov.target].name })), 'sys');
+    log('sys', esc(T('log.start_gov', { clock: Sim.clockText(0), name: invName(), title: Data.GOV.title, target: Data.CHARACTERS[gov.target].name })), 'sys');
     round = 1; animate(gov._boot); renderAll(); startRound(true); saveRun();
   }
 
@@ -93,7 +95,7 @@ const UI = (() => {
   function renderAll() {
     if (!s) return;
     renderScene(); renderCoach(); renderPhase(); setTimeout(maybeRing, 0);
-    if (Sfx.ambience) Sfx.ambience(s.over ? null : Data.LEVELS[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
+    if (Sfx.ambience) Sfx.ambience(s.over ? null : Sim.route(s)[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
     renderOver(); document.body.classList.toggle('busy', Render.busy());
@@ -105,23 +107,23 @@ const UI = (() => {
     const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
     // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
     $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
-    const L = Data.LEVELS[s.pos];
+    const L = Sim.route(s)[s.pos];
     if (gov) {
       const v = Gov.view(gov);
       $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
-      { const bl = $('bodyline'), b = v.body, w = { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; bl.hidden = !!gov.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); } // Sofia's own food and sleep
+      { const bl = $('bodyline'), b = v.body, w = { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; bl.hidden = !!gov.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('gov.patience.label'), Gov.patienceWord(v.patience), v.patience, Math.min(2, 3 - v.patience)) + levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); } // the minister's patience (issue #52), then Sofia's own food and sleep
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
       $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label'); $('sosa-next').parentElement.hidden = false; $('sosa-where').hidden = false; $('sosa').querySelector('.arrive').hidden = false;
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
       $('heatnum2').className = 'mono orange'; $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
-      { const r = v.reports[0], m = { [gov.belief]: [['you', T('brief.gov_search')]] }; if (r) m[r.at] = (m[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]); $('routemap').innerHTML = routeMap(m, false, 0); }
+      $('routemap').innerHTML = routeMap(govMarks(v), false, 0);
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
     $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
-    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
+    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Sim.route(s)[s.belief].short });
     // owner, Nov. 1, 2026, from a phone: the box says where the police are and your police attention, nothing else.
     // "You are not at the residence. Nothing else needed." One number, no bar; no countdown; the limit of 10 is in the help.
     $('sosa-where').textContent = right ? '' : T('scene.sosa_away'); $('sosa-where').hidden = right;
@@ -176,7 +178,7 @@ const UI = (() => {
   const sibNamed1 = (id) => id === 'sibling' ? `${Data.CHARACTERS[s.who].sibling.rel} ${Data.CHARACTERS[s.who].sibling.name}` : pname(id);
   // owner, Nov. 2, 2026 ("I don't understand why I can't board the plane"): when no move leaves this stop, say what is next
   function nextLines(A) {
-    const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], exits = L.approaches.filter(a => !a.mate && (!ex || ex.includes(a.id)));
+    const L = Sim.route(s)[s.pos], ex = Sim.EXITS[L.id], exits = L.approaches.filter(a => !a.mate && (!ex || ex.includes(a.id)));
     if (!exits.length || A.approaches.some(a => a.ok && exits.some(e => e.id === a.id))) return [];
     const out = [], seen = {}, what = { aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') };
     for (const a of exits) for (const n of a.needs) {
@@ -195,7 +197,7 @@ const UI = (() => {
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
-    if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
+    if (A.waitDark.ok) { const nm = (Sim.route(s)[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
     if (A.waitOn.ok) waits.unshift({ id: 'wait_on', name: T('action.wait_on'), hours: A.waitOn.hours, lines: [], upTo: true }); // one click to the next thing
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
@@ -240,7 +242,7 @@ const UI = (() => {
     $('call-later').onclick = () => { Sfx.click(); closeCall(); };
     $('call-answer').onclick = () => {
       Sfx.unlock(); Sfx.click(); box.classList.remove('ringing');
-      const me = gov ? Data.GOV.name : Data.CHARACTERS[who].name, mine = gov ? 'sofia' : who === 'man' ? 'mateu' : 'teresa';
+      const me = gov ? invName() : Data.CHARACTERS[who].name, mine = gov ? (gov.inv || 'sofia') : who === 'man' ? 'mateu' : 'teresa';
       pane.innerHTML = `<div class="split"><div class="side"><span class="face"></span><b>${esc(me)}</b></div><div class="side"><span class="face"></span><b>${esc(name)}</b></div></div><p class="bubble">${esc(callText(m))}</p><div class="answers"></div>`;
       const faces = pane.querySelectorAll('.face'); face(faces[0], mine, me); face(faces[1], CALLER_ROLE[m.from], name);
       const ans = pane.querySelector('.answers');
@@ -277,8 +279,8 @@ const UI = (() => {
     }
     const calls = $('calls'); calls.innerHTML = '';
     for (const c of A.calls) { if (!c.ok) continue; // only calls you can make
-      const arr = c.id.replace(/^(call|hurry):/, ''), def = Data.ARRANGEMENTS[arr];
-      const label = c.hurry ? c.name : c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
+      const arr = c.id.replace(/^(call|hurry|feed):/, ''), def = Data.ARRANGEMENTS[arr];
+      const label = (c.hurry || c.custom) ? c.name : c.ok ? cap(T('phone.call_about', { name: callee(c.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[arr] })) : `${def.name}: ${c.name.split(': ')[1] || c.name}`;
       if (sel === c.id && c.ok) { const box = document.createElement('div'); box.className = 'callbox'; box.innerHTML = `<b>${esc(label)}</b>${c.cost ? `<p class="ctx">${esc(c.cost)}</p>` : ''}<div class="row"><button class="primary commit">${T('action.call')}</button><button class="cancel">${T('action.cancel')}</button></div>`; box.querySelector('.commit').onclick = () => doCommit(c.id); box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); }; calls.appendChild(box); }
       else calls.appendChild(callBtn(c, Tutorial.allowsCall(arr) && (phase === 'phone' || phase === 'move') && !movedThisRound && phoneCalls < 1, label));
     }
@@ -319,14 +321,14 @@ const UI = (() => {
   const inSentence = (n) => /^(Your|Two|A|An|The)\b/.test(n) ? n[0].toLowerCase() + n.slice(1) : n; // card names mid-sentence
   function cardNotes(i) {
     const notes = [];
-    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Sim.route(s).findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Sim.route(s).length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
     if (i === 4 && !s.hand.includes('intro_vel')) notes.push(`<span class="s">${esc(T('route.velez_starts'))}</span>`);
     return notes.join(' ');
   }
   function renderRoute() {
     // phone: the rail
     const rail = $('rail'); rail.innerHTML = '';
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
@@ -338,15 +340,15 @@ const UI = (() => {
     const b = $('board'); b.innerHTML = '';
     const cell = (html, cls) => { const d = document.createElement('div'); d.className = 'cell ' + (cls || ''); d.innerHTML = html; b.appendChild(d); };
     const colCls = (i) => i === s.pos ? 'cur' : i === 5 ? 'esm' : '';
-    cell('', 'head'); Data.LEVELS.forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
+    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
-    lbl(T('route.who_acts_label')); Data.LEVELS.forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
-    lbl(T('route.needed')); Data.LEVELS.forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
+    lbl(T('route.who_acts_label')); Sim.route(s).forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
+    lbl(T('route.needed')); Sim.route(s).forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
     const cr = document.createElement('div'); cr.className = 'cardsrow'; cr.hidden = true; // cards work in the background now
-    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Sim.route(s).findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
     if (!s.hand.includes('intro_vel')) { const sp = document.createElement('span'); sp.className = 'cbar ghost card t-introduction'; sp.style.gridColumn = '5 / 7'; sp.style.cssText += ';min-height:0;transform:none;display:block;padding:8px 12px'; sp.textContent = T('route.velez_starts_short'); cr.appendChild(sp); }
     b.appendChild(cr);
-    lbl(T('route.inquiry'), 'inq'); Data.LEVELS.forEach((L, i) => { if (i === s.belief) cell(`<span class="inq">${T('route.looking_here')}</span>`, colCls(i) + ' inqcell'); });
+    lbl(T('route.inquiry'), 'inq'); Sim.route(s).forEach((L, i) => { if (i === s.belief) cell(`<span class="inq">${T('route.looking_here')}</span>`, colCls(i) + ' inqcell'); });
     const ir = document.createElement('div'); ir.className = 'inqrow'; ir.style.gridColumn = `${Math.min(9, s.belief + 3)} / 9`; ir.textContent = enemyLog.length ? enemyLog[enemyLog.length - 1] : T('route.no_inquiry'); b.appendChild(ir);
   }
 
@@ -367,7 +369,7 @@ const UI = (() => {
   // ---- export and replay ------------------------------------------------------------
   // A run is its seed, who played, where they were going and every accepted action, in order.
   function exportRun() {
-    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', inv: gov ? (gov.inv || 'sofia') : null, seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
   }
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
@@ -388,7 +390,7 @@ const UI = (() => {
     replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
     if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
     $('start').hidden = true;
-    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion);
+    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion, rec.inv); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion);
     replaying.timer = setInterval(replayTick, 150);
   }
   function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
@@ -434,7 +436,7 @@ const UI = (() => {
     const sid = String(id), sm = summarize(r.events, T('result.your_move'), null);
     roundSum.theirs.push(...sm.theirs); roundSum.hours += sm.hours;
     if (sid.startsWith('evt:')) { result = summarize(r.events, T('result.your_choice'), null); result.from = 'news'; phase = 'news'; autoNews(); }
-    else if (sid.startsWith('call:') || sid.startsWith('hurry:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
+    else if (sid.startsWith('call:') || sid.startsWith('hurry:') || sid.startsWith('feed:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); }
     else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // the food and sleep screen is a choice card, not a move
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); } // back to the scene once nobody is waiting
     else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_dark' || sid === 'wait_job' || sid === 'wait_on') { result.kind = T('result.lay_low'); result.title = T('result.hours_pass', { hours: sm.hours }); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here');
@@ -478,7 +480,7 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
-    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
+    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
   const waitingMsgs = () => gov ? Gov.view(gov).messages.length : Sim.actions(s).messages.length;
@@ -493,7 +495,7 @@ const UI = (() => {
   let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
   const P = (t) => `<p>${esc(t)}</p>`;
   function briefEscape() {
-    const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: [] };
+    const L = Sim.route(s)[s.pos], out = { story: [], need: [], job: [] };
     if (s.pos !== briefPos) { out.story.push(L.arrive); out.arrived = true; }
     const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
     const steps = (k, full) => { const done = A[k].stages.slice(1, st(k) + 1), left = A[k].stages.slice(st(k) + 1, full + 1); return [done.length ? T('brief.done_list', { list: done.join(', ') }) : '', left.length ? T('brief.left_list', { list: left.join(', ') }) : ''].filter(Boolean).join(' '); };
@@ -545,40 +547,53 @@ const UI = (() => {
     out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
     out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
     if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push({ big: short(v.ministerBy), text: T('brief.minister_expects', { time: Sim.clockText(v.ministerBy) }) });
-    out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
-    if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
+    out.marks = govMarks(v);
     return out;
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
-  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short;
   // A small map of the route (owner, Nov. 1, 2026: "it would be so much better if it had a little map ... instead of a
   // line"): Valdória and Costamar, the border as a dashed line, the stops where they sit, the road you have travelled
   // solid and the road ahead dashed. Wide in the scene and on a desktop stop screen; tall on a phone.
   const MAPXY = { wide: [[54, 58], [150, 104], [246, 56], [342, 106], [444, 60], [548, 106]], tall: [[44, 34], [150, 86], [60, 140], [168, 192], [96, 250], [196, 304]] };
+  // the coast route (issue #51) skips Nova Trentô: the maps leave it out and count one stop fewer
+  const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
+  const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
+  const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
+  // issue #52: Sofia's board. Her search, her two patrols, and the newest report from each stop, fading as it ages
+  function govMarks(v) {
+    const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
+    put(gov.belief, ['you', T('brief.gov_search')]);
+    const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? T('brief.gov_patrols') : T('brief.gov_patrol')]));
+    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - r.hour); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
+      put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
+    return m;
+  }
   function routeMap(marks, tall, upto) {
-    const P = MAPXY[tall ? 'tall' : 'wide'], n = Data.LEVELS.length;
+    const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
       ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
       : '<rect class="land" x="4" y="4" width="438" height="152" rx="18"/><rect class="land far" x="446" y="4" width="190" height="152" rx="18"/><line class="border" x1="444" y1="4" x2="444" y2="156"/>';
-    for (let i = 0; i < n - 1; i++) h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[i + 1][0]}" y2="${P[i + 1][1]}"/>`;
+    for (let i = 0; i < n - 1; i++) { if (skipped(i)) continue; const j = skipped(i + 1) ? i + 2 : i + 1; h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[j][0]}" y2="${P[j][1]}"/>`; }
     const said = [];
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
+      if (skipped(i)) return;
       const [x, y] = P[i], m = marks[i] || [], here = m.some(k => k[0] === 'you');
       h += `<circle class="stopdot${here ? ' here' : ''}${i === n - 1 ? ' end' : ''}${i < upto ? ' went' : ''}" cx="${x}" cy="${y}" r="${here ? 9 : 7}"/>`;
       h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
       m.forEach((k, j) => {
         const w = Math.round(k[1].length * 7.6 + 18), px = tall ? x + 16 + j * (w + 6) : x - w / 2, py = tall ? y + 12 : y - 34 - j * 26;
-        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
         said.push(`${L.short}: ${k[1]}`);
       });
     });
-    const label = Data.LEVELS.map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
+    const label = Sim.route(s).filter((L, i) => !skipped(i)).map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
     return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function briefRoute(marks) {
-    return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+    return Sim.route(s).map((L, i) => { if (skipped(i)) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
-      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Data.LEVELS.length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
+      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Sim.route(s).length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
   function showBrief() {
     if (!s || s.over) return;
@@ -586,8 +601,8 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: s.pos + 1, total: Data.LEVELS.length });
-    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Data.LEVELS[s.pos].short }) : Data.LEVELS[s.pos].short;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
@@ -610,11 +625,11 @@ const UI = (() => {
   }
   // reaching a stop is its own moment: which stop of how many, the route so far, and what this stop asks of you; it leaves on its own
   function stopScreen(pos) {
-    const L = Data.LEVELS[pos], el = $('stopscreen');
+    const L = Sim.route(s)[pos], el = $('stopscreen');
     $('s-clock').textContent = short(s.hour);
-    $('s-step').textContent = T('stop.step', { n: pos + 1, total: Data.LEVELS.length });
+    $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
-    $('s-dots').innerHTML = Data.LEVELS.map((x, i) => `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
     $('s-goal').textContent = L.objective || '';
     el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
     clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
@@ -692,7 +707,7 @@ const UI = (() => {
   }
   // one short line per thing Sosā did; the full sentence stays in the log
   function enemyShort(e) {
-    const where = (i) => i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+    const where = (i) => i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short;
     const id = ['enemy', 'short', e.id].join('.') + (e.hit ? '_hit' : '') + (e.talked ? '_talked' : '');
     if (e.id === 'press_ally' && !e.who) return e.text; // nobody to question: the full line is short already
     return Content.has(id) ? T(id, { place: where(e.belief), name: e.who ? pname(e.who) : pname('sibling') }) : e.text;
@@ -716,7 +731,7 @@ const UI = (() => {
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
         case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', quiet: !after && e.delta > 0, t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'belief': break; // owner, Nov. 1, 2026: the police box and the map show where they search; the card does not repeat it
-        case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
+        case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Sim.route(s)[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: gov ? e.text : enemyShort(e) }); break;
@@ -745,7 +760,7 @@ const UI = (() => {
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
   // the ending's one sentence, shared by the ending screen and the share card
-  function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
+  function endWhy() { const k = s.over.kind; return gov ? (k === 'fired' ? T('over.why_gov_fired') : s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
   function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
   // owner, Nov. 2, 2026: a grid like Wordle's. One row per stop reached, numbered; one square per move there: green when
@@ -755,13 +770,13 @@ const UI = (() => {
     const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F694}\u26D3\uFE0F'; // house arrest: police car and chains
     // owner, Nov. 2, 2026: "I like pins, time of day and symbols". Each row says whether you left that stop by day or at night
     // (the last row: when the run ended), and a pin marks where it ended, before the symbol for how.
-    const rows = []; for (let p = 0; p <= s.pos; p++) { const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
+    const rows = []; for (let p = 0; p <= s.pos; p++) { if (skipped(p)) continue; const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
       const tod = (last ? last.n : Sim.isNight(s)) ? '\u{1F319}' : '\u2600\uFE0F';
-      rows.push(`${NUM[p]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
+      rows.push(`${NUM[stopNo(p) - 1]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -822,7 +837,7 @@ const UI = (() => {
   }
   function renderGovRoute() {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(T('route.report_src', { source: r.source, age: r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: r.age }) }))}</b><span>${esc(r.text)} ${esc(r.doesnt ? T('route.does_not_prove', { what: r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) }) : '')}</span></span>`).join('');
       const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><span class="sr">${esc(stateWord(r.state))} </span><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
@@ -867,6 +882,7 @@ const UI = (() => {
     { k: 'woman', role: 'teresa', name: Data.CHARACTERS.woman.name },
     { k: 'man', role: 'mateu', name: Data.CHARACTERS.man.name },
     { k: 'gov', role: 'sofia', name: Data.GOV.name },
+    { k: 'davi', role: 'davi', name: Data.GOVS.davi.name },
   ];
   const covered = (hand, c) => hand.some(id => { const h = Data.CARDS[id]; return h && h.tag === c.tag && c.reach.every(r => h.reach.includes(r)); });
   const poolFor = (k) => { const hand = (Data.CHARACTERS[k].hand || []).concat(pickMate ? [Data.COMPANIONS[pickMate].card] : []); return Object.keys(Data.CARDS).filter(id => Data.CARDS[id].pick && !covered(hand, Data.CARDS[id])); };
@@ -904,7 +920,7 @@ const UI = (() => {
       if (!pickWho) return;
       det.hidden = false; go.hidden = false;
       // owner, Nov. 2, 2026: plain sentences, no restated card boxes
-      det.innerHTML = `<h3>${esc(T(pickWho === 'gov' ? 'pick.role_investigator' : 'pick.role_candidate'))}</h3><p>${esc(T(({ woman: 'pick.one_woman', man: 'pick.one_man', gov: 'pick.one_gov' })[pickWho]))}</p>`;
+      det.innerHTML = `<h3>${esc(T(isGov(pickWho) ? 'pick.role_investigator' : 'pick.role_candidate'))}</h3><p>${esc(T(({ woman: 'pick.one_woman', man: 'pick.one_man', gov: 'pick.one_gov', davi: 'pick.one_davi' })[pickWho]))}</p>`;
       go.textContent = T(pickDemo ? 'pick.go' : 'pick.next_mate');
       return;
     }
@@ -915,8 +931,8 @@ const UI = (() => {
       if (!pickMate) return;
       const c = Data.CARDS[Data.COMPANIONS[pickMate].card];
       det.hidden = false; go.hidden = false;
-      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(T(pickWho === 'gov' ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
-      go.textContent = T(pickWho === 'gov' ? 'pick.go' : 'pick.next');
+      det.innerHTML = `<h3>${esc(c.name)}</h3><p>${esc(T(isGov(pickWho) ? `mate.${pickMate}.gov` : `mate.${pickMate}.escape`))}</p>`;
+      go.textContent = T(isGov(pickWho) ? 'pick.go' : 'pick.next');
       if (mateTapped) { mateTapped = false; requestAnimationFrame(() => det.scrollIntoView({ block: 'nearest', behavior: 'smooth' })); }
       return;
     }
@@ -941,7 +957,7 @@ const UI = (() => {
     }
     if (pickStage === 'mate') {
       if (!pickMate) return;
-      if (pickWho === 'gov') { $('picker').hidden = true; newGovRun(false, undefined, pickMate); return; }
+      if (isGov(pickWho)) { $('picker').hidden = true; newGovRun(false, undefined, pickMate, pickWho === 'davi' ? 'davi' : 'sofia'); return; }
       pickStage = 'cards'; renderPicker(); return;
     }
     const k = pickWho, extra = picked.slice(), mate = pickMate; $('picker').hidden = true;

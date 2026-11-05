@@ -257,6 +257,8 @@ const Sfx = (() => {
         every(carPass, night ? 9 : 4, night ? 20 : 10);
         if (night) { every(cricket, 0.4, 1.4); every(dog, 12, 30); }
       },
+      // Barra Velha sounds like the river at Pedra Branca: water against wood
+      harbor(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
       road(ac, out, night, every, nodes) {
         bed(ac, out, 'bandpass', 900, 0.5, 0.5, { rate: 0.3, depth: 0.12, on: 'gain' }, nodes); // river
         bed(ac, out, 'bandpass', 2600, 1.2, 0.12, { rate: 0.9, depth: 0.06, on: 'gain' }, nodes); // ripples

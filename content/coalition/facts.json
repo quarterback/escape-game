@@ -5,6 +5,7 @@
   { "id": "clock.hoursLeft", "type": "number", "audience": ["escape", "gov"], "phases": ["news", "phone", "move", "roll", "sosa"] },
   { "id": "hand.decoy_cars", "type": "boolean", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] },
   { "id": "flag.dog", "type": "boolean", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] },
+  { "id": "companion", "type": "string", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] },
   { "id": "flag.restriction", "type": "boolean", "audience": ["escape"], "phases": ["news", "phone", "move", "roll", "sosa"] }
  ]
 }

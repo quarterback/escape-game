@@ -87,6 +87,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 
 
 // ---- C04b: what the government player is told never carries her hidden state (owner, Nov. 1, 2026)
+// the minister's own lines speak to Sofia, so "find you" there means her, not the candidate (issue #52)
 { const bad = []; let seen = 0;
   for (let i = 0; i < 16; i++) { const g = Gov.newRun(700 + i, i % 2 ? 'man' : 'woman');
     for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g); let r;
@@ -96,7 +97,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
       for (const e of (r.events || [])) { seen += 1;
         if (['exposure', 'stage', 'card', 'cardlost', 'travel', 'betrayal', 'hold'].includes(e.type)) bad.push(`seed ${700 + i}: ${e.type} event`);
         if (e.type === 'roll' && e.who && !e.pressed) bad.push(`seed ${700 + i}: her ally's roll`);
-        if ((e.type === 'enemy' || e.type === 'say') && /\b(you are(?! not told)|your (jet|last call|own|yacht)|find you|seen you|hold you)\b(?! not told)/i.test(e.text || '')) bad.push(`seed ${700 + i}: "${e.text.slice(0, 60)}"`); } } }
+        if ((e.type === 'enemy' || (e.type === 'say' && e.who !== 'minister')) && /\b(you are(?! not told)|your (jet|last call|own|yacht)|find you|seen you|hold you)\b(?! not told)/i.test(e.text || '')) bad.push(`seed ${700 + i}: "${e.text.slice(0, 60)}"`); } } }
   ok(!bad.length && seen > 200, `C04b government: ${seen} events carry none of her hidden state and never speak to her as "you"${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`); }
 // ---- C17: no code hidden behind a line comment (a comment swallowed a "break" twice on Nov. 1, 2026)
 { const fs = require('fs'), hits = [];
@@ -153,8 +154,8 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
       if (A.event) { const score = (c) => (c.rolls ? 1 : 0) + c.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: 1, gain: 1 }[t.k] || 0), 0); Sim.commit(s, 'evt:' + A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0].id); continue; }
       if (A.messages.length) { const o = A.messages[0].options.filter(x => x.ok); Sim.commit(s, A.messages[0].id, (o.find(x => x.id.startsWith('celina')) || o[0]).id); continue; }
       { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
-      const calls = A.calls.filter(c => c.ok && !c.hurry); if (calls.length && s.pos < 4) { Sim.commit(s, calls[0].id); continue; }
-      const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
+      const calls = A.calls.filter(c => c.ok && !c.hurry && !c.feed); if (calls.length && s.pos < 4) { Sim.commit(s, calls[0].id); continue; }
+      const L = Sim.stopAt(s, s.pos), ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
       const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => out(a) - out(b) || (a.real || 0) - (b.real || 0));
       Sim.commit(s, apps.length ? apps[0].id : 'wait'); }
     return Sim.serialize(s).replace(/"companion":"?\w*"?,?/, '').replace(/"hand":\[[^\]]*\],?/, ''); };

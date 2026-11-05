@@ -153,6 +153,61 @@
    "text": "Wait until dark"
   },
   {
+   "id": "trait.feed",
+   "pattern": "P01",
+   "text": "Tell {name} a false route",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "trait.feed_cost",
+   "pattern": "P03",
+   "text": "Three hours later, you find out whether {name} talks to the police.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "trait.fed",
+   "pattern": "P10",
+   "text": "You tell {name} you are heading for {place} next.",
+   "args": [
+    "name",
+    "place"
+   ]
+  },
+  {
+   "id": "trait.caught",
+   "pattern": "P10",
+   "text": "The police search {place}, so {name} is working with them and can no longer help you.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "trait.clean",
+   "pattern": "P10",
+   "text": "The police stay away from {place}, so you can trust {name}.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "gov.report.informants_none",
+   "pattern": "P06",
+   "text": "None of your informants is near her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.informants_none_proves",
+   "pattern": "P06",
+   "text": "None of the helpers who talk to you is with her.",
+   "role": "gov"
+  },
+  {
    "id": "gov.next.abroad",
    "pattern": "P05",
    "text": "Your police can't act in Costamar until it agrees to hold her.",
@@ -1414,6 +1469,36 @@
     "place"
    ],
    "role": "gov"
+  },
+  {
+   "id": "mate.joana.help",
+   "pattern": "P10",
+   "text": "Joana says, \"Get on while the crew holds the car.\""
+  },
+  {
+   "id": "mate.tomas.help",
+   "pattern": "P10",
+   "text": "Tomás says, \"Go now, while that booth changes shift.\""
+  },
+  {
+   "id": "mate.marta.help",
+   "pattern": "P10",
+   "text": "Marta says, \"Drive like nothing happened, because nobody knows these plates.\""
+  },
+  {
+   "id": "mate.rita.help",
+   "pattern": "P10",
+   "text": "Rita says, \"The crews owe me, so we fly without the visa.\""
+  },
+  {
+   "id": "mate.clara.help",
+   "pattern": "P10",
+   "text": "Clara says, \"I told them in their own words who you are.\""
+  },
+  {
+   "id": "mate.bruno.help",
+   "pattern": "P10",
+   "text": "Bruno says, \"I know that crew, and they won't look twice.\""
   },
   {
    "id": "mate.bruno.escape",
@@ -4188,7 +4273,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or sit at Sofia's desk. She is the incoming government's special investigator. The incoming minister wants a location by Tuesday, and she works with the watch team, the Pedra Branca desk, a yardmaster who takes money from anyone and tells her about it, and an embassy in Cerro Alto that will ask Costamar to hold the candidate. Her orders stop at the border, and her reports come in hours old, some of them wrong."
+   "text": "Or play the special investigator and hunt the candidate down. The minister keeps asking where the candidate is, and every wrong answer costs his patience. Your reports arrive hours late, and not every report is true."
   },
   {
    "id": "about.start_h",
@@ -4632,7 +4717,7 @@
   {
    "id": "brief.gov_search",
    "pattern": "P02",
-   "text": "Your search"
+   "text": "Search"
   },
   {
    "id": "brief.gov_last_seen",
@@ -5163,6 +5248,117 @@
     "who",
     "line"
    ]
+  },
+  {
+   "id": "gov.patience.label",
+   "pattern": "P02",
+   "text": "Minister",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w3",
+   "pattern": "P02",
+   "text": "Patient",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w2",
+   "pattern": "P02",
+   "text": "Impatient",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w1",
+   "pattern": "P02",
+   "text": "Furious",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.down",
+   "pattern": "P06",
+   "text": "The minister's patience falls to {word}.",
+   "args": [
+    "word"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.up",
+   "pattern": "P06",
+   "text": "The minister's patience rises to {word}.",
+   "args": [
+    "word"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.claim_wrong",
+   "pattern": "P06",
+   "text": "The papers report that she was not at {place} when the minister named it, and he is angry.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "over.why_gov_fired",
+   "pattern": "P14",
+   "text": "The minister took you off the case."
+  },
+  {
+   "id": "brief.gov_patrol",
+   "pattern": "P02",
+   "text": "Patrol",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_patrols",
+   "pattern": "P02",
+   "text": "Two patrols",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_pin_new",
+   "pattern": "P02",
+   "text": "Now",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_pin_old",
+   "pattern": "P02",
+   "text": "{hours} hr",
+   "args": [
+    "hours"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "help.gov_hunt",
+   "pattern": "P09",
+   "text": "**The hunt.** The map shows your search in gold, your patrols in coral and the newest report from each stop in lavender, marked with its age. A report grays as it gets older and drops off after a day. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked. If she arrives there, the patrol reports it two to five hours later. **The minister's patience** shows as a bar under the clock. Eighteen hours after you name a stop or say you don't know, he asks again. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.where_now",
+   "pattern": "P07",
+   "text": "\"Where is she now? The papers want an update.\"",
+   "role": "gov",
+   "speaker": "minister"
+  },
+  {
+   "id": "gov.patience.claim_right",
+   "pattern": "P06",
+   "text": "The papers confirm that she was at {place} when the minister named it, and he is pleased.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "pick.one_davi",
+   "pattern": "P09",
+   "text": "Davi leads the police hunt for the candidate with one more patrol than Sofia has.",
+   "role": "gov"
   }
  ]
 }
