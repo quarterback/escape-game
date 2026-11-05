@@ -87,6 +87,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 
 
 // ---- C04b: what the government player is told never carries her hidden state (owner, Nov. 1, 2026)
+// the minister's own lines speak to Sofia, so "find you" there means her, not the candidate (issue #52)
 { const bad = []; let seen = 0;
   for (let i = 0; i < 16; i++) { const g = Gov.newRun(700 + i, i % 2 ? 'man' : 'woman');
     for (let k = 0; k < 40 && !g.over; k++) { const v = Gov.view(g); let r;
@@ -96,7 +97,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
       for (const e of (r.events || [])) { seen += 1;
         if (['exposure', 'stage', 'card', 'cardlost', 'travel', 'betrayal', 'hold'].includes(e.type)) bad.push(`seed ${700 + i}: ${e.type} event`);
         if (e.type === 'roll' && e.who && !e.pressed) bad.push(`seed ${700 + i}: her ally's roll`);
-        if ((e.type === 'enemy' || e.type === 'say') && /\b(you are(?! not told)|your (jet|last call|own|yacht)|find you|seen you|hold you)\b(?! not told)/i.test(e.text || '')) bad.push(`seed ${700 + i}: "${e.text.slice(0, 60)}"`); } } }
+        if ((e.type === 'enemy' || (e.type === 'say' && e.who !== 'minister')) && /\b(you are(?! not told)|your (jet|last call|own|yacht)|find you|seen you|hold you)\b(?! not told)/i.test(e.text || '')) bad.push(`seed ${700 + i}: "${e.text.slice(0, 60)}"`); } } }
   ok(!bad.length && seen > 200, `C04b government: ${seen} events carry none of her hidden state and never speak to her as "you"${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`); }
 // ---- C17: no code hidden behind a line comment (a comment swallowed a "break" twice on Nov. 1, 2026)
 { const fs = require('fs'), hits = [];

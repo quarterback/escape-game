@@ -11,7 +11,8 @@ function round(g) {
   while (v.event && !g.over) { const ch = v.event.choices.filter(c => c.ok).sort((a, b) => score(b) - score(a))[0]; Gov.commit(g, 'evt:' + ch.id); v = Gov.view(g); }
   if (g.over) return;
   // desk: messages first, then one request
-  while (v.messages.length && !g.over) { const m = v.messages[0]; const fresh = v.reports[0] && v.reports[0].age === 'just now'; const o = m.options.find(x => x.id === (fresh ? 'tell_now' : 'ask_time')) || m.options.find(x => x.id === 'admit') || m.options[0]; Gov.commit(g, m.id, o.id); v = Gov.view(g); }
+  while (v.messages.length && !g.over) { const m = v.messages[0]; const fresh = v.reports[0] && v.reports[0].age === 'just now'; const recent = v.reports[0] && (fresh || parseInt(v.reports[0].age, 10) <= 6); // when time is up, name the stop of a recent report rather than admit (issue #52)
+    const o = m.options.find(x => x.id === (fresh ? 'tell_now' : 'ask_time')) || m.options.find(x => x.id === (recent ? 'tell_now' : 'admit')) || m.options.find(x => x.id === 'admit') || m.options[0]; Gov.commit(g, m.id, o.id); v = Gov.view(g); }
   if (g.over) return;
   const call = ['req:hold', 'req:operator'].map(id => v.calls.find(c => c.id === id && c.ok)).find(Boolean);
   if (call) { Gov.commit(g, call.id); v = Gov.view(g); }
@@ -33,7 +34,7 @@ function runAll(mate) {
     const g = Gov.newRun(1000 + i, i % 2 ? 'man' : 'woman', { companion: mate }); let r = 0;
     while (!g.over && r < 80) { round(g); r += 1; }
     if (!g.over) { out.stuck = (out.stuck || 0) + 1; continue; }
-    rounds += r; const k = g.over.win ? 'escaped' : g.over.kind; out[k] = (out[k] || 0) + 1; if (g.over.win) esc += 1;
+    rounds += r; const k = g.over.kind === 'fired' ? 'fired' : g.over.win ? 'escaped' : g.over.kind; out[k] = (out[k] || 0) + 1; if (g.over.win) esc += 1;
   }
   return { esc, rounds, out };
 }

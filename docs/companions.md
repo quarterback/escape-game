@@ -90,3 +90,20 @@ Owner: "I've been saying I want companions who are useful." First, a bot bug: th
 
 The base game moved because the railway contact, which Sofia can also win in play, now makes her Salta searches easier.
 
+
+## Routes that branch (Nov. 5, 2026, issue #51)
+
+- **The coast route.** At Pedra Branca, "Take the river to the coast" (4 hr) skips Nova Trentô and Salta for Barra Velha, a fishing port, which is the fourth stop on that route (`Data.HARBOR`, index 3 in place of Salta; `Sim.stopAt`, `Sim.route`). Barra Velha has its own moves: "Sail at night to Punta Marēa", "Pay a skipper for a berth" (the berth card), "Take the coast ferry" and "Cover your tracks"; a lodging screen; and two events, a storm and a pier check. Whoever arrives by sea finds the Punta Marēa crossing easier. The coast route misses Nonā Rosa's phone and her truck.
+- **The mountain path.** At the line, "Walk over the mountains" (5 hr) crosses between the posts: no post to buy or avoid, and Tomás and Inês make it easier. The travel ban still makes it harder.
+- The maps, the stop count and the share card leave Nova Trentô out on the coast route. Sofia's computer-played candidate keeps the inland route for now, because her map has no harbor yet.
+- `node tools/calibrate.js N --prefer=river,mountain` makes the bot take those moves whenever it can.
+
+Escape harness, 300 runs, Teresa / Mateu: inland 22.3% / 24.7%. Bot always takes the river: 14.3% / 18.0%. Bot always takes the mountain path: 16.3% / 17.0%. The bot takes them blindly, even when Vélez's people wait at a post, so a player who chooses well should do better than these numbers. The river trades Nonā Rosa's phone for time, and the bot runs out of police attention on the coast.
+
+## The hunt (Nov. 5, 2026, issue #52)
+
+- **Two patrols.** They start at the residence and Pedra Branca. A search, checkpoint, bridge stop, fuel watch, staff questioning or pressure on the cooperative uses the nearest patrol and moves it to the stop. Moving takes two hours for each stop, added to the order. A patrol stays where it last worked, and whenever she arrives at a stop with a patrol, the arrival is reported.
+- **The minister's patience** is a three-step bar under the clock: Patient, Impatient, Furious. He asks where she is again 18 hours after each answer. Saying you don't know costs one step. A claim is checked six hours later: wrong costs one step, right gives one back. Bad news in the papers costs one step, good news gives one. At zero, the minister takes Sofia off the case and she loses.
+- **Report pins.** The newest report from each stop sits on the map with its age, grows greyer at 3, 8 and 16 hours, and drops off after a day.
+
+Police harness, 400 runs, no companion, she escapes Sofia: 35.0% before; 37.8% with the patrols alone; 51.5% with patience (60 of 400 runs end with Sofia off the case). A first version asked every 12 hours and charged a missed deadline; it took Sofia off the case in 43% of runs and was dropped. The bot names a stop when a report is under six hours old and otherwise says it does not know.

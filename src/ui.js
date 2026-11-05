@@ -109,13 +109,13 @@ const UI = (() => {
     if (gov) {
       const v = Gov.view(gov);
       $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
-      { const bl = $('bodyline'), b = v.body, w = { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; bl.hidden = !!gov.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); } // Sofia's own food and sleep
+      { const bl = $('bodyline'), b = v.body, w = { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; bl.hidden = !!gov.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('gov.patience.label'), Gov.patienceWord(v.patience), v.patience, Math.min(2, 3 - v.patience)) + levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); } // the minister's patience (issue #52), then Sofia's own food and sleep
       $('sosa-name').textContent = Data.CHARACTERS[gov.target].name; $('sosa-where').textContent = v.lastReport ? T('scene.last_report', { age: v.lastReport }) : T('scene.no_reports');
       $('sosa-next').textContent = v.lastReport || T('scene.none'); $('sosa-nextl').textContent = T('scene.last_report_label'); $('sosa-next').parentElement.hidden = false; $('sosa-where').hidden = false; $('sosa').querySelector('.arrive').hidden = false;
       $('sosa').querySelector('.exp').hidden = true; $('heat').hidden = true; $('sosa').querySelector('.arrive').textContent = T('scene.minister_by', { time: short(v.ministerBy) });
       $('heatnum2').className = 'mono orange'; $('expl-l').textContent = T('scene.suspected'); $('expl-b').textContent = v.suspectName; $('heat2').hidden = true; $('heatnum2').textContent = v.lastReport ? T('scene.last_report_lc', { age: v.lastReport }) : T('scene.no_reports_lc');
       $('lvlname').textContent = v.levelName; $('lvlobj').textContent = v.objective; $('lvlname2').textContent = v.levelName; $('lvlobj2').textContent = v.objective;
-      { const r = v.reports[0], m = { [gov.belief]: [['you', T('brief.gov_search')]] }; if (r) m[r.at] = (m[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]); $('routemap').innerHTML = routeMap(m, false, 0); }
+      $('routemap').innerHTML = routeMap(govMarks(v), false, 0);
       $('wait').textContent = T('action.wait_gov'); $('phoneh').textContent = T('nav.desk'); document.querySelector('#herehead h2').textContent = T('nav.orders');
       return;
     }
@@ -545,8 +545,7 @@ const UI = (() => {
     out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
     out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
     if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push({ big: short(v.ministerBy), text: T('brief.minister_expects', { time: Sim.clockText(v.ministerBy) }) });
-    out.marks = { [gov.belief]: [['you', T('brief.gov_search')]] };
-    if (r) out.marks[r.at] = (out.marks[r.at] || []).concat([['seen', T('brief.gov_last_seen')]]);
+    out.marks = govMarks(v);
     return out;
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
@@ -559,6 +558,15 @@ const UI = (() => {
   const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
   const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
   const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
+  // issue #52: Sofia's board. Her search, her two patrols, and the newest report from each stop, fading as it ages
+  function govMarks(v) {
+    const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
+    put(gov.belief, ['you', T('brief.gov_search')]);
+    const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? T('brief.gov_patrols') : T('brief.gov_patrol')]));
+    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - r.hour); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
+      put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
+    return m;
+  }
   function routeMap(marks, tall, upto) {
     const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
@@ -573,7 +581,7 @@ const UI = (() => {
       h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
       m.forEach((k, j) => {
         const w = Math.round(k[1].length * 7.6 + 18), px = tall ? x + 16 + j * (w + 6) : x - w / 2, py = tall ? y + 12 : y - 34 - j * 26;
-        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
         said.push(`${L.short}: ${k[1]}`);
       });
     });
@@ -750,7 +758,7 @@ const UI = (() => {
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
   // the ending's one sentence, shared by the ending screen and the share card
-  function endWhy() { const k = s.over.kind; return gov ? (s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
+  function endWhy() { const k = s.over.kind; return gov ? (k === 'fired' ? T('over.why_gov_fired') : s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
   function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
   // owner, Nov. 2, 2026: a grid like Wordle's. One row per stop reached, numbered; one square per move there: green when

@@ -5248,6 +5248,117 @@
     "who",
     "line"
    ]
+  },
+  {
+   "id": "gov.patience.label",
+   "pattern": "P02",
+   "text": "Minister",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w3",
+   "pattern": "P02",
+   "text": "Patient",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w2",
+   "pattern": "P02",
+   "text": "Impatient",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w1",
+   "pattern": "P02",
+   "text": "Furious",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.w0",
+   "pattern": "P02",
+   "text": "Done with you",
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.down",
+   "pattern": "P06",
+   "text": "The minister's patience drops to {word}.",
+   "args": [
+    "word"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.up",
+   "pattern": "P06",
+   "text": "The minister's patience rises to {word}.",
+   "args": [
+    "word"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "gov.patience.claim_wrong",
+   "pattern": "P06",
+   "text": "The papers report that she was never at {place}, and the minister is angry.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "over.why_gov_fired",
+   "pattern": "P14",
+   "text": "The minister took you off the case."
+  },
+  {
+   "id": "brief.gov_patrol",
+   "pattern": "P02",
+   "text": "Patrol",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_patrols",
+   "pattern": "P02",
+   "text": "Two patrols",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_pin_new",
+   "pattern": "P02",
+   "text": "New report",
+   "role": "gov"
+  },
+  {
+   "id": "brief.gov_pin_old",
+   "pattern": "P02",
+   "text": "Report, {hours} hr old",
+   "args": [
+    "hours"
+   ],
+   "role": "gov"
+  },
+  {
+   "id": "help.gov_hunt",
+   "pattern": "P09",
+   "text": "**The hunt.** You have two patrols, and the map shows where each one is. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked, and it reports anyone who arrives there. Each report sits on the map at the stop it came from, and it fades as it gets older until it drops off after a day. **The minister's patience** shows as a bar under the clock. He asks where she is again 18 hours after each answer. Saying you don't know, a wrong claim or bad news in the papers lowers his patience, and a right claim raises it. When it runs out, he takes you off the case.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.line.where_now",
+   "pattern": "P07",
+   "text": "\"Where is she now? The papers want an update.\"",
+   "role": "gov",
+   "speaker": "minister"
+  },
+  {
+   "id": "gov.patience.claim_right",
+   "pattern": "P06",
+   "text": "The papers confirm that she was seen at {place}, and the minister is pleased.",
+   "args": [
+    "place"
+   ],
+   "role": "gov"
   }
  ]
 }

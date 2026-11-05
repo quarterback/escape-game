@@ -550,3 +550,6 @@ body.ringing #phoneh{color:var(--mint)}
 
 /* what is next when no move leaves this stop: plain sentences above the waits */
 .nextbox{display:flex;flex-direction:column;gap:6px;padding:14px 16px;margin-bottom:10px;background:var(--s3);border-left:4px solid var(--gold);border-radius:12px}.nextbox p{margin:0;font-size:16px;line-height:1.45}
+/* issue #52: Sofia's board. Patrol pins, and report pins that grey as they age (the text stays dark on a light pill) */
+#govhelp{display:none}body.gov #govhelp{display:block}
+.routemap .pill.seen.age0{fill:#D9D2F5}.routemap .pill.seen.age1{fill:#B9B0D9}.routemap .pill.seen.age2{fill:#A29DB6}.routemap .pill.seen.age3{fill:#8E8A9C}
