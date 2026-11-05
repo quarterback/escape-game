@@ -252,7 +252,26 @@ const Sim = (() => {
       T('sim.status.arrange_reception_through_your_sibling'));
     add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? T('sim.status.contact_salek_before_reaching_susana', { sponsor: sponsor(s).short }) : null].filter(Boolean),
       T('sim.status.ask_salek_to_seek_visa', { name: dest(s).name, sponsor: sponsor(s).short, wants: sponsor(s).wants }));
+    // issue #49: tell a helper you have met a false route, once each, and see whether the police go there
+    for (const k of SUSPECTS) { const p = s.people[k], at = D.PEOPLE[k].where;
+      if (at < 0 || at > s.pos || p.cut || p.known || p.turned || p.fed || s.feedTrap || s.tutorial) continue;
+      out.push({ kind: 'call', id: 'feed:' + k, feed: true, custom: true, name: T('trait.feed', { name: shortName(s, k) }), ok: !s.event, why: s.event ? T('sim.why.answer_the_news_first') : '', hours: 1, cost: T('trait.feed_cost', { name: shortName(s, k) }), preview: [T('trait.feed_cost', { name: shortName(s, k) })] }); }
     return out;
+  }
+  // the place you name in a false plan: a stop you are not at, and never the stop the police already watch
+  const decoyStop = (s) => [0, 1, 2, 3].filter(i => i !== s.pos && i !== s.belief).sort((a, b) => Math.abs(a - s.pos) - Math.abs(b - s.pos))[0];
+  function feed(s, k, events) {
+    const c = callList(s).find(x => x.id === 'feed:' + k); if (!c || !c.ok) return { ok: false, why: c ? c.why : T('sim.why.nothing_to_call_about') };
+    const at = decoyStop(s); s.people[k].fed = true; s.feedTrap = { who: k, at, hour: s.hour + 3 };
+    say(events, 'narrator', T('trait.fed', { name: shortName(s, k), place: at === 0 ? T('brief.the_residence') : D.LEVELS[at].short }));
+    pass(s, 1, events); return finish(s, events);
+  }
+  // two hours later: a traitor sends the police to the false place and is exposed; a loyal helper keeps it to themself
+  function springTrap(s, events) {
+    const t = s.feedTrap; if (!t || s.hour < t.hour) return; s.feedTrap = null;
+    const p = s.people[t.who], name = shortName(s, t.who), place = t.at === 0 ? T('brief.the_residence') : D.LEVELS[t.at].short;
+    if (p.bad) { s.belief = t.at; p.known = true; p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id] && D.CARDS[id].from === t.who) lose(s, id, events); events.push(ev('belief', { belief: s.belief })); say(events, 'narrator', T('trait.caught', { name, place })); }
+    else { p.known = true; p.doubt = false; p.trust = Math.max(p.trust, 2); say(events, 'narrator', T('trait.clean', { name, place })); }
   }
   const jobHours = (k) => ({ aircraft: 6, reception: 6, permission: 10 })[k];
   function inboxList(s) {
@@ -443,7 +462,7 @@ const Sim = (() => {
     const r = _commit(s, actionId, optionId);
     // the share card's grid: one square per round, closed by the round's move (owner, Nov. 2, 2026: "one block per round").
     // k: 0 attention held or fell over the round, 1 it rose, 2 a police stop; n: it was night when the round ended
-    const move = !/^(msg:|call:|hurry:|lodge$|evt:)/.test(actionId), rs = s._round || { e: s.exposure, h: s.holds };
+    const move = !/^(msg:|call:|hurry:|feed:|lodge$|evt:)/.test(actionId), rs = s._round || { e: s.exposure, h: s.holds };
     if (r.ok && move) { (s.trail = s.trail || []).push({ p: at, k: s.holds > rs.h ? 2 : s.exposure > rs.e ? 1 : 0, n: isNight(s) ? 1 : 0 }); s._round = { e: s.exposure, h: s.holds }; }
     else if (!s._round) s._round = rs;
     if (r.ok) (s.actions = s.actions || []).push(optionId === undefined ? [actionId] : [actionId, optionId]);
@@ -466,6 +485,7 @@ const Sim = (() => {
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
     if (actionId.startsWith('hurry:')) return hurry(s, actionId.slice(6), events);
+    if (actionId.startsWith('feed:')) return feed(s, actionId.slice(5), events);
     const a = level(s).approaches.find(x => x.id === actionId);
     if (!a) return { ok: false, why: T('sim.why.not_something_you_can_do') };
     const view = approachList(s).find(x => x.id === actionId);
@@ -617,6 +637,7 @@ const Sim = (() => {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) })); bodyHour(s, events);
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
+      springTrap(s, events);
       // exposure drifts while they look in the right place; Salta's wait for the midnight freight drifts at half rate
       if (s.belief === s.pos && s.hour % (s._manual || level(s).id === 'salta' ? 4 : 2) === 0 && !hidden(s) && !(s._quiet && hasTag(s, 'care'))) heat(s, 1, events);
       if (s.flags.banDue && s.hour >= s.flags.banDue) { delete s.flags.banDue; s.flags.restriction = true; s.flags.banAt = s.hour; say(events, 'narrator', T('mate.paulo.ban_lands')); }

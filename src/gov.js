@@ -69,7 +69,7 @@ const Gov = (() => {
     if (A.event && (A.event.kind === 'lodging' || A.event.kind === 'sick')) { const pick = A.event.kind === 'lodging' ? (S.lodgePick(c) || 'keep_going') : (A.event.choices.find(x => x.ok && x.id === 'clinic') || A.event.choices.find(x => x.ok)).id; return S.commit(c, 'evt:' + pick).events; }
     if (A.event) { const score = (x) => (x.rolls ? 1 : 0) + x.tags.reduce((n, t) => n + ({ risk: 4, up: 2, lose: 2, time: 1 }[t.k] || 0) - ({ down: c.belief === c.pos ? 3 : 1, gain: 1 }[t.k] || 0), 0); const ch = A.event.choices.filter(x => x.ok).sort((a, b) => score(a) - score(b))[0]; return S.commit(c, 'evt:' + ch.id).events; }
     if (A.messages.length) { const m = A.messages[0]; const opt = m.options.filter(o => o.ok).sort((a, b) => (PREF[b.id] || 0) - (PREF[a.id] || 0))[0]; return S.commit(c, m.id, opt.id).events; }
-    const calls = A.calls.filter(x => x.ok && !x.hurry), lvl = c.pos; // hurrying is a player's gamble; the computer-played candidate makes plain calls
+    const calls = A.calls.filter(x => x.ok && !x.hurry && !x.feed), lvl = c.pos; // hurrying is a player's gamble; the computer-played candidate makes plain calls
     if (calls.length && (lvl < 4 || (lvl === 4 && c.arr.reception.stage < 3) || (lvl === 5 && (c.arr.aircraft.stage < 4 || c.arr.permission.stage < 2)))) { const order = ['permission', 'aircraft', 'reception']; calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); return S.commit(c, calls[0].id).events; }
     if (A.lodge.ok && S.lodgePick(c)) return S.commit(c, 'lodge').events;
     const L = D.LEVELS[c.pos];
@@ -247,6 +247,7 @@ const Gov = (() => {
     if (won) {
       if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: T('gov.say.you_move_the_search_to', { place: place(g.belief) }) })); }
       else if (id === 'watch_house') { const home = c.pos === 0; report(g, events, 0, 'watch', home ? T('gov.report.lights_on_someone_moved_past') : T('gov.report.the_house_is_dark_nobody'), home ? T('gov.report.someone_is_inside') : T('gov.report.the_house_is_empty'), home ? T('gov.report.that_it_is_her') : T('gov.report.where_she_went'), 0, c.hour); if (!home && g.belief === 0) { } }
+      else if (id === 'informants') { const near = Object.keys(c.people).filter(k => c.people[k].bad && !c.people[k].known && D.PEOPLE[k].where === c.pos); if (near.length) trueLead(g, events, 1); else report(g, events, g.belief, 'desk', T('gov.report.informants_none'), T('gov.report.informants_none_proves'), T('gov.report.where_she_is'), 1, c.hour); }
       else if (id === 'clinics') clinics(g, events);
       else if (id === 'exchange') exchange(g, events);
       else if (id === 'registers') registers(g, events);

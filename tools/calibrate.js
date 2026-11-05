@@ -24,7 +24,7 @@ function play(seed, who, mate) {
     // food and sleep: stop when exhausted, starving, tired at night or hungry, at the best bed or meal this stop offers
     { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
     // push arrangements that are not pending and not complete, before trying the border or the airfield
-    const calls = A.calls.filter(c => c.ok && !c.hurry);
+    const calls = A.calls.filter(c => c.ok && !c.hurry && !c.feed);
     const lvl = s.pos;
     if (calls.length && (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2)))) {
       const order = ['permission', 'aircraft', 'reception'];

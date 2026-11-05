@@ -153,6 +153,61 @@
    "text": "Wait until dark"
   },
   {
+   "id": "trait.feed",
+   "pattern": "P01",
+   "text": "Tell {name} a false route",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "trait.feed_cost",
+   "pattern": "P03",
+   "text": "If {name} talks to the police, they search where you said within three hours, and you will know who told them.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "trait.fed",
+   "pattern": "P10",
+   "text": "You tell {name} you are heading for {place} next.",
+   "args": [
+    "name",
+    "place"
+   ]
+  },
+  {
+   "id": "trait.caught",
+   "pattern": "P10",
+   "text": "The police search {place}, and only {name} heard you were going there, so {name} is talking to them.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "trait.clean",
+   "pattern": "P10",
+   "text": "The police never go near {place}, so {name} kept your secret.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "gov.report.informants_none",
+   "pattern": "P06",
+   "text": "None of your informants is near her.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.report.informants_none_proves",
+   "pattern": "P06",
+   "text": "Her helpers you can reach are not with her now.",
+   "role": "gov"
+  },
+  {
    "id": "gov.next.abroad",
    "pattern": "P05",
    "text": "Your police can't act in Costamar until it agrees to hold her.",
