@@ -1488,7 +1488,7 @@
   {
    "id": "mate.rita.help",
    "pattern": "P10",
-   "text": "Rita says, \"The crews owe me, so you're cleared.\""
+   "text": "Rita says, \"The crews owe me, so we fly without the visa.\""
   },
   {
    "id": "mate.clara.help",
@@ -4273,7 +4273,7 @@
   {
    "id": "about.p7",
    "pattern": "P08",
-   "text": "Or play the special investigator and hunt the candidate down. The minister keeps asking where the candidate is, and every wrong answer costs his patience. Your reports arrive hours late, and some are false."
+   "text": "Or play the special investigator and hunt the candidate down. The minister keeps asking where the candidate is, and every wrong answer costs his patience. Your reports arrive hours late, and not every report is true."
   },
   {
    "id": "about.start_h",
@@ -5335,7 +5335,7 @@
   {
    "id": "help.gov_hunt",
    "pattern": "P09",
-   "text": "**The hunt.** The map shows your search in gold, your two patrols in coral and the newest report from each stop in lavender, marked with its age. A report greys as it gets older and drops off after a day. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked. If she arrives there, the patrol reports it two to five hours later. **The minister's patience** shows as a bar under the clock. Eighteen hours after you name a stop or say you don't know, he asks again. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
+   "text": "**The hunt.** The map shows your search in gold, your patrols in coral and the newest report from each stop in lavender, marked with its age. A report grays as it gets older and drops off after a day. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked. If she arrives there, the patrol reports it two to five hours later. **The minister's patience** shows as a bar under the clock. Eighteen hours after you name a stop or say you don't know, he asks again. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
    "role": "gov"
   },
   {

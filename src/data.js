@@ -302,7 +302,7 @@ const Data = (() => {
           fail: { exposure: 1, say: "The skipper asks around the fish market about you, and two hours later he says no." } },
         { id: 'coast_ferry', name: 'Take the coast ferry', hours: 3, dc: 5, needs: [],
           mods: { information: 1 }, text: "The coast ferry runs to Punta Marēa in daylight, and the harbor police check papers at the gangway.",
-          success: { exposure: 1, say: "The ferry is full of market traders. A deckhand looks at your face for too long, but the ferry docks at Punta Marēa." },
+          success: { exposure: 1, say: "The ferry is full of market traders. A deckhand looks at your face for too long. The ferry docks at Punta Marēa." },
           fail: { exposure: 2, say: "An officer checks papers at the gangway, and you walk away before your turn." } },
         { id: 'cover_harbor', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: "You rent a net loft above the fish market.",
@@ -381,7 +381,7 @@ const Data = (() => {
     exchange:  { name: "Nadia's exchange records", tag: 'phone', from: 'Nadia', companion: 'nadia', reach: ALL, works: 'Calls on the provincial network.', text: 'An exchange logs which town a call came from, hours later. It never says who is holding the phone.' },
     registers: { name: "Emilio's guest registers", tag: 'lodging', from: 'Emilio', companion: 'emilio', reach: ['road', 'colonia', 'salta'], works: 'Hotels in Pedra Branca, Nova Trentô and Salta.', text: 'A register shows who checked in and when, under whatever name they gave.' },
     union:     { name: "Joana's union contacts", tag: 'union', from: 'Joana', companion: 'joana', reach: ['salta'], works: 'The Salta rail yard and its workers.', text: 'The yard crews talk to her, and they see every passenger the freight carries.' },
-    patrol3:   { does: 'One more patrol to send where you need it.', name: 'A third patrol', tag: 'patrol', from: 'The Pedra Branca commander', reach: [], works: 'Any stop in Valdória, up to and at the line.', text: 'The commander lends you a third patrol, which starts at Nova Trentô.' },
+    patrol3:   { does: 'You have one more patrol to send where you need it.', name: 'A third patrol', tag: 'patrol', from: 'The Pedra Branca commander', reach: [], works: 'Any stop in Valdória, up to and at the line.', text: 'The commander lends you a third patrol, which starts at Nova Trentô.' },
     esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
   };
   // A companion on the government side: the same people, and what each gives Sofia
@@ -649,14 +649,14 @@ const Data = (() => {
     { id: 'harbor_check', at: ['harbor'], title: 'The harbor police check the piers', text: 'Two officers are walking the piers and asking every crew for papers.', choices: [
       { id: 'check_hide', label: 'Hide in the ice house', fx: { hours: 2, roll: { need: 3, win: { say: 'You wait two cold hours in the ice house, and the officers walk past the door.' }, lose: { exposure: 2, say: 'The ice house manager opens the door for the officers and points at you.' } } } },
       { id: 'check_walk', label: 'Walk into town', fx: { hours: 1, exposure: 1, say: 'You leave the waterfront, and a shopkeeper watches you go.' } } ] },
-    { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour back with a load of melons, and Bruno wants to go and help.", choices: [
+    { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour behind you with a load of melons, and Bruno wants to go back and help.", choices: [
       { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
       { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks and is no help to you at this stop." } } ] },
-    { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at one of the posts and could vouch for you, but people will see Clara with you.", choices: [
+    { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at one of the posts and will vouch for you, but people will see Clara with you.", choices: [
       { id: 'clara_aunt_yes', label: "Let Clara bring her aunt", fx: { exposure: 1, mod: -1, say: "The aunt walks you to the barrier and talks to the guards by name." } },
       { id: 'clara_aunt_no', label: "Keep Clara out of sight", fx: { mateoff: true, say: "Clara stays in the car, and she can't help you at this stop." } } ] },
-    { id: 'rita_crew', at: ['airfield'], when: [{ ref: 'companion', op: 'eq', value: 'rita' }], title: "Rita's old crew wants cash", text: "Rita's old crew can ready your jet tonight, but they want cash up front, and cash gets noticed.", choices: [
-      { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works through the night. People on the apron see who paid them." } },
+    { id: 'rita_crew', at: ['airfield'], when: [{ ref: 'companion', op: 'eq', value: 'rita' }], title: "Rita's old crew wants cash", text: "Rita's old crew offers to work on your jet tonight for cash up front. Paying cash on the apron gets you noticed.", choices: [
+      { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works through the night, and the jet is one step closer to ready. People on the apron see who paid them." } },
       { id: 'rita_crew_no', label: "Say no", fx: { mateoff: true, say: "Rita doesn't argue, but she stops asking the crews for favors here." } } ] },
     { id: 'marta_pump', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'marta' }], title: "The fuel pump is failing", text: "Marta says the car's fuel pump is going, and she wants two hours at a garage to fix it.", choices: [
       { id: 'marta_pump_yes', label: "Give Marta two hours", fx: { hours: 2, say: "Marta fixes the pump, and the car runs smoothly again." } },
@@ -670,16 +670,16 @@ const Data = (() => {
     { id: 'celina_exclusive', at: null, when: [{ ref: 'companion', op: 'eq', value: 'celina' }], title: "Celina's station wants you", text: "Celina's station wants a short interview for the morning news, recorded tonight.", choices: [
       { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina edits the interview to sound like you are already abroad, and the police look elsewhere. More people know your face now." } },
       { id: 'celina_exclusive_no', label: "Refuse", fx: { mateoff: true, say: "Celina is hurt, and she won't call her station for you here." } } ] },
-    { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás offers to wave you through, if Tomás stays an hour for a drink.", choices: [
+    { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás offers to wave you through if Tomás stays an hour for a drink.", choices: [
       { id: 'tomas_drink_yes', label: "Let Tomás have his drink", fx: { hours: 1, mod: -1, say: "The sergeant tells the night shift to look the other way." } },
       { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "The sergeant takes it badly, and Tomás is no help to you at this post." } } ] },
     { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on the line to {sibfull} and wants an hour to move the calls to another exchange.", choices: [
       { id: 'nadia_click_yes', label: "Give Nadia the hour", fx: { hours: 1, exposure: -1, say: "Nadia moves the line, and the click is gone." } },
       { id: 'nadia_click_no', label: "There is no time", fx: { mateoff: true, say: "Nadia leaves the line as it is, and she can't hide your calls here." } } ] },
     { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel clerk called Emilio to say someone asked who is really staying under the name he booked.", choices: [
-      { id: 'emilio_booking_yes', label: "Let Emilio move you", fx: { hours: 1, say: "Emilio moves you to a guesthouse his cousin runs before anyone comes back." } },
+      { id: 'emilio_booking_yes', label: "Let Emilio move you", fx: { hours: 1, say: "Before anyone comes back, Emilio moves you to a guesthouse his cousin runs." } },
       { id: 'emilio_booking_no', label: "Ignore it", fx: { mateoff: true, say: "Emilio won't risk another booking at this stop." } } ] },
-    { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight, and Joana is expected to speak.", choices: [
+    { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight, and the members expect Joana to speak.", choices: [
       { id: 'joana_meeting_yes', label: "Let Joana go", fx: { hours: 2, mod: -1, say: "Joana comes back with a yard crew that owes her." } },
       { id: 'joana_meeting_no', label: "Keep Joana with you", fx: { mateoff: true, say: "Joana stays, but the crews hear she skipped the meeting and won't help here." } } ] },
     // anywhere
@@ -733,7 +733,7 @@ const Data = (() => {
       { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_harbor', at: ['harbor'], title: 'A place to stop in Barra Velha', text: 'The seamen\'s hostel takes a name and a passport. The fish market cooks for anyone who stands in line.', choices: [
-      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room above a chandler\'s shop under another guest\'s name. Everyone eats and sleeps six hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room above a boat supply shop under another guest\'s name. Everyone eats and sleeps six hours.' } },
       { id: 'hostel_harbor', label: "Take a seamen's hostel bunk", fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps six hours.' } },
       { id: 'boat_sleep', label: 'Sleep in a moored boat', fx: { hours: 4, sleep: 'car', rest: true, say: 'A fisherman lets you sleep four hours under the nets in his boat.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys fried fish at the market and brings it to the pier.' } },
