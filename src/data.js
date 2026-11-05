@@ -603,6 +603,40 @@ const Data = (() => {
     { id: 'customs_sweep', at: ['airfield'], title: 'Customs searches the hangars', text: 'Two customs officers are checking every hangar on the apron.', choices: [
       { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
       { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
+    // companions' own moments (owner, Nov. 5, 2026, issue #50): each asks something of you once; saying no costs their help at that stop
+    { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour back with a load of melons, and Bruno wants to go and help.", choices: [
+      { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
+      { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks, and he is no help to you here." } } ] },
+    { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at one of the posts and could vouch for you, but people will see Clara with you.", choices: [
+      { id: 'clara_aunt_yes', label: "Let Clara bring her aunt", fx: { exposure: 1, mod: -1, say: "The aunt walks you to the barrier and talks to the guards by name." } },
+      { id: 'clara_aunt_no', label: "Keep Clara out of sight", fx: { mateoff: true, say: "Clara stays in the car, and she can't help you at this stop." } } ] },
+    { id: 'rita_crew', at: ['airfield'], when: [{ ref: 'companion', op: 'eq', value: 'rita' }], title: "Rita's old crew wants cash", text: "Rita's old crew can ready your jet tonight, but they want cash up front, and cash gets noticed.", choices: [
+      { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works through the night. People on the apron see who paid them." } },
+      { id: 'rita_crew_no', label: "Say no", fx: { mateoff: true, say: "Rita doesn't argue, but she stops asking the crews for favors here." } } ] },
+    { id: 'marta_pump', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'marta' }], title: "The fuel pump is failing", text: "Marta says the car's fuel pump is going, and she wants two hours at a garage to fix it.", choices: [
+      { id: 'marta_pump_yes', label: "Give Marta two hours", fx: { hours: 2, say: "Marta fixes the pump and changes the plates while she is at it." } },
+      { id: 'marta_pump_no', label: "Drive on as it is", fx: { mateoff: true, say: "The car limps on, and Marta can't make it look ordinary here." } } ] },
+    { id: 'ines_fever', at: null, when: [{ ref: 'companion', op: 'eq', value: 'ines' }], title: "A child with a fever", text: "A woman at the roadside has a child with a high fever, and Inês wants to stop.", choices: [
+      { id: 'ines_fever_yes', label: "Let Inês help", fx: { hours: 2, exposure: -1, say: "Inês brings the fever down, and the family swears they never saw you." } },
+      { id: 'ines_fever_no', label: "Keep going", fx: { mateoff: true, say: "Inês goes quiet and won't help you here." } } ] },
+    { id: 'paulo_favor', at: ['residence', 'road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'paulo' }], title: "Paulo's old supervisor calls", text: "Paulo's old supervisor at the court will lose your file for a day if Paulo owes him a favor.", choices: [
+      { id: 'paulo_favor_yes', label: "Let Paulo owe the favor", fx: { exposure: -1, say: "Your file goes to the bottom of the pile, and the supervisor knows Paulo is with you." } },
+      { id: 'paulo_favor_no', label: "Tell Paulo to hang up", fx: { mateoff: true, say: "Paulo hangs up, and he won't work the court's phones for you here." } } ] },
+    { id: 'celina_exclusive', at: null, when: [{ ref: 'companion', op: 'eq', value: 'celina' }], title: "Celina's station wants you", text: "Celina's station wants a short interview for the morning news, recorded tonight.", choices: [
+      { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina edits it to sound like you are already abroad." } },
+      { id: 'celina_exclusive_no', label: "Refuse", fx: { mateoff: true, say: "Celina is hurt, and she won't call her station for you here." } } ] },
+    { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás offers to wave you through, if Tomás stays an hour for a drink.", choices: [
+      { id: 'tomas_drink_yes', label: "Let Tomás have his drink", fx: { hours: 1, mod: -1, say: "The sergeant tells the night shift to look the other way." } },
+      { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "Tomás comes along, but the sergeant takes it badly, and Tomás is no help at this post." } } ] },
+    { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on {sib}'s line and wants an hour to move the calls to another exchange.", choices: [
+      { id: 'nadia_click_yes', label: "Give Nadia the hour", fx: { hours: 1, exposure: -1, say: "Nadia moves the line, and the click is gone." } },
+      { id: 'nadia_click_no', label: "There is no time", fx: { mateoff: true, say: "Nadia leaves the line as it is, and she can't hide your calls here." } } ] },
+    { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel called Emilio, because someone asked who the guest under the other name really is.", choices: [
+      { id: 'emilio_booking_yes', label: "Let Emilio move you", fx: { hours: 1, say: "Emilio moves you to a guesthouse his cousin runs before anyone comes back." } },
+      { id: 'emilio_booking_no', label: "Ignore it", fx: { mateoff: true, say: "Emilio won't risk another booking at this stop." } } ] },
+    { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight, and Joana is expected to speak.", choices: [
+      { id: 'joana_meeting_yes', label: "Let Joana go", fx: { hours: 2, mod: -1, say: "Joana comes back with a yard crew that owes her." } },
+      { id: 'joana_meeting_no', label: "Keep Joana with you", fx: { mateoff: true, say: "Joana stays, but the crews hear she skipped the meeting and won't help here." } } ] },
     // anywhere
     { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed abroad. You are still at {here}.', choices: [
       { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, and every reply you ask for now comes two hours later.' } },

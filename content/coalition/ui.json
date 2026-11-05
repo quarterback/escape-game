@@ -1416,6 +1416,36 @@
    "role": "gov"
   },
   {
+   "id": "mate.joana.help",
+   "pattern": "P10",
+   "text": "Joana says, \"The crew is holding the car, so get on.\""
+  },
+  {
+   "id": "mate.tomas.help",
+   "pattern": "P10",
+   "text": "Tomás says, \"That booth changes shift now, so go.\""
+  },
+  {
+   "id": "mate.marta.help",
+   "pattern": "P10",
+   "text": "Marta says, \"It's the same car with new plates, so drive like nothing happened.\""
+  },
+  {
+   "id": "mate.rita.help",
+   "pattern": "P10",
+   "text": "Rita says, \"The crews owe me, so you're cleared.\""
+  },
+  {
+   "id": "mate.clara.help",
+   "pattern": "P10",
+   "text": "Clara says, \"I told them in their own words who you are.\""
+  },
+  {
+   "id": "mate.bruno.help",
+   "pattern": "P10",
+   "text": "Bruno says, \"I know that crew, and they won't look twice.\""
+  },
+  {
    "id": "mate.bruno.escape",
    "pattern": "P03",
    "text": "Bruno can find you a way onto a train."

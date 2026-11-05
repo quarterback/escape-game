@@ -174,7 +174,8 @@ const Sim = (() => {
 
   // ---- what you can do right now ------------------------------
   // A card counts only inside its reach. Authority is local: the party stops at the line, Vélez starts there.
-  const reaches = (s, id) => { const c = D.CARDS[id]; return !!c && c.reach.includes(level(s).id); };
+  // a companion you said no to helps nowhere at that stop (owner, Nov. 5, 2026: companions with moments of their own, issue #50)
+  const reaches = (s, id) => { const c = D.CARDS[id]; return !!c && c.reach.includes(level(s).id) && !(c.companion && s.flags.mateOff === s.pos); };
   function mods(s, L) {
     const out = {};
     for (const id of s.hand) { if (!reaches(s, id)) continue; const c = D.CARDS[id]; out[c.tag] = (out[c.tag] || 0) + 1; }
@@ -305,6 +306,7 @@ const Sim = (() => {
     if (ref === 'clock.hoursLeft') return HOURS_TOTAL - s.hour;
     if (ref.startsWith('hand.')) return s.hand.includes(ref.slice(5));
     if (ref.startsWith('flag.')) return !!s.flags[ref.slice(5)];
+    if (ref === 'companion') return s.companion || '';
     return undefined;
   }
   function holds(s, c) { const v = fact(s, c.ref); return c.op === 'eq' ? v === c.value : c.op === 'gte' ? typeof v === 'number' && v >= c.value : c.op === 'contains' ? typeof v === 'string' && v.includes(c.value) : false; }
@@ -412,6 +414,7 @@ const Sim = (() => {
     if (fx.skipEnemy) s.lastEnemy = s.hour + 3;
     if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
     if (fx.rung !== undefined) s.hold = fx.rung;
+    if (fx.mateoff) s.flags.mateOff = s.pos;
     if (fx.end) { const after = epilogue(s, false, fx.end.kind); s.over = { win: false, kind: fx.end.kind || 'arrest', story: fx.end.reason, after, reason: `${fx.end.reason} ${after}` }; events.push(ev('over', s.over)); return; }
     if (fx.hold) climbHold(s, events);
     if (fx.advance) advanceLevel(s, events);
@@ -477,6 +480,8 @@ const Sim = (() => {
     if (a.noRoll) { won = true; events.push(ev('roll', { die: null, need: null, won, auto: true, bonus: [] })); }
     // hard is read by the tests only; no screen shows a target
     else { const die = roll(s); won = wins(die, view.real); events.push(ev('roll', { die, won, bonus: view.bonusFrom, hard: view.real > 6 })); }
+    // the companion speaks when their help wins a move (issue #50)
+    if (won && s.companion && !a.noRoll) { const tag = D.CARDS[D.COMPANIONS[s.companion].card].tag; if ((view.bonusFrom || []).includes(tag) || a.needs.some(n => n.card === tag)) { const line = mateLine(s.companion); if (line) say(events, 'narrator', line); } }
     const bought = won && a.post && a.post === s.boughtPost; // the Valdórian side lets you through and the bought Costamaran post turns you back
     if (bought) events[events.length - 1].bought = true;
     apply(s, won ? (bought ? Object.assign({}, a.success, { say: '' }) : a.success) : a.fail, events, a);
@@ -518,6 +523,7 @@ const Sim = (() => {
   }
   function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || s.used.includes(id)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
   // a companion travels with you for the whole run: nothing takes their card
+  const mateLine = (k) => ({ bruno: T('mate.bruno.help'), clara: T('mate.clara.help'), rita: T('mate.rita.help'), marta: T('mate.marta.help'), tomas: T('mate.tomas.help'), joana: T('mate.joana.help') })[k] || '';
   function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0 || (D.CARDS[id] && D.CARDS[id].companion)) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }
   function heat(s, d, events) { s.exposure = Math.max(0, Math.min(EXPOSURE_LIMIT, s.exposure + d)); events.push(ev('exposure', { delta: d, exposure: s.exposure })); }
   // an arrangement can move one step only where the same step through an ally could (resolveJob):
