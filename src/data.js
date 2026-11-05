@@ -73,7 +73,7 @@ const Data = (() => {
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "The crate is in the third boxcar, with straw inside. Holt leaves at midnight and does not wait." },
     berth:        { name: "A berth on the night boat", tag: 'passage', from: 'self', reach: ['harbor'], works: 'Riding the night boat to Punta Marēa.',
-                    text: "The skipper keeps a berth in his hold for you on pier four." },
+                    text: "The skipper keeps a berth in his hold for you on Pier 4." },
     yard_walk:    { name: "Theo's walk through the yard", tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
@@ -174,7 +174,7 @@ const Data = (() => {
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
         { id: 'river', name: 'Take the river to the coast', hours: 4, dc: 3, needs: [],
-          mods: { boat: 2, information: 1 }, text: "A sand barge runs down the river to the fishing port at Barra Velha, and its pilot takes passengers for cash.",
+          mods: { boat: 2, information: 1 }, text: "A sand barge runs down the river to the fishing port at Barra Velha, and its pilot takes passengers.",
           success: { route: 'coast', say: "The barge slips past the lock and ties up at Barra Velha, where the river meets the sea. You skip Nova Trentô and Salta and go on to the line by sea." },
           fail: { exposure: 1, hours: 2, say: "River police search every barge at the lock, and the pilot keeps you in the hold for two more hours." } },
         { id: 'cover_road', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
@@ -297,8 +297,8 @@ const Data = (() => {
           success: { say: "The boat runs without lights, and four hours later the skipper puts you ashore below the Punta Marēa crossing." },
           fail: { exposure: 1, say: "A harbor police lamp sweeps the pier, and the skipper will not cast off. You can try again while it is still dark." } },
         { id: 'skipper', name: 'Pay a skipper for a berth', hours: 2, dc: 3, needs: [], pay: true,
-          mods: { introduction: 1, information: 1, union: 1 }, text: "A skipper on pier four keeps a berth in his hold for anyone who pays.",
-          success: { card: 'berth', say: "The skipper counts the money twice. \"Pier four, after dark. Bring nothing heavy.\"" },
+          mods: { introduction: 1, information: 1, union: 1 }, text: "A skipper on Pier 4 keeps a berth in his hold for anyone who pays.",
+          success: { card: 'berth', say: "The skipper counts the money twice. \"Pier 4, after dark. Bring nothing heavy.\"" },
           fail: { exposure: 1, say: "The skipper asks around the fish market about you, and two hours later he says no." } },
         { id: 'coast_ferry', name: 'Take the coast ferry', hours: 3, dc: 5, needs: [],
           mods: { information: 1 }, text: "The coast ferry runs to Punta Marēa in daylight, and the harbor police check papers at the gangway.",
@@ -420,7 +420,7 @@ const Data = (() => {
     { id: 'tower_delay', where: [5], name: () => 'Ask the tower to delay her charter', hours: 2, dc: 4, who: 'the aviation desk', mods: { operator: 2 }, fx: { stall: 4, say: 'The tower finds a problem with the charter\'s paperwork, and her arrangements slip four hours.' }, text: 'The Portalba tower can slow any charter for four hours.', fail: 'The tower says Costamar runs its own airport.' },
     { id: 'lounge_reporter', where: [5], name: () => 'Send a reporter to the crew lounge', hours: 1, dc: 3, who: 'the ministry press office', mods: { media: 2 }, fx: { press: 1, lead: 1, say: 'The reporter talks to the crews and files from the airfield.' }, text: 'Crews talk, and a reporter at Portalba hears it.', fail: 'Airfield security turns the reporter away.' },
     // issue #49: the candidate's two traitors are Sofia's informants; one near her tells Sofia where, an hour late
-    { id: 'informants', name: () => 'Ask your informants', hours: 1, dc: 3, who: 'your informants', mods: {}, text: 'Two of her helpers talk to the police. One who is near her can tell you where she is, an hour late.', fail: 'Your informants do not answer today.' },
+    { id: 'informants', name: () => 'Ask your informants', hours: 1, dc: 3, who: 'your informants', mods: {}, text: 'If a helper who talks to the police is at her stop, you learn where she is an hour later.', fail: 'Your informants do not answer today.' },
     // the later companions' orders: needs is the government card that opens the order
     { id: 'clinics', needs: 'clinics', name: () => 'Ask the clinics about her family', hours: 1, dc: 3, who: 'Inês', mods: { medical: 2 }, text: 'Inês asks the clinics in Valdória whether anyone from her family has been seen. A clinic names the stop three hours later, and it names each stop once.', fail: 'The clinics will not talk without a court order.' },
     { id: 'exchange', needs: 'exchange', name: () => 'Pull the exchange records', hours: 1, dc: 3, who: 'Nadia', mods: { phone: 2 }, text: 'Nadia reads the exchange logs for calls to her family in the last four hours. A log names the town a call came from, not where she is now.', fail: 'The exchange supervisor wants the request in writing.' },
@@ -642,13 +642,13 @@ const Data = (() => {
     // companions' own moments (owner, Nov. 5, 2026, issue #50): each asks something of you once; saying no costs their help at that stop
     { id: 'harbor_storm', at: ['harbor'], title: 'A storm off the coast', text: 'The harbor master has closed the port, and no boat leaves until the wind drops.', choices: [
       { id: 'storm_wait', label: 'Wait out the storm', fx: { hours: 3, say: 'The wind drops after three hours, and the boats go back to work.' } },
-      { id: 'storm_go', label: 'Pay a skipper to go anyway', fx: { roll: { need: 4, win: { advance: true, say: 'The boat rolls for hours, and you wade ashore below the Punta Marēa crossing.' }, lose: { exposure: 2, hours: 2, say: 'The boat turns back at the breakwater, and the whole pier watches you climb off.' } } } } ] },
+      { id: 'storm_go', label: 'Pay a skipper to go anyway', fx: { roll: { need: 4, win: { advance: true, say: 'The boat rolls for hours, and you wade ashore below the Punta Marēa crossing.' }, lose: { exposure: 2, hours: 2, say: 'The boat turns back at the breakwater two hours later, and the whole pier watches you climb off.' } } } } ] },
     { id: 'harbor_check', at: ['harbor'], title: 'The harbor police check the piers', text: 'Two officers are walking the piers and asking every crew for papers.', choices: [
       { id: 'check_hide', label: 'Hide in the ice house', fx: { hours: 2, roll: { need: 3, win: { say: 'You wait two cold hours in the ice house, and the officers walk past the door.' }, lose: { exposure: 2, say: 'The ice house manager opens the door for the officers and points at you.' } } } },
       { id: 'check_walk', label: 'Walk into town', fx: { hours: 1, exposure: 1, say: 'You leave the waterfront, and a shopkeeper watches you go.' } } ] },
     { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour back with a load of melons, and Bruno wants to go and help.", choices: [
       { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
-      { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks, and he is no help to you here." } } ] },
+      { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks and is no help to you at this stop." } } ] },
     { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at one of the posts and could vouch for you, but people will see Clara with you.", choices: [
       { id: 'clara_aunt_yes', label: "Let Clara bring her aunt", fx: { exposure: 1, mod: -1, say: "The aunt walks you to the barrier and talks to the guards by name." } },
       { id: 'clara_aunt_no', label: "Keep Clara out of sight", fx: { mateoff: true, say: "Clara stays in the car, and she can't help you at this stop." } } ] },
@@ -656,24 +656,24 @@ const Data = (() => {
       { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works through the night. People on the apron see who paid them." } },
       { id: 'rita_crew_no', label: "Say no", fx: { mateoff: true, say: "Rita doesn't argue, but she stops asking the crews for favors here." } } ] },
     { id: 'marta_pump', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'marta' }], title: "The fuel pump is failing", text: "Marta says the car's fuel pump is going, and she wants two hours at a garage to fix it.", choices: [
-      { id: 'marta_pump_yes', label: "Give Marta two hours", fx: { hours: 2, say: "Marta fixes the pump and changes the plates while she is at it." } },
+      { id: 'marta_pump_yes', label: "Give Marta two hours", fx: { hours: 2, say: "Marta fixes the pump, and the car runs smoothly again." } },
       { id: 'marta_pump_no', label: "Drive on as it is", fx: { mateoff: true, say: "The car limps on, and Marta can't make it look ordinary here." } } ] },
     { id: 'ines_fever', at: null, when: [{ ref: 'companion', op: 'eq', value: 'ines' }], title: "A child with a fever", text: "A woman at the roadside has a child with a high fever, and Inês wants to stop.", choices: [
       { id: 'ines_fever_yes', label: "Let Inês help", fx: { hours: 2, exposure: -1, say: "Inês brings the fever down, and the family swears they never saw you." } },
       { id: 'ines_fever_no', label: "Keep going", fx: { mateoff: true, say: "Inês goes quiet and won't help you here." } } ] },
-    { id: 'paulo_favor', at: ['residence', 'road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'paulo' }], title: "Paulo's old supervisor calls", text: "Paulo's old supervisor at the court will lose your file for a day if Paulo owes him a favor.", choices: [
+    { id: 'paulo_favor', at: ['residence', 'road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'paulo' }], title: "Paulo's old supervisor calls", text: "Paulo's old supervisor at the court will lose your file for a day if Paulo agrees to owe him a favor.", choices: [
       { id: 'paulo_favor_yes', label: "Let Paulo owe the favor", fx: { exposure: -1, say: "Your file goes to the bottom of the pile, and the supervisor knows Paulo is with you." } },
       { id: 'paulo_favor_no', label: "Tell Paulo to hang up", fx: { mateoff: true, say: "Paulo hangs up, and he won't work the court's phones for you here." } } ] },
     { id: 'celina_exclusive', at: null, when: [{ ref: 'companion', op: 'eq', value: 'celina' }], title: "Celina's station wants you", text: "Celina's station wants a short interview for the morning news, recorded tonight.", choices: [
-      { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina edits it to sound like you are already abroad." } },
+      { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina edits the interview to sound like you are already abroad, and the police look elsewhere. More people know your face now." } },
       { id: 'celina_exclusive_no', label: "Refuse", fx: { mateoff: true, say: "Celina is hurt, and she won't call her station for you here." } } ] },
     { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás offers to wave you through, if Tomás stays an hour for a drink.", choices: [
       { id: 'tomas_drink_yes', label: "Let Tomás have his drink", fx: { hours: 1, mod: -1, say: "The sergeant tells the night shift to look the other way." } },
-      { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "Tomás comes along, but the sergeant takes it badly, and Tomás is no help at this post." } } ] },
-    { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on {sib}'s line and wants an hour to move the calls to another exchange.", choices: [
+      { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "The sergeant takes it badly, and Tomás is no help to you at this post." } } ] },
+    { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on the line to {sibfull} and wants an hour to move the calls to another exchange.", choices: [
       { id: 'nadia_click_yes', label: "Give Nadia the hour", fx: { hours: 1, exposure: -1, say: "Nadia moves the line, and the click is gone." } },
       { id: 'nadia_click_no', label: "There is no time", fx: { mateoff: true, say: "Nadia leaves the line as it is, and she can't hide your calls here." } } ] },
-    { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel called Emilio, because someone asked who the guest under the other name really is.", choices: [
+    { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel clerk called Emilio to say someone asked who is really staying under the name he booked.", choices: [
       { id: 'emilio_booking_yes', label: "Let Emilio move you", fx: { hours: 1, say: "Emilio moves you to a guesthouse his cousin runs before anyone comes back." } },
       { id: 'emilio_booking_no', label: "Ignore it", fx: { mateoff: true, say: "Emilio won't risk another booking at this stop." } } ] },
     { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight, and Joana is expected to speak.", choices: [

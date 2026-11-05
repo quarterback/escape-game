@@ -29,10 +29,10 @@ const Gov = (() => {
     if (g.tutorial || g.over || g.c.over) return;
     const was = g.patience === undefined ? 3 : g.patience; g.patience = Math.max(0, Math.min(3, was + d));
     if (g.patience === was) return;
-    events.push(ev('say', { who: 'narrator', text: T(g.patience > was ? 'gov.patience.up' : 'gov.patience.down', { word: patienceWord(g.patience) }) }));
+    if (g.patience) events.push(ev('say', { who: 'narrator', text: T(g.patience > was ? 'gov.patience.up' : 'gov.patience.down', { word: patienceWord(g.patience) }) }));
     if (g.patience === 0) { g.c.over = { win: true, kind: 'fired', story: T('over.why_gov_fired'), after: '', reason: T('over.why_gov_fired') }; g.over = g.c.over; events.push(ev('over', g.c.over)); }
   }
-  const patienceWord = (n) => [T('gov.patience.w0'), T('gov.patience.w1'), T('gov.patience.w2'), T('gov.patience.w3')][Math.max(0, Math.min(3, n))];
+  const patienceWord = (n) => [T('gov.patience.w1'), T('gov.patience.w1'), T('gov.patience.w2'), T('gov.patience.w3')][Math.max(0, Math.min(3, n))];
 
   function newRun(seed, target, opts) {
     target = target || 'woman'; opts = opts || {};

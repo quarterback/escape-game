@@ -163,7 +163,7 @@
   {
    "id": "trait.feed_cost",
    "pattern": "P03",
-   "text": "If {name} talks to the police, they search where you said within three hours, and you will know who told them.",
+   "text": "Three hours later, you find out whether {name} talks to the police.",
    "args": [
     "name"
    ]
@@ -180,7 +180,7 @@
   {
    "id": "trait.caught",
    "pattern": "P10",
-   "text": "The police search {place}, and only {name} heard you were going there, so {name} is talking to them.",
+   "text": "The police search {place}, so {name} is working with them and can no longer help you.",
    "args": [
     "place",
     "name"
@@ -189,7 +189,7 @@
   {
    "id": "trait.clean",
    "pattern": "P10",
-   "text": "The police never go near {place}, so {name} kept your secret.",
+   "text": "The police stay away from {place}, so you can trust {name}.",
    "args": [
     "place",
     "name"
@@ -204,7 +204,7 @@
   {
    "id": "gov.report.informants_none_proves",
    "pattern": "P06",
-   "text": "Her helpers you can reach are not with her now.",
+   "text": "None of the helpers who talk to you is with her.",
    "role": "gov"
   },
   {
@@ -1473,17 +1473,17 @@
   {
    "id": "mate.joana.help",
    "pattern": "P10",
-   "text": "Joana says, \"The crew is holding the car, so get on.\""
+   "text": "Joana says, \"Get on while the crew holds the car.\""
   },
   {
    "id": "mate.tomas.help",
    "pattern": "P10",
-   "text": "Tomás says, \"That booth changes shift now, so go.\""
+   "text": "Tomás says, \"Go now, while that booth changes shift.\""
   },
   {
    "id": "mate.marta.help",
    "pattern": "P10",
-   "text": "Marta says, \"It's the same car with new plates, so drive like nothing happened.\""
+   "text": "Marta says, \"Drive like nothing happened, because nobody knows these plates.\""
   },
   {
    "id": "mate.rita.help",
@@ -4717,7 +4717,7 @@
   {
    "id": "brief.gov_search",
    "pattern": "P02",
-   "text": "Your search"
+   "text": "Search"
   },
   {
    "id": "brief.gov_last_seen",
@@ -5274,15 +5274,9 @@
    "role": "gov"
   },
   {
-   "id": "gov.patience.w0",
-   "pattern": "P02",
-   "text": "Done with you",
-   "role": "gov"
-  },
-  {
    "id": "gov.patience.down",
    "pattern": "P06",
-   "text": "The minister's patience drops to {word}.",
+   "text": "The minister's patience falls to {word}.",
    "args": [
     "word"
    ],
@@ -5300,7 +5294,7 @@
   {
    "id": "gov.patience.claim_wrong",
    "pattern": "P06",
-   "text": "The papers report that she was never at {place}, and the minister is angry.",
+   "text": "The papers report that she was not at {place} when the minister named it, and he is angry.",
    "args": [
     "place"
    ],
@@ -5326,13 +5320,13 @@
   {
    "id": "brief.gov_pin_new",
    "pattern": "P02",
-   "text": "New report",
+   "text": "Now",
    "role": "gov"
   },
   {
    "id": "brief.gov_pin_old",
    "pattern": "P02",
-   "text": "Report, {hours} hr old",
+   "text": "{hours} hr",
    "args": [
     "hours"
    ],
@@ -5341,7 +5335,7 @@
   {
    "id": "help.gov_hunt",
    "pattern": "P09",
-   "text": "**The hunt.** You have two patrols, and the map shows where each one is. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked, and it reports anyone who arrives there. Each report sits on the map at the stop it came from, and it fades as it gets older until it drops off after a day. **The minister's patience** shows as a bar under the clock. He asks where she is again 18 hours after each answer. Saying you don't know, a wrong claim or bad news in the papers lowers his patience, and a right claim raises it. When it runs out, he takes you off the case.",
+   "text": "**The hunt.** The map shows your search in gold, your two patrols in coral and the newest report from each stop in lavender, marked with its age. A report greys as it gets older and drops off after a day. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked. If she arrives there, the patrol reports it two to five hours later. **The minister's patience** shows as a bar under the clock. Eighteen hours after you name a stop or say you don't know, he asks again. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
    "role": "gov"
   },
   {
@@ -5354,7 +5348,7 @@
   {
    "id": "gov.patience.claim_right",
    "pattern": "P06",
-   "text": "The papers confirm that she was seen at {place}, and the minister is pleased.",
+   "text": "The papers confirm that she was at {place} when the minister named it, and he is pleased.",
    "args": [
     "place"
    ],

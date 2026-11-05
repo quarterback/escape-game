@@ -325,7 +325,7 @@ const Sim = (() => {
   }
 
   // ---- dispatches and holds: the News phase --------------------
-  const fill = (s, t) => String(t).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, s.pos === 0 ? 'the residence' : s.pos === 4 ? 'the line' : level(s).short);
+  const fill = (s, t) => String(t).replace(/\{sibfull\}/g, `${ch(s).sibling.rel} ${ch(s).sibling.short}`).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, s.pos === 0 ? 'the residence' : s.pos === 4 ? 'the line' : level(s).short);
   // declarative conditions (pbbg-content-schema shape): { ref, op: eq | gte | contains, value } against declared facts
   function fact(s, ref) {
     if (ref === 'clock.hoursLeft') return HOURS_TOTAL - s.hour;
