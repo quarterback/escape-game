@@ -3272,6 +3272,8 @@ const Data = (() => {
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "The crate is in the third boxcar, with straw inside. Holt leaves at midnight and does not wait." },
+    berth:        { name: "A berth on the night boat", tag: 'passage', from: 'self', reach: ['harbor'], works: 'Riding the night boat to Punta Marēa.',
+                    text: "The skipper keeps a berth in his hold for you on pier four." },
     yard_walk:    { name: "Theo's walk through the yard", tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
@@ -3371,6 +3373,10 @@ const Data = (() => {
           mods: { information: 1 }, text: "A river captain who owes your father takes you up to Nova Trentô.",
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
+        { id: 'river', name: 'Take the river to the coast', hours: 4, dc: 3, needs: [],
+          mods: { boat: 2, information: 1 }, text: "A sand barge runs down the river to the fishing port at Barra Velha, and its pilot takes passengers for cash.",
+          success: { route: 'coast', say: "The barge slips past the lock and ties up at Barra Velha, where the river meets the sea. You skip Nova Trentô and Salta and go on to the line by sea." },
+          fail: { exposure: 1, hours: 2, say: "River police search every barge at the lock, and the pilot keeps you in the hold for two more hours." } },
         { id: 'cover_road', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: "You swap cars twice and leave the old one in a farmer's barn.",
           success: { exposure: -1, say: "You swap cars behind a grain store, and the police lose the trail." },
@@ -3441,6 +3447,10 @@ const Data = (() => {
           mods: { introduction: 2, border: 1 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
           success: { say: 'After a long climb, the sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
+        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [],
+          mods: { border: 2, care: 1 }, text: "An old shepherds' path climbs over the ridge between the posts, where no guard checks a passport.",
+          success: { exposure: -1, say: "You walk five hours through the snow and come down on the Costamaran side, where no post has your name." },
+          fail: { exposure: 1, hours: 3, say: "The wind closes the path near the top, and you lose three more hours walking back down in the cold." } },
         { id: 'cover_border', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: "You wait in a trucker's cab away from the posts.",
           success: { exposure: -1, say: "The trucks come and go, and nobody looks into the cab." },
@@ -3475,6 +3485,30 @@ const Data = (() => {
           fail: { exposure: 1, say: "The agent will only take payment from the operator's account, and you lose an hour." } },
       ] },
   ];
+
+  // The coast route (owner's issue #51): Pedra Branca down the river to Barra Velha, which takes the place of
+  // Nova Trentô and Salta. It is the fourth stop on that route, so it sits at index 3 in place of Salta.
+  const HARBOR = { id: 'harbor', name: 'The fishing port, Barra Velha', short: 'Barra Velha', scene: 'harbor',
+      objective: 'Get on a boat to the Punta Marēa crossing.',
+      arrive: "The fishing boats run down the coast to Punta Marēa every night. The harbor police check the piers after dark.",
+      approaches: [
+        { id: 'night_boat', name: 'Sail at night to Punta Marēa', hours: 4, dc: 3, needs: [{ night: true }],
+          mods: { passage: 2, boat: 1, information: 1 }, text: "The night boats leave at dark and land on the beach below the Punta Marēa crossing.",
+          success: { say: "The boat runs without lights, and four hours later the skipper puts you ashore below the Punta Marēa crossing." },
+          fail: { exposure: 1, say: "A harbor police lamp sweeps the pier, and the skipper will not cast off. You can try again while it is still dark." } },
+        { id: 'skipper', name: 'Pay a skipper for a berth', hours: 2, dc: 3, needs: [], pay: true,
+          mods: { introduction: 1, information: 1, union: 1 }, text: "A skipper on pier four keeps a berth in his hold for anyone who pays.",
+          success: { card: 'berth', say: "The skipper counts the money twice. \"Pier four, after dark. Bring nothing heavy.\"" },
+          fail: { exposure: 1, say: "The skipper asks around the fish market about you, and two hours later he says no." } },
+        { id: 'coast_ferry', name: 'Take the coast ferry', hours: 3, dc: 5, needs: [],
+          mods: { information: 1 }, text: "The coast ferry runs to Punta Marēa in daylight, and the harbor police check papers at the gangway.",
+          success: { exposure: 1, say: "The ferry is full of market traders. A deckhand looks at your face for too long, but the ferry docks at Punta Marēa." },
+          fail: { exposure: 2, say: "An officer checks papers at the gangway, and you walk away before your turn." } },
+        { id: 'cover_harbor', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You rent a net loft above the fish market.",
+          success: { exposure: -1, say: "Nobody looks up at the loft over the fish market." },
+          fail: { exposure: 1, say: "The fish buyer downstairs recognizes you from the newspaper." } },
+      ] };
 
   // Things people say when a stage is reached. who: speaker id.
   const STAGE_LINES = {
@@ -3806,6 +3840,12 @@ const Data = (() => {
       { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
       { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
     // companions' own moments (owner, Nov. 5, 2026, issue #50): each asks something of you once; saying no costs their help at that stop
+    { id: 'harbor_storm', at: ['harbor'], title: 'A storm off the coast', text: 'The harbor master has closed the port, and no boat leaves until the wind drops.', choices: [
+      { id: 'storm_wait', label: 'Wait out the storm', fx: { hours: 3, say: 'The wind drops after three hours, and the boats go back to work.' } },
+      { id: 'storm_go', label: 'Pay a skipper to go anyway', fx: { roll: { need: 4, win: { advance: true, say: 'The boat rolls for hours, and you wade ashore below the Punta Marēa crossing.' }, lose: { exposure: 2, hours: 2, say: 'The boat turns back at the breakwater, and the whole pier watches you climb off.' } } } } ] },
+    { id: 'harbor_check', at: ['harbor'], title: 'The harbor police check the piers', text: 'Two officers are walking the piers and asking every crew for papers.', choices: [
+      { id: 'check_hide', label: 'Hide in the ice house', fx: { hours: 2, roll: { need: 3, win: { say: 'You wait two cold hours in the ice house, and the officers walk past the door.' }, lose: { exposure: 2, say: 'The ice house manager opens the door for the officers and points at you.' } } } },
+      { id: 'check_walk', label: 'Walk into town', fx: { hours: 1, exposure: 1, say: 'You leave the waterfront, and a shopkeeper watches you go.' } } ] },
     { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour back with a load of melons, and Bruno wants to go and help.", choices: [
       { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
       { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks, and he is no help to you here." } } ] },
@@ -3889,6 +3929,13 @@ const Data = (() => {
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
       { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_harbor', at: ['harbor'], title: 'A place to stop in Barra Velha', text: 'The seamen\'s hostel takes a name and a passport. The fish market cooks for anyone who stands in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room above a chandler\'s shop under another guest\'s name. Everyone eats and sleeps six hours.' } },
+      { id: 'hostel_harbor', label: "Take a seamen's hostel bunk", fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps six hours.' } },
+      { id: 'boat_sleep', label: 'Sleep in a moored boat', fx: { hours: 4, sleep: 'car', rest: true, say: 'A fisherman lets you sleep four hours under the nets in his boat.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys fried fish at the market and brings it to the pier.' } },
+      { id: 'fish_market', label: 'Eat at the fish market', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at a market stall. The cook stares at your face and then at the newspaper.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a name and a passport.', choices: [
       { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps five hours.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car with the engine off and the windows white with frost.' } },
@@ -3940,7 +3987,7 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  return { HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;
 
@@ -3964,7 +4011,7 @@ const Sim = (() => {
   // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
   function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
-  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], border: null, airfield: ['depart', 'depart_nopermit'] };
+  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], harbor: ['night_boat', 'coast_ferry'], border: null, airfield: ['depart', 'depart_nopermit'] };
   const POST_IDS = ['rail', 'high', 'coast']; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
@@ -4032,7 +4079,11 @@ const Sim = (() => {
     const hr = t % 24, when = hr === 0 ? T('sim.time.midnight') : hr === 12 ? T('sim.time.noon') : `${hr % 12} ${hr < 12 ? 'a.m.' : 'p.m.'}`;
     return `${day} ${when}`;
   }
-  const level = (s) => D.LEVELS[s.pos];
+  // issue #51: the coast route puts Barra Velha at the fourth stop in place of Salta and skips Nova Trentô
+  const stopAt = (s, i) => (s && s.route === 'coast' && i === 3) ? D.HARBOR : D.LEVELS[i];
+  const route = (s) => D.LEVELS.map((L, i) => stopAt(s, i));
+  const onRoute = (s, i) => !(s.route === 'coast' && (i === 2 || i === 3));
+  const level = (s) => stopAt(s, s.pos);
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
   const postName = (id) => D.POSTS[id];
   const num = (n) => (n >= 0 && n < 10) ? T('sim.num.words').split('|')[n] : String(n); // AP: words below 10
@@ -4086,7 +4137,7 @@ const Sim = (() => {
       ]);
     }
     // Holt's warning is a choice only while you still have Nando's spare cars to send; without them its one answer changes nothing
-    if (s.pos === 3 && heldTag(s, 'decoy')) {
+    if (s.pos === 3 && level(s).id === 'salta' && heldTag(s, 'decoy')) {
       msg(s, events, 'holt', T('sim.line.two_men_in_a_car'), [
         { id: 'go_midnight', label: T('sim.opt.midnight_it_is'), hours: 0, effect: T('sim.effect.nothing_changes_you_know_the') },
         { id: 'send_decoy_yard', label: T('sim.opt.send_nando_past_the_gate'), hours: 0, effect: T('sim.effect.decoy_at_the_yard') },
@@ -4152,6 +4203,8 @@ const Sim = (() => {
       else if (a.with && s.people[a.with] && s.people[a.with].turned) whys.push(T('sim.why.talked_to_the_inquiry', { name: personName(s, a.with) }));
       let bonus = 0; const used = [];
       for (const tag in a.mods) if (m[tag]) { bonus += a.mods[tag]; used.push({ tag, bonus: a.mods[tag] }); }
+      // the night boat lands below Punta Marēa, so the crossing there is closer for anyone who came by sea
+      if (a.post === 'coast' && s.route === 'coast') { bonus += 1; used.push({ tag: 'boat', bonus: 1 }); }
       if (a.post && a.post === s.flags.cleanPost && m.border) { bonus += 2; used.push({ tag: 'border', bonus: 2 }); } // the post Tomás named: he knows its shifts
       // every change to the roll is named in the preview, so nothing about the odds is hidden
       let dc = a.dc; const why = [];
@@ -4202,7 +4255,7 @@ const Sim = (() => {
       T('sim.status.ask_salek_to_seek_visa', { name: dest(s).name, sponsor: sponsor(s).short, wants: sponsor(s).wants }));
     // issue #49: tell a helper you have met a false route, once each, and see whether the police go there
     for (const k of SUSPECTS) { const p = s.people[k], at = D.PEOPLE[k].where;
-      if (at < 0 || at > s.pos || p.cut || p.known || p.turned || p.fed || s.feedTrap || s.tutorial) continue;
+      if (at < 0 || at > s.pos || !onRoute(s, at) || p.cut || p.known || p.turned || p.fed || s.feedTrap || s.tutorial) continue;
       out.push({ kind: 'call', id: 'feed:' + k, feed: true, custom: true, name: T('trait.feed', { name: shortName(s, k) }), ok: !s.event, why: s.event ? T('sim.why.answer_the_news_first') : '', hours: 1, cost: T('trait.feed_cost', { name: shortName(s, k) }), preview: [T('trait.feed_cost', { name: shortName(s, k) })] }); }
     return out;
   }
@@ -4211,13 +4264,13 @@ const Sim = (() => {
   function feed(s, k, events) {
     const c = callList(s).find(x => x.id === 'feed:' + k); if (!c || !c.ok) return { ok: false, why: c ? c.why : T('sim.why.nothing_to_call_about') };
     const at = decoyStop(s); s.people[k].fed = true; s.feedTrap = { who: k, at, hour: s.hour + 3 };
-    say(events, 'narrator', T('trait.fed', { name: shortName(s, k), place: at === 0 ? T('brief.the_residence') : D.LEVELS[at].short }));
+    say(events, 'narrator', T('trait.fed', { name: shortName(s, k), place: at === 0 ? T('brief.the_residence') : stopAt(s, at).short }));
     pass(s, 1, events); return finish(s, events);
   }
   // two hours later: a traitor sends the police to the false place and is exposed; a loyal helper keeps it to themself
   function springTrap(s, events) {
     const t = s.feedTrap; if (!t || s.hour < t.hour) return; s.feedTrap = null;
-    const p = s.people[t.who], name = shortName(s, t.who), place = t.at === 0 ? T('brief.the_residence') : D.LEVELS[t.at].short;
+    const p = s.people[t.who], name = shortName(s, t.who), place = t.at === 0 ? T('brief.the_residence') : stopAt(s, t.at).short;
     if (p.bad) { s.belief = t.at; p.known = true; p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id] && D.CARDS[id].from === t.who) lose(s, id, events); events.push(ev('belief', { belief: s.belief })); say(events, 'narrator', T('trait.caught', { name, place })); }
     else { p.known = true; p.doubt = false; p.trust = Math.max(p.trust, 2); say(events, 'narrator', T('trait.clean', { name, place })); }
   }
@@ -4281,7 +4334,7 @@ const Sim = (() => {
     if (s.event || s.tutorial || s.over) return;
     const L = level(s);
     // a rumor about someone here, more often about someone who really is selling you out
-    const here = Object.keys(D.PEOPLE).filter(k => D.PEOPLE[k].where === s.pos && !s.people[k].known && !s.people[k].turned && !s.people[k].cut && !s.people[k].rumored);
+    const here = Object.keys(D.PEOPLE).filter(k => D.PEOPLE[k].where === s.pos && onRoute(s, s.pos) && !s.people[k].known && !s.people[k].turned && !s.people[k].cut && !s.people[k].rumored);
     if (here.length && s._rng() < 0.4) {
       const bad = here.filter(k => s.people[k].bad), who = bad.length && s._rng() < 0.65 ? bad[0] : here[Math.floor(s._rng() * here.length)];
       s.people[who].rumored = true; s.people[who].doubt = true;
@@ -4382,6 +4435,7 @@ const Sim = (() => {
     if (fx.mod) s.mods[s.pos] = (s.mods[s.pos] || 0) + fx.mod;
     if (fx.rung !== undefined) s.hold = fx.rung;
     if (fx.mateoff) s.flags.mateOff = s.pos;
+    if (fx.route) s.route = fx.route;
     if (fx.end) { const after = epilogue(s, false, fx.end.kind); s.over = { win: false, kind: fx.end.kind || 'arrest', story: fx.end.reason, after, reason: `${fx.end.reason} ${after}` }; events.push(ev('over', s.over)); return; }
     if (fx.hold) climbHold(s, events);
     if (fx.advance) advanceLevel(s, events);
@@ -4485,6 +4539,7 @@ const Sim = (() => {
     if (fx.exposure && !(a && a.plain && fx === a.success && fx.exposure > 0 && hasTag(s, a.plain))) heat(s, fx.exposure, events);
     if (fx.belief !== undefined) { s.belief = fx.belief; events.push(ev('belief', { belief: s.belief })); }
     if (fx.card) gain(s, fx.card, events);
+    if (fx.route) s.route = fx.route;
     if (fx.trust) { s.people[fx.trust].trust += 1; events.push(ev('trust', { who: fx.trust, trust: s.people[fx.trust].trust, delta: 1 })); }
     if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
     if (fx.advance) for (const k of fx.advance) if (canMove(s, k)) { stage(s, k, s.arr[k].stage + 1, events); if (k === 'permission' && s.arr.permission.stage === 1) s.flags.destination = true; }
@@ -4519,7 +4574,8 @@ const Sim = (() => {
     const left = level(s).id; // a way onto the freight is gone once you leave the stop where it counts, not before you get there
     // Marta: leaving a stop the police are searching, she swaps the plates and the police lose the car
     if (hasTag(s, 'mechanic') && s.belief === s.pos && s.pos < 4) { say(events, 'narrator', T('mate.marta.plates')); heat(s, -1, events); }
-    s.pos += 1; s.visited.push(s.pos); (s.arrivedAt = s.arrivedAt || {})[s.pos] = s.hour; events.push(ev('travel', { to: s.pos }));
+    s.pos += 1; if (s.route === 'coast' && s.pos === 2) s.pos = 3;
+    s.visited.push(s.pos); (s.arrivedAt = s.arrivedAt || {})[s.pos] = s.hour; events.push(ev('travel', { to: s.pos }));
     for (const id of s.hand.slice()) { const c = D.CARDS[id]; if (c && c.tag === 'passage' && c.reach.includes(left)) { lose(s, id, events); s.used.push(id); } }
     arrive(s, events, false);
   }
@@ -4620,7 +4676,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short; text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
+      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : stopAt(s, s.belief).short; text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
           // Celina: once at each stop in Valdória, a sighting on her station sends the search one stop back
           if (!s._manual && hasTag(s, 'media') && !(s.flags.spun || {})[s.pos]) { (s.flags.spun = s.flags.spun || {})[s.pos] = true; s.belief = s.pos === 0 ? 1 : s.pos - 1; text += T('mate.celina.spin', { place: s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short }); events.push(ev('belief', { belief: s.belief })); } } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
       case 'trace': { text = say3(pick)(); if (s.hour - s.calledAt <= 3 && hasTag(s, 'phone')) text += T('mate.nadia.untraced'); else if (s.hour - s.calledAt <= 3) { traced = true; s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += V('sim.inquiry.the_last_call_came_from', 'gov.inquiry.last_call'); } else text += V('sim.inquiry.nothing_new', 'gov.inquiry.no_calls'); break; }
@@ -4631,7 +4687,7 @@ const Sim = (() => {
       case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; pressed = who; text = say3(pick)(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: shortName(s, who) }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += s._manual ? T('gov.inquiry.helper_talks', { first: shortName(s, who) }) : T('sim.inquiry.tells_them_where_you_were', { first: shortName(s, who), yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = say3(pick)(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = say3(pick)(); break; }
-      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short); break; }
+      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : stopAt(s, s.belief).short); break; }
       case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); if (hasTag(s, 'phone')) { text += T('mate.nadia.rerouted', { name: personName(s, 'sibling') }); s.flags.rerouted = true; break; } for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked, who: pressed, hit: pick.id === 'trace' ? s.belief === s.pos && traced : pick.id === 'check_belief' ? s.belief === s.pos : undefined }));
@@ -4674,7 +4730,7 @@ const Sim = (() => {
     const order = sleepy ? BED : b.hunger === 2 ? MEAL.concat(BED) : b.hunger === 1 ? FREE : []; // hungry: only a meal nobody sees; starving: any meal
     return order.find(id => ok.includes(id)) || null;
   }
-  return { lodgePick, body, approachList, HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName, shortName, endTutorial };
+  return { stopAt, route, onRoute, lodgePick, body, approachList, HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName, shortName, endTutorial };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;
 
@@ -4818,7 +4874,7 @@ const Gov = (() => {
     if (A.lodge.ok && S.lodgePick(c)) return S.commit(c, 'lodge').events;
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.id !== 'river').filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
     apps.sort((a, b) => exits(a) - exits(b) || a.real - b.real); // the computer-played candidate weighs the hidden target; she is the simulation, not a player being told odds
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;
@@ -5446,6 +5502,8 @@ const Sfx = (() => {
         every(carPass, night ? 9 : 4, night ? 20 : 10);
         if (night) { every(cricket, 0.4, 1.4); every(dog, 12, 30); }
       },
+      // Barra Velha sounds like the river at Pedra Branca: water against wood
+      harbor(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
       road(ac, out, night, every, nodes) {
         bed(ac, out, 'bandpass', 900, 0.5, 0.5, { rate: 0.3, depth: 0.12, on: 'gain' }, nodes); // river
         bed(ac, out, 'bandpass', 2600, 1.2, 0.12, { rate: 0.9, depth: 0.06, on: 'gain' }, nodes); // ripples
@@ -5771,7 +5829,7 @@ const Art = (() => {
 
   // ---- scenes ------------------------------------------------------------
   // Positions of the player and each ally, in scene pixels; people stand on GROUND.
-  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, border: 116, airfield: 102 };
+  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, harbor: 128, border: 116, airfield: 102 };
 
   const SCENES = {
     residence(g, s, t, night) {
@@ -5885,6 +5943,38 @@ const Art = (() => {
       g.fill('#6a4a2a'); g.rect(286, GROUND - 10, 12, 10); g.rect(298, GROUND - 7, 8, 7);
       g.ally('theo', 142, 'theo'); g.ally('holt', 176, 'holt');
       g.glow(181, GROUND - 7, 8, '#ffcf70', 0.75, 0.15); // Holt's lantern
+    },
+    // Barra Velha, the fishing port on the coast route (issue #51)
+    harbor(g, s, t, night) {
+      sky(g, night ? '#0a0c22' : '#8ab4d8', night ? '#2a1e44' : '#f0d8b8', night, t);
+      g.layer('far');
+      ridge(g, night ? '#18203a' : '#6a8aa4', GROUND - 34, 8, 12, 19, 2);
+      g.fill(night ? '#16233e' : '#3f6f96'); g.rect(X0, GROUND - 30, X1 - X0, 30); g.fill(night ? '#24365a' : '#6a9cc0'); for (let x = X0; x < X1; x += 10) g.rect(x, GROUND - 26 + ((x * 7) % 9), 6, 1); // the sea
+      g.fx('glints', { x0: 0, x1: W, y0: GROUND - 28, y1: GROUND - 2, col: night ? '#8fa8d8' : '#f2f8ff', rate: 10 });
+      // the lighthouse on the breakwater
+      g.fill(night ? '#3a3a46' : '#7a7a84'); g.rect(232, GROUND - 32, 70, 4);
+      box(g, 284, GROUND - 70, 10, 38, night ? '#d8d8e0' : '#f4f4f8'); g.fill('#c83a3a'); g.rect(284, GROUND - 58, 10, 4); g.rect(284, GROUND - 44, 10, 4);
+      g.fill('#2a2a32'); g.rect(282, GROUND - 76, 14, 6); g.fill(night ? '#ffe4a0' : '#e8e0b0'); g.rect(286, GROUND - 75, 6, 4);
+      if (night) g.fx('beacon', { x: 289, y: GROUND - 73, col: '#ffe4a0', period: 3000 });
+      g.layer('mid');
+      // two fishing boats at the pier
+      for (const [bx, col] of [[150, '#2f5a7a'], [206, '#8a3a2a']]) {
+        g.fill(shade(col, 0.2)); g.rect(bx, GROUND - 12, 40, 6); g.fill(col); g.rect(bx + 2, GROUND - 14, 36, 3); g.rect(bx - 2, GROUND - 16, 6, 4); g.rect(bx + 36, GROUND - 16, 6, 4);
+        box(g, bx + 10, GROUND - 24, 14, 10, night ? '#4a4652' : '#e8e0d0'); windowPane(g, bx + 13, GROUND - 22, 4, 4, night, night);
+        g.fill('#3a2a20'); g.rect(bx + 28, GROUND - 44, 2, 30); g.rect(bx + 20, GROUND - 40, 18, 1); g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 6; i++) g.rect(bx + 30 + i, GROUND - 40 + i * 3, 1, 3); // mast and net
+      }
+      // the fish market shed
+      box(g, 8, GROUND - 46, 92, 46, night ? '#3a3040' : '#c8a878'); g.fill(night ? '#2a2030' : '#6a8a9a'); g.rect(4, GROUND - 50, 100, 5);
+      for (let i = 0; i < 3; i++) windowPane(g, 18 + i * 28, GROUND - 38, 10, 10, night, night);
+      g.fill('#3a2a24'); g.rect(46, GROUND - 22, 16, 22);
+      g.fill(night ? '#e8d8a0' : '#f0ead8'); g.rect(28, GROUND - 49, 52, 3); g.fill('#2f5a7a'); g.rect(32, GROUND - 48, 44, 1);
+      g.layer('near');
+      // the pier: planks over the water
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND, X1 - X0, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = X0; x < X1; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#1a1410' : '#5a3e28'); for (const px of [120, 200, 280]) g.rect(px, GROUND - 6, 4, 6); // bollards
+      g.fill(night ? '#6a5a40' : '#c8b088'); for (let i = 0; i < 4; i++) g.rect(106 + i * 5, GROUND - 6 - (i % 2) * 2, 4, 6 + (i % 2) * 2); // crates of fish
+      lamp(g, 138, night, 34);
+      g.figure('clerk', 40, {}); g.figure('police', 248, {});
     },
     border(g, s, t, night) {
       sky(g, night ? '#0a0c22' : '#9ab4d4', night ? '#2a1e44' : '#e4e8f0', night, t);
@@ -6083,7 +6173,7 @@ const Render = (() => {
     const s = f.s; const turned = s.people ? Object.keys(s.people).map(k => (s.people[k].turned ? 1 : 0) + (s.people[k].trust >= 2 ? 2 : 0)).join('') : '';
     return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who, f.mate || '', (s.picked || []).join(',')].join('|');
   }
-  const sceneId = (f) => Data.LEVELS[f.pos].scene;
+  const sceneId = (f) => Sim.stopAt(f.s, f.pos).scene;
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
     const x = Art.PLAYER_X[sceneId(f)] || 110;
@@ -6474,7 +6564,7 @@ const UI = (() => {
   function renderAll() {
     if (!s) return;
     renderScene(); renderCoach(); renderPhase(); setTimeout(maybeRing, 0);
-    if (Sfx.ambience) Sfx.ambience(s.over ? null : Data.LEVELS[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
+    if (Sfx.ambience) Sfx.ambience(s.over ? null : Sim.route(s)[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
     renderOver(); document.body.classList.toggle('busy', Render.busy());
@@ -6486,7 +6576,7 @@ const UI = (() => {
     const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
     // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
     $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
-    const L = Data.LEVELS[s.pos];
+    const L = Sim.route(s)[s.pos];
     if (gov) {
       const v = Gov.view(gov);
       $('goaltxt').textContent = T('scene.gov_goal', { her: v.her });
@@ -6502,7 +6592,7 @@ const UI = (() => {
     }
     $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
-    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Data.LEVELS[s.belief].short });
+    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Sim.route(s)[s.belief].short });
     // owner, Nov. 1, 2026, from a phone: the box says where the police are and your police attention, nothing else.
     // "You are not at the residence. Nothing else needed." One number, no bar; no countdown; the limit of 10 is in the help.
     $('sosa-where').textContent = right ? '' : T('scene.sosa_away'); $('sosa-where').hidden = right;
@@ -6557,7 +6647,7 @@ const UI = (() => {
   const sibNamed1 = (id) => id === 'sibling' ? `${Data.CHARACTERS[s.who].sibling.rel} ${Data.CHARACTERS[s.who].sibling.name}` : pname(id);
   // owner, Nov. 2, 2026 ("I don't understand why I can't board the plane"): when no move leaves this stop, say what is next
   function nextLines(A) {
-    const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], exits = L.approaches.filter(a => !a.mate && (!ex || ex.includes(a.id)));
+    const L = Sim.route(s)[s.pos], ex = Sim.EXITS[L.id], exits = L.approaches.filter(a => !a.mate && (!ex || ex.includes(a.id)));
     if (!exits.length || A.approaches.some(a => a.ok && exits.some(e => e.id === a.id))) return [];
     const out = [], seen = {}, what = { aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') };
     for (const a of exits) for (const n of a.needs) {
@@ -6576,7 +6666,7 @@ const UI = (() => {
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
     const waits = [];
-    if (A.waitDark.ok) { const nm = (Data.LEVELS[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
+    if (A.waitDark.ok) { const nm = (Sim.route(s)[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
     if (A.waitOn.ok) waits.unshift({ id: 'wait_on', name: T('action.wait_on'), hours: A.waitOn.hours, lines: [], upTo: true }); // one click to the next thing
     waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
     if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
@@ -6700,14 +6790,14 @@ const UI = (() => {
   const inSentence = (n) => /^(Your|Two|A|An|The)\b/.test(n) ? n[0].toLowerCase() + n.slice(1) : n; // card names mid-sentence
   function cardNotes(i) {
     const notes = [];
-    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Data.LEVELS.length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; if (c.companion) continue; const idx = c.reach.map(r => Sim.route(s).findIndex(L => L.id === r)); const first = Math.min(...idx), last = Math.max(...idx); if (last === i && last < Sim.route(s).length - 1) notes.push(`<span class="m">${esc(T('route.stops_here', { card: inSentence(c.name) }))}</span>`); if (first === i && first > s.pos) notes.push(`<span class="s">${esc(T('route.starts_here', { card: inSentence(c.name) }))}</span>`); }
     if (i === 4 && !s.hand.includes('intro_vel')) notes.push(`<span class="s">${esc(T('route.velez_starts'))}</span>`);
     return notes.join(' ');
   }
   function renderRoute() {
     // phone: the rail
     const rail = $('rail'); rail.innerHTML = '';
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
@@ -6719,15 +6809,15 @@ const UI = (() => {
     const b = $('board'); b.innerHTML = '';
     const cell = (html, cls) => { const d = document.createElement('div'); d.className = 'cell ' + (cls || ''); d.innerHTML = html; b.appendChild(d); };
     const colCls = (i) => i === s.pos ? 'cur' : i === 5 ? 'esm' : '';
-    cell('', 'head'); Data.LEVELS.forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
+    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
-    lbl(T('route.who_acts_label')); Data.LEVELS.forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
-    lbl(T('route.needed')); Data.LEVELS.forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
+    lbl(T('route.who_acts_label')); Sim.route(s).forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
+    lbl(T('route.needed')); Sim.route(s).forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
     const cr = document.createElement('div'); cr.className = 'cardsrow'; cr.hidden = true; // cards work in the background now
-    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Data.LEVELS.findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
+    for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Sim.route(s).findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
     if (!s.hand.includes('intro_vel')) { const sp = document.createElement('span'); sp.className = 'cbar ghost card t-introduction'; sp.style.gridColumn = '5 / 7'; sp.style.cssText += ';min-height:0;transform:none;display:block;padding:8px 12px'; sp.textContent = T('route.velez_starts_short'); cr.appendChild(sp); }
     b.appendChild(cr);
-    lbl(T('route.inquiry'), 'inq'); Data.LEVELS.forEach((L, i) => { if (i === s.belief) cell(`<span class="inq">${T('route.looking_here')}</span>`, colCls(i) + ' inqcell'); });
+    lbl(T('route.inquiry'), 'inq'); Sim.route(s).forEach((L, i) => { if (i === s.belief) cell(`<span class="inq">${T('route.looking_here')}</span>`, colCls(i) + ' inqcell'); });
     const ir = document.createElement('div'); ir.className = 'inqrow'; ir.style.gridColumn = `${Math.min(9, s.belief + 3)} / 9`; ir.textContent = enemyLog.length ? enemyLog[enemyLog.length - 1] : T('route.no_inquiry'); b.appendChild(ir);
   }
 
@@ -6859,7 +6949,7 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
-    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Data.LEVELS[s.pos].short, hold: s.hold }) : Data.LEVELS[s.pos].short);
+    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
   const waitingMsgs = () => gov ? Gov.view(gov).messages.length : Sim.actions(s).messages.length;
@@ -6874,7 +6964,7 @@ const UI = (() => {
   let briefPos = -1; // the stop the last briefing described: a new stop opens with its arrival text
   const P = (t) => `<p>${esc(t)}</p>`;
   function briefEscape() {
-    const L = Data.LEVELS[s.pos], out = { story: [], need: [], job: [] };
+    const L = Sim.route(s)[s.pos], out = { story: [], need: [], job: [] };
     if (s.pos !== briefPos) { out.story.push(L.arrive); out.arrived = true; }
     const A = Data.ARRANGEMENTS, st = (k) => s.arr[k].stage;
     const steps = (k, full) => { const done = A[k].stages.slice(1, st(k) + 1), left = A[k].stages.slice(st(k) + 1, full + 1); return [done.length ? T('brief.done_list', { list: done.join(', ') }) : '', left.length ? T('brief.left_list', { list: left.join(', ') }) : ''].filter(Boolean).join(' '); };
@@ -6931,19 +7021,24 @@ const UI = (() => {
     return out;
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
-  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short;
   // A small map of the route (owner, Nov. 1, 2026: "it would be so much better if it had a little map ... instead of a
   // line"): Valdória and Costamar, the border as a dashed line, the stops where they sit, the road you have travelled
   // solid and the road ahead dashed. Wide in the scene and on a desktop stop screen; tall on a phone.
   const MAPXY = { wide: [[54, 58], [150, 104], [246, 56], [342, 106], [444, 60], [548, 106]], tall: [[44, 34], [150, 86], [60, 140], [168, 192], [96, 250], [196, 304]] };
+  // the coast route (issue #51) skips Nova Trentô: the maps leave it out and count one stop fewer
+  const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
+  const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
+  const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
   function routeMap(marks, tall, upto) {
-    const P = MAPXY[tall ? 'tall' : 'wide'], n = Data.LEVELS.length;
+    const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
       ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
       : '<rect class="land" x="4" y="4" width="438" height="152" rx="18"/><rect class="land far" x="446" y="4" width="190" height="152" rx="18"/><line class="border" x1="444" y1="4" x2="444" y2="156"/>';
-    for (let i = 0; i < n - 1; i++) h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[i + 1][0]}" y2="${P[i + 1][1]}"/>`;
+    for (let i = 0; i < n - 1; i++) { if (skipped(i)) continue; const j = skipped(i + 1) ? i + 2 : i + 1; h += `<line class="leg${i < upto ? ' went' : ''}" x1="${P[i][0]}" y1="${P[i][1]}" x2="${P[j][0]}" y2="${P[j][1]}"/>`; }
     const said = [];
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
+      if (skipped(i)) return;
       const [x, y] = P[i], m = marks[i] || [], here = m.some(k => k[0] === 'you');
       h += `<circle class="stopdot${here ? ' here' : ''}${i === n - 1 ? ' end' : ''}${i < upto ? ' went' : ''}" cx="${x}" cy="${y}" r="${here ? 9 : 7}"/>`;
       h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
@@ -6953,13 +7048,13 @@ const UI = (() => {
         said.push(`${L.short}: ${k[1]}`);
       });
     });
-    const label = Data.LEVELS.map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
+    const label = Sim.route(s).filter((L, i) => !skipped(i)).map(L => L.short).join(', ') + (said.length ? '. ' + said.join('. ') : '');
     return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function briefRoute(marks) {
-    return Data.LEVELS.map((L, i) => { const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+    return Sim.route(s).map((L, i) => { if (skipped(i)) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
-      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Data.LEVELS.length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
+      return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Sim.route(s).length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
   function showBrief() {
     if (!s || s.over) return;
@@ -6967,8 +7062,8 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: s.pos + 1, total: Data.LEVELS.length });
-    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Data.LEVELS[s.pos].short }) : Data.LEVELS[s.pos].short;
+    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
@@ -6991,11 +7086,11 @@ const UI = (() => {
   }
   // reaching a stop is its own moment: which stop of how many, the route so far, and what this stop asks of you; it leaves on its own
   function stopScreen(pos) {
-    const L = Data.LEVELS[pos], el = $('stopscreen');
+    const L = Sim.route(s)[pos], el = $('stopscreen');
     $('s-clock').textContent = short(s.hour);
-    $('s-step').textContent = T('stop.step', { n: pos + 1, total: Data.LEVELS.length });
+    $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
-    $('s-dots').innerHTML = Data.LEVELS.map((x, i) => `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
     $('s-goal').textContent = L.objective || '';
     el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
     clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
@@ -7073,7 +7168,7 @@ const UI = (() => {
   }
   // one short line per thing Sosā did; the full sentence stays in the log
   function enemyShort(e) {
-    const where = (i) => i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Data.LEVELS[i].short;
+    const where = (i) => i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short;
     const id = ['enemy', 'short', e.id].join('.') + (e.hit ? '_hit' : '') + (e.talked ? '_talked' : '');
     if (e.id === 'press_ally' && !e.who) return e.text; // nobody to question: the full line is short already
     return Content.has(id) ? T(id, { place: where(e.belief), name: e.who ? pname(e.who) : pname('sibling') }) : e.text;
@@ -7097,7 +7192,7 @@ const UI = (() => {
         case 'cardlost': bucket.push({ k: 'lose', t: T('sum.lost', { name: inSentence(e.name) }) }); break;
         case 'trust': if (!gov && e.delta) bucket.push({ k: e.delta > 0 ? 'gain' : 'lose', quiet: !after && e.delta > 0, t: T(e.delta > 0 ? 'sum.trust_more' : 'sum.trust_less', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'belief': break; // owner, Nov. 1, 2026: the police box and the map show where they search; the card does not repeat it
-        case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Data.LEVELS[e.to].short }) }); break;
+        case 'travel': r.mine.push({ k: 'gain', quiet: true, t: T('sum.reached', { place: Sim.route(s)[e.to].short }) }); break;
         case 'betrayal': r.mine.push({ k: 'risk', t: T('sum.sold', { person: Sim.shortName(gov ? gov.c : s, e.who) }) }); break;
         case 'stage': bucket.push({ k: 'gain', long: !!e.line, t: e.line ? (e.who === 'narrator' ? e.line : T('sum.stage_said', { who: Sim.shortName(s, e.who), line: e.line })) : e.label[0].toUpperCase() + e.label.slice(1) }); break;
         case 'enemy': r.theirs.push({ k: 'enemy', t: gov ? e.text : enemyShort(e) }); break;
@@ -7136,13 +7231,13 @@ const UI = (() => {
     const END = s.over.win ? '\u2708\uFE0F' : ({ clock: '\u231B', deal: '\u{1F91D}' })[s.over.kind] || '\u{1F694}\u26D3\uFE0F'; // house arrest: police car and chains
     // owner, Nov. 2, 2026: "I like pins, time of day and symbols". Each row says whether you left that stop by day or at night
     // (the last row: when the run ended), and a pin marks where it ended, before the symbol for how.
-    const rows = []; for (let p = 0; p <= s.pos; p++) { const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
+    const rows = []; for (let p = 0; p <= s.pos; p++) { if (skipped(p)) continue; const ts = (s.trail || []).filter(x => x.p === p), last = ts[ts.length - 1];
       const tod = (last ? last.n : Sim.isNight(s)) ? '\u{1F319}' : '\u2600\uFE0F';
-      rows.push(`${NUM[p]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
+      rows.push(`${NUM[stopNo(p) - 1]} ${tod} ${ts.map(x => SQ[x.k]).join('')}${p === s.pos ? ' \u{1F4CD}' + END : ''}`); }
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    return T('escape.share', { n: s.runNo || 1, level: s.pos + 1, hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -7203,7 +7298,7 @@ const UI = (() => {
   }
   function renderGovRoute() {
     const v = Gov.view(gov); const rail = $('rail'); rail.innerHTML = ''; $('board').innerHTML = '';
-    Data.LEVELS.forEach((L, i) => {
+    Sim.route(s).forEach((L, i) => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(T('route.report_src', { source: r.source, age: r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: r.age }) }))}</b><span>${esc(r.text)} ${esc(r.doesnt ? T('route.does_not_prove', { what: r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) }) : '')}</span></span>`).join('');
       const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><span class="sr">${esc(stateWord(r.state))} </span><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');

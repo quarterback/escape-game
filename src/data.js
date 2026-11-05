@@ -72,6 +72,8 @@ const Data = (() => {
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "The crate is in the third boxcar, with straw inside. Holt leaves at midnight and does not wait." },
+    berth:        { name: "A berth on the night boat", tag: 'passage', from: 'self', reach: ['harbor'], works: 'Riding the night boat to Punta Marēa.',
+                    text: "The skipper keeps a berth in his hold for you on pier four." },
     yard_walk:    { name: "Theo's walk through the yard", tag: 'passage', from: 'theo', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "Theo escorts you past the yard office to the train." },
     sponsor_line: { name: "Your sponsor's line to the ministry", tag: 'permission', from: 'sponsor', reach: ALL, works: "Reaching Vélez's uncle, calming the crew, and leaving without the visa.",
@@ -171,6 +173,10 @@ const Data = (() => {
           mods: { information: 1 }, text: "A river captain who owes your father takes you up to Nova Trentô.",
           success: { exposure: -1, say: 'You sleep under a tarp that smells of soy. The river is quiet.' },
           fail: { exposure: 1, hours: 2, say: 'River police board at the lock. The captain talks for two hours.' } },
+        { id: 'river', name: 'Take the river to the coast', hours: 4, dc: 3, needs: [],
+          mods: { boat: 2, information: 1 }, text: "A sand barge runs down the river to the fishing port at Barra Velha, and its pilot takes passengers for cash.",
+          success: { route: 'coast', say: "The barge slips past the lock and ties up at Barra Velha, where the river meets the sea. You skip Nova Trentô and Salta and go on to the line by sea." },
+          fail: { exposure: 1, hours: 2, say: "River police search every barge at the lock, and the pilot keeps you in the hold for two more hours." } },
         { id: 'cover_road', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: "You swap cars twice and leave the old one in a farmer's barn.",
           success: { exposure: -1, say: "You swap cars behind a grain store, and the police lose the trail." },
@@ -241,6 +247,10 @@ const Data = (() => {
           mods: { introduction: 2, border: 1 }, text: "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
           success: { say: 'After a long climb, the sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name on it, and you wait two hours while someone in Cerro Alto is woken up.' } },
+        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [],
+          mods: { border: 2, care: 1 }, text: "An old shepherds' path climbs over the ridge between the posts, where no guard checks a passport.",
+          success: { exposure: -1, say: "You walk five hours through the snow and come down on the Costamaran side, where no post has your name." },
+          fail: { exposure: 1, hours: 3, say: "The wind closes the path near the top, and you lose three more hours walking back down in the cold." } },
         { id: 'cover_border', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: "You wait in a trucker's cab away from the posts.",
           success: { exposure: -1, say: "The trucks come and go, and nobody looks into the cab." },
@@ -275,6 +285,30 @@ const Data = (() => {
           fail: { exposure: 1, say: "The agent will only take payment from the operator's account, and you lose an hour." } },
       ] },
   ];
+
+  // The coast route (owner's issue #51): Pedra Branca down the river to Barra Velha, which takes the place of
+  // Nova Trentô and Salta. It is the fourth stop on that route, so it sits at index 3 in place of Salta.
+  const HARBOR = { id: 'harbor', name: 'The fishing port, Barra Velha', short: 'Barra Velha', scene: 'harbor',
+      objective: 'Get on a boat to the Punta Marēa crossing.',
+      arrive: "The fishing boats run down the coast to Punta Marēa every night. The harbor police check the piers after dark.",
+      approaches: [
+        { id: 'night_boat', name: 'Sail at night to Punta Marēa', hours: 4, dc: 3, needs: [{ night: true }],
+          mods: { passage: 2, boat: 1, information: 1 }, text: "The night boats leave at dark and land on the beach below the Punta Marēa crossing.",
+          success: { say: "The boat runs without lights, and four hours later the skipper puts you ashore below the Punta Marēa crossing." },
+          fail: { exposure: 1, say: "A harbor police lamp sweeps the pier, and the skipper will not cast off. You can try again while it is still dark." } },
+        { id: 'skipper', name: 'Pay a skipper for a berth', hours: 2, dc: 3, needs: [], pay: true,
+          mods: { introduction: 1, information: 1, union: 1 }, text: "A skipper on pier four keeps a berth in his hold for anyone who pays.",
+          success: { card: 'berth', say: "The skipper counts the money twice. \"Pier four, after dark. Bring nothing heavy.\"" },
+          fail: { exposure: 1, say: "The skipper asks around the fish market about you, and two hours later he says no." } },
+        { id: 'coast_ferry', name: 'Take the coast ferry', hours: 3, dc: 5, needs: [],
+          mods: { information: 1 }, text: "The coast ferry runs to Punta Marēa in daylight, and the harbor police check papers at the gangway.",
+          success: { exposure: 1, say: "The ferry is full of market traders. A deckhand looks at your face for too long, but the ferry docks at Punta Marēa." },
+          fail: { exposure: 2, say: "An officer checks papers at the gangway, and you walk away before your turn." } },
+        { id: 'cover_harbor', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
+          mods: { information: 1 }, text: "You rent a net loft above the fish market.",
+          success: { exposure: -1, say: "Nobody looks up at the loft over the fish market." },
+          fail: { exposure: 1, say: "The fish buyer downstairs recognizes you from the newspaper." } },
+      ] };
 
   // Things people say when a stage is reached. who: speaker id.
   const STAGE_LINES = {
@@ -606,6 +640,12 @@ const Data = (() => {
       { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
       { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
     // companions' own moments (owner, Nov. 5, 2026, issue #50): each asks something of you once; saying no costs their help at that stop
+    { id: 'harbor_storm', at: ['harbor'], title: 'A storm off the coast', text: 'The harbor master has closed the port, and no boat leaves until the wind drops.', choices: [
+      { id: 'storm_wait', label: 'Wait out the storm', fx: { hours: 3, say: 'The wind drops after three hours, and the boats go back to work.' } },
+      { id: 'storm_go', label: 'Pay a skipper to go anyway', fx: { roll: { need: 4, win: { advance: true, say: 'The boat rolls for hours, and you wade ashore below the Punta Marēa crossing.' }, lose: { exposure: 2, hours: 2, say: 'The boat turns back at the breakwater, and the whole pier watches you climb off.' } } } } ] },
+    { id: 'harbor_check', at: ['harbor'], title: 'The harbor police check the piers', text: 'Two officers are walking the piers and asking every crew for papers.', choices: [
+      { id: 'check_hide', label: 'Hide in the ice house', fx: { hours: 2, roll: { need: 3, win: { say: 'You wait two cold hours in the ice house, and the officers walk past the door.' }, lose: { exposure: 2, say: 'The ice house manager opens the door for the officers and points at you.' } } } },
+      { id: 'check_walk', label: 'Walk into town', fx: { hours: 1, exposure: 1, say: 'You leave the waterfront, and a shopkeeper watches you go.' } } ] },
     { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour back with a load of melons, and Bruno wants to go and help.", choices: [
       { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
       { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks, and he is no help to you here." } } ] },
@@ -689,6 +729,13 @@ const Data = (() => {
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
       { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_harbor', at: ['harbor'], title: 'A place to stop in Barra Velha', text: 'The seamen\'s hostel takes a name and a passport. The fish market cooks for anyone who stands in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room above a chandler\'s shop under another guest\'s name. Everyone eats and sleeps six hours.' } },
+      { id: 'hostel_harbor', label: "Take a seamen's hostel bunk", fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps six hours.' } },
+      { id: 'boat_sleep', label: 'Sleep in a moored boat', fx: { hours: 4, sleep: 'car', rest: true, say: 'A fisherman lets you sleep four hours under the nets in his boat.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys fried fish at the market and brings it to the pier.' } },
+      { id: 'fish_market', label: 'Eat at the fish market', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at a market stall. The cook stares at your face and then at the newspaper.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a name and a passport.', choices: [
       { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps five hours.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car with the engine off and the windows white with frost.' } },
@@ -740,6 +787,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  return { HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

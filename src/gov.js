@@ -74,7 +74,7 @@ const Gov = (() => {
     if (A.lodge.ok && S.lodgePick(c)) return S.commit(c, 'lodge').events;
     const L = D.LEVELS[c.pos];
     const found = c.belief === c.pos;
-    const apps = A.approaches.filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
+    const apps = A.approaches.filter(a => a.id !== 'river').filter(a => a.ok && !a.noRoll ? a.real <= tgt(found ? 6 : 5) : a.ok).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && c.hand.includes(d.success.card)); });
     const ex = S.EXITS[L.id], exits = (a) => !ex || ex.includes(a.id) ? 0 : 1;
     apps.sort((a, b) => exits(a) - exits(b) || a.real - b.real); // the computer-played candidate weighs the hidden target; she is the simulation, not a player being told odds
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || c.arr.aircraft.stage < 3)) return S.commit(c, apps[0].id).events;

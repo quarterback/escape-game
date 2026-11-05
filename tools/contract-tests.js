@@ -154,7 +154,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
       if (A.messages.length) { const o = A.messages[0].options.filter(x => x.ok); Sim.commit(s, A.messages[0].id, (o.find(x => x.id.startsWith('celina')) || o[0]).id); continue; }
       { const want = Sim.lodgePick(s); if (want && A.lodge.ok) { Sim.commit(s, 'lodge'); Sim.commit(s, 'evt:' + want); continue; } }
       const calls = A.calls.filter(c => c.ok && !c.hurry && !c.feed); if (calls.length && s.pos < 4) { Sim.commit(s, calls[0].id); continue; }
-      const L = Data.LEVELS[s.pos], ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
+      const L = Sim.stopAt(s, s.pos), ex = Sim.EXITS[L.id], out = (a) => ex && !ex.includes(a.id) ? 1 : 0;
       const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => out(a) - out(b) || (a.real || 0) - (b.real || 0));
       Sim.commit(s, apps.length ? apps[0].id : 'wait'); }
     return Sim.serialize(s).replace(/"companion":"?\w*"?,?/, '').replace(/"hand":\[[^\]]*\],?/, ''); };

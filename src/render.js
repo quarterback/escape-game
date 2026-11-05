@@ -99,7 +99,7 @@ const Render = (() => {
     const s = f.s; const turned = s.people ? Object.keys(s.people).map(k => (s.people[k].turned ? 1 : 0) + (s.people[k].trust >= 2 ? 2 : 0)).join('') : '';
     return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who, f.mate || '', (s.picked || []).join(',')].join('|');
   }
-  const sceneId = (f) => Data.LEVELS[f.pos].scene;
+  const sceneId = (f) => Sim.stopAt(f.s, f.pos).scene;
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
     const x = Art.PLAYER_X[sceneId(f)] || 110;

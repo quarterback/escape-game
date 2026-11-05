@@ -186,7 +186,7 @@ const Art = (() => {
 
   // ---- scenes ------------------------------------------------------------
   // Positions of the player and each ally, in scene pixels; people stand on GROUND.
-  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, border: 116, airfield: 102 };
+  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, harbor: 128, border: 116, airfield: 102 };
 
   const SCENES = {
     residence(g, s, t, night) {
@@ -300,6 +300,38 @@ const Art = (() => {
       g.fill('#6a4a2a'); g.rect(286, GROUND - 10, 12, 10); g.rect(298, GROUND - 7, 8, 7);
       g.ally('theo', 142, 'theo'); g.ally('holt', 176, 'holt');
       g.glow(181, GROUND - 7, 8, '#ffcf70', 0.75, 0.15); // Holt's lantern
+    },
+    // Barra Velha, the fishing port on the coast route (issue #51)
+    harbor(g, s, t, night) {
+      sky(g, night ? '#0a0c22' : '#8ab4d8', night ? '#2a1e44' : '#f0d8b8', night, t);
+      g.layer('far');
+      ridge(g, night ? '#18203a' : '#6a8aa4', GROUND - 34, 8, 12, 19, 2);
+      g.fill(night ? '#16233e' : '#3f6f96'); g.rect(X0, GROUND - 30, X1 - X0, 30); g.fill(night ? '#24365a' : '#6a9cc0'); for (let x = X0; x < X1; x += 10) g.rect(x, GROUND - 26 + ((x * 7) % 9), 6, 1); // the sea
+      g.fx('glints', { x0: 0, x1: W, y0: GROUND - 28, y1: GROUND - 2, col: night ? '#8fa8d8' : '#f2f8ff', rate: 10 });
+      // the lighthouse on the breakwater
+      g.fill(night ? '#3a3a46' : '#7a7a84'); g.rect(232, GROUND - 32, 70, 4);
+      box(g, 284, GROUND - 70, 10, 38, night ? '#d8d8e0' : '#f4f4f8'); g.fill('#c83a3a'); g.rect(284, GROUND - 58, 10, 4); g.rect(284, GROUND - 44, 10, 4);
+      g.fill('#2a2a32'); g.rect(282, GROUND - 76, 14, 6); g.fill(night ? '#ffe4a0' : '#e8e0b0'); g.rect(286, GROUND - 75, 6, 4);
+      if (night) g.fx('beacon', { x: 289, y: GROUND - 73, col: '#ffe4a0', period: 3000 });
+      g.layer('mid');
+      // two fishing boats at the pier
+      for (const [bx, col] of [[150, '#2f5a7a'], [206, '#8a3a2a']]) {
+        g.fill(shade(col, 0.2)); g.rect(bx, GROUND - 12, 40, 6); g.fill(col); g.rect(bx + 2, GROUND - 14, 36, 3); g.rect(bx - 2, GROUND - 16, 6, 4); g.rect(bx + 36, GROUND - 16, 6, 4);
+        box(g, bx + 10, GROUND - 24, 14, 10, night ? '#4a4652' : '#e8e0d0'); windowPane(g, bx + 13, GROUND - 22, 4, 4, night, night);
+        g.fill('#3a2a20'); g.rect(bx + 28, GROUND - 44, 2, 30); g.rect(bx + 20, GROUND - 40, 18, 1); g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 6; i++) g.rect(bx + 30 + i, GROUND - 40 + i * 3, 1, 3); // mast and net
+      }
+      // the fish market shed
+      box(g, 8, GROUND - 46, 92, 46, night ? '#3a3040' : '#c8a878'); g.fill(night ? '#2a2030' : '#6a8a9a'); g.rect(4, GROUND - 50, 100, 5);
+      for (let i = 0; i < 3; i++) windowPane(g, 18 + i * 28, GROUND - 38, 10, 10, night, night);
+      g.fill('#3a2a24'); g.rect(46, GROUND - 22, 16, 22);
+      g.fill(night ? '#e8d8a0' : '#f0ead8'); g.rect(28, GROUND - 49, 52, 3); g.fill('#2f5a7a'); g.rect(32, GROUND - 48, 44, 1);
+      g.layer('near');
+      // the pier: planks over the water
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND, X1 - X0, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = X0; x < X1; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#1a1410' : '#5a3e28'); for (const px of [120, 200, 280]) g.rect(px, GROUND - 6, 4, 6); // bollards
+      g.fill(night ? '#6a5a40' : '#c8b088'); for (let i = 0; i < 4; i++) g.rect(106 + i * 5, GROUND - 6 - (i % 2) * 2, 4, 6 + (i % 2) * 2); // crates of fish
+      lamp(g, 138, night, 34);
+      g.figure('clerk', 40, {}); g.figure('police', 248, {});
     },
     border(g, s, t, night) {
       sky(g, night ? '#0a0c22' : '#9ab4d4', night ? '#2a1e44' : '#e4e8f0', night, t);
