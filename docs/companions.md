@@ -111,3 +111,13 @@ Police harness, 400 runs, no companion, she escapes Sofia: 35.0% before; 37.8% w
 ## Davi, the second special investigator (Nov. 5, 2026, issue #33)
 
 Owner: name Davi, advantage a third patrol. He starts with the card "A third patrol"; the third patrol starts at Nova Trentô. Everything else matches Sofia's side, and the demo stays Sofia's. Police harness, 400 runs, no companion (`node tools/gov-calibrate.js 400 --inv=davi`): she escapes Davi 45.0%, against 51.5% for Sofia.
+
+## Leaving Portalba without waiting (Nov. 5, 2026)
+
+Owner: "the idea I have to wait for it and it never comes makes no sense," and more ways out for a player who reaches the later stops.
+
+- **The airline flight.** At Portalba, "Buy an airline ticket" (1 hr, needs the second passport, police attention up one) gives a boarding pass, and "Board the airline flight" (3 hr) wins the run without the charter jet or the visa. Teresa's known face makes passport control harder.
+- **Progress without a call.** Your brother or sister moves the jet one step every 10 hours with no call, and your sponsor moves the visa one step every 14 hours once you have asked. A call still gets the next step sooner (6 and 10 hours).
+- **Clara on the police side** now also puts the candidate's photo at passport control at Portalba: the charter and the airline are harder. Before, her card changed no seeded police run once the candidate stopped lingering at Portalba.
+
+Harness, 300 runs each, before and after: Teresa wins 22.3% to 30.0%; Mateu 18.7% to 25.0%; she escapes Sofia 52.3% to 59.7% (with Clara, 59.0%). Out-of-time losses fall the most (Teresa 102 to 77).

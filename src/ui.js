@@ -123,7 +123,7 @@ const UI = (() => {
     }
     $('goaltxt').textContent = T('scene.goal');
     const right = s.belief === s.pos;
-    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: Sim.route(s)[s.belief].short });
+    $('sosa-name').textContent = right ? T('scene.sosa_here') : T('scene.sosa_at', { place: placeName(s.belief) });
     // owner, Nov. 1, 2026, from a phone: the box says where the police are and your police attention, nothing else.
     // "You are not at the residence. Nothing else needed." One number, no bar; no countdown; the limit of 10 is in the help.
     $('sosa-where').textContent = right ? '' : T('scene.sosa_away'); $('sosa-where').hidden = right;
@@ -227,7 +227,8 @@ const UI = (() => {
   const callText = (m) => gov ? m.text : (s.inbox.find(x => x.id === m.msgId) || {}).text || '';
   const face = (el, role, name) => { const url = role ? Render.portrait(role) : null; if (url) el.style.backgroundImage = `url(${url})`; else { el.classList.add('initials'); el.textContent = initials(name); } };
   function maybeRing() {
-    if (callOpen || !s || s.over || Tutorial.active() || s.tutorial || (gov && gov.tutorial) || replaying || phase !== 'move' || !$('picker').hidden || !$('brief').hidden || !$('start').hidden || !$('title').hidden || !$('map').hidden) return;
+    // news first: a call that rang while news waited could not be answered and locked the screen (owner screenshot, Nov. 5, 2026)
+    if (callOpen || !s || s.over || (gov ? gov.event : s.event) || Tutorial.active() || s.tutorial || (gov && gov.tutorial) || replaying || phase !== 'move' || !$('picker').hidden || !$('brief').hidden || !$('start').hidden || !$('title').hidden || !$('map').hidden) return;
     const m = waitingCalls().find(x => !callShown.has(x.id)); if (!m) return;
     if (Render.busy()) { setTimeout(maybeRing, 400); return; }
     showCall(m);
@@ -251,6 +252,8 @@ const UI = (() => {
         b.innerHTML = `<span>${esc(o.label)}</span>${o.hours ? `<span class="hrs">${esc(T('action.takes', { hours: o.hours }))}</span>` : ''}`;
         b.onclick = () => { closeCall(); if (gov) doGov(m.id, o.id); else doCommit(m.id, o.id); };
         ans.appendChild(b); }
+      // a call with no answer you can give right now still has a way out
+      if (!ans.children.length) { const b = document.createElement('button'); b.className = 'answer'; b.innerHTML = `<span>${esc(T('call.later'))}</span>`; b.onclick = () => { Sfx.click(); closeCall(); renderAll(); }; ans.appendChild(b); }
     };
   }
   // ---- the phone: a thread, then calls --------------------------------------
@@ -647,7 +650,10 @@ const UI = (() => {
     if (!Render.busy()) {
       if (phase === 'phone') phase = 'move';
       // news that is waiting always shows: a call answered before the round wrapped up once left news hidden and every move locked (owner, Nov. 2, 2026)
-      if ((phase === 'phone' || phase === 'move') && pendingEvent()) phase = 'news';
+      if ((phase === 'phone' || phase === 'move') && pendingEvent()) { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); }
+    } else if ((phase === 'phone' || phase === 'move') && pendingEvent()) {
+      // the scene is still playing: look again when it is done, or the news stays hidden and every move stays locked (owner, Nov. 5, 2026)
+      clearTimeout(renderPhase.t); renderPhase.t = setTimeout(renderAll, 400);
     }
     $('round').textContent = T('round.label', { n: round });
     const idx = PH.indexOf(phase);

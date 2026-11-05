@@ -16,7 +16,7 @@ const Sim = (() => {
   // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
   function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
-  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], harbor: ['night_boat', 'coast_ferry'], border: null, airfield: ['depart', 'depart_nopermit'] };
+  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], harbor: ['night_boat', 'coast_ferry'], border: null, airfield: ['depart', 'depart_nopermit', 'airline'] };
   const POST_IDS = ['rail', 'high', 'coast']; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
@@ -223,7 +223,9 @@ const Sim = (() => {
       const worn = bodyPen(s); if (worn) { dc += worn; why.push(T('body.preview_harder')); } // tired, exhausted or starving
       const news = s.mods[s.pos] || 0;
       if (news) { dc += news; why.push(T(news > 0 ? 'sim.preview.harder_news' : 'sim.preview.easier_news')); }
-      if (ch(s).faceKnown && L.border && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresa's face
+      // Clara on the police side: passport control at Portalba has her photo, for the charter and the airline alike
+      if (s.flags.terminal && ['depart', 'depart_nopermit', 'airline'].includes(a.id)) { dc += 1; why.push(T('sim.preview.harder_terminal')); }
+      if (ch(s).faceKnown && (L.border || a.id === 'airline') && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresa's face
       // no failure written, or Vélez's officials walk you through: commit() never rolls these
       const free = !!a.noRoll || escorted;
       const real = tgt(dc - bonus); // the target the roll uses; it never reaches the view, because the player is told no odds (owner, Nov. 1, 2026)
@@ -565,7 +567,7 @@ const Sim = (() => {
   }
   function stage(s, k, to, events) {
     const def = D.ARRANGEMENTS[k]; to = Math.max(0, Math.min(def.stages.length - 1, to));
-    const was = s.arr[k].stage; if (to === was) return; s.arr[k].stage = to;
+    const was = s.arr[k].stage; if (to === was) return; s.arr[k].stage = to; (s.arrAt = s.arrAt || {})[k] = s.hour;
     // the progress message plays only when the arrangement moves forward; the sibling speaks for the jet and the welcome, the narrator for the visa
     let line = (D.STAGE_LINES[k] || [])[to]; if (line) line = line.replace('{post}', postName(s.escortPost)).split('{sponsor}').join(sponsor(s).short).replace('{city}', dest(s).city);
     const who = k === 'permission' ? 'narrator' : 'sibling', said = line && to > was ? line : '';
@@ -642,10 +644,25 @@ const Sim = (() => {
   }
 
   // ---- time: jobs resolve, the enemy acts, exposure drifts ------
+  // owner, Nov. 5, 2026 ("I have to wait for it and it never comes"): your brother or sister keeps working on the jet, and
+  // your sponsor on the visa once you have asked, one step at a time without a call; a call still gets the next step sooner
+  const SELF = { aircraft: { ally: 'sibling', every: 10 }, permission: { ally: 'sponsor', every: 14 } };
+  function selfProgress(s, events) {
+    if (s.tutorial || s.over) return;
+    for (const k in SELF) {
+      const a = SELF[k], p = s.people[a.ally];
+      if (!p || p.turned || p.cut || s.jobs.some(j => j.arr === k) || !canMove(s, k)) continue;
+      if (k === 'permission' && s.arr.permission.stage < 1) continue;
+      if (s.hour - ((s.arrAt || {})[k] || 0) < a.every) continue;
+      say(events, 'narrator', k === 'aircraft' ? T('arr.self_aircraft', { name: `${ch(s).sibling.rel} ${ch(s).sibling.short}` }) : T('arr.self_permission', { sponsor: sponsor(s).short }));
+      stage(s, k, s.arr[k].stage + 1, events);
+    }
+  }
   function pass(s, hours, events) {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) })); bodyHour(s, events);
       for (const j of s.jobs.slice()) if (j.due <= s.hour) resolveJob(s, j, events);
+      selfProgress(s, events);
       springTrap(s, events);
       // exposure drifts while they look in the right place; Salta's wait for the midnight freight drifts at half rate
       if (s.belief === s.pos && s.hour % (s._manual || level(s).id === 'salta' ? 4 : 2) === 0 && !hidden(s) && !(s._quiet && hasTag(s, 'care'))) heat(s, 1, events);
