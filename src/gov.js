@@ -50,6 +50,7 @@ const Gov = (() => {
     g.inv = D.GOVS[opts.inv] ? opts.inv : 'sofia';
     if (g.inv === 'davi' && !opts.tutorial) { g.hand.push('patrol3'); g.patrols.push(2); }
     if (g.companion && !g.hand.includes(D.COMPANIONS[g.companion].gov)) g.hand.push(D.COMPANIONS[g.companion].gov);
+    if (g.companion === 'clara') c.flags.terminal = true; // Clara's Costamaran introduction: passport control at Portalba has her photo
     if (g.hand.includes('clinics')) c.flags.spotWorn = true; // Inês briefs the patrols: a worn-out family is stopped from Rising police attention, not High
     if (opts.dice) g._dice = opts.dice.slice();
     if (opts.events) g._events = opts.events.slice();

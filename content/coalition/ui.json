@@ -5359,6 +5359,27 @@
    "pattern": "P09",
    "text": "Davi leads the police hunt for the candidate with one more patrol than Sofia has.",
    "role": "gov"
+  },
+  {
+   "id": "arr.self_aircraft",
+   "pattern": "P10",
+   "text": "Without a call from you, {name} gets the jet one step closer to ready.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "arr.self_permission",
+   "pattern": "P10",
+   "text": "Without a call from you, {sponsor} moves your visa one step forward.",
+   "args": [
+    "sponsor"
+   ]
+  },
+  {
+   "id": "sim.preview.harder_terminal",
+   "pattern": "P03",
+   "text": "Passport control at Portalba has your photo, and it makes leaving harder."
   }
  ]
 }
