@@ -3,6 +3,7 @@
 // Usage: node tools/gov-calibrate.js [runs] [--companion=bruno|...|all]
 'use strict';
 const Gov = require('../src/gov.js');
+const INV = (process.argv.find(a => a.startsWith('--inv=')) || '--inv=sofia').slice(6); // which investigator: sofia or davi (issue #33)
 
 const score = (c) => c.tags.reduce((n, t) => n + ({ gain: 2, roll: -0.5, time: -0.6, lose: -1.5, risk: -1.5 }[t.k] || 0), 0);
 
@@ -31,7 +32,7 @@ const N = +process.argv[2] || 200, MATE = (process.argv.find(a => a.startsWith('
 function runAll(mate) {
   const out = {}; let esc = 0, rounds = 0;
   for (let i = 0; i < N; i++) {
-    const g = Gov.newRun(1000 + i, i % 2 ? 'man' : 'woman', { companion: mate }); let r = 0;
+    const g = Gov.newRun(1000 + i, i % 2 ? 'man' : 'woman', { companion: mate, inv: INV }); let r = 0;
     while (!g.over && r < 80) { round(g); r += 1; }
     if (!g.over) { out.stuck = (out.stuck || 0) + 1; continue; }
     rounds += r; const k = g.over.kind === 'fired' ? 'fired' : g.over.win ? 'escaped' : g.over.kind; out[k] = (out[k] || 0) + 1; if (g.over.win) esc += 1;

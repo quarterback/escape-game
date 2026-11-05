@@ -5353,6 +5353,12 @@
     "place"
    ],
    "role": "gov"
+  },
+  {
+   "id": "pick.one_davi",
+   "pattern": "P09",
+   "text": "Davi leads the police hunt for the candidate with one more patrol than Sofia has.",
+   "role": "gov"
   }
  ]
 }

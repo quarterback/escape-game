@@ -91,7 +91,7 @@ const Render = (() => {
     if (g) {
       const pos = g.belief >= 0 ? g.belief : 0;
       const shown = { hidden: true, who: s.who, pos, hour: s.hour, people: {}, arr: { aircraft: { stage: 0 }, reception: { stage: 0 } } };
-      return { s: shown, pos, gov: true, night: Sim.isNight(s), hour: s.hour, mate: g.companion || null };
+      return { s: shown, pos, gov: true, night: Sim.isNight(s), hour: s.hour, mate: g.companion || null, inv: g.inv || 'sofia' };
     }
     return { s, pos: s.pos, gov: false, night: Sim.isNight(s), hour: s.hour, mate: s.companion || null };
   }
@@ -106,7 +106,7 @@ const Render = (() => {
     // the companion walks a step behind; the cards you added ride along as items at your feet
     const mate = f.mate && Data.COMPANIONS[f.mate] ? [{ dx: -14, role: Data.COMPANIONS[f.mate].sprite, mate: f.mate }] : [];
     const items = f.gov ? [] : (f.s.picked || []).filter(id => Art.ITEMS[id] && Data.CARDS[id]).map((id, i) => ({ id, dx: -30 - i * 14 - (mate.length ? 0 : -14) }));
-    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }].concat(mate.map(m => Object.assign({}, m, { dx: -21 }))), items: [], marker: '#FF7A90', label: T('render.you', { name: Data.GOV ? Data.GOV.name : T('render.search_team') }), w: 26 };
+    if (f.gov) return { x, list: [{ dx: -7, role: 'agent1' }, { dx: 7, role: 'agent2' }].concat(mate.map(m => Object.assign({}, m, { dx: -21 }))), items: [], marker: '#FF7A90', label: T('render.you', { name: Data.GOVS ? Data.GOVS[f.inv || 'sofia'].name : Data.GOV ? Data.GOV.name : T('render.search_team') }), w: 26 };
     return { x, list: [{ dx: 0, role: f.s.who === 'woman' ? 'teresa' : 'mateu' }].concat(mate), items, marker: '#FFD24A', label: T('render.you', { name: Data.CHARACTERS[f.s.who].name }), w: 12 };
   }
   // tap targets for the companion and each card the party carries: the name, nothing more

@@ -85,6 +85,7 @@ const Art = (() => {
     nadia: { head: 'hard', body: 'vest', legs: 'trousers', Y: '#e05a3a', H: '#1a1210', S: '#a87048', C: '#3a3f6a', T: '#d8d8e0', L: '#2a2e48', B: '#141018' },
     emilio: { head: 'bare', body: 'suit', legs: 'trousers', H: '#1a1210', S: '#d8a070', C: '#24242c', T: '#f0f0f0', R: '#c8a83a', L: '#1c1c24', B: '#0e0e14' },
     joana: { head: 'long', body: 'jacket', legs: 'trousers', H: '#1a1210', S: '#c08050', C: '#a83a3a', T: '#e8e0d0', L: '#2a2a34', B: '#141018' },
+    davi: { head: 'bare', body: 'suit', legs: 'trousers', H: '#2a1a12', S: '#b07850', C: '#2a3a2e', T: '#e8eef0', R: '#c8a83a', L: '#1c2420', B: '#0e1018' },
     sofia: { head: 'bun', body: 'suit', legs: 'trousers', H: '#3a2418', S: '#e0b48c', W: '#3a2418', C: '#1f3f5a', T: '#f0e8f0', R: '#c8a83a', L: '#1a2430', B: '#0e1018' },
     aide: { head: 'glasses', body: 'suit', legs: 'trousers', H: '#2b1d24', S: '#e0b48c', G: '#c8c8d0', C: '#5a2d5a', T: '#f0e8f0', R: '#c8a83a', L: '#2a2030', B: '#141018' },
     host: { head: 'bun', body: 'shawl', legs: 'skirt', H: '#dcdce4', S: '#c89060', W: '#7a4ea8', C: '#3a2a3a', L: '#5a4a40', B: '#2a1a14' },

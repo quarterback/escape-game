@@ -107,3 +107,7 @@ Escape harness, 300 runs, Teresa / Mateu: inland 22.3% / 24.7%. Bot always takes
 - **Report pins.** The newest report from each stop sits on the map with its age, grows greyer at 3, 8 and 16 hours, and drops off after a day.
 
 Police harness, 400 runs, no companion, she escapes Sofia: 35.0% before; 37.8% with the patrols alone; 51.5% with patience (60 of 400 runs end with Sofia off the case). A first version asked every 12 hours and charged a missed deadline; it took Sofia off the case in 43% of runs and was dropped. The bot names a stop when a report is under six hours old and otherwise says it does not know.
+
+## Davi, the second special investigator (Nov. 5, 2026, issue #33)
+
+Owner: name Davi, advantage a third patrol. He starts with the card "A third patrol"; the third patrol starts at Nova Trentô. Everything else matches Sofia's side, and the demo stays Sofia's. Police harness, 400 runs, no companion (`node tools/gov-calibrate.js 400 --inv=davi`): she escapes Davi 45.0%, against 51.5% for Sofia.

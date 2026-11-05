@@ -364,6 +364,8 @@ const Data = (() => {
   const POSTS = { rail: 'Paso Huhūi rail post', high: 'Ālto Verdē road post', coast: 'Punta Marēa crossing' };
   // ---- The government role: a senior aide to the minister, coordinating the departure inquiry.
   const GOV = { id: 'gov', name: 'Sofia', title: 'special investigator for the incoming government', pronoun: 'she', };
+  // issue #33 (owner, Nov. 5, 2026): a second special investigator, Davi, whose own advantage is a third patrol
+  const GOVS = { sofia: GOV, davi: { id: 'davi', name: 'Davi', title: 'special investigator for the incoming government', pronoun: 'he', card: 'patrol3' } };
   // Government cards: specific cooperation, with the same local reach as the escape's cards.
   const GOV_CARDS = {
     watch:     { does: "They watch the residence and Pedra Branca and send you reports.", name: 'The watch team', tag: 'watch', from: 'A police inspector', reach: ['residence', 'road'], works: 'The residence and Pedra Branca.', text: 'Two unmarked cars and four officers. They see what passes them and nothing else.' },
@@ -379,6 +381,7 @@ const Data = (() => {
     exchange:  { name: "Nadia's exchange records", tag: 'phone', from: 'Nadia', companion: 'nadia', reach: ALL, works: 'Calls on the provincial network.', text: 'An exchange logs which town a call came from, hours later. It never says who is holding the phone.' },
     registers: { name: "Emilio's guest registers", tag: 'lodging', from: 'Emilio', companion: 'emilio', reach: ['road', 'colonia', 'salta'], works: 'Hotels in Pedra Branca, Nova Trentô and Salta.', text: 'A register shows who checked in and when, under whatever name they gave.' },
     union:     { name: "Joana's union contacts", tag: 'union', from: 'Joana', companion: 'joana', reach: ['salta'], works: 'The Salta rail yard and its workers.', text: 'The yard crews talk to her, and they see every passenger the freight carries.' },
+    patrol3:   { does: 'One more patrol to send where you need it.', name: 'A third patrol', tag: 'patrol', from: 'The Pedra Branca commander', reach: [], works: 'Any stop in Valdória, up to and at the line.', text: 'The commander lends you a third patrol, which starts at Nova Trentô.' },
     esm_intro: { name: 'A Costamaran introduction', tag: 'introduction', from: 'The embassy in Cerro Alto', reach: ESMERALDA, works: 'Lets your search, checkpoint, and call-in orders work at Portalba.', text: 'A name at the interior ministry who will take your call. Nothing is promised.' },
   };
   // A companion on the government side: the same people, and what each gives Sofia
@@ -787,6 +790,6 @@ const Data = (() => {
     chance: (t) => (21 - Math.min(20, Math.max(2, t))) * 5, // percent, as the player sees it
     shown: (t) => Math.min(20, t), // what the player is told. A target of 21 (a move that cannot be won) is shown as 20 and looks like any hard move; the die decides it on the table (owner, Nov. 1, 2026: never tell the player an outcome in advance)
   };
-  return { HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  return { HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
 })();
 if (typeof module !== 'undefined') module.exports = Data;

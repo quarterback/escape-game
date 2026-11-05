@@ -46,6 +46,9 @@ const Gov = (() => {
       patience: 3, patrols: [0, 1] };
     // a companion gives Sofia one police card from the start
     g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    // which investigator: Sofia, or Davi with a third patrol that starts at Nova Trentô (issue #33)
+    g.inv = D.GOVS[opts.inv] ? opts.inv : 'sofia';
+    if (g.inv === 'davi' && !opts.tutorial) { g.hand.push('patrol3'); g.patrols.push(2); }
     if (g.companion && !g.hand.includes(D.COMPANIONS[g.companion].gov)) g.hand.push(D.COMPANIONS[g.companion].gov);
     if (g.hand.includes('clinics')) c.flags.spotWorn = true; // Inês briefs the patrols: a worn-out family is stopped from Rising police attention, not High
     if (opts.dice) g._dice = opts.dice.slice();
