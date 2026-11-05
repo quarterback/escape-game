@@ -127,7 +127,7 @@
   {
    "id": "scene.sosa_at",
    "pattern": "P06",
-   "text": "The police are searching {place}",
+   "text": "The police are searching {place}.",
    "args": [
     "place"
    ]
