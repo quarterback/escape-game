@@ -1449,7 +1449,7 @@
   {
    "id": "help.body",
    "pattern": "P09",
-   "text": "**Food and sleep.** Everyone in your car needs both. After 18 hours awake you are tired, and after 30 you are exhausted. After 12 hours without a meal you are hungry, and after 24 you are starving. Tired or starving makes every move that rolls harder, and exhausted makes it much harder. Pick **Stop to eat and sleep** to see where you can stop at this stop. A room with your name in the register or a meal in public raises your police attention. If you go too long without food or sleep, your youngest falls sick."
+   "text": "**Food and sleep.** Everyone in your car needs both. You are tired after 18 hours awake and exhausted after 30. You are hungry after 12 hours without a meal and starving after 24. Tired or starving makes every move that rolls harder, and exhausted makes it much harder. Pick **Stop to eat and sleep** to see your choices here. A room in your name or a meal in public raises your police attention. If you go too long without food or sleep, your youngest falls sick."
   },
   {
    "id": "gov.report.room_clerk",
@@ -1979,17 +1979,17 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick a move under Here, read what it does and how long it takes, then tap **Try it**. Line up help on the phone while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move, read what it does and how long it takes, then tap **Confirm**. Use the phone to line up help while you travel, but a call can fail and an answer takes hours."
   },
   {
    "id": "help.cards",
    "pattern": "P09",
-   "text": "People who help you give you cards, and you never have to play them. A card makes a move easier, or lets you try a move at all, at the stops its help reaches. The party's cards stop working at the border."
+   "text": "People who help you give you cards, and the cards work on their own. A card makes a move easier, or makes it possible, at the stops its help reaches. The party's cards stop working at the border."
   },
   {
    "id": "help.rounds",
    "pattern": "P09",
-   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises while the police search where you are, from low to rising to high. Once it is high, a police search where you are ends in a stop, and if it keeps climbing they stop you wherever you are. Each stop within 12 hours of the last one is worse, and the third step is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., which is 72 hours after the run starts."
+   "text": "Each turn, answer your phone, make up to one call, and then make one move. Police attention rises from low to rising to high while the police search where you are. Once it is high, a search where you are ends in a stop, and if it keeps climbing, they stop you anywhere. Each stop within 12 hours of the last is worse, and the third is house arrest. Get out of Costamaran airspace before the escape deadline, Tuesday at 2 p.m., 72 hours after the run starts."
   },
   {
    "id": "help.ios",
@@ -4242,12 +4242,12 @@
   {
    "id": "about.p1",
    "pattern": "P08",
-   "text": "Two unmarked cars sit outside the house in Portô Venla. The police run the departure inquiry for the Interior Ministry, and they are good at it. Rādiô Portô Venla has you on a yacht in the harbor, which is where you want the police looking."
+   "text": "Two unmarked cars sit outside the house in Portô Venla. The police run the departure inquiry for the Interior Ministry, and they are good at it. Rādiô Portô Venla has you on a yacht in the harbor, where you want the police looking."
   },
   {
    "id": "about.p2",
    "pattern": "P08",
-   "text": "Your brother or sister is abroad finding a jet, and no crew will book until they can say where it is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Costamar's interior minister, can have people waiting at the border if Cerro Alto gets your name in time. Gianlūka Moretī runs the party. He can put a mayor, a judge, or a border post on the phone, and he writes down every call."
+   "text": "Your brother or sister is abroad finding a jet, and no crew will book until it knows where the jet is going. A sponsor in another country will ask a ministry for your visa, for a price. Rosario Vélez, aide to Costamar's interior minister, can have people waiting at the border if Cerro Alto gets your name in time. Gianlūka Moretī runs the party. He can get a mayor, a judge, or a border post on the phone, and he writes down every call."
   },
   {
    "id": "about.p3",
@@ -4262,7 +4262,7 @@
   {
    "id": "about.p4",
    "pattern": "P08",
-   "text": "The road runs south through Pedra Branca, where the posts have not received the travel ban yet. It turns east to the colônia at Nova Trentô. Then it climbs to the rail town at Salta, where you board the midnight freight over the Huhūi passes. Three crossings lead into Costamar there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Portalba, a charter apron behind the port. A pilot there flies where the flight plan says."
+   "text": "The road runs south through Pedra Branca, where the posts do not have the travel ban yet, then east to the colônia at Nova Trentô. It climbs to the rail town at Salta, where you board the midnight freight over the Huhūi passes. Three crossings lead into Costamar there, a day apart. One of them has taken Valdória's money, and you find out which when the sergeant walks into the hut with your passport and does not come back. Past the line is Portalba, a charter apron behind the port. A pilot there flies where the flight plan says."
   },
   {
    "id": "about.p5",
@@ -4272,7 +4272,7 @@
   {
    "id": "about.p6",
    "pattern": "P08",
-   "text": "A call takes hours, a move can fail, and police attention climbs while the police search where you are. Once it is high, a search where you are ends in a stop, and if it keeps climbing they stop you wherever you are. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
+   "text": "A call takes hours, a move can fail, and police attention climbs while the police search where you are. Once it is high, a search there ends in a stop, and if it keeps climbing, they stop you anywhere. The first stop is questions, the second is a night at the station, and the third is house arrest, unless 12 quiet hours pass between stops. You have 72 hours, Saturday afternoon to Tuesday at 2 p.m."
   },
   {
    "id": "about.gov_h",
@@ -4292,7 +4292,7 @@
   {
    "id": "about.p8",
    "pattern": "P08",
-   "text": "The demo is one scripted escape in 20 steps with a coach beside you, and there is a shorter one for the government side. In the daily run everyone starts from the same draw, so you and a friend can compare endings. The game is one page that works offline once loaded, and it saves your run. It is hard on purpose, and one bad call on Saturday evening can end a run before it starts. A run takes 20 minutes, so when one ends you start another."
+   "text": "The demo is a coached escape in 20 steps, with a shorter one for the government side. In the daily run, everyone starts from the same draw, so you and a friend can compare endings. The game works offline once loaded, and it saves your run. It is hard on purpose, and one bad call on Saturday evening can end a run before it starts. A run takes 20 minutes, so when one ends, you start another."
   },
   {
    "id": "about.world",
@@ -5347,7 +5347,7 @@
   {
    "id": "help.gov_hunt",
    "pattern": "P09",
-   "text": "**The hunt.** The map shows your search in gold, your patrols in coral and the newest report from each stop in lavender, marked with its age. A report grays as it gets older and drops off after a day. An order that sends police to a stop uses the nearest patrol, and moving a patrol takes two hours for each stop. A patrol stays where it last worked. If she arrives there, the patrol reports it two to five hours later. **The minister's patience** shows as a bar under the clock. Eighteen hours after you name a stop or say you don't know, he asks again. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
+   "text": "**The hunt.** The map shows your search in gold, your patrols in coral, and the newest report from each stop in lavender, marked with its age. A report grays as it ages and drops off after a day. An order that sends police to a stop uses the nearest patrol, which takes two hours per stop to get there. A patrol stays where it last worked, and if she arrives there, it reports her two to five hours later. **The minister's patience** shows as a bar under the clock. He asks again 18 hours after you name a stop or say you don't know. Saying you don't know lowers his patience. Six hours after you name a stop, the papers show whether you were right, and his patience rises or falls. News that embarrasses him lowers it, and good news raises it. When it runs out, he takes you off the case.",
    "role": "gov"
   },
   {
