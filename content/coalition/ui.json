@@ -21,7 +21,7 @@
   {
    "id": "log.start_gov",
    "pattern": "P08",
-   "text": "{clock}. You are {name}, {title}. {target} lost the election on Saturday, the court has barred her from leaving, and the minister wants to know where she is.",
+   "text": "{clock}. You are {name}, {title}. {target} lost Saturday's election, the court has barred her from leaving, and the minister wants to know where she is.",
    "args": [
     "clock",
     "name",
@@ -253,7 +253,7 @@
   {
    "id": "sim.hurry.aircraft",
    "pattern": "P03",
-   "text": "The answer comes in two hours. Paying the crew extra gets noticed, so your police attention rises by one."
+   "text": "The answer comes in two hours. Paying the crew extra raises your police attention by one."
   },
   {
    "id": "sim.hurry.permission",
@@ -518,7 +518,7 @@
   {
    "id": "need.passage_from",
    "pattern": "P05",
-   "text": "Holt's crate, Theo's walk through the yard, or Nonā Rosa's grandson gets you on"
+   "text": "Holt's crate, Theo's walk through the yard, or Nonā Rosa's grandson gets you aboard."
   },
   {
    "id": "need.nobody",
@@ -1390,7 +1390,7 @@
   {
    "id": "body.now_hungry",
    "pattern": "P10",
-   "text": "After 12 hours without food you are hungry, and 12 more hours without a meal will make your moves harder."
+   "text": "After 12 hours without food you are hungry; 12 more without a meal makes your moves harder."
   },
   {
    "id": "body.now_starving",
@@ -1547,7 +1547,7 @@
   {
    "id": "mate.marta.plates",
    "pattern": "P10",
-   "text": "Marta swaps the plates before you leave, and the police searching here lose track of the car."
+   "text": "Marta swaps the plates before you leave, and the police here lose track of the car."
   },
   {
    "id": "mate.ines.escape",
@@ -1634,7 +1634,7 @@
   {
    "id": "mate.celina.yacht_effect",
    "pattern": "P03",
-   "text": "The police go back to searching the residence, and your police attention drops by two. Celina's newsroom runs the story, so it costs you nothing if one of your people later talks to the police."
+   "text": "The police search the residence again, and your police attention drops by two. Celina's newsroom runs the story, so it costs you nothing if one of your people later talks to the police."
   },
   {
    "id": "mate.celina.yacht_say",
@@ -1644,7 +1644,7 @@
   {
    "id": "mate.celina.spin",
    "pattern": "P10",
-   "text": " Celina's station puts a listener's sighting of you at {place} on the air, and the police go there next.",
+   "text": " Celina's station airs a listener's sighting of you at {place}, and the police go there next.",
    "args": [
     "place"
    ]
@@ -1660,7 +1660,7 @@
   {
    "id": "mate.paulo.ban_slow",
    "pattern": "P10",
-   "text": "Paulo says the order will sit in the clerk's outbox, and the travel ban will not reach the posts until {time}.",
+   "text": "Paulo says the travel ban will sit in the clerk's outbox and reach no post until {time}.",
    "args": [
     "time"
    ]
@@ -1691,7 +1691,7 @@
   {
    "id": "mate.nadia.untraced",
    "pattern": "P10",
-   "text": " Nadia sent your calls through an old exchange that keeps no records, so they learn nothing."
+   "text": " Nadia routed your calls through an old exchange with no records, so they learn nothing."
   },
   {
    "id": "mate.nadia.rerouted",
@@ -1759,7 +1759,7 @@
   {
    "id": "gov.report.plates_decoys",
    "pattern": "P06",
-   "text": "Marta ran the plates of the cars that left the residence, and the red sedan is a decoy.",
+   "text": "Marta ran the plates of the cars leaving the residence: the red sedan is a decoy.",
    "role": "gov"
   },
   {
@@ -2529,7 +2529,7 @@
   {
    "id": "sim.status.arrange_reception_through_your_sibling",
    "pattern": "P05",
-   "text": "{name} gets Vélez to expect you, and later Vélez can put officials at one border post.",
+   "text": "{name} gets Vélez to expect you, and later to put officials at one border post.",
    "args": [
     "name"
    ]
@@ -2689,7 +2689,7 @@
   {
    "id": "sim.effect.restores_the_aircraft_to_ready",
    "pattern": "P03",
-   "text": "The jet is ready at Portalba. Paying the crew on the apron gets you noticed, and your police attention rises by one."
+   "text": "The jet is ready at Portalba. Paying the crew on the apron raises your police attention by one."
   },
   {
    "id": "sim.opt.pay_the_crew_bonus",
@@ -2779,7 +2779,7 @@
   {
    "id": "sim.effect.keep_gianluka_s_support_and",
    "pattern": "P03",
-   "text": "Gianlūka stays on your side and gives you \"A friend in the police\" unless you already have it. The police move their search to Pedra Branca."
+   "text": "Gianlūka stays on your side and gives you \"A friend in the police\" if you lack it. The police move their search to Pedra Branca."
   },
   {
    "id": "sim.opt.send_the_statement",
@@ -2851,7 +2851,7 @@
   {
    "id": "sim.effect.sends_them_to_the_house",
    "pattern": "P03",
-   "text": "The police go back to searching the residence, your police attention stays the same, and nothing comes back on you later."
+   "text": "The police search the residence again, your police attention stays the same, and nothing comes back on you later."
   },
   {
    "id": "sim.opt.deny_it_you_are_at",
@@ -2861,7 +2861,7 @@
   {
    "id": "sim.effect.the_inquiry_believes_the_coast",
    "pattern": "P03",
-   "text": "The police go back to searching the residence, and your police attention drops by one. If one of your people later talks to the police, the lie raises your police attention by one more."
+   "text": "The police search the residence again, and your police attention drops by one. If one of your people later talks to the police, the lie raises it by one."
   },
   {
    "id": "sim.opt.confirm_it_from_the_yacht",
@@ -3084,7 +3084,7 @@
   {
    "id": "gov.line.esmeralda_will_hold_her_if",
    "pattern": "P07",
-   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and their police can stop her for questioning. The interior ministry gave us a name to call.\"",
+   "text": "\"Costamar has agreed. If she reaches Portalba, her takeoff is harder and their police can stop her for questioning. The interior ministry gave us a name to call.\"",
    "role": "gov",
    "speaker": "embassy"
   },
@@ -3441,7 +3441,7 @@
   {
    "id": "gov.preview.the_aviation_desk_takes_six",
    "pattern": "P03",
-   "text": "The aviation desk answers six hours after your call. If it agrees, you can press the charter operator through his license.",
+   "text": "The aviation desk answers in six hours. If it agrees, you can press the charter operator through his license.",
    "role": "gov"
   },
   {
@@ -3471,7 +3471,7 @@
   {
    "id": "gov.preview.through_the_embassy_in_baca",
    "pattern": "P03",
-   "text": "Cerro Alto answers 10 hours after your call. If Costamar agrees, her takeoff gets harder, the police there can stop her for questioning, and your patrols can act at Portalba.",
+   "text": "Cerro Alto answers in 10 hours. If Costamar agrees, her takeoff gets harder, the police there can stop her for questioning, and your patrols can act at Portalba.",
    "role": "gov"
   },
   {
@@ -3954,7 +3954,7 @@
   {
    "id": "sim.effect.crew_booking_can_proceed",
    "pattern": "P03",
-   "text": "The charter jet is booked, and your next call about the jet asks for a crew for {city}. Your visa is still a separate call.",
+   "text": "The charter jet is booked, and your next jet call asks for a crew for {city}. Your visa is a separate call.",
    "args": [
     "city"
    ]
@@ -3962,7 +3962,7 @@
   {
    "id": "sim.effect.needs_roll_to_confirm",
    "pattern": "P03",
-   "text": "{place} picks the city for you if the call goes well. If it does not, you cannot call about the jet for six hours.",
+   "text": "{place} picks the city if the call goes well. If not, you cannot call about the jet for six hours.",
    "args": [
     "place"
    ]
@@ -4050,7 +4050,7 @@
   {
    "id": "map.hint",
    "pattern": "P08",
-   "text": "The country you pick decides on your entry visa. You can fly without one, and that country still takes you when you land."
+   "text": "The country you pick decides on your entry visa. Without one you can still fly, and that country takes you when you land."
   },
   {
    "id": "sim.effect.requires_sponsor_help",
@@ -4404,7 +4404,7 @@
   {
    "id": "gov.debrief.trail_sum",
    "pattern": "P14",
-   "text": "In {on} of the {total} hours when you gave an order or answered the news, your search was aimed at the stop she was in.",
+   "text": "Your search was aimed at her stop in {on} of the {total} hours you gave an order or answered the news.",
    "args": [
     "on",
     "total"
@@ -4424,7 +4424,7 @@
   {
    "id": "gov.debrief.m_clean",
    "pattern": "P14",
-   "text": "Your search was aimed at the stop she was in every hour you gave an order or answered the news.",
+   "text": "Your search was aimed at her stop every hour you gave an order or answered the news.",
    "role": "gov"
   },
   {
@@ -4439,7 +4439,7 @@
   {
    "id": "gov.debrief.m_streak",
    "pattern": "P14",
-   "text": "{from} to {to}: your search was never aimed at the stop she was in.",
+   "text": "{from} to {to}: your search was never aimed at her stop.",
    "args": [
     "from",
     "to"
@@ -4448,7 +4448,7 @@
   {
    "id": "gov.debrief.m_streak_next",
    "pattern": "P14",
-   "text": "For the next {hours} hours, your search was never aimed at the stop she was in.",
+   "text": "For the next {hours} hours, your search was never aimed at her stop.",
    "args": [
     "hours"
    ]
@@ -4462,7 +4462,7 @@
   {
    "id": "gov.debrief.m_decoys",
    "pattern": "P14",
-   "text": "Your search was aimed at a stop a false report had named, {n} times in all.",
+   "text": "{n} times, your search was aimed at a stop a false report named.",
    "args": [
     "n"
    ],
@@ -4533,7 +4533,7 @@
   {
    "id": "gov.share",
    "pattern": "P14",
-   "text": "Coalition, ministry side. {result}.\n{grid}\nYour search was aimed at the right stop in {on} of the {total} hours when you gave an order or answered the news.\n{url}",
+   "text": "Coalition, ministry side. {result}.\n{grid}\nYour search was aimed at the right stop in {on} of the {total} hours you gave an order or answered the news.\n{url}",
    "args": [
     "result",
     "grid",
@@ -4823,7 +4823,7 @@
   {
    "id": "brief.reception_note",
    "pattern": "P08",
-   "text": "The first step opens the road to Salta. The second step matters if the police have asked Costamar to hold you, because without it your takeoff is harder. The third puts Vélez's officials at one border post."
+   "text": "The first step opens the road to Salta. The second matters if the police have asked Costamar to hold you: without it, your takeoff is harder. The third puts Vélez's officials at one border post."
   },
   {
    "id": "brief.gov_report_now",
@@ -5214,7 +5214,7 @@
   {
    "id": "sim.preview.harder_ban",
    "pattern": "P03",
-   "text": "The travel ban is on the desk at this post, and it makes this harder. Holding \"A report held one day\" keeps it off the desk."
+   "text": "The travel ban is on the desk at this post, so this is harder. \"A report held one day\" keeps it off the desk."
   },
   {
    "id": "sim.preview.harder_checkpoint",
@@ -5227,7 +5227,7 @@
   {
    "id": "sim.preview.harder_asked",
    "pattern": "P03",
-   "text": "Valdória has asked Costamar to hold you, and Costamar's minister does not know you are coming. That makes this much harder."
+   "text": "Valdória has asked Costamar to hold you, and Costamar's minister does not expect you, so this is much harder."
   },
   {
    "id": "sim.preview.harder_news",
@@ -5303,7 +5303,7 @@
   {
    "id": "gov.patience.claim_wrong",
    "pattern": "P06",
-   "text": "The papers report that she was not at {place} when the minister named it, and he is angry.",
+   "text": "The papers report she was not at {place} when the minister named it, and he is angry.",
    "args": [
     "place"
    ],
@@ -5360,7 +5360,7 @@
   {
    "id": "gov.patience.claim_right",
    "pattern": "P06",
-   "text": "The papers confirm that she was at {place} when the minister named it, and he is pleased.",
+   "text": "The papers confirm she was at {place} when the minister named it, and he is pleased.",
    "args": [
     "place"
    ],
@@ -5702,7 +5702,7 @@
   {
    "id": "ch2.prologue",
    "pattern": "P08",
-   "text": "Your plane lands on Erinana Island, not in {dest}. While you were flying, {dest} elected a new government, and it revoked your humanitarian parole.",
+   "text": "Your plane lands on Erinana Island, not in {dest}. While you flew, {dest} elected a new government, which revoked your humanitarian parole.",
    "args": [
     "dest"
    ]
