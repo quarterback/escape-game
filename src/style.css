@@ -553,3 +553,5 @@ body.ringing #phoneh{color:var(--mint)}
 /* issue #52: Sofia's board. Patrol pins, and report pins that grey as they age (the text stays dark on a light pill) */
 #govhelp{display:none}body.gov #govhelp{display:block}
 .routemap .pill.seen.age0{fill:#D9D2F5}.routemap .pill.seen.age1{fill:#B9B0D9}.routemap .pill.seen.age2{fill:#A29DB6}.routemap .pill.seen.age3{fill:#8E8A9C}
+/* the pill labels on the route maps: no outline (the world map's point style gave them a dark 2px stroke that smeared the letters) */
+.routemap text.pt{stroke:none}

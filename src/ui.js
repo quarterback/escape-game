@@ -22,7 +22,7 @@ const UI = (() => {
   const sibNamed = (t) => { if (gov || !who || !Data.CHARACTERS[who]) return t; const sb = Data.CHARACTERS[who].sibling, n = T('who.sibling', { rel: sb.rel.replace(/^your /, ''), name: sb.short }); return t.replace(/\bYour sibling\b/g, n[0].toUpperCase() + n.slice(1)).replace(/\byour sibling\b/g, n); };
   const esc = (t) => sibNamed(t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
-  const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
+  const callee = (id) => id === 'sibling' ? `${Data.CHARACTERS[who] ? Data.CHARACTERS[who].sibling.rel + ' ' + Data.CHARACTERS[who].sibling.short : T('phone.your_sibling')}` : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
 
   function log(whoId, text, cls) {
@@ -544,7 +544,7 @@ const UI = (() => {
   function briefGov() {
     const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: [] };
     const r = v.reports[0];
-    out.story.push(r ? (c.hour - r.hour <= 0 ? T('brief.gov_report_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_report_hour', { place: placeName(r.at) }) : T('brief.gov_report_hours', { place: placeName(r.at), n: c.hour - r.hour })) : T('brief.gov_no_report'));
+    out.story.push(r ? (c.hour - r.hour <= 0 ? T('brief.gov_report_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_report_hour', { place: placeName(r.at) }) : T('brief.gov_report_hours', { place: placeName(r.at), n: Sim.num(c.hour - r.hour) })) : T('brief.gov_no_report'));
     if (r) out.story.push(T('brief.gov_reports_caveat'));
     const ban = v.requests[0].state, hold = v.requests[1].state;
     out.need = [{ name: T('brief.gov_need_ban'), have: ban !== 'notyet' ? 1 : 0, of: 1, done: ban !== 'notyet', now: '' },
@@ -569,7 +569,7 @@ const UI = (() => {
   function govMarks(v) {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
     put(gov.belief, ['you', T('brief.gov_search')]);
-    const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? T('brief.gov_patrols') : T('brief.gov_patrol')]));
+    const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? cap(T('brief.gov_patrols', { n: Sim.num(ps.filter(x => x === i).length) })) : T('brief.gov_patrol')]));
     const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - r.hour); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
@@ -586,8 +586,13 @@ const UI = (() => {
       const [x, y] = P[i], m = marks[i] || [], here = m.some(k => k[0] === 'you');
       h += `<circle class="stopdot${here ? ' here' : ''}${i === n - 1 ? ' end' : ''}${i < upto ? ' went' : ''}" cx="${x}" cy="${y}" r="${here ? 9 : 7}"/>`;
       h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 16}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm${here ? ' here' : ''}" x="${x}" y="${y + 30}" text-anchor="middle">${esc(L.short)}</text>`;
+      // on a phone the pills sit in a row under the name, each after the last one's real width, wrapping before the edge
+      let ox = x + 16, oy = y + 12;
       m.forEach((k, j) => {
-        const w = Math.round(k[1].length * 7.6 + 18), px = tall ? x + 16 + j * (w + 6) : x - w / 2, py = tall ? y + 12 : y - 34 - j * 26;
+        const w = Math.round(k[1].length * 8.4 + 20);
+        if (tall && ox > x + 16 && ox + w > 314) { ox = x + 16; oy += 26; }
+        const px = tall ? ox : x - w / 2, py = tall ? oy : y - 34 - j * 26;
+        ox += w + 6;
         h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`;
         said.push(`${L.short}: ${k[1]}`);
       });

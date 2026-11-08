@@ -245,6 +245,16 @@ or reviewing game copy. Read its full rules before the first copy pass. Apply
 Use active voice, familiar terms, consistent labels and one instruction per sentence.
 Check that shortening has preserved who acts, what they need and what follows.
 
+Then cut with the owner's [Red Pen Editor](https://github.com/quarterback/red-pen-editor)
+(owner, Nov. 8, 2026: "Red pen seems to work really well"). Read its
+`skills/red-pen-editor/SKILL.md` and ask of every line: what can be deleted without
+losing useful meaning, accuracy or voice? Cut restatement, throat-clearing and detail
+the player does not need; keep every fact, number, name and consequence. Check each cut
+with its guard (`applyEdits` in `src/index.mjs`), which rejects a cut that drops the last
+copy of a number or date. Then run the owner's
+[Prosekeep](https://github.com/quarterback/prosekeep) check (`prosekeep check <file>
+--profile vloora`) over the new copy. Both repos are public; clone them beside this one.
+
 - Give the player the action, requirement or consequence first.
 - Keep instructions short. Explain a rule where it is needed; do not repeat it
   across the briefing, panel labels and tutorial step.
@@ -297,8 +307,9 @@ the content check first), `node tools/tutorial-check.js`,
 `node tools/gov-tutorial-check.js`, `node tools/contract-tests.js` and
 `node tools/pbbg-check.js` (the owner's standalone checker from
 `quarterback/pbbg-content-schema`, cloned beside this repo; its policy is
-`tools/pbbg-policy.json`). Every new string gets the Humanizer and plain-language
-pass before it ships, including strings copied from a design mockup.
+`tools/pbbg-policy.json`; `build.py` also runs it and writes `content/pbbg/coalition.bundle.json`).
+Every new string gets the Humanizer, plain-language, Red Pen and Prosekeep passes before it
+ships, including strings copied from a design mockup.
 After a colour, layout or type change, run `node tools/contrast-check.js`
 (once: `cd tools && npm install`). It must report zero WCAG AA failures. Check the built game in a browser, including the
 start screen and tutorial. If editing strings in the simulation or data tables,
