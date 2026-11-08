@@ -20469,7 +20469,7 @@
    "id": "event.harbor_storm.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The harbor master has closed the port, and no boat leaves until the wind drops.",
+   "text": "The harbor master has closed the port until the wind drops.",
    "audience": [
     "player"
    ],
@@ -20589,7 +20589,7 @@
    "id": "event.bruno_cousin.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Bruno's cousin broke down an hour behind you with a load of melons, and Bruno wants to go back and help.",
+   "text": "Bruno's cousin broke down an hour behind you, and Bruno wants to go back and help.",
    "audience": [
     "player"
    ],
@@ -20625,7 +20625,7 @@
    "id": "event.bruno_cousin.bruno_cousin_yes.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you.",
+   "text": "You push the truck out of a ditch together, and the cousin swears he never saw you.",
    "audience": [
     "player"
    ],
@@ -20649,7 +20649,7 @@
    "id": "event.bruno_cousin.bruno_cousin_no.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Bruno stays, but he sulks and is no help to you at this stop.",
+   "text": "Bruno stays but sulks and is no help at this stop.",
    "audience": [
     "player"
    ],
@@ -20661,7 +20661,7 @@
    "id": "event.clara_aunt.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Clara's aunt works at one of the posts and will vouch for you, but people will see Clara with you.",
+   "text": "Clara's aunt works at a post and will vouch for you, but people will see Clara with you.",
    "audience": [
     "player"
    ],
@@ -20733,7 +20733,7 @@
    "id": "event.rita_crew.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Rita's old crew offers to work on your jet tonight for cash up front. Paying cash on the apron gets you noticed.",
+   "text": "Rita's old crew will work on your jet tonight for cash, but paying on the apron gets you noticed.",
    "audience": [
     "player"
    ],
@@ -20769,7 +20769,7 @@
    "id": "event.rita_crew.rita_crew_yes.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The crew works through the night, and the jet is one step closer to ready. People on the apron see who paid them.",
+   "text": "The crew works all night and moves the jet one step closer, but people on the apron see who paid.",
    "audience": [
     "player"
    ],
@@ -20805,7 +20805,7 @@
    "id": "event.marta_pump.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Marta says the car's fuel pump is going, and she wants two hours at a garage to fix it.",
+   "text": "Marta says the fuel pump is going and wants two hours at a garage.",
    "audience": [
     "player"
    ],
@@ -20949,7 +20949,7 @@
    "id": "event.paulo_favor.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Paulo's old supervisor at the court will lose your file for a day if Paulo agrees to owe him a favor.",
+   "text": "Paulo's old court supervisor will lose your file for a day if Paulo owes him a favor.",
    "audience": [
     "player"
    ],
@@ -21057,7 +21057,7 @@
    "id": "event.celina_exclusive.celina_exclusive_yes.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Celina edits the interview to sound like you are already abroad, and the police look elsewhere. More people know your face now.",
+   "text": "Celina makes the interview sound like you are abroad, and the police look elsewhere, but more people know your face.",
    "audience": [
     "player"
    ],
@@ -21093,7 +21093,7 @@
    "id": "event.tomas_drink.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A sergeant who served under Tomás offers to wave you through if Tomás stays an hour for a drink.",
+   "text": "A sergeant who served under Tomás will wave you through if Tomás stays an hour for a drink.",
    "audience": [
     "player"
    ],
@@ -21153,7 +21153,7 @@
    "id": "event.tomas_drink.tomas_drink_no.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The sergeant takes it badly, and Tomás is no help to you at this post.",
+   "text": "The sergeant takes it badly, and Tomás is no help at this post.",
    "audience": [
     "player"
    ],
@@ -21165,7 +21165,7 @@
    "id": "event.nadia_click.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Nadia hears a click on the line to {sibfull} and wants an hour to move the calls to another exchange.",
+   "text": "Nadia hears a click on the line to {sibfull} and wants an hour to reroute the calls.",
    "audience": [
     "player"
    ],
@@ -21231,7 +21231,7 @@
    "id": "event.nadia_click.nadia_click_no.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Nadia leaves the line as it is, and she can't hide your calls here.",
+   "text": "Nadia leaves the line alone and can't hide your calls here.",
    "audience": [
     "player"
    ],
@@ -21243,7 +21243,7 @@
    "id": "event.emilio_booking.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A hotel clerk called Emilio to say someone asked who is really staying under the name he booked.",
+   "text": "A hotel clerk warns Emilio that someone asked who is really behind the name he booked.",
    "audience": [
     "player"
    ],
@@ -21315,7 +21315,7 @@
    "id": "event.joana_meeting.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The union meets at the depot tonight, and the members expect Joana to speak.",
+   "text": "The union meets at the depot tonight and expects Joana to speak.",
    "audience": [
     "player"
    ],
@@ -21375,7 +21375,7 @@
    "id": "event.joana_meeting.joana_meeting_no.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Joana stays, but the crews hear she skipped the meeting and won't help here.",
+   "text": "Joana stays, but the crews hear she skipped and won't help here.",
    "audience": [
     "player"
    ],
@@ -21433,7 +21433,7 @@
    "id": "event.too_soon.let_run.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Your own people believe it too, and every reply you ask for now comes two hours later.",
+   "text": "Your own people believe it too, so every reply now comes two hours later.",
    "audience": [
     "player"
    ],
@@ -21469,7 +21469,7 @@
    "id": "event.too_soon.celina_story.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Celina's station reads the story every hour. Your own people know the truth, so their replies come on time.",
+   "text": "Celina's station runs the story every hour, and your own people, who know the truth, reply on time.",
    "audience": [
     "player"
    ],
@@ -21589,7 +21589,7 @@
    "id": "event.hearing.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The court moved your hearing forward, and it wants the travel ban at every post today.",
+   "text": "The court moved your hearing up and wants the travel ban at every post today.",
    "audience": [
     "player"
    ],
@@ -21649,7 +21649,7 @@
    "id": "event.hearing.paulo_hearing.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Paulo calls an old colleague in the clerk's office. The order goes into the outbox, and the travel ban does not go out.",
+   "text": "Paulo's old colleague in the clerk's office leaves the order in the outbox, so the travel ban does not go out.",
    "audience": [
     "player"
    ],
@@ -21673,7 +21673,7 @@
    "id": "event.hearing.stall.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The clerk holds the court's order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.",
+   "text": "The clerk holds the order back, but Gianlūka adds it to your debt, and the court knows you are still in reach.",
    "audience": [
     "player"
    ],
@@ -21745,7 +21745,7 @@
    "id": "hold.0.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A patrol stops you at {here}. An officer wants to know where you are going.",
+   "text": "A patrol stops you at {here}, and an officer asks where you are going.",
    "audience": [
     "player"
    ],
@@ -21835,7 +21835,7 @@
    "id": "hold.1.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "They take you to the nearest station. Your phone goes in a plastic bag.",
+   "text": "They take you to the nearest station and bag your phone.",
    "audience": [
     "player"
    ],
@@ -21871,7 +21871,7 @@
    "id": "hold.1.wait_lawyer.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You wait eight hours for the lawyer. The police keep your second passport, or another card if you no longer have it.",
+   "text": "You wait eight hours for the lawyer, and the police keep your second passport, or another card if it's gone.",
    "audience": [
     "player"
    ],
@@ -22069,7 +22069,7 @@
    "id": "govevent.tipster.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A man says he drove her this morning. He wants cash before he says where.",
+   "text": "A man says he drove her this morning and wants cash before he says where.",
    "audience": [
     "government"
    ],
@@ -22117,7 +22117,7 @@
    "id": "govevent.leak.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "He told a columnist you are looking at {there}. It runs in the morning edition.",
+   "text": "He told a columnist you are looking at {there}, and it runs in the morning edition.",
    "audience": [
     "government"
    ],
@@ -22207,7 +22207,7 @@
    "id": "govevent.leak.celina_kill.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Celina gives the columnist a better story for the morning edition. Your lead stays out of the paper, and the minister never hears of it.",
+   "text": "Celina gives the columnist a better story, so your lead stays out of the paper and away from the minister.",
    "audience": [
     "government"
    ],
@@ -22231,7 +22231,7 @@
    "id": "govevent.judge.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Her lawyers ask the duty judge to suspend the travel ban at the line until a hearing. If he agrees, the post lets the ban slide.",
+   "text": "Her lawyers ask the duty judge to suspend the travel ban at the line until a hearing.",
    "audience": [
     "government"
    ],
@@ -22267,7 +22267,7 @@
    "id": "govevent.judge.wait_judge.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The judge suspends the ban at the line until the hearing, and the post lets it slide.",
+   "text": "The judge suspends the ban at the line until the hearing.",
    "audience": [
     "government"
    ],
@@ -22303,7 +22303,7 @@
    "id": "govevent.judge.paulo_judge.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Paulo files the answer before the lawyers finish theirs. The judge refuses them, and the ban stands at the line.",
+   "text": "Paulo files first, the judge refuses the lawyers, and the ban stands at the line.",
    "audience": [
     "government"
    ],
@@ -22339,7 +22339,7 @@
    "id": "govevent.sightings.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Callers place her in Pedra Branca, in Salta and on the coast road, all in the same hour.",
+   "text": "Callers place her in Pedra Branca, Salta and on the coast road in the same hour.",
    "audience": [
     "government"
    ],
@@ -22411,7 +22411,7 @@
    "id": "govevent.sightings.marta_plates.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Marta matches the plates to a car that left the capital on Saturday. The toll records place it, two hours late.",
+   "text": "Marta matches the plates to a car that left the capital on Saturday, and toll records place it, two hours late.",
    "audience": [
     "government"
    ],
@@ -22513,7 +22513,7 @@
    "id": "govevent.driver.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A driver from her convoy wants a promise that he will not be charged.",
+   "text": "A driver from her convoy wants a promise of no charges.",
    "audience": [
     "government"
    ],
@@ -22669,7 +22669,7 @@
    "id": "govevent.strike.joana_strike.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Joana settles the strike by supper. The yard crews go back to work and agree to tell you who rides the freight.",
+   "text": "Joana settles the strike by supper, and the yard crews agree to tell you who rides the freight.",
    "audience": [
     "government"
    ],
@@ -22681,7 +22681,7 @@
    "id": "govevent.photo.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A newspaper has a blurred photo of her at a gas station, and it wants to run it.",
+   "text": "A newspaper wants to run a blurred photo of her at a gas station.",
    "audience": [
     "government"
    ],
@@ -22765,7 +22765,7 @@
    "id": "govevent.photo.celina_photo.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Celina's station runs the photo with a number to call. A caller names the gas station's town.",
+   "text": "Celina's station runs the photo with a tip line, and a caller names the gas station's town.",
    "audience": [
     "government"
    ],
@@ -22777,7 +22777,7 @@
    "id": "govevent.dinner.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The ambassador invites you to dinner tonight. Dinner takes three hours, and he likes to talk.",
+   "text": "The ambassador invites you to a three-hour dinner tonight, and he likes to talk.",
    "audience": [
     "government"
    ],
@@ -22849,7 +22849,7 @@
    "id": "govevent.storm.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Snow is falling on the Huhūi passes, and the road service is warning drivers off for the night.",
+   "text": "Snow is falling on the Huhūi passes, and the road service warns drivers off tonight.",
    "audience": [
     "government"
    ],
@@ -22921,7 +22921,7 @@
    "id": "govevent.rival.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Another aide tells the minister he can find her faster. He wants your reports.",
+   "text": "Another aide tells the minister he can find her faster and wants your reports.",
    "audience": [
     "government"
    ],
@@ -23005,7 +23005,7 @@
    "id": "govevent.bribe.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A lawyer for her family asks what it would take to look away for one day.",
+   "text": "Her family's lawyer asks what it would take to look away for one day.",
    "audience": [
     "government"
    ],
@@ -23077,7 +23077,7 @@
    "id": "govevent.sergeant.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The desk says the sergeant on duty at the border post is married to her cousin. He can let the travel ban slide.",
+   "text": "The duty sergeant at the border post is married to her cousin and can let the travel ban slide.",
    "audience": [
     "government"
    ],
@@ -23113,7 +23113,7 @@
    "id": "govevent.sergeant.replace.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A sergeant from Salta takes the shift. He reads every name and holds to the ban.",
+   "text": "A sergeant from Salta takes the shift, reads every name and holds to the ban.",
    "audience": [
     "government"
    ],
@@ -23173,7 +23173,7 @@
    "id": "govevent.sergeant.tomas_shift.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Tomás drives up and stands the shift himself. He holds to the ban and searches every car for four hours.",
+   "text": "Tomás stands the shift himself, holds to the ban and searches every car for four hours.",
    "audience": [
     "government"
    ],
@@ -23185,7 +23185,7 @@
    "id": "govevent.drone.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A drone can watch from the air for eight hours. The general wants a signature.",
+   "text": "A drone can watch for eight hours, and the general wants a signature.",
    "audience": [
     "government"
    ],
@@ -23245,7 +23245,7 @@
    "id": "govevent.presser.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "He wants you beside him at 6 p.m. to promise that she will be found by Monday.",
+   "text": "He wants you beside him at 6 p.m. to promise she will be found by Monday.",
    "audience": [
     "government"
    ],
@@ -23341,7 +23341,7 @@
    "id": "govevent.presser.celina_brief.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Celina writes a statement that promises nothing and names no town. The minister reads it well.",
+   "text": "Celina writes a statement that promises nothing and names no town, and the minister reads it well.",
    "audience": [
     "government"
    ],
@@ -23353,7 +23353,7 @@
    "id": "govevent.tower.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The carrier says one of her family's phone numbers pinged a tower an hour ago.",
+   "text": "The carrier says one of her family's numbers pinged a tower an hour ago.",
    "audience": [
     "government"
    ],
@@ -23425,7 +23425,7 @@
    "id": "govevent.tower.nadia_tower.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Nadia reads the tower's log at the exchange. It names the town, two hours after the call.",
+   "text": "Nadia reads the tower log at the exchange, and it names the town, two hours after the call.",
    "audience": [
     "government"
    ],
@@ -23437,7 +23437,7 @@
    "id": "lodging.lodge_residence.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "You are still in your own house, with the watch outside. The kitchen is full, and your bed is upstairs.",
+   "text": "You are still home with the watch outside, a full kitchen and your bed upstairs.",
    "audience": [
     "player"
    ],
@@ -23521,7 +23521,7 @@
    "id": "lodging.lodge_road.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The motel by the river asks every guest for a name and a passport. The truck stop sells hot food to anyone who stands in line.",
+   "text": "The river motel asks every guest for a passport, and the truck stop feeds anyone who stands in line.",
    "audience": [
     "player"
    ],
@@ -23557,7 +23557,7 @@
    "id": "lodging.lodge_road.emilio_room.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Emilio booked a room over a garage under another guest's name. Everyone eats and sleeps six hours, and nobody asks who you are.",
+   "text": "Everyone eats and sleeps six hours in Emilio's room over a garage, booked under another guest's name.",
    "audience": [
     "player"
    ],
@@ -23629,7 +23629,7 @@
    "id": "lodging.lodge_road.ines_food.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Inês goes into the truck stop alone and comes back with food for everyone.",
+   "text": "Inês goes into the truck stop alone and brings back food for everyone.",
    "audience": [
     "player"
    ],
@@ -23653,7 +23653,7 @@
    "id": "lodging.lodge_road.truck_stop.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You eat at the counter. The man beside you looks twice at your face.",
+   "text": "You eat at the counter, and the man beside you looks twice at your face.",
    "audience": [
     "player"
    ],
@@ -23737,7 +23737,7 @@
    "id": "lodging.lodge_colonia.emilio_room.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Emilio booked a room at the inn under another guest's name. The innkeeper calls you by that name all night.",
+   "text": "Emilio's inn room is under another guest's name, and the innkeeper calls you by it all night.",
    "audience": [
     "player"
    ],
@@ -23809,7 +23809,7 @@
    "id": "lodging.lodge_salta.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.",
+   "text": "The railway hotel takes cash and writes every name in its book, and the yard canteen feeds the night shift.",
    "audience": [
     "player"
    ],
@@ -23845,7 +23845,7 @@
    "id": "lodging.lodge_salta.emilio_room.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Emilio booked a room at the railway hotel under another guest's name. The night clerk never asks to see a passport.",
+   "text": "Emilio's railway hotel room is under another guest's name, and the night clerk never asks for a passport.",
    "audience": [
     "player"
    ],
@@ -23869,7 +23869,7 @@
    "id": "lodging.lodge_salta.rail_hotel.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The clerk writes your name in the book. Everyone eats and sleeps six hours.",
+   "text": "The clerk writes your name in the book, and everyone eats and sleeps six hours.",
    "audience": [
     "player"
    ],
@@ -23893,7 +23893,7 @@
    "id": "lodging.lodge_salta.car_sleep.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You sleep four hours in the car at the end of the freight sidings.",
+   "text": "You sleep four hours in the car at the end of the sidings.",
    "audience": [
     "player"
    ],
@@ -23941,7 +23941,7 @@
    "id": "lodging.lodge_salta.canteen.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You eat with the night shift. One of the brakemen knows your face from the posters.",
+   "text": "You eat with the night shift, and a brakeman knows your face from the posters.",
    "audience": [
     "player"
    ],
@@ -23965,7 +23965,7 @@
    "id": "lodging.lodge_harbor.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The seamen's hostel takes a name and a passport. The fish market cooks for anyone who stands in line.",
+   "text": "The seamen's hostel takes a passport, and the fish market cooks for anyone in line.",
    "audience": [
     "player"
    ],
@@ -24001,7 +24001,7 @@
    "id": "lodging.lodge_harbor.emilio_room.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Emilio booked a room above a boat supply shop under another guest's name. Everyone eats and sleeps six hours.",
+   "text": "Everyone eats and sleeps six hours in Emilio's room above a boat shop, booked under another guest's name.",
    "audience": [
     "player"
    ],
@@ -24025,7 +24025,7 @@
    "id": "lodging.lodge_harbor.hostel_harbor.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The warden copies your passport into his book. Everyone eats and sleeps six hours.",
+   "text": "The warden copies your passport, and everyone eats and sleeps six hours.",
    "audience": [
     "player"
    ],
@@ -24097,7 +24097,7 @@
    "id": "lodging.lodge_harbor.fish_market.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You eat at a market stall. The cook stares at your face and then at the newspaper.",
+   "text": "You eat at a market stall, and the cook looks from your face to the newspaper.",
    "audience": [
     "player"
    ],
@@ -24121,7 +24121,7 @@
    "id": "lodging.lodge_border.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The drivers' hostel by the posts rents bunks to anyone with a name and a passport.",
+   "text": "The drivers' hostel by the posts rents bunks to anyone with a passport.",
    "audience": [
     "player"
    ],
@@ -24157,7 +24157,7 @@
    "id": "lodging.lodge_border.hostel.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The warden copies your passport into his book. Everyone eats and sleeps five hours.",
+   "text": "The warden copies your passport, and everyone eats and sleeps five hours.",
    "audience": [
     "player"
    ],
@@ -24181,7 +24181,7 @@
    "id": "lodging.lodge_border.car_sleep.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You sleep four hours in the car with the engine off and the windows white with frost.",
+   "text": "You sleep four hours in the car, engine off, windows white with frost.",
    "audience": [
     "player"
    ],
@@ -24289,7 +24289,7 @@
    "id": "lodging.sick.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Too many hours without food or sleep have caught up with your youngest. She has a fever and cannot keep water down.",
+   "text": "Without food or sleep, your youngest has a fever and cannot keep water down.",
    "audience": [
     "player"
    ],
@@ -24325,7 +24325,7 @@
    "id": "lodging.sick.ines_treat.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Inês cools the fever, makes everyone eat, and keeps your youngest asleep across your lap.",
+   "text": "Inês cools the fever, feeds everyone and keeps your youngest asleep across your lap.",
    "audience": [
     "player"
    ],
@@ -24349,7 +24349,7 @@
    "id": "lodging.sick.clinic.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A doctor sees her in 20 minutes and writes her name in the clinic book. The fever breaks by morning.",
+   "text": "A doctor sees her in 20 minutes and logs her name, and the fever breaks by morning.",
    "audience": [
     "player"
    ],
@@ -24373,7 +24373,7 @@
    "id": "lodging.sick.push_on.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "She cries in the back seat, and every move here is harder while you look after her.",
+   "text": "She cries in the back seat, and every move here is harder.",
    "audience": [
     "player"
    ],
@@ -24433,7 +24433,7 @@
    "id": "ch2.level.eri_airstrip.crew_van.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The crew's van leaves through the service gate, and the guard never checks who is in the back.",
+   "text": "The crew's van leaves by the service gate, and the guard never checks the back.",
    "audience": [
     "player"
    ],
@@ -24445,7 +24445,7 @@
    "id": "ch2.level.eri_airstrip.crew_van.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You sit on a suitcase in the back of the van, and the gate guard waves it through.",
+   "text": "You ride on a suitcase in the back, and the gate guard waves the van through.",
    "audience": [
     "player"
    ],
@@ -24457,7 +24457,7 @@
    "id": "ch2.level.eri_airstrip.crew_van.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The guard opens the back of the van, and you walk back into the terminal before he looks inside.",
+   "text": "The guard opens the van, and you slip back into the terminal before he looks inside.",
    "audience": [
     "player"
    ],
@@ -24505,7 +24505,7 @@
    "id": "ch2.level.eri_airstrip.taxi.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Kofi asks for double, and a man in a new sun hat writes down the taxi's plate number.",
+   "text": "Kofi asks for double, and a man in a new sun hat notes the taxi's plate.",
    "audience": [
     "player"
    ],
@@ -24529,7 +24529,7 @@
    "id": "ch2.level.eri_airstrip.fence.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The fence around the airstrip has a gap that opens onto a cane field.",
+   "text": "The airstrip fence has a gap onto a cane field.",
    "audience": [
     "player"
    ],
@@ -24553,7 +24553,7 @@
    "id": "ch2.level.eri_airstrip.fence.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A security light comes on, and you go back to the terminal. You can try again while it is still dark.",
+   "text": "A security light drives you back to the terminal, but you can try again while it is dark.",
    "audience": [
     "player"
    ],
@@ -24637,7 +24637,7 @@
    "id": "ch2.level.eri_town.bus.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A bounty hunter boards at the second stop, and you get off and walk the rest of the way.",
+   "text": "A bounty hunter boards at the second stop, so you get off and walk the rest.",
    "audience": [
     "player"
    ],
@@ -24805,7 +24805,7 @@
    "id": "ch2.level.eri_hideout.forger.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Silas hands you a passport in a new name. The photo is yours, and the stamps look old.",
+   "text": "Silas hands you a passport in a new name, with your photo and old-looking stamps.",
    "audience": [
     "player"
    ],
@@ -24841,7 +24841,7 @@
    "id": "ch2.level.eri_hideout.cove_phone.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "You use Mama Ilse's phone to push on your flight and on the fixer in Bahía Clara.",
+   "text": "You use Mama Ilse's phone to push your flight and the fixer in Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -25021,7 +25021,7 @@
    "id": "ch2.level.eri_quay.board_papers.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The officer calls a supervisor, and you step out of the line before he arrives. You can try again before the ship sails.",
+   "text": "The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.",
    "audience": [
     "player"
    ],
@@ -25237,7 +25237,7 @@
    "id": "ch2.level.eri_ship.go_ashore.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You walk down the gangway with the shore excursion and keep walking past the buses. Dario is waiting at the end of the pier.",
+   "text": "You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.",
    "audience": [
     "player"
    ],
@@ -25249,7 +25249,7 @@
    "id": "ch2.level.eri_ship.go_ashore.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A resident recognizes you at the gangway and asks for a photo. You go back to your cabin and wait two hours for the next tender.",
+   "text": "A resident recognizes you at the gangway and asks for a photo, so you wait two hours in your cabin for the next tender.",
    "audience": [
     "player"
    ],
@@ -25417,7 +25417,7 @@
    "id": "ch2.level.eri_airport.fly_lusara.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The flight to Lusara takes off on time. Your visa is real, and the officer at the other end stamps it.",
+   "text": "The flight to Lusara takes off on time, and the officer at the other end stamps your real visa.",
    "audience": [
     "player"
    ],
@@ -25429,7 +25429,7 @@
    "id": "ch2.level.eri_airport.fly_lusara.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The gate agent pulls you aside for a second check, and you miss the flight. The next one leaves in two hours.",
+   "text": "A second check at the gate makes you miss the flight, and the next one leaves in two hours.",
    "audience": [
     "player"
    ],
@@ -25465,7 +25465,7 @@
    "id": "ch2.level.eri_airport.desk_seat.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The desk sells you a seat. Your photo sits on the agent's screen while she types.",
+   "text": "The desk sells you a seat while your photo sits on the agent's screen.",
    "audience": [
     "player"
    ],
@@ -25864,7 +25864,7 @@
    "id": "ch2.event.eri_poster.tear_down.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You pull down every poster on the street, and a shopkeeper watches you do it.",
+   "text": "You pull down every poster on the street while a shopkeeper watches.",
    "audience": [
     "player"
    ],
@@ -26230,7 +26230,7 @@
    "id": "ch2.hold.1.wait_out.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "They argue for eight hours, take the most useful thing you carry, and let you go when the police drive past.",
+   "text": "They argue for eight hours, take the most useful thing you carry and let you go when the police drive past.",
    "audience": [
     "player"
    ],
@@ -26272,7 +26272,7 @@
    "id": "ch2.hold.2.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The bounty hunters hand you to the international police at {here}. Valdória has asked for you back.",
+   "text": "The bounty hunters hand you to the international police at {here} for return to Valdória.",
    "audience": [
     "player"
    ],
@@ -26410,7 +26410,7 @@
    "id": "ch2.lodging.lodge_eri_town.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The harbor hotel asks for a passport. The market sells hot food to anyone.",
+   "text": "The harbor hotel asks for a passport, and the market feeds anyone.",
    "audience": [
     "player"
    ],
@@ -26638,7 +26638,7 @@
    "id": "ch2.lodging.lodge_eri_quay.hostel.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The warden writes your new name in his book. Everyone eats and sleeps five hours.",
+   "text": "The warden writes your new name in his book, and everyone eats and sleeps five hours.",
    "audience": [
     "player"
    ],

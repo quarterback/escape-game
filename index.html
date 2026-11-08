@@ -3670,71 +3670,71 @@ const Data = (() => {
       { id: 'go_home', label: 'Go home to eat and sleep', fx: { hours: 6, sleep: 'full', meal: true, say: 'You eat a real meal and sleep six hours in your own bed.' } },
       { id: 'canteen', label: 'Eat in the ministry canteen', fx: { hours: 1, meal: true, say: 'You eat at the canteen with the night shift.' } },
       { id: 'keep_working', label: 'Keep working', fx: {} } ] },
-    { id: 'tipster', title: 'A caller wants money', text: 'A man says he drove her this morning. He wants cash before he says where.', choices: [
+    { id: 'tipster', title: 'A caller wants money', text: 'A man says he drove her this morning and wants cash before he says where.', choices: [
       { id: 'pay', label: 'Pay him', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He names the road and the car. It checks out.' }, lose: { false: true, say: 'He names a town. He has never been there.' } } } },
       { id: 'hang_up', label: 'Hang up', fx: {} } ] },
-    { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}. It runs in the morning edition.', choices: [
+    { id: 'leak', title: 'The minister leaks your lead', text: 'He told a columnist you are looking at {there}, and it runs in the morning edition.', choices: [
       { id: 'confirm', label: 'Confirm it on the record', fx: { minister: 1, warn: 1, say: 'The minister likes the headline. So does she.' } },
       { id: 'deny', label: 'Deny it', fx: { minister: -1, say: 'The minister reads your denial in his own paper.' } },
-      { id: 'celina_kill', label: 'Have Celina bury the story', needs: 'newsroom', fx: { hours: 1, say: 'Celina gives the columnist a better story for the morning edition. Your lead stays out of the paper, and the minister never hears of it.' } },
+      { id: 'celina_kill', label: 'Have Celina bury the story', needs: 'newsroom', fx: { hours: 1, say: 'Celina gives the columnist a better story, so your lead stays out of the paper and away from the minister.' } },
       { id: 'spin', label: 'Tell the paper she has crossed', fx: { hours: 1, roll: { need: 3, win: { press: 1, say: 'Her people relax. Someone gets careless on the phone.' }, lose: { minister: -1, say: 'The columnist checks with the border post and prints that too.' } } } } ] },
-    { id: 'judge', after: 4, when: [{ ref: 'flag.restriction', op: 'eq', value: true }], title: 'Her lawyers go to the duty judge', text: 'Her lawyers ask the duty judge to suspend the travel ban at the line until a hearing. If he agrees, the post lets the ban slide.', choices: [
-      { id: 'wait_judge', label: 'Let the judge decide', fx: { unban: true, say: 'The judge suspends the ban at the line until the hearing, and the post lets it slide.' } },
+    { id: 'judge', after: 4, when: [{ ref: 'flag.restriction', op: 'eq', value: true }], title: 'Her lawyers go to the duty judge', text: 'Her lawyers ask the duty judge to suspend the travel ban at the line until a hearing.', choices: [
+      { id: 'wait_judge', label: 'Let the judge decide', fx: { unban: true, say: 'The judge suspends the ban at the line until the hearing.' } },
       { id: 'other_judge', label: 'Argue it before him tonight', fx: { hours: 2, roll: { need: 4, win: { say: 'The judge refuses the lawyers, and the ban stands at the line.' }, lose: { unban: true, say: 'The judge sides with her lawyers, and the post lets the ban slide.' } } } },
-      { id: 'paulo_judge', label: 'Have Paulo answer the motion', needs: 'clerk', fx: { hours: 1, say: 'Paulo files the answer before the lawyers finish theirs. The judge refuses them, and the ban stands at the line.' } },
+      { id: 'paulo_judge', label: 'Have Paulo answer the motion', needs: 'clerk', fx: { hours: 1, say: 'Paulo files first, the judge refuses the lawyers, and the ban stands at the line.' } },
       { id: 'around', label: 'Have the minister call the judge', fx: { minister: -1, warn: 1, say: 'The judge drops the motion. Her lawyers call it irregular on the radio.' } } ] },
-    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Pedra Branca, in Salta and on the coast road, all in the same hour.', choices: [
+    { id: 'sightings', title: 'Three sightings at once', text: 'Callers place her in Pedra Branca, Salta and on the coast road in the same hour.', choices: [
       { id: 'all_three', label: 'Send a patrol to each', fx: { hours: 2, dc: [1, 6], false: true, say: 'Three patrols go out at once, and the desk is stretched thin.' } },
       { id: 'plates', label: 'Check the one that gave plates', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'The plates match a car from her convoy.' }, lose: { false: true, say: 'The plates belong to a dentist.' } } } },
-      { id: 'marta_plates', label: "Run the plates through Marta's records", needs: 'plates', fx: { hours: 1, lead: 2, say: 'Marta matches the plates to a car that left the capital on Saturday. The toll records place it, two hours late.' } },
+      { id: 'marta_plates', label: "Run the plates through Marta's records", needs: 'plates', fx: { hours: 1, lead: 2, say: 'Marta matches the plates to a car that left the capital on Saturday, and toll records place it, two hours late.' } },
       { id: 'ignore', label: 'Ignore all three', fx: {} } ] },
     { id: 'sosa_alone', title: 'Your police inspector wants to drive out himself', text: 'He wants to take two officers to {there} without telling the desk.', choices: [
       { id: 'let_him', label: 'Let him go', fx: { act: 'check_belief', hours: 2, say: 'The inspector takes the unmarked car.' } },
       { id: 'keep_him', label: 'Keep him on the desk', fx: { dc: [-1, 6], say: 'He works the phones harder than anyone, in a sulk.' } } ] },
-    { id: 'driver', after: 6, title: 'One of her drivers calls', text: 'A driver from her convoy wants a promise that he will not be charged.', choices: [
+    { id: 'driver', after: 6, title: 'One of her drivers calls', text: 'A driver from her convoy wants a promise of no charges.', choices: [
       { id: 'immunity', label: 'Promise him', fx: { minister: -1, lead: 3, say: 'He talks. The minister did not want promises made.' } },
       { id: 'bargain', label: 'Bargain', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'He settles for a lawyer and a ride home.' }, lose: { warn: 1, say: 'He hangs up and calls her instead.' } } } },
       { id: 'refuse_driver', label: 'Refuse', fx: {} } ] },
     { id: 'strike', after: 8, title: 'The rail union walks out', text: 'Salta yard workers go on strike.', choices: [
       { id: 'let_strike', label: 'Let the strike stand', fx: { stall: 4, minister: -1, say: "Her helpers' answers come four hours late. The minister hates strikes." } },
       { id: 'break_strike', label: 'Get the trains running', fx: { hours: 2, card: 'rail', say: 'The yardmaster owes you for the overtime.' } },
-      { id: 'joana_strike', label: 'Have Joana talk to the union', needs: 'union', fx: { hours: 1, card: 'rail', minister: 1, say: 'Joana settles the strike by supper. The yard crews go back to work and agree to tell you who rides the freight.' } } ] },
-    { id: 'photo', title: 'A paper has a photo', text: 'A newspaper has a blurred photo of her at a gas station, and it wants to run it.', choices: [
+      { id: 'joana_strike', label: 'Have Joana talk to the union', needs: 'union', fx: { hours: 1, card: 'rail', minister: 1, say: 'Joana settles the strike by supper, and the yard crews agree to tell you who rides the freight.' } } ] },
+    { id: 'photo', title: 'A paper has a photo', text: 'A newspaper wants to run a blurred photo of her at a gas station.', choices: [
       { id: 'buy_photo', label: 'Buy it and sit on it', fx: { hours: 1, lead: 4, say: 'The gas station has a sign with a town on it.' } },
       { id: 'run_it', label: 'Let them run it', fx: { press: 2, minister: 1, say: 'Her face is on every screen in the province.' } },
-      { id: 'celina_photo', label: "Run it on Celina's station", needs: 'newsroom', fx: { hours: 1, press: 1, lead: 3, say: "Celina's station runs the photo with a number to call. A caller names the gas station's town." } } ] },
-    { id: 'dinner', after: 6, title: 'Dinner at the Costamaran embassy', text: 'The ambassador invites you to dinner tonight. Dinner takes three hours, and he likes to talk.', choices: [
+      { id: 'celina_photo', label: "Run it on Celina's station", needs: 'newsroom', fx: { hours: 1, press: 1, lead: 3, say: "Celina's station runs the photo with a tip line, and a caller names the gas station's town." } } ] },
+    { id: 'dinner', after: 6, title: 'Dinner at the Costamaran embassy', text: 'The ambassador invites you to a three-hour dinner tonight, and he likes to talk.', choices: [
       { id: 'go', label: 'Go to dinner', fx: { hours: 3, holdup: true, say: "Somewhere after the fish he promises to hurry Cerro Alto's answer." } },
       { id: 'deputy', label: 'Send your deputy', fx: { roll: { need: 5, win: { holdup: true, say: 'Your deputy is a better guest than you.' }, lose: { say: 'The ambassador talks about horses all night.' } } } },
       { id: 'decline', label: 'Decline', fx: {} } ] },
-    { id: 'storm', after: 10, title: 'Snow at the Huhūi passes', text: 'Snow is falling on the Huhūi passes, and the road service is warning drivers off for the night.', choices: [
+    { id: 'storm', after: 10, title: 'Snow at the Huhūi passes', text: 'Snow is falling on the Huhūi passes, and the road service warns drivers off tonight.', choices: [
       { id: 'hold_post', label: 'Keep your patrol at the post', fx: { hours: 1, crossing: 5, say: 'Your patrol sleeps in the guardhouse and searches every car that tries.' } },
       { id: 'pull_back', label: 'Pull the patrol back', fx: { dc: [-1, 4], say: 'The patrol comes home warm and in a better mood.' } } ] },
-    { id: 'rival', title: 'A rival aide wants your file', text: 'Another aide tells the minister he can find her faster. He wants your reports.', choices: [
+    { id: 'rival', title: 'A rival aide wants your file', text: 'Another aide tells the minister he can find her faster and wants your reports.', choices: [
       { id: 'share', label: 'Share the file', fx: { minister: 1, warn: 1, say: 'He leaks half of it by dinner.' } },
       { id: 'refuse_rival', label: 'Refuse', fx: { sooner: 2, say: 'The minister wants your answer two hours sooner.' } },
       { id: 'doctor', label: 'Share a doctored file', fx: { hours: 1, roll: { need: 3, win: { minister: 1, say: 'He chases a lead you made up.' }, lose: { minister: -1, say: 'He spots the fake and shows the minister.' } } } } ] },
-    { id: 'bribe', after: 4, title: 'Her family asks your price', text: 'A lawyer for her family asks what it would take to look away for one day.', choices: [
+    { id: 'bribe', after: 4, title: 'Her family asks your price', text: 'Her family\'s lawyer asks what it would take to look away for one day.', choices: [
       { id: 'report_it', label: 'Report the offer', fx: { press: 1, minister: 1, say: 'A bribery file opens. Her lawyers stop answering their phones.' } },
       { id: 'play_along', label: 'Pretend to accept', fx: { hours: 1, roll: { need: 4, win: { lead: 1, say: 'The lawyer tells you where to send the money.' }, lose: { warn: 2, say: 'The lawyer knows a trap when he hears one.' } } } },
       { id: 'hang_up_bribe', label: 'Hang up', fx: {} } ] },
-    { id: 'sergeant', after: 14, title: 'The sergeant is family', text: 'The desk says the sergeant on duty at the border post is married to her cousin. He can let the travel ban slide.', choices: [
-      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift. He reads every name and holds to the ban.' } },
+    { id: 'sergeant', after: 14, title: 'The sergeant is family', text: 'The duty sergeant at the border post is married to her cousin and can let the travel ban slide.', choices: [
+      { id: 'replace', label: 'Replace him', fx: { hours: 3, ban: true, say: 'A sergeant from Salta takes the shift, reads every name and holds to the ban.' } },
       { id: 'watch_him', label: 'Watch him', fx: { hours: 1, roll: { need: 4, win: { lead: 0, say: 'He makes a call from the guardhouse. You hear every word.' }, lose: { unban: true, say: 'He notices the watcher, and he lets the ban slide on his shift.' } } } },
       { id: 'leave_him', label: 'Leave him on duty', fx: { unban: true, say: 'He keeps the shift, and he lets the ban slide.' } },
-      { id: 'tomas_shift', label: 'Have Tomás take the shift', needs: 'post_cmd', fx: { hours: 1, ban: true, crossing: 4, say: 'Tomás drives up and stands the shift himself. He holds to the ban and searches every car for four hours.' } } ] },
-    { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch from the air for eight hours. The general wants a signature.', choices: [
+      { id: 'tomas_shift', label: 'Have Tomás take the shift', needs: 'post_cmd', fx: { hours: 1, ban: true, crossing: 4, say: 'Tomás stands the shift himself, holds to the ban and searches every car for four hours.' } } ] },
+    { id: 'drone', after: 10, title: 'The air force offers a drone', text: 'A drone can watch for eight hours, and the general wants a signature.', choices: [
       { id: 'sign', label: 'Sign for it', fx: { dc: [-1, 8], minister: -1, say: 'The drone goes up. The minister reads about it in the morning.' } },
       { id: 'no_drone', label: 'Decline', fx: {} } ] },
-    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at 6 p.m. to promise that she will be found by Monday.', choices: [
+    { id: 'presser', title: 'The minister wants a press conference', text: 'He wants you beside him at 6 p.m. to promise she will be found by Monday.', choices: [
       { id: 'stand', label: 'Stand beside him', fx: { hours: 2, minister: 1, warn: 1, say: 'Her people watch it twice and change their plans.' } },
       { id: 'send_sosa', label: 'Send the inspector instead', fx: { dc: [1, 4], say: 'The inspector hates cameras. He takes it out on the desk.' } },
       { id: 'skip', label: 'Say you are busy', fx: { minister: -1 } },
-      { id: 'celina_brief', label: 'Have Celina write his statement', needs: 'newsroom', fx: { hours: 1, minister: 1, say: 'Celina writes a statement that promises nothing and names no town. The minister reads it well.' } } ] },
-    { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says one of her family\'s phone numbers pinged a tower an hour ago.', choices: [
+      { id: 'celina_brief', label: 'Have Celina write his statement', needs: 'newsroom', fx: { hours: 1, minister: 1, say: 'Celina writes a statement that promises nothing and names no town, and the minister reads it well.' } } ] },
+    { id: 'tower', after: 6, title: 'A phone touched a tower', text: 'The carrier says one of her family\'s numbers pinged a tower an hour ago.', choices: [
       { id: 'tower_now', label: 'Demand the tower now', fx: { hours: 2, roll: { need: 4, win: { lead: 0, say: 'The carrier sends the tower and a map.' }, lose: { warn: 1, say: 'The carrier tells its lawyers, who tell hers.' } } } },
       { id: 'paperwork', label: 'File the paperwork', fx: { lead: 6, say: 'The answer comes through the proper channel, six hours late.' } },
-      { id: 'nadia_tower', label: 'Have Nadia read the tower log', needs: 'exchange', fx: { hours: 1, lead: 2, say: "Nadia reads the tower's log at the exchange. It names the town, two hours after the call." } } ] },
+      { id: 'nadia_tower', label: 'Have Nadia read the tower log', needs: 'exchange', fx: { hours: 1, lead: 2, say: "Nadia reads the tower log at the exchange, and it names the town, two hours after the call." } } ] },
   ];
 
   // ---- Dispatches: the News phase. Counterfactuals, not the record: each one bends the run somewhere new.
@@ -3865,50 +3865,50 @@ const Data = (() => {
       { id: 'fuel_truck', label: 'Hide in the fuel truck', fx: { roll: { need: 3, win: { say: 'The officers walk past the truck twice.' }, lose: { exposure: 2, say: 'An officer opens the cab door and writes down your name.' } } } },
       { id: 'leave_field', label: 'Leave the airfield for two hours', fx: { hours: 2, rest: true, say: 'You wait in a café across the road until the officers leave.' } } ] },
     // companions' own moments (owner, Nov. 5, 2026, issue #50): each asks something of you once; saying no costs their help at that stop
-    { id: 'harbor_storm', at: ['harbor'], title: 'A storm off the coast', text: 'The harbor master has closed the port, and no boat leaves until the wind drops.', choices: [
+    { id: 'harbor_storm', at: ['harbor'], title: 'A storm off the coast', text: 'The harbor master has closed the port until the wind drops.', choices: [
       { id: 'storm_wait', label: 'Wait out the storm', fx: { hours: 3, say: 'The wind drops after three hours, and the boats go back to work.' } },
       { id: 'storm_go', label: 'Pay a skipper to go anyway', fx: { roll: { need: 4, win: { advance: true, say: 'The boat rolls for hours, and you wade ashore below the Punta Marēa crossing.' }, lose: { exposure: 2, hours: 2, say: 'The boat turns back at the breakwater two hours later, and the whole pier watches you climb off.' } } } } ] },
     { id: 'harbor_check', at: ['harbor'], title: 'The harbor police check the piers', text: 'Two officers are walking the piers and asking every crew for papers.', choices: [
       { id: 'check_hide', label: 'Hide in the ice house', fx: { hours: 2, roll: { need: 3, win: { say: 'You wait two cold hours in the ice house, and the officers walk past the door.' }, lose: { exposure: 2, say: 'The ice house manager opens the door for the officers and points at you.' } } } },
       { id: 'check_walk', label: 'Walk into town', fx: { hours: 1, exposure: 1, say: 'You leave the waterfront, and a shopkeeper watches you go.' } } ] },
-    { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour behind you with a load of melons, and Bruno wants to go back and help.", choices: [
-      { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin promises to tell nobody he saw you." } },
-      { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays, but he sulks and is no help to you at this stop." } } ] },
-    { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at one of the posts and will vouch for you, but people will see Clara with you.", choices: [
+    { id: 'bruno_cousin', at: ['road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'bruno' }], title: "Bruno's cousin is stuck", text: "Bruno's cousin broke down an hour behind you, and Bruno wants to go back and help.", choices: [
+      { id: 'bruno_cousin_yes', label: "Go back with Bruno", fx: { hours: 2, exposure: -1, say: "You push the truck out of a ditch together, and the cousin swears he never saw you." } },
+      { id: 'bruno_cousin_no', label: "Ask Bruno to stay", fx: { mateoff: true, say: "Bruno stays but sulks and is no help at this stop." } } ] },
+    { id: 'clara_aunt', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'clara' }], title: "Clara's aunt works the post", text: "Clara's aunt works at a post and will vouch for you, but people will see Clara with you.", choices: [
       { id: 'clara_aunt_yes', label: "Let Clara bring her aunt", fx: { exposure: 1, mod: -1, say: "The aunt walks you to the barrier and talks to the guards by name." } },
       { id: 'clara_aunt_no', label: "Keep Clara out of sight", fx: { mateoff: true, say: "Clara stays in the car, and she can't help you at this stop." } } ] },
-    { id: 'rita_crew', at: ['airfield'], when: [{ ref: 'companion', op: 'eq', value: 'rita' }], title: "Rita's old crew wants cash", text: "Rita's old crew offers to work on your jet tonight for cash up front. Paying cash on the apron gets you noticed.", choices: [
-      { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works through the night, and the jet is one step closer to ready. People on the apron see who paid them." } },
+    { id: 'rita_crew', at: ['airfield'], when: [{ ref: 'companion', op: 'eq', value: 'rita' }], title: "Rita's old crew wants cash", text: "Rita's old crew will work on your jet tonight for cash, but paying on the apron gets you noticed.", choices: [
+      { id: 'rita_crew_yes', label: "Pay Rita's crew", fx: { stage: { aircraft: 1 }, exposure: 1, say: "The crew works all night and moves the jet one step closer, but people on the apron see who paid." } },
       { id: 'rita_crew_no', label: "Say no", fx: { mateoff: true, say: "Rita doesn't argue, but she stops asking the crews for favors here." } } ] },
-    { id: 'marta_pump', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'marta' }], title: "The fuel pump is failing", text: "Marta says the car's fuel pump is going, and she wants two hours at a garage to fix it.", choices: [
+    { id: 'marta_pump', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'marta' }], title: "The fuel pump is failing", text: "Marta says the fuel pump is going and wants two hours at a garage.", choices: [
       { id: 'marta_pump_yes', label: "Give Marta two hours", fx: { hours: 2, say: "Marta fixes the pump, and the car runs smoothly again." } },
       { id: 'marta_pump_no', label: "Drive on as it is", fx: { mateoff: true, say: "The car limps on, and Marta can't help you at this stop." } } ] },
     { id: 'ines_fever', at: null, when: [{ ref: 'companion', op: 'eq', value: 'ines' }], title: "A child with a fever", text: "A woman at the roadside has a child with a high fever, and Inês wants to stop.", choices: [
       { id: 'ines_fever_yes', label: "Let Inês help", fx: { hours: 2, exposure: -1, say: "Inês brings the fever down, and the family swears they never saw you." } },
       { id: 'ines_fever_no', label: "Keep going", fx: { mateoff: true, say: "Inês goes quiet and won't help you here." } } ] },
-    { id: 'paulo_favor', at: ['residence', 'road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'paulo' }], title: "Paulo's old supervisor calls", text: "Paulo's old supervisor at the court will lose your file for a day if Paulo agrees to owe him a favor.", choices: [
+    { id: 'paulo_favor', at: ['residence', 'road', 'colonia'], when: [{ ref: 'companion', op: 'eq', value: 'paulo' }], title: "Paulo's old supervisor calls", text: "Paulo's old court supervisor will lose your file for a day if Paulo owes him a favor.", choices: [
       { id: 'paulo_favor_yes', label: "Let Paulo owe the favor", fx: { exposure: -1, say: "Your file goes to the bottom of the pile, and the supervisor knows Paulo is with you." } },
       { id: 'paulo_favor_no', label: "Tell Paulo to hang up", fx: { mateoff: true, say: "Paulo hangs up, and he won't work the court's phones for you here." } } ] },
     { id: 'celina_exclusive', at: null, when: [{ ref: 'companion', op: 'eq', value: 'celina' }], title: "Celina's station wants you", text: "Celina's station wants a short interview for the morning news, recorded tonight.", choices: [
-      { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina edits the interview to sound like you are already abroad, and the police look elsewhere. More people know your face now." } },
+      { id: 'celina_exclusive_yes', label: "Give a short interview", fx: { belief: 'away', exposure: 1, say: "Celina makes the interview sound like you are abroad, and the police look elsewhere, but more people know your face." } },
       { id: 'celina_exclusive_no', label: "Refuse", fx: { mateoff: true, say: "Celina is hurt, and she won't call her station for you here." } } ] },
-    { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás offers to wave you through if Tomás stays an hour for a drink.", choices: [
+    { id: 'tomas_drink', at: ['border'], when: [{ ref: 'companion', op: 'eq', value: 'tomas' }], title: "Tomás meets an old colleague", text: "A sergeant who served under Tomás will wave you through if Tomás stays an hour for a drink.", choices: [
       { id: 'tomas_drink_yes', label: "Let Tomás have his drink", fx: { hours: 1, mod: -1, say: "The sergeant tells the night shift to look the other way." } },
-      { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "The sergeant takes it badly, and Tomás is no help to you at this post." } } ] },
-    { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on the line to {sibfull} and wants an hour to move the calls to another exchange.", choices: [
+      { id: 'tomas_drink_no', label: "Keep moving", fx: { mateoff: true, say: "The sergeant takes it badly, and Tomás is no help at this post." } } ] },
+    { id: 'nadia_click', at: null, when: [{ ref: 'companion', op: 'eq', value: 'nadia' }], title: "Nadia hears a click", text: "Nadia hears a click on the line to {sibfull} and wants an hour to reroute the calls.", choices: [
       { id: 'nadia_click_yes', label: "Give Nadia the hour", fx: { hours: 1, exposure: -1, say: "Nadia moves the line, and the click is gone." } },
-      { id: 'nadia_click_no', label: "Say there is no time", fx: { mateoff: true, say: "Nadia leaves the line as it is, and she can't hide your calls here." } } ] },
-    { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel clerk called Emilio to say someone asked who is really staying under the name he booked.", choices: [
+      { id: 'nadia_click_no', label: "Say there is no time", fx: { mateoff: true, say: "Nadia leaves the line alone and can't hide your calls here." } } ] },
+    { id: 'emilio_booking', at: ['road', 'colonia', 'salta'], when: [{ ref: 'companion', op: 'eq', value: 'emilio' }], title: "Someone asked about the booking", text: "A hotel clerk warns Emilio that someone asked who is really behind the name he booked.", choices: [
       { id: 'emilio_booking_yes', label: "Let Emilio move you", fx: { hours: 1, say: "Before anyone comes back, Emilio moves you to a guesthouse his cousin runs." } },
       { id: 'emilio_booking_no', label: "Ignore it", fx: { mateoff: true, say: "Emilio won't risk another booking at this stop." } } ] },
-    { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight, and the members expect Joana to speak.", choices: [
+    { id: 'joana_meeting', at: ['salta'], when: [{ ref: 'companion', op: 'eq', value: 'joana' }], title: "The union meets tonight", text: "The union meets at the depot tonight and expects Joana to speak.", choices: [
       { id: 'joana_meeting_yes', label: "Let Joana go", fx: { hours: 2, mod: -1, say: "Joana comes back with a yard crew that owes her." } },
-      { id: 'joana_meeting_no', label: "Keep Joana with you", fx: { mateoff: true, say: "Joana stays, but the crews hear she skipped the meeting and won't help here." } } ] },
+      { id: 'joana_meeting_no', label: "Keep Joana with you", fx: { mateoff: true, say: "Joana stays, but the crews hear she skipped and won't help here." } } ] },
     // anywhere
     { id: 'too_soon', at: null, title: 'Your family spoke too soon', text: '{sib} told reporters you already landed abroad. You are still at {here}.', choices: [
-      { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, and every reply you ask for now comes two hours later.' } },
+      { id: 'let_run', label: 'Let the story run', fx: { belief: 'away', exposure: -2, flag: { dark: true }, say: 'Your own people believe it too, so every reply now comes two hours later.' } },
       { id: 'correct', label: 'Correct it', fx: { exposure: 1 } },
-      { id: 'celina_story', label: 'Have Celina keep the story going', needs: [{ card: 'media' }], fx: { belief: 'away', exposure: -1, say: "Celina's station reads the story every hour. Your own people know the truth, so their replies come on time." } } ] },
+      { id: 'celina_story', label: 'Have Celina keep the story going', needs: [{ card: 'media' }], fx: { belief: 'away', exposure: -1, say: "Celina's station runs the story every hour, and your own people, who know the truth, reply on time." } } ] },
     { id: 'bodyguard', at: null, title: 'An old bodyguard wants money', text: 'He knows your route. He will sell it tonight unless you pay.', choices: [
       { id: 'pay_guard', label: 'Pay him', fx: { exposure: 1 } },
       { id: 'bluff', label: 'Call his bluff', fx: { roll: { need: 3, win: { say: 'He never calls anyone.' }, lose: { belief: 'here', exposure: 3, say: 'He calls the police, who now search where you are.' } } } },
@@ -3916,10 +3916,10 @@ const Data = (() => {
     { id: 'coffee', at: ['residence', 'road', 'colonia', 'salta'], title: 'A police car pulls in beside you', text: 'Two officers get out for coffee. One glances at your window.', choices: [
       { id: 'sit', label: 'Sit still', fx: { roll: { need: 4, win: {}, lose: { hold: 1 } } } },
       { id: 'drive', label: 'Drive away now', fx: { exposure: 1 } } ] },
-    { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 } /* before hour 30 */, { ref: 'flag.restriction', op: 'eq', value: false }], title: 'The hearing moves up', text: 'The court moved your hearing forward, and it wants the travel ban at every post today.', choices: [
+    { id: 'hearing', at: null, when: [{ ref: 'clock.hoursLeft', op: 'gte', value: 43 } /* before hour 30 */, { ref: 'flag.restriction', op: 'eq', value: false }], title: 'The hearing moves up', text: 'The court moved your hearing up and wants the travel ban at every post today.', choices: [
       { id: 'noted', label: 'Keep going', fx: { ban: true, say: 'The court sends the travel ban to every post.' } },
-      { id: 'paulo_hearing', label: 'Have Paulo slow the order', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo calls an old colleague in the clerk's office. The order goes into the outbox, and the travel ban does not go out." } },
-      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the court\'s order back. Gianlūka adds it to what you owe him, and the court knows you are still in reach.' } } ] },
+      { id: 'paulo_hearing', label: 'Have Paulo slow the order', needs: [{ card: 'court' }], fx: { hours: 1, say: "Paulo's old colleague in the clerk's office leaves the order in the outbox, so the travel ban does not go out." } },
+      { id: 'stall', label: 'Have Gianlūka ask for a delay', needs: [{ card: 'influence' }], fx: { trust: { aide: -1 }, exposure: 1, say: 'The clerk holds the order back, but Gianlūka adds it to your debt, and the court knows you are still in reach.' } } ] },
     { id: 'blackout', at: null, title: 'The power is out', text: "A storm knocks out the power, and the police can't reach each other.", choices: [
       { id: 'dark', label: 'Move before the power returns', fx: { exposure: -1, skipEnemy: true } },
       { id: 'sit', label: 'Wait until the power returns', fx: { hours: 2, exposure: -1, rest: true, say: 'You wait two hours in the dark. Nobody comes to the door.' } } ] },
@@ -3930,40 +3930,40 @@ const Data = (() => {
   // you stay), exposure, rest (hours out of sight: with Inês, no attention from a search here), say. A choice with no fx
   // closes the screen. needs: a card kind, as on news choices.
   const LODGING = [
-    { id: 'lodge_residence', at: ['residence'], title: 'Eat and sleep at home', text: 'You are still in your own house, with the watch outside. The kitchen is full, and your bed is upstairs.', choices: [
+    { id: 'lodge_residence', at: ['residence'], title: 'Eat and sleep at home', text: 'You are still home with the watch outside, a full kitchen and your bed upstairs.', choices: [
       { id: 'home_sleep', label: 'Sleep in your own bed', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'You eat, and everyone sleeps six hours behind drawn curtains.' } },
       { id: 'home_meal', label: 'Eat in the kitchen', fx: { hours: 1, meal: true, rest: true, say: 'The cook feeds everyone before she goes home.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
-    { id: 'lodge_road', at: ['road'], title: 'A place to stop in Pedra Branca', text: 'The motel by the river asks every guest for a name and a passport. The truck stop sells hot food to anyone who stands in line.', choices: [
-      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room over a garage under another guest\'s name. Everyone eats and sleeps six hours, and nobody asks who you are.' } },
+    { id: 'lodge_road', at: ['road'], title: 'A place to stop in Pedra Branca', text: 'The river motel asks every guest for a passport, and the truck stop feeds anyone who stands in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Everyone eats and sleeps six hours in Emilio\'s room over a garage, booked under another guest\'s name.' } },
       { id: 'motel', label: 'Take a room at the motel', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You park behind a grain store and sleep four hours sitting up.' } },
-      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês goes into the truck stop alone and comes back with food for everyone.' } },
-      { id: 'truck_stop', label: 'Eat at the truck stop', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at the counter. The man beside you looks twice at your face.' } },
+      { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês goes into the truck stop alone and brings back food for everyone.' } },
+      { id: 'truck_stop', label: 'Eat at the truck stop', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at the counter, and the man beside you looks twice at your face.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_colonia', at: ['colonia'], title: "Nonā Rosa's house", text: 'Nonā Rosa has a spare room and a long table, and nobody in the colônia talks to the police.', choices: [
       { id: 'nona_room', label: "Sleep in Nonā Rosa's spare room", fx: { hours: 6, sleep: 'full', meal: true, rest: true, exposure: -2, say: 'Nonā Rosa feeds everyone, and nobody knocks for six hours.' } },
-      { id: 'emilio_room', label: "Take Emilio's room at the inn", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the inn under another guest\'s name. The innkeeper calls you by that name all night.' } },
+      { id: 'emilio_room', label: "Take Emilio's room at the inn", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio\'s inn room is under another guest\'s name, and the innkeeper calls you by it all night.' } },
       { id: 'nona_meal', label: "Eat at Nonā Rosa's table", fx: { hours: 1, meal: true, rest: true, say: 'Nonā Rosa serves soup and bread and asks nothing.' } },
       { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car behind the cooperative shed.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
-    { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book. The yard canteen feeds the night shift.', choices: [
-      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room at the railway hotel under another guest\'s name. The night clerk never asks to see a passport.' } },
-      { id: 'rail_hotel', label: 'Take a railway hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book. Everyone eats and sleeps six hours.' } },
-      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the freight sidings.' } },
+    { id: 'lodge_salta', at: ['salta'], title: 'A place to stop in Salta', text: 'The railway hotel takes cash and writes every name in its book, and the yard canteen feeds the night shift.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio\'s railway hotel room is under another guest\'s name, and the night clerk never asks for a passport.' } },
+      { id: 'rail_hotel', label: 'Take a railway hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk writes your name in the book, and everyone eats and sleeps six hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car at the end of the sidings.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês brings food back from the canteen in a cardboard box.' } },
-      { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift. One of the brakemen knows your face from the posters.' } },
+      { id: 'canteen', label: 'Eat at the yard canteen', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the night shift, and a brakeman knows your face from the posters.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
-    { id: 'lodge_harbor', at: ['harbor'], title: 'A place to stop in Barra Velha', text: 'The seamen\'s hostel takes a name and a passport. The fish market cooks for anyone who stands in line.', choices: [
-      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio booked a room above a boat supply shop under another guest\'s name. Everyone eats and sleeps six hours.' } },
-      { id: 'hostel_harbor', label: "Take a seamen's hostel bunk", fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps six hours.' } },
+    { id: 'lodge_harbor', at: ['harbor'], title: 'A place to stop in Barra Velha', text: 'The seamen\'s hostel takes a passport, and the fish market cooks for anyone in line.', choices: [
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Everyone eats and sleeps six hours in Emilio\'s room above a boat shop, booked under another guest\'s name.' } },
+      { id: 'hostel_harbor', label: "Take a seamen's hostel bunk", fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport, and everyone eats and sleeps six hours.' } },
       { id: 'boat_sleep', label: 'Sleep in a moored boat', fx: { hours: 4, sleep: 'car', rest: true, say: 'A fisherman lets you sleep four hours under the nets in his boat.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys fried fish at the market and brings it to the pier.' } },
-      { id: 'fish_market', label: 'Eat at the fish market', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at a market stall. The cook stares at your face and then at the newspaper.' } },
+      { id: 'fish_market', label: 'Eat at the fish market', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at a market stall, and the cook looks from your face to the newspaper.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
-    { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a name and a passport.', choices: [
-      { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport into his book. Everyone eats and sleeps five hours.' } },
-      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car with the engine off and the windows white with frost.' } },
+    { id: 'lodge_border', at: ['border'], title: 'A place to stop at the line', text: 'The drivers\' hostel by the posts rents bunks to anyone with a passport.', choices: [
+      { id: 'hostel', label: "Sleep at the drivers' hostel", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden copies your passport, and everyone eats and sleeps five hours.' } },
+      { id: 'car_sleep', label: 'Sleep in the car', fx: { hours: 4, sleep: 'car', rest: true, say: 'You sleep four hours in the car, engine off, windows white with frost.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys bread and soup at the hostel kitchen and brings it to the car.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_airfield', at: ['airfield'], title: 'The crew lounge at Portalba', text: 'The charter crews have a lounge behind the hangar with bunks and a kitchen.', choices: [
@@ -3971,18 +3971,18 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
   ];
   // Too long without food or sleep makes the youngest sick, once at each stop. A clinic visit goes on a clinic's record.
-  const SICK = { id: 'sick', title: 'Your youngest is sick', text: 'Too many hours without food or sleep have caught up with your youngest. She has a fever and cannot keep water down.', choices: [
-    { id: 'ines_treat', label: 'Let Inês treat her', needs: [{ card: 'care' }], fx: { hours: 1, sleep: 'car', meal: true, say: 'Inês cools the fever, makes everyone eat, and keeps your youngest asleep across your lap.' } },
-    { id: 'clinic', label: 'Take her to a clinic', fx: { hours: 2, clinic: true, meal: true, exposure: 1, say: 'A doctor sees her in 20 minutes and writes her name in the clinic book. The fever breaks by morning.' } },
-    { id: 'push_on', label: 'Keep going with her sick', fx: { mod: 1, say: 'She cries in the back seat, and every move here is harder while you look after her.' } } ] };
+  const SICK = { id: 'sick', title: 'Your youngest is sick', text: 'Without food or sleep, your youngest has a fever and cannot keep water down.', choices: [
+    { id: 'ines_treat', label: 'Let Inês treat her', needs: [{ card: 'care' }], fx: { hours: 1, sleep: 'car', meal: true, say: 'Inês cools the fever, feeds everyone and keeps your youngest asleep across your lap.' } },
+    { id: 'clinic', label: 'Take her to a clinic', fx: { hours: 2, clinic: true, meal: true, exposure: 1, say: 'A doctor sees her in 20 minutes and logs her name, and the fever breaks by morning.' } },
+    { id: 'push_on', label: 'Keep going with her sick', fx: { mod: 1, say: 'She cries in the back seat, and every move here is harder.' } } ] };
   // Holds: what happens when the inquiry catches up. Each rung is worse than the last.
   const HOLDS = {
-    1: { title: 'Stopped and questioned', text: 'A patrol stops you at {here}. An officer wants to know where you are going.', choices: [
+    1: { title: 'Stopped and questioned', text: 'A patrol stops you at {here}, and an officer asks where you are going.', choices: [
       { id: 'calm', label: 'Answer calmly', fx: { roll: { need: 3, face: 1, win: { hours: 1, say: 'He writes down a name that is not yours.' }, lose: { hours: 3, lose: 'random', exposure: 1, say: 'You spend three hours on a bench. The police keep something of yours.' } } } },
       { id: 'lawyer', label: "Call the party's lawyer", needs: [{ card: 'influence' }], fx: { hours: 2, trust: { aide: -1 }, say: 'The lawyer arrives shouting. They let you go.' } },
       { id: 'bribe', label: 'Pay the officer', fx: { hours: 1, exposure: 2, say: 'The officer takes the money and lets you go.' } } ] },
-    2: { title: 'Held at the station', text: 'They take you to the nearest station. Your phone goes in a plastic bag.', choices: [
-      { id: 'wait_lawyer', label: 'Wait for a lawyer', fx: { hours: 8, lose: 'best', say: 'You wait eight hours for the lawyer. The police keep your second passport, or another card if you no longer have it.' } },
+    2: { title: 'Held at the station', text: 'They take you to the nearest station and bag your phone.', choices: [
+      { id: 'wait_lawyer', label: 'Wait for a lawyer', fx: { hours: 8, lose: 'best', say: 'You wait eight hours for the lawyer, and the police keep your second passport, or another card if it\'s gone.' } },
       { id: 'embassy', label: '{sib} calls an embassy', fx: { roll: { need: 4, win: { hours: 4, say: 'A diplomat calls the station chief. You are released.' }, lose: { hours: 10, lose: 'best', say: 'Nobody important answers for 10 hours, and they keep your second passport, or another card if you no longer have it.' } } } },
       { id: 'walk_out', label: 'Walk out at shift change', fx: { roll: { need: 5, win: { hours: 1, exposure: 3, say: 'You walk out with the departing shift, and nobody stops you.' }, lose: { hold: 1 } } } } ] },
     3: { title: 'House arrest', text: 'The court puts you under house arrest. Two officers sit outside the door.', choices: [
@@ -4026,17 +4026,17 @@ const Data = (() => {
       arrive: 'The airstrip has one terminal, two taxis and a reward poster with your face on it.',
       approaches: [
         { id: 'crew_van', name: 'Ride out with the flight crew', hours: 1, dc: 3, needs: [], with: 'self',
-          mods: { introduction: 1, permission: 1 }, text: "The crew's van leaves through the service gate, and the guard never checks who is in the back.",
-          success: { say: 'You sit on a suitcase in the back of the van, and the gate guard waves it through.' },
-          fail: { exposure: 1, hours: 1, say: 'The guard opens the back of the van, and you walk back into the terminal before he looks inside.' } },
+          mods: { introduction: 1, permission: 1 }, text: "The crew's van leaves by the service gate, and the guard never checks the back.",
+          success: { say: 'You ride on a suitcase in the back, and the gate guard waves the van through.' },
+          fail: { exposure: 1, hours: 1, say: 'The guard opens the van, and you slip back into the terminal before he looks inside.' } },
         { id: 'taxi', with: 'nando', name: "Take Kofi's taxi", hours: 1, dc: 2, needs: [], pay: true,
           mods: { vehicle: 1 }, text: 'Kofi drives the only taxi with tinted windows and talks the whole way.',
           success: { exposure: 1, say: 'Kofi drives you into town and tells everyone at the rank about his fare.' },
-          fail: { exposure: 1, say: "Kofi asks for double, and a man in a new sun hat writes down the taxi's plate number." } },
+          fail: { exposure: 1, say: "Kofi asks for double, and a man in a new sun hat notes the taxi's plate." } },
         { id: 'fence', name: 'Climb the fence after dark', hours: 1, dc: 3, needs: [{ night: true }],
-          mods: { information: 1 }, text: 'The fence around the airstrip has a gap that opens onto a cane field.',
+          mods: { information: 1 }, text: 'The airstrip fence has a gap onto a cane field.',
           success: { say: 'You cross the cane field in the dark and reach the edge of town by the first bus.' },
-          fail: { exposure: 1, say: 'A security light comes on, and you go back to the terminal. You can try again while it is still dark.' } },
+          fail: { exposure: 1, say: 'A security light drives you back to the terminal, but you can try again while it is dark.' } },
       ] },
     { id: 'eri_town', name: 'Erinana town', short: 'Erinana town', place: 'Erinana town', scene: 'road',
       objective: 'Get to the guesthouse at Tamarind Cove.',
@@ -4045,7 +4045,7 @@ const Data = (() => {
         { id: 'bus', name: 'Ride the market bus', hours: 2, dc: 2, needs: [],
           mods: { information: 1, union: 1 }, text: 'The market bus stops at every village on the way to Tamarind Cove.',
           success: { say: 'The bus stops at every village, and nobody looks up from the market baskets.' },
-          fail: { exposure: 1, hours: 1, say: 'A bounty hunter boards at the second stop, and you get off and walk the rest of the way.' } },
+          fail: { exposure: 1, hours: 1, say: 'A bounty hunter boards at the second stop, so you get off and walk the rest.' } },
         { id: 'scooter', name: 'Rent a scooter', hours: 1, dc: 3, needs: [], pay: true,
           mods: { vehicle: 2, mechanic: 1 }, text: 'The rental shop by the harbor rents scooters for cash.',
           success: { say: 'You ride the coast road with the sea on your left and reach the cove before dark.' },
@@ -4061,10 +4061,10 @@ const Data = (() => {
       approaches: [
         { id: 'forger', with: 'holt', name: 'Pay Silas for a new passport', hours: 3, dc: 3, needs: [], pay: true,
           mods: { court: 1, information: 1 }, text: 'Silas works in the back of the village shop with a camera and a laminator.',
-          success: { card: 'new_papers', say: 'Silas hands you a passport in a new name. The photo is yours, and the stamps look old.' },
+          success: { card: 'new_papers', say: 'Silas hands you a passport in a new name, with your photo and old-looking stamps.' },
           fail: { exposure: 1, hours: 2, say: "Silas's camera breaks, and he needs two more hours and more money." } },
         { id: 'cove_phone', name: 'Call your contacts', hours: 2, dc: 1, noRoll: true, once: true, needs: [],
-          mods: {}, text: "You use Mama Ilse's phone to push on your flight and on the fixer in Bahía Clara.",
+          mods: {}, text: "You use Mama Ilse's phone to push your flight and the fixer in Bahía Clara.",
           success: { advance: ['aircraft', 'reception'], say: 'Two hours later, your flight and the fixer in Bahía Clara have both moved one step.' }, fail: { say: '' } },
         { id: 'cover_cove', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: 'Mama Ilse tells the village you are her cousin from the main island.',
@@ -4081,7 +4081,7 @@ const Data = (() => {
         { id: 'board_papers', name: 'Board with your new passport', hours: 1, dc: 3, needs: [{ card: 'document' }, { night: true }],
           mods: { document: 2, introduction: 1 }, text: 'The gangway opens after dark, and an officer scans every passport.',
           success: { say: 'The gangway officer scans the new passport and wishes you a pleasant voyage.' },
-          fail: { exposure: 1, say: 'The officer calls a supervisor, and you step out of the line before he arrives. You can try again before the ship sails.' } },
+          fail: { exposure: 1, say: 'The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.' } },
         { id: 'steward', with: 'theo', name: 'Sign on as a steward', hours: 2, dc: 4, needs: [],
           mods: { union: 2, care: 1 }, text: "Marisa, the ship's purser, is short of cabin stewards this week.",
           success: { say: 'Marisa signs you on as a cabin steward and hands you a white jacket.' },
@@ -4101,8 +4101,8 @@ const Data = (() => {
       approaches: [
         { id: 'go_ashore', with: 'official', name: 'Go ashore and keep walking', hours: 2, dc: 3, needs: [{ arr: 'reception', stage: 1 }],
           mods: { introduction: 1, information: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
-          success: { say: 'You walk down the gangway with the shore excursion and keep walking past the buses. Dario is waiting at the end of the pier.' },
-          fail: { exposure: 1, hours: 2, say: 'A resident recognizes you at the gangway and asks for a photo. You go back to your cabin and wait two hours for the next tender.' } },
+          success: { say: 'You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.' },
+          fail: { exposure: 1, hours: 2, say: 'A resident recognizes you at the gangway and asks for a photo, so you wait two hours in your cabin for the next tender.' } },
         { id: 'supply_boat', with: 'theo', name: 'Slip off on the supply boat', hours: 2, dc: 4, needs: [],
           mods: { union: 1, vehicle: 1 }, text: 'The supply boat runs to the fish market in Bahía Clara twice a day.',
           success: { say: 'The supply boat drops you at the fish market, where nobody checks passports.' },
@@ -4118,11 +4118,11 @@ const Data = (() => {
       approaches: [
         { id: 'fly_lusara', with: 'pilot', name: 'Board your flight to Lusara', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 2 }],
           mods: { document: 2, permission: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
-          success: { win: true, say: 'The flight to Lusara takes off on time. Your visa is real, and the officer at the other end stamps it.' },
-          fail: { exposure: 1, hours: 2, say: 'The gate agent pulls you aside for a second check, and you miss the flight. The next one leaves in two hours.' } },
+          success: { win: true, say: 'The flight to Lusara takes off on time, and the officer at the other end stamps your real visa.' },
+          fail: { exposure: 1, hours: 2, say: 'A second check at the gate makes you miss the flight, and the next one leaves in two hours.' } },
         { id: 'desk_seat', name: 'Buy a seat at the desk', hours: 1, dc: 2, needs: [{ card: 'document' }], pay: true,
           mods: { information: 1 }, text: 'The airline desk sells seats on the next flight to Lusara.',
-          success: { advance: ['aircraft'], exposure: 1, say: "The desk sells you a seat. Your photo sits on the agent's screen while she types." },
+          success: { advance: ['aircraft'], exposure: 1, say: "The desk sells you a seat while your photo sits on the agent's screen." },
           fail: { exposure: 1, say: 'The agent says the flight is full and writes something down after you leave.' } },
         { id: 'cover_airport2', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: 'You wait in the chapel at the airport with the door shut.',
@@ -4172,16 +4172,16 @@ const Data = (() => {
       { id: 'calm', label: 'Act like a tourist', fx: { roll: { need: 3, face: 1, win: { hours: 1, say: 'He looks at the photo, then at you, and lets you go.' }, lose: { hours: 3, lose: 'random', exposure: 1, say: 'He holds you for three hours while he calls his partners, and he keeps something of yours.' } } } },
       { id: 'bribe', label: 'Pay him to forget you', fx: { hours: 1, exposure: 2, say: 'He takes the money and tells the other hunters he saw nothing.' } } ] },
     2: { title: 'Held in a hotel room', text: 'Two bounty hunters hold you in a hotel room while they argue about the reward.', choices: [
-      { id: 'wait_out', label: 'Wait while they argue', fx: { hours: 8, lose: 'best', say: 'They argue for eight hours, take the most useful thing you carry, and let you go when the police drive past.' } },
+      { id: 'wait_out', label: 'Wait while they argue', fx: { hours: 8, lose: 'best', say: 'They argue for eight hours, take the most useful thing you carry and let you go when the police drive past.' } },
       { id: 'embassy', label: '{sib} calls an embassy', fx: { roll: { need: 4, win: { hours: 4, say: 'A consul calls the hotel, and the hunters let you walk out.' }, lose: { hours: 10, lose: 'best', say: 'Nobody answers for 10 hours, and the hunters keep the most useful thing you carry.' } } } },
       { id: 'walk_out', label: 'Walk out at the shift change', fx: { roll: { need: 5, win: { hours: 1, exposure: 3, say: 'You walk out while they change shifts.' }, lose: { hold: 1 } } } } ] },
-    3: { title: 'Handed to the international police', text: 'The bounty hunters hand you to the international police at {here}. Valdória has asked for you back.', choices: [
+    3: { title: 'Handed to the international police', text: 'The bounty hunters hand you to the international police at {here} for return to Valdória.', choices: [
       { id: 'climb', label: 'Run when they move you', fx: { roll: { need: 5, decoy: 1, win: { hours: 2, exposure: 4, rung: 2, say: 'You run when they move you to the car, and you lose them in the market.' }, lose: { end: { reason: 'The international police put you on a plane back to Valdória.' } } } } },
       { id: 'accept', label: 'Go with them', fx: { end: { reason: 'The international police put you on a plane back to Valdória.' } } } ] },
   };
   const EVENTS2 = [
     { id: 'eri_poster', at: ['eri_airstrip', 'eri_town'], title: 'The reward goes up', text: 'A new poster says the reward for you has doubled.', choices: [
-      { id: 'tear_down', label: 'Tear the posters down', fx: { hours: 1, exposure: 1, say: 'You pull down every poster on the street, and a shopkeeper watches you do it.' } },
+      { id: 'tear_down', label: 'Tear the posters down', fx: { hours: 1, exposure: 1, say: 'You pull down every poster on the street while a shopkeeper watches.' } },
       { id: 'ignore_poster', label: 'Keep your head down', fx: {} } ] },
     { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the afternoon.', choices: [
       { id: 'wait_storm', label: 'Wait out the storm', fx: { hours: 3, exposure: -1, say: 'The storm keeps the bounty hunters indoors too, and it passes in three hours.' } },
@@ -4201,7 +4201,7 @@ const Data = (() => {
       { id: 'snack', label: 'Eat at the snack bar', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat a sandwich under a reward poster with your face on it.' } },
       { id: 'chairs', label: 'Sleep in the terminal', fx: { hours: 4, sleep: 'car', rest: true, exposure: 1, say: 'You sleep four hours on the plastic chairs.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
-    { id: 'lodge_eri_town', at: ['eri_town'], title: 'A place to stop in town', text: 'The harbor hotel asks for a passport. The market sells hot food to anyone.', choices: [
+    { id: 'lodge_eri_town', at: ['eri_town'], title: 'A place to stop in town', text: 'The harbor hotel asks for a passport, and the market feeds anyone.', choices: [
       { id: 'hotel', label: 'Take a harbor hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
       { id: 'market', label: 'Eat at the market', fx: { hours: 1, meal: true, rest: true, say: 'You eat fried fish standing up at a market stall.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys food at the market and brings it back.' } },
@@ -4211,7 +4211,7 @@ const Data = (() => {
       { id: 'ilse_meal', label: "Eat at Mama Ilse's table", fx: { hours: 1, meal: true, rest: true, say: 'Mama Ilse serves rice and fish and asks nothing.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_quay', at: ['eri_quay'], title: 'A place to stop at the harbor', text: "The seamen's hostel rents bunks by the night.", choices: [
-      { id: 'hostel', label: "Take a seamen's hostel bunk", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden writes your new name in his book. Everyone eats and sleeps five hours.' } },
+      { id: 'hostel', label: "Take a seamen's hostel bunk", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden writes your new name in his book, and everyone eats and sleeps five hours.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_ship', at: ['eri_ship'], title: 'Your cabin aboard', text: 'Meals come to the cabin, and the bunk is yours.', choices: [
       { id: 'cabin_rest', label: 'Eat and sleep in the cabin', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps six hours while the ship sails.' } },
