@@ -822,6 +822,17 @@
    ]
   },
   {
+   "id": "arg.dest",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "arg.sibfull",
    "type": "string",
    "audience": [
@@ -12974,6 +12985,809 @@
    ]
   },
   {
+   "id": "name.inspector.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bounty hunter",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "scene.sosa_here.ch2",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The bounty hunters are searching where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "scene.sosa_at.ch2",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The bounty hunters are searching {place}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "scene.exposure.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "trait.feed_cost.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Three hours later, you find out whether {name} talks to the bounty hunters.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "trait.caught.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters search {place}, so {name} is working with them and can no longer help you.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    },
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "trait.clean.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters stay away from {place}, so you can trust {name}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    },
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "who.talked.ch2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Talked to the bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "route.inquiry_here.ch2",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The bounty hunters are searching here",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "route.inquiry.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "route.looking_here.ch2",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The bounty hunters are searching here",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "route.no_inquiry.ch2",
+   "domain": "interface",
+   "pattern": "empty-state",
+   "text": "The bounty hunters have not moved yet",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "phase.sosa.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "round.held.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "{place}, with bounty hunter stops at step {hold} of three",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    },
+    "hold": {
+     "source": "fact",
+     "ref": "arg.hold"
+    }
+   }
+  },
+  {
+   "id": "card.kind_hold.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The bounty hunters have you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.held_firm.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "kept quiet when the bounty hunters asked",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.talked.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "talked to the bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.sold.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "{person} sold you out, and the bounty hunters know where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "person": {
+     "source": "fact",
+     "ref": "arg.person"
+    }
+   }
+  },
+  {
+   "id": "log.pressed_holds.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters offer {name} money, and {name} says nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "log.pressed_breaks.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters offer {name} money, and {name} talks.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sim.end.you_were_held_times_along.ch2",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "The bounty hunters stopped you {holds} times along the way.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "holds": {
+     "source": "fact",
+     "ref": "arg.holds"
+    }
+   }
+  },
+  {
+   "id": "sim.end.you_were_held_once_along.ch2",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "The bounty hunters stopped you once along the way.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.end.talked_to_the_inquiry_will.ch2",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "{and} talked to the bounty hunters.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "and": {
+     "source": "fact",
+     "ref": "arg.and"
+    }
+   }
+  },
+  {
+   "id": "sim.inquiry.reviews_the_passenger_lists_at.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters check the ferry passenger lists and find nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.inquiry.the_last_call_came_from.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": " Your last call came from here, so the bounty hunters now search where you are.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.say.sold_you_out_sosa_knows.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "{name} sold you out, and the bounty hunters know where you are.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sim.why.you_are_being_held.ch2",
+   "domain": "interface",
+   "pattern": "blocked-action",
+   "text": "Answer the bounty hunters first.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.say.was_working_for_sosa_you.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "{name} was working for the bounty hunters, so you drop every card you got through that contact.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sim.why.talked_to_the_inquiry.ch2",
+   "domain": "interface",
+   "pattern": "blocked-action",
+   "text": "{name} talked to the bounty hunters.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sum.exposure_round.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters got {n} steps closer this round.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.check_belief.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters search {place}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.check_belief_hit.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters search {place}, where you are.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.press_ally.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters offer {name} money, and {name} says nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.press_ally_talked.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters offer {name} money, and {name} talks.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.roadblock.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters watch the road out of {place} for six hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "enemy.short.watch_sibling.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A bounty hunter listens to {name}'s calls.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sum.attention_up.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters get closer.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.attention_down.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters fall back.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "float.attention_up.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Bounty hunters get closer",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "float.attention_down.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Bounty hunters fall back",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "brief.attention_short.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "brief.sosa.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bounty hunters",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "over.why_arrest.ch2",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "The bounty hunters hand you to the international police.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "over.why_out.ch2",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "You land in Lusara on a real visa.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "map.here.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Erinana Island, where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.search_here.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters now search where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sum.search_elsewhere.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bounty hunters now search somewhere else",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.preview.harder_checkpoint.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Bounty hunters watching the road make this harder until {time}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "time": {
+     "source": "fact",
+     "ref": "arg.time"
+    }
+   }
+  },
+  {
+   "id": "ch2.prologue",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Your plane lands on Erinana Island, not in {dest}. While you were flying, {dest} elected a new government, and it revoked your humanitarian parole.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "dest": {
+     "source": "fact",
+     "ref": "arg.dest"
+    }
+   }
+  },
+  {
+   "id": "ch2.newspapers",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "You should have checked the newspapers.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.sibling_visa",
+   "domain": "narrative",
+   "pattern": "dialogue",
+   "text": "\"I have a real visa for you this time, for Lusara. Don't fly from Erinana, because the bounty hunters watch the airstrip. Get to the ship.\"",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "speakerRef": "sibling"
+  },
+  {
+   "id": "over.chapter2",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Go on to Erinana Island",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "log.start_escape.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "{clock}. You are {name}, and your plane has just landed on Erinana Island.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "clock": {
+     "source": "fact",
+     "ref": "arg.clock"
+    },
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "brief.jet.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Flight",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "tutorial.escape.intro.title",
    "domain": "interface",
    "pattern": "navigation-heading",
@@ -16428,6 +17242,42 @@
    "domain": "narrative",
    "pattern": "card",
    "text": "Boarding the midnight freight.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.new_papers.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A passport in a new name",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.new_papers.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Silas made it in the back of the village shop. The photo is yours, and the name is not.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.new_papers.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Boarding the Long Horizon and flying out of Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -23452,6 +24302,2403 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": "She cries in the back seat, and every move here is harder while you look after her.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The airstrip, Erinana Island",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get out of the airport and into town.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The airstrip has one terminal, two taxis and a reward poster with your face on it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.crew_van.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Ride out with the flight crew",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.crew_van.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The crew's van leaves through the service gate, and the guard never checks who is in the back.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.crew_van.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You sit on a suitcase in the back of the van, and the gate guard waves it through.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.crew_van.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The guard opens the back of the van, and you walk back into the terminal before he looks inside.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.taxi.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take Kofi's taxi",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.taxi.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Kofi drives the only taxi with tinted windows and talks the whole way.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.taxi.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Kofi drives you into town and tells everyone at the rank about his fare.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.taxi.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Kofi asks for double, and a man in a new sun hat writes down the taxi's plate number.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.fence.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Climb the fence after dark",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.fence.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The fence around the airstrip has a gap that opens onto a cane field.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.fence.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You cross the cane field in the dark and reach the edge of town by the first bus.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airstrip.fence.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A security light comes on, and you go back to the terminal. You can try again while it is still dark.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Erinana town",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get to the guesthouse at Tamarind Cove.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Erinana town is one main street and a harbor. Two strangers in new sun hats are showing your photo at the bus stop.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.bus.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Ride the market bus",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.bus.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The market bus stops at every village on the way to Tamarind Cove.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.bus.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bus stops at every village, and nobody looks up from the market baskets.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.bus.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A bounty hunter boards at the second stop, and you get off and walk the rest of the way.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.scooter.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Rent a scooter",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.scooter.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The rental shop by the harbor rents scooters for cash.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.scooter.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You ride the coast road with the sea on your left and reach the cove before dark.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.scooter.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The clerk copies your passport and makes a call after you leave.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.cover_town.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Cover your tracks",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.cover_town.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You buy island clothes and a straw hat at the market.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.cover_town.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Nobody in the market looks twice at another tourist.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_town.cover_town.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The stall owner recognizes you from the reward poster.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The guesthouse at Tamarind Cove",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get your new passport, then take the cliff path to the harbor.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Mama Ilse runs the guesthouse and asks no questions. Silas, a forger in the village, can make you a new passport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.forger.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Pay Silas for a new passport",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.forger.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Silas works in the back of the village shop with a camera and a laminator.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.forger.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Silas hands you a passport in a new name. The photo is yours, and the stamps look old.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.forger.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Silas's camera breaks, and he needs two more hours and more money.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cove_phone.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Call your contacts",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cove_phone.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You use Mama Ilse's phone to push on your flight and on the fixer in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cove_phone.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Two hours later, your flight and the fixer in Bahía Clara have both moved one step.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cover_cove.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Cover your tracks",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cover_cove.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Mama Ilse tells the village you are her cousin from the main island.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cover_cove.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The village calls you Ilse's cousin, and the bounty hunters hear nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cover_cove.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A fisherman tells a bounty hunter that Mama Ilse has no cousins.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cliff_path.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take the cliff path",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cliff_path.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The cliff path drops down to the cruise quay.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_hideout.cliff_path.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The cliff path drops down to the cruise quay, and the ship is in.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The cruise quay, Erinana harbor",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get aboard the Long Horizon.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Board with your new passport",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The gangway opens after dark, and an officer scans every passport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The gangway officer scans the new passport and wishes you a pleasant voyage.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The officer calls a supervisor, and you step out of the line before he arrives. You can try again before the ship sails.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Sign on as a steward",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Marisa, the ship's purser, is short of cabin stewards this week.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Marisa signs you on as a cabin steward and hands you a white jacket.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Marisa says the crew list is full, and she remembers your face.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Pay the gangway officer",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The gangway officer takes cash from anyone who boards without papers.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "He waves you aboard, and two bounty hunters on the pier see the money change hands.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "He takes the money and points you out to the bounty hunters on the pier.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.cover_quay.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Cover your tracks",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.cover_quay.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You wait in the back room of a boat supply shop.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.cover_quay.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The shop owner keeps the front door locked until dark.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.cover_quay.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A delivery driver sees you in the back room and asks about the reward.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Aboard the Long Horizon",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get off at Bahía Clara and never come back.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Two hundred residents live aboard the Long Horizon. The next stop is Bahía Clara, in Solandia, where the airport has flights to Lusara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.go_ashore.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Go ashore and keep walking",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.go_ashore.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.go_ashore.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You walk down the gangway with the shore excursion and keep walking past the buses. Dario is waiting at the end of the pier.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.go_ashore.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A resident recognizes you at the gangway and asks for a photo. You go back to your cabin and wait two hours for the next tender.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.supply_boat.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Slip off on the supply boat",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.supply_boat.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The supply boat runs to the fish market in Bahía Clara twice a day.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.supply_boat.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The supply boat drops you at the fish market, where nobody checks passports.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.supply_boat.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bosun counts heads before the supply boat leaves, and you stay aboard.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.cabin.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Stay in your cabin",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.cabin.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You order meals to the cabin and keep the curtain shut.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.cabin.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Nobody aboard sees you for two hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_ship.cabin.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A neighbor asks the purser why you never come to dinner.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Bahía Clara airport, Solandia",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Board your flight to Lusara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The flight to Lusara leaves twice a day. Bounty hunters watch the departures hall.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.fly_lusara.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Board your flight to Lusara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.fly_lusara.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The gate agent checks your visa for Lusara and your new passport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.fly_lusara.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The flight to Lusara takes off on time. Your visa is real, and the officer at the other end stamps it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.fly_lusara.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The gate agent pulls you aside for a second check, and you miss the flight. The next one leaves in two hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.desk_seat.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Buy a seat at the desk",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.desk_seat.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The airline desk sells seats on the next flight to Lusara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.desk_seat.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The desk sells you a seat. Your photo sits on the agent's screen while she types.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.desk_seat.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The agent says the flight is full and writes something down after you leave.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.cover_airport2.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Cover your tracks",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.cover_airport2.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You wait in the chapel at the airport with the door shut.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.cover_airport2.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Nobody looks into the chapel.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_airport.cover_airport2.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A bounty hunter sits down in the back row of the chapel.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.stage.aircraft.1",
+   "domain": "narrative",
+   "pattern": "dialogue",
+   "text": "I put a seat on hold for you on the flight to Lusara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "speakerRef": "sibling"
+  },
+  {
+   "id": "ch2.stage.aircraft.2",
+   "domain": "narrative",
+   "pattern": "dialogue",
+   "text": "Your ticket to Lusara is booked in your new name.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "speakerRef": "sibling"
+  },
+  {
+   "id": "ch2.stage.reception.1",
+   "domain": "narrative",
+   "pattern": "dialogue",
+   "text": "Dario will be at the end of the pier in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "speakerRef": "sibling"
+  },
+  {
+   "id": "ch2.arr.aircraft.what",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Your family books your flight from Bahía Clara to Lusara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.aircraft.stage.0",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "none",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.aircraft.stage.1",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "a seat on hold",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.aircraft.stage.2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "a ticket to Lusara in your new name",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.reception.what",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Dario, a fixer, meets you at the pier in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.reception.stage.0",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "none",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.reception.stage.1",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Dario waits at the pier in Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.permission.what",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Your visa for Lusara is real this time.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.permission.stage.0",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "none",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.permission.stage.1",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "your visa for Lusara is in progress",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.arr.permission.stage.2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "your visa for Lusara is issued",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.sibling.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "booking your flight to Lusara and a fixer in Bahía Clara from abroad",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.aide.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "party chief of staff, calling from Valdória",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.nando.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "the taxi driver at the Erinana airstrip",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.sponsor.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "the person asking a foreign ministry for your visa",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.host.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "owner of the guesthouse at Tamarind Cove",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.official.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "a fixer in Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.holt.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "a forger in the village at Tamarind Cove",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.theo.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "purser on the Long Horizon",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.pilot.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "the airline agent at Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.person.press.role",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "the station everyone in the capital has on",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_poster.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A new poster says the reward for you has doubled.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_poster.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The reward goes up",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_poster.tear_down.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Tear the posters down",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_poster.tear_down.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You pull down every poster on the street, and a shopkeeper watches you do it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_poster.ignore_poster.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep your head down",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_storm.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A tropical storm has washed out the coast road for the afternoon.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_storm.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A storm closes the roads",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_storm.wait_storm.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Wait out the storm",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_storm.wait_storm.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The storm keeps the bounty hunters indoors too, and it passes in three hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_storm.drive_storm.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Drive through it",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_tourists.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A tour group recognizes you and wants a picture with you.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_tourists.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A tour group wants a photo",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_tourists.smile.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Smile for one photo",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_tourists.smile.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The photo is online within the hour.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_tourists.walk_away.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Walk away",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_residents.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "At dinner, three residents ask what you did before you retired.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_residents.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The residents ask questions",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_residents.tell_story.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Tell them a made-up life",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_residents.skip_dinner.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Leave dinner early",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_residents.skip_dinner.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You go back to your cabin before dessert.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_rival.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "Two bounty hunters are arguing on the pier about who saw you first.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_rival.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Two hunters fight over you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_rival.slip_by.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Slip past while they argue",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_rival.wait_fight.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Wait for them to leave",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.event.eri_rival.wait_fight.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "They leave together after two hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.0.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A bounty hunter blocks your way at {here} and asks for your passport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "here": {
+     "source": "fact",
+     "ref": "arg.here"
+    }
+   }
+  },
+  {
+   "id": "ch2.hold.0.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A bounty hunter finds you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.0.calm.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Act like a tourist",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.0.bribe.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Pay him to forget you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.0.bribe.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "He takes the money and tells the other hunters he saw nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.1.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "Two bounty hunters hold you in a hotel room while they argue about the reward.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.1.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Held in a hotel room",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.1.wait_out.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Wait while they argue",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.1.wait_out.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "They argue for eight hours, take your best card and let you go when the police drive past.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.1.embassy.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "{sib} calls an embassy",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "sib": {
+     "source": "fact",
+     "ref": "arg.sib"
+    }
+   }
+  },
+  {
+   "id": "ch2.hold.1.walk_out.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Walk out at the shift change",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.2.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The bounty hunters hand you to the international police at {here}. Valdória has asked for you back.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "here": {
+     "source": "fact",
+     "ref": "arg.here"
+    }
+   }
+  },
+  {
+   "id": "ch2.hold.2.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Handed to the international police",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.2.climb.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Run when they move you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.hold.2.accept.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Go with them",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The terminal has a snack bar and plastic chairs.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the airstrip",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.snack.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at the snack bar",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.snack.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You eat a sandwich under a reward poster with your face on it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.chairs.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Sleep in the terminal",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.chairs.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You sleep four hours on the plastic chairs.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airstrip.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The harbor hotel asks for a passport. The market sells hot food to anyone.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop in town",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.hotel.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take a harbor hotel room",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.hotel.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The clerk copies your passport into the register. Everyone eats and sleeps six hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.market.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at the market",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.market.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You eat fried fish standing up at a market stall.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.ines_food.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Have Inês buy food",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.ines_food.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Inês buys food at the market and brings it back.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "Mama Ilse has a room at the back and cooks for every guest.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Mama Ilse's guesthouse",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.ilse_room.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Sleep in Mama Ilse's back room",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.ilse_room.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Mama Ilse feeds everyone, and nobody knocks for six hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.ilse_meal.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at Mama Ilse's table",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.ilse_meal.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Mama Ilse serves rice and fish and asks nothing.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_hideout.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The seamen's hostel rents bunks by the night.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the harbor",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.hostel.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take a seamen's hostel bunk",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.hostel.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The warden writes your new name in his book. Everyone eats and sleeps five hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_ship.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "Meals come to the cabin, and the bunk is yours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_ship.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Your cabin aboard",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_ship.cabin_rest.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat and sleep in the cabin",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_ship.cabin_rest.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Everyone eats and sleeps six hours while the ship sails.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_ship.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airport.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The departures hall has a café and a quiet corner.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airport.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the airport",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airport.cafe.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at the café",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airport.cafe.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You eat at the café with your back to the hall.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_airport.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
    "audience": [
     "player"
    ],

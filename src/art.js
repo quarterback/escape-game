@@ -187,7 +187,7 @@ const Art = (() => {
 
   // ---- scenes ------------------------------------------------------------
   // Positions of the player and each ally, in scene pixels; people stand on GROUND.
-  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, harbor: 128, border: 116, airfield: 102 };
+  const PLAYER_X = { residence: 112, road: 132, colonia: 92, salta: 112, harbor: 128, ship: 104, border: 116, airfield: 102 };
 
   const SCENES = {
     residence(g, s, t, night) {
@@ -333,6 +333,29 @@ const Art = (() => {
       g.fill(night ? '#6a5a40' : '#c8b088'); for (let i = 0; i < 4; i++) g.rect(106 + i * 5, GROUND - 6 - (i % 2) * 2, 4, 6 + (i % 2) * 2); // crates of fish
       lamp(g, 138, night, 34);
       g.figure('clerk', 40, {}); g.figure('police', 248, {});
+    },
+    // chapter two: the deck of the Long Horizon, a ship where retirees live year round
+    ship(g, s, t, night) {
+      sky(g, night ? '#0a0c22' : '#7fb2de', night ? '#2a1e44' : '#f2dcc0', night, t);
+      g.layer('far');
+      g.fill(night ? '#16233e' : '#3f6f96'); g.rect(X0, GROUND - 40, X1 - X0, 40); g.fill(night ? '#24365a' : '#6a9cc0'); for (let x = X0; x < X1; x += 10) g.rect(x, GROUND - 36 + ((x * 7) % 11), 6, 1); // the open sea
+      g.fx('glints', { x0: 0, x1: W, y0: GROUND - 38, y1: GROUND - 4, col: night ? '#8fa8d8' : '#f2f8ff', rate: 10 });
+      ridge(g, night ? '#1a2238' : '#5a7a6a', GROUND - 40, 4, 8, 31, 2); // an island on the horizon
+      g.layer('mid');
+      // the superstructure: white decks, round windows, the funnel
+      box(g, 170, GROUND - 74, 150, 74, night ? '#c8ccd8' : '#f4f4f6'); g.fill(night ? '#a8acb8' : '#dcdce4'); g.rect(170, GROUND - 50, 150, 2); g.rect(170, GROUND - 26, 150, 2);
+      for (let r = 0; r < 3; r++) for (let i = 0; i < 6; i++) { g.fill('#2a2a3a'); g.ellipse(184 + i * 22, GROUND - 64 + r * 24, 7, 7); g.fill(night && (i + r) % 3 ? '#ffd27a' : '#9ab4cc'); g.ellipse(184 + i * 22, GROUND - 64 + r * 24, 5, 5); }
+      box(g, 236, GROUND - 98, 26, 24, '#c83a3a'); g.fill('#2a2a32'); g.rect(236, GROUND - 100, 26, 3); // the funnel
+      g.fx('steam', { x: 249, y: GROUND - 102, col: '#cfd4dc', rate: 0.8 });
+      // a lifeboat on its davits
+      g.fill('#e88a2a'); g.rect(40, GROUND - 46, 46, 10); g.fill('#c86a1a'); g.rect(42, GROUND - 38, 42, 3); g.fill('#5a5a62'); g.rect(44, GROUND - 58, 2, 14); g.rect(80, GROUND - 58, 2, 14); g.rect(44, GROUND - 58, 38, 2);
+      g.layer('near');
+      // the teak deck and the rail
+      g.fill(night ? '#3a2e24' : '#a8805a'); g.rect(X0, GROUND, X1 - X0, H - GROUND); g.fill(night ? '#2e241c' : '#8a6a48'); for (let x = X0; x < X1; x += 8) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill('#e8e8ec'); g.rect(X0, GROUND - 16, 160, 2); for (let x = X0; x < 160; x += 12) g.rect(x, GROUND - 16, 2, 16); // the rail
+      g.fill(night ? '#4a5a8a' : '#3b6db0'); g.rect(120, GROUND - 8, 16, 3); g.rect(120, GROUND - 5, 2, 5); g.rect(134, GROUND - 5, 2, 5); // a deck chair
+      lamp(g, 160, night, 30);
+      g.figure('clerk', 296, {});
     },
     border(g, s, t, night) {
       sky(g, night ? '#0a0c22' : '#9ab4d4', night ? '#2a1e44' : '#e4e8f0', night, t);

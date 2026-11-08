@@ -285,6 +285,47 @@
    "code": "body.clinic",
    "pattern": "P03",
    "text": "Her name goes in the clinic book"
+  },
+  {
+   "code": "exposure.change_two",
+   "pattern": "P03",
+   "text": "Bounty hunters {signed}",
+   "args": [
+    "signed"
+   ]
+  },
+  {
+   "code": "search.elsewhere_two",
+   "pattern": "P03",
+   "text": "The bounty hunters move their search off your stop"
+  },
+  {
+   "code": "search.finds_two",
+   "pattern": "P03",
+   "text": "The bounty hunters move their search to your stop"
+  },
+  {
+   "code": "search.loses_move_two",
+   "pattern": "P03",
+   "text": "The bounty hunters skip their next move"
+  },
+  {
+   "code": "search.at_two",
+   "pattern": "P03",
+   "text": "The bounty hunters search {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "code": "hold.climb_two",
+   "pattern": "P03",
+   "text": "The bounty hunters hold you, a step closer to the international police"
+  },
+  {
+   "code": "body.hidden_two",
+   "pattern": "P03",
+   "text": "A bounty hunter search here finds nobody while you stay"
   }
  ]
 }

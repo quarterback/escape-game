@@ -5380,6 +5380,350 @@
    "id": "sim.preview.harder_terminal",
    "pattern": "P03",
    "text": "Passport control at Portalba has your photo, and it makes leaving harder."
+  },
+  {
+   "id": "name.inspector.ch2",
+   "pattern": "P02",
+   "text": "Bounty hunter"
+  },
+  {
+   "id": "scene.sosa_here.ch2",
+   "pattern": "P06",
+   "text": "The bounty hunters are searching where you are"
+  },
+  {
+   "id": "scene.sosa_at.ch2",
+   "pattern": "P06",
+   "text": "The bounty hunters are searching {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "scene.exposure.ch2",
+   "pattern": "P02",
+   "text": "Bounty hunters"
+  },
+  {
+   "id": "trait.feed_cost.ch2",
+   "pattern": "P03",
+   "text": "Three hours later, you find out whether {name} talks to the bounty hunters.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "trait.caught.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters search {place}, so {name} is working with them and can no longer help you.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "trait.clean.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters stay away from {place}, so you can trust {name}.",
+   "args": [
+    "place",
+    "name"
+   ]
+  },
+  {
+   "id": "who.talked.ch2",
+   "pattern": "P05",
+   "text": "Talked to the bounty hunters"
+  },
+  {
+   "id": "route.inquiry_here.ch2",
+   "pattern": "P06",
+   "text": "The bounty hunters are searching here"
+  },
+  {
+   "id": "route.inquiry.ch2",
+   "pattern": "P02",
+   "text": "The bounty hunters"
+  },
+  {
+   "id": "route.looking_here.ch2",
+   "pattern": "P06",
+   "text": "The bounty hunters are searching here"
+  },
+  {
+   "id": "route.no_inquiry.ch2",
+   "pattern": "P12",
+   "text": "The bounty hunters have not moved yet"
+  },
+  {
+   "id": "phase.sosa.ch2",
+   "pattern": "P02",
+   "text": "Bounty hunters"
+  },
+  {
+   "id": "round.held.ch2",
+   "pattern": "P02",
+   "text": "{place}, with bounty hunter stops at step {hold} of three",
+   "args": [
+    "place",
+    "hold"
+   ]
+  },
+  {
+   "id": "card.kind_hold.ch2",
+   "pattern": "P02",
+   "text": "The bounty hunters have you"
+  },
+  {
+   "id": "sum.held_firm.ch2",
+   "pattern": "P10",
+   "text": "kept quiet when the bounty hunters asked"
+  },
+  {
+   "id": "sum.talked.ch2",
+   "pattern": "P10",
+   "text": "talked to the bounty hunters"
+  },
+  {
+   "id": "sum.sold.ch2",
+   "pattern": "P10",
+   "text": "{person} sold you out, and the bounty hunters know where you are",
+   "args": [
+    "person"
+   ]
+  },
+  {
+   "id": "log.pressed_holds.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters offer {name} money, and {name} says nothing.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "log.pressed_breaks.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters offer {name} money, and {name} talks.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.end.you_were_held_times_along.ch2",
+   "pattern": "P14",
+   "text": "The bounty hunters stopped you {holds} times along the way.",
+   "args": [
+    "holds"
+   ]
+  },
+  {
+   "id": "sim.end.you_were_held_once_along.ch2",
+   "pattern": "P14",
+   "text": "The bounty hunters stopped you once along the way."
+  },
+  {
+   "id": "sim.end.talked_to_the_inquiry_will.ch2",
+   "pattern": "P14",
+   "text": "{and} talked to the bounty hunters.",
+   "args": [
+    "and"
+   ]
+  },
+  {
+   "id": "sim.inquiry.reviews_the_passenger_lists_at.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters check the ferry passenger lists and find nothing."
+  },
+  {
+   "id": "sim.inquiry.the_last_call_came_from.ch2",
+   "pattern": "P10",
+   "text": " Your last call came from here, so the bounty hunters now search where you are."
+  },
+  {
+   "id": "sim.say.sold_you_out_sosa_knows.ch2",
+   "pattern": "P10",
+   "text": "{name} sold you out, and the bounty hunters know where you are.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.you_are_being_held.ch2",
+   "pattern": "P04",
+   "text": "Answer the bounty hunters first."
+  },
+  {
+   "id": "sim.say.was_working_for_sosa_you.ch2",
+   "pattern": "P10",
+   "text": "{name} was working for the bounty hunters, so you drop every card you got through that contact.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sim.why.talked_to_the_inquiry.ch2",
+   "pattern": "P04",
+   "text": "{name} talked to the bounty hunters.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.exposure_round.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters got {n} steps closer this round.",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "enemy.short.check_belief.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters search {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.check_belief_hit.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters search {place}, where you are.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.press_ally.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters offer {name} money, and {name} says nothing.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "enemy.short.press_ally_talked.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters offer {name} money, and {name} talks.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "enemy.short.roadblock.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters watch the road out of {place} for six hours.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "enemy.short.watch_sibling.ch2",
+   "pattern": "P10",
+   "text": "A bounty hunter listens to {name}'s calls.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "sum.attention_up.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters get closer."
+  },
+  {
+   "id": "sum.attention_down.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters fall back."
+  },
+  {
+   "id": "float.attention_up.ch2",
+   "pattern": "P10",
+   "text": "Bounty hunters get closer"
+  },
+  {
+   "id": "float.attention_down.ch2",
+   "pattern": "P10",
+   "text": "Bounty hunters fall back"
+  },
+  {
+   "id": "brief.attention_short.ch2",
+   "pattern": "P02",
+   "text": "Bounty hunters"
+  },
+  {
+   "id": "brief.sosa.ch2",
+   "pattern": "P02",
+   "text": "Bounty hunters"
+  },
+  {
+   "id": "over.why_arrest.ch2",
+   "pattern": "P14",
+   "text": "The bounty hunters hand you to the international police."
+  },
+  {
+   "id": "over.why_out.ch2",
+   "pattern": "P14",
+   "text": "You land in Lusara on a real visa."
+  },
+  {
+   "id": "map.here.ch2",
+   "pattern": "P08",
+   "text": "Erinana Island, where you are"
+  },
+  {
+   "id": "sum.search_here.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters now search where you are"
+  },
+  {
+   "id": "sum.search_elsewhere.ch2",
+   "pattern": "P10",
+   "text": "The bounty hunters now search somewhere else"
+  },
+  {
+   "id": "sim.preview.harder_checkpoint.ch2",
+   "pattern": "P03",
+   "text": "Bounty hunters watching the road make this harder until {time}.",
+   "args": [
+    "time"
+   ]
+  },
+  {
+   "id": "ch2.prologue",
+   "pattern": "P08",
+   "text": "Your plane lands on Erinana Island, not in {dest}. While you were flying, {dest} elected a new government, and it revoked your humanitarian parole.",
+   "args": [
+    "dest"
+   ]
+  },
+  {
+   "id": "ch2.newspapers",
+   "pattern": "P08",
+   "text": "You should have checked the newspapers."
+  },
+  {
+   "id": "ch2.sibling_visa",
+   "pattern": "P07",
+   "text": "\"I have a real visa for you this time, for Lusara. Don't fly from Erinana, because the bounty hunters watch the airstrip. Get to the ship.\"",
+   "speaker": "sibling"
+  },
+  {
+   "id": "over.chapter2",
+   "pattern": "P01",
+   "text": "Go on to Erinana Island"
+  },
+  {
+   "id": "log.start_escape.ch2",
+   "pattern": "P08",
+   "text": "{clock}. You are {name}, and your plane has just landed on Erinana Island.",
+   "args": [
+    "clock",
+    "name"
+   ]
+  },
+  {
+   "id": "brief.jet.ch2",
+   "pattern": "P02",
+   "text": "Flight"
   }
  ]
 }

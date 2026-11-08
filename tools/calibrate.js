@@ -11,10 +11,11 @@ const N = parseInt(process.argv[2], 10) || 300;
 const DEST = (process.argv.find(a => a.startsWith('--dest=')) || '--dest=atlanta').slice(7); // which country the policy flies to
 const EXTRA = ((process.argv.find(a => a.startsWith('--extra=')) || '--extra=').slice(8)).split(',').filter(Boolean); // cards chosen before the run
 const MATE = (process.argv.find(a => a.startsWith('--companion=')) || '--companion=').slice(12) || null; // who travels with you
+const CHAPTER = parseInt((process.argv.find(a => a.startsWith('--chapter=')) || '--chapter=1').slice(10), 10); // --chapter=2 plays Erinana Island
 const PREFER = ((process.argv.find(a => a.startsWith('--prefer=')) || '--prefer=').slice(9)).split(',').filter(Boolean); // moves the policy takes first when it can, e.g. --prefer=river,mountain (issue #51)
 const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, celina_yacht: 2 };
 function play(seed, who, mate) {
-  const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily'), extra: EXTRA, companion: mate === undefined ? MATE : mate }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
+  const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily'), extra: EXTRA, companion: mate === undefined ? MATE : mate, chapter: CHAPTER }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 800) {
     const A = Sim.actions(s);
     // dispatches and holds come first; take the choice whose markers look cheapest

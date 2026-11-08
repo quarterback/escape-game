@@ -16,7 +16,7 @@ const Sim = (() => {
   // mulberry32 with its state kept ON the run (s._rngState), so a saved run resumes with the same die.
   function attachRng(s) { s._rng = function () { let a = (s._rngState + 0x6D2B79F5) | 0; s._rngState = a; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return s; }
   const HOURS_TOTAL = 72, EXPOSURE_LIMIT = 10, START_HOUR = 14; // the run opens Saturday 14:00
-  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], harbor: ['night_boat', 'coast_ferry'], border: null, airfield: ['depart', 'depart_nopermit', 'airline'] };
+  const EXITS = { residence: null, road: null, colonia: ['help_host', 'leave'], salta: ['board', 'crew_train'], harbor: ['night_boat', 'coast_ferry'], eri_hideout: ['cliff_path'], eri_quay: ['board_papers', 'steward', 'pay_gangway'], eri_ship: ['go_ashore', 'supply_boat'], eri_airport: ['fly_lusara'], border: null, airfield: ['depart', 'depart_nopermit', 'airline'] };
   const POST_IDS = ['rail', 'high', 'coast']; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
@@ -33,6 +33,7 @@ const Sim = (() => {
   // enemy action ids used before the weighted draw (the demo). opts.tutorial: a flag the UI reads.
   function newRun(seed, who, opts) {
     opts = opts || {};
+    D.useChapter(opts.chapter === 2 ? 2 : 1); // chapter two runs the same engine on Erinana Island's tables
     const ch = D.CHARACTERS[who] || D.CHARACTERS.woman;
     const s = {
       seed, who: ch.id, hour: 0, pos: 0, belief: 0, exposure: 1, over: null,
@@ -56,6 +57,8 @@ const Sim = (() => {
     s._enemy = opts.enemy ? opts.enemy.slice() : null;
     for (const k in D.ARRANGEMENTS) s.arr[k] = { stage: 0 };
     for (const k in D.PEOPLE) s.people[k] = { trust: k === 'sibling' || k === 'nando' ? 2 : 0, turned: false, doubt: false, cut: false, known: false, bad: false };
+    // chapter two: the visa for Lusara is already real, and you arrive with your companion and nothing else
+    if (opts.chapter === 2) { s.chapter = 2; s.hand = s.companion ? [D.COMPANIONS[s.companion].card] : []; s.picked = []; s.arr.permission.stage = 2; s.flags.destination = true; }
     s._rngState = seed >>> 0; attachRng(s);
     // the final boss: one Costamaran post has taken Valdória's money, and Vélez's people cover one of the others
     s.boughtPost = opts.tutorial ? 'coast' : POST_IDS[Math.floor(s._rng() * 3)];
@@ -89,6 +92,8 @@ const Sim = (() => {
   const route = (s) => D.LEVELS.map((L, i) => stopAt(s, i));
   const onRoute = (s, i) => !(s.route === 'coast' && (i === 2 || i === 3));
   const level = (s) => stopAt(s, s.pos);
+  // a stop's name mid-sentence: chapter two's stops carry their own; chapter one says the residence and the line
+  const placeOf = (s, i) => { const L = stopAt(s, Math.max(0, i)); return L.place || (i <= 0 ? 'the residence' : i === 4 ? 'the line' : L.short); };
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
   const postName = (id) => D.POSTS[id];
   const num = (n) => (n >= 0 && n < 10) ? T('sim.num.words').split('|')[n] : String(n); // AP: words below 10
@@ -107,8 +112,10 @@ const Sim = (() => {
   function arrive(s, events, first) {
     const L = level(s);
     events.push(ev('arrive', { level: s.pos }));
+    if (s.chapter === 2 && s.pos === 0 && first) { say(events, 'narrator', T('ch2.prologue', { dest: dest(s).name })); say(events, 'narrator', T('ch2.newspapers')); say(events, 'sibling', T('ch2.sibling_visa')); }
     say(events, 'narrator', L.arrive);
     s.nextEventAt = s.hour + EVENT_EVERY; drawEvent(s, events);
+    if (s.chapter === 2) return; // chapter one's scripted calls belong to chapter one
     // scripted arrivals: what the phone brings at each level
     if (s.pos === 0 && first) {
       msg(s, events, 'sibling', T('sim.line.jet_found_in_susana_the'), [
@@ -125,7 +132,7 @@ const Sim = (() => {
       ].concat(hasTag(s, 'media') ? [{ id: 'celina_yacht', label: T('mate.celina.yacht_label'), hours: 0, effect: T('mate.celina.yacht_effect') }] : []));
     }
     // Tomás knows how the posts behave: he names the one that is neither paid by Valdória nor covered by Vélez's people
-    if (s.pos === 4 && hasTag(s, 'border')) { const clean = s.flags.cleanPost = POST_IDS.find(x => x !== s.boughtPost && x !== s.escortPost); say(events, 'narrator', T('mate.tomas.clean_post', { post: postName(clean) })); }
+    if (s.pos === 4 && level(s).border && hasTag(s, 'border')) { const clean = s.flags.cleanPost = POST_IDS.find(x => x !== s.boughtPost && x !== s.escortPost); say(events, 'narrator', T('mate.tomas.clean_post', { post: postName(clean) })); }
     if (s.pos === 2 && s.arr.permission.stage >= 1 && !s.flags.salekDue) {
       s.flags.salekDue = true;
       const sp = sponsor(s);
@@ -179,7 +186,7 @@ const Sim = (() => {
   // ---- what you can do right now ------------------------------
   // A card counts only inside its reach. Authority is local: the party stops at the line, Vélez starts there.
   // a companion you said no to helps nowhere at that stop (owner, Nov. 5, 2026: companions with moments of their own, issue #50)
-  const reaches = (s, id) => { const c = D.CARDS[id]; return !!c && c.reach.includes(level(s).id) && !(c.companion && s.flags.mateOff === s.pos); };
+  const reaches = (s, id) => { const c = D.CARDS[id]; return !!c && (c.reach.includes(level(s).id) || (s.chapter === 2 && !!c.companion)) && !(c.companion && s.flags.mateOff === s.pos); };
   function mods(s, L) {
     const out = {};
     for (const id of s.hand) { if (!reaches(s, id)) continue; const c = D.CARDS[id]; out[c.tag] = (out[c.tag] || 0) + 1; }
@@ -271,13 +278,13 @@ const Sim = (() => {
   function feed(s, k, events) {
     const c = callList(s).find(x => x.id === 'feed:' + k); if (!c || !c.ok) return { ok: false, why: c ? c.why : T('sim.why.nothing_to_call_about') };
     const at = decoyStop(s); s.people[k].fed = true; s.feedTrap = { who: k, at, hour: s.hour + 3 };
-    say(events, 'narrator', T('trait.fed', { name: shortName(s, k), place: at === 0 ? T('brief.the_residence') : stopAt(s, at).short }));
+    say(events, 'narrator', T('trait.fed', { name: shortName(s, k), place: stopAt(s, at).place || (at === 0 ? T('brief.the_residence') : stopAt(s, at).short) }));
     pass(s, 1, events); return finish(s, events);
   }
   // two hours later: a traitor sends the police to the false place and is exposed; a loyal helper keeps it to themself
   function springTrap(s, events) {
     const t = s.feedTrap; if (!t || s.hour < t.hour) return; s.feedTrap = null;
-    const p = s.people[t.who], name = shortName(s, t.who), place = t.at === 0 ? T('brief.the_residence') : stopAt(s, t.at).short;
+    const p = s.people[t.who], name = shortName(s, t.who), place = stopAt(s, t.at).place || (t.at === 0 ? T('brief.the_residence') : stopAt(s, t.at).short);
     if (p.bad) { s.belief = t.at; p.known = true; p.turned = true; for (const id of s.hand.slice()) if (D.CARDS[id] && D.CARDS[id].from === t.who) lose(s, id, events); events.push(ev('belief', { belief: s.belief })); say(events, 'narrator', T('trait.caught', { name, place })); }
     else { p.known = true; p.doubt = false; p.trust = Math.max(p.trust, 2); say(events, 'narrator', T('trait.clean', { name, place })); }
   }
@@ -327,7 +334,7 @@ const Sim = (() => {
   }
 
   // ---- dispatches and holds: the News phase --------------------
-  const fill = (s, t) => String(t).replace(/\{sibfull\}/g, `${ch(s).sibling.rel} ${ch(s).sibling.short}`).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, s.pos === 0 ? 'the residence' : s.pos === 4 ? 'the line' : level(s).short);
+  const fill = (s, t) => String(t).replace(/\{sibfull\}/g, `${ch(s).sibling.rel} ${ch(s).sibling.short}`).replace(/\{sib\}/g, ch(s).sibling.short).replace(/\{here\}/g, placeOf(s, s.pos));
   // declarative conditions (pbbg-content-schema shape): { ref, op: eq | gte | contains, value } against declared facts
   function fact(s, ref) {
     if (ref === 'clock.hoursLeft') return HOURS_TOTAL - s.hour;
@@ -698,9 +705,9 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : stopAt(s, s.belief).short; text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
+      case 'check_belief': { const where = placeOf(s, s.belief); text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
           // Celina: once at each stop in Valdória, a sighting on her station sends the search one stop back
-          if (!s._manual && hasTag(s, 'media') && !(s.flags.spun || {})[s.pos]) { (s.flags.spun = s.flags.spun || {})[s.pos] = true; s.belief = s.pos === 0 ? 1 : s.pos - 1; text += T('mate.celina.spin', { place: s.belief === 4 ? 'the line' : D.LEVELS[s.belief].short }); events.push(ev('belief', { belief: s.belief })); } } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
+          if (!s._manual && hasTag(s, 'media') && !(s.flags.spun || {})[s.pos]) { (s.flags.spun = s.flags.spun || {})[s.pos] = true; s.belief = s.pos === 0 ? 1 : s.pos - 1; text += T('mate.celina.spin', { place: placeOf(s, s.belief) }); events.push(ev('belief', { belief: s.belief })); } } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
       case 'trace': { text = say3(pick)(); if (s.hour - s.calledAt <= 3 && hasTag(s, 'phone')) text += T('mate.nadia.untraced'); else if (s.hour - s.calledAt <= 3) { traced = true; s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += V('sim.inquiry.the_last_call_came_from', 'gov.inquiry.last_call'); } else text += V('sim.inquiry.nothing_new', 'gov.inquiry.no_calls'); break; }
       // with Paulo the ban sits in the outbox: the line says so instead of "From now on" (issue #47)
       case 'circulate': { const held = banOut(s); text = held ? T('sim.inquiry.circulate_held', { time: clockText(s.flags.banDue) }) : say3(pick)(); break; }
@@ -709,7 +716,7 @@ const Sim = (() => {
       case 'press_ally': { const pool = Object.keys(s.people).filter(k => k !== 'sibling' && k !== 'sponsor' && !s.people[k].turned && s.hand.some(id => D.CARDS[id] && D.CARDS[id].from === k)); if (!pool.length) { text = T('sim.inquiry.reviews_the_passenger_lists_at', { name: D.ENEMY.name }); break; } const who = pool[Math.floor(s._rng() * pool.length)]; pressed = who; text = say3(pick)(personName(s, who)); const d = roll(s), t = tgt(4 + s.people[who].trust); const holds = !wins(d, t); events.push(ev('roll', { die: d, need: t, won: holds, who, pressed: true })); if (holds) text += T('sim.inquiry.says_nothing_useful', { first: shortName(s, who) }); else { talked = true; s.people[who].turned = true; s.belief = s.pos; heat(s, s.flags.lied ? 3 : 2, events); text += s._manual ? T('gov.inquiry.helper_talks', { first: shortName(s, who) }) : T('sim.inquiry.tells_them_where_you_were', { first: shortName(s, who), yacht: s.flags.lied ? T('sim.inquiry.the_yacht_story_is_dead') : '' }); } break; }
       case 'ask_esmeralda': s.flags.asked = true; text = say3(pick)(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = say3(pick)(); break; }
-      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(s.belief <= 0 ? 'the residence' : s.belief === 4 ? 'the line' : stopAt(s, s.belief).short); break; }
+      case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(placeOf(s, s.belief)); break; }
       case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); if (hasTag(s, 'phone')) { text += T('mate.nadia.rerouted', { name: personName(s, 'sibling') }); s.flags.rerouted = true; break; } for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked, who: pressed, hit: pick.id === 'trace' ? s.belief === s.pos && traced : pick.id === 'check_belief' ? s.belief === s.pos : undefined }));
@@ -722,7 +729,7 @@ const Sim = (() => {
   function ledger(s, who, text) { s.ledger.push({ hour: s.hour, who, text }); if (s.ledger.length > 60) s.ledger.shift(); }
   // Save and resume: everything but the rng closure and the boot events is plain data.
   function serialize(s) { const o = Object.assign({}, s); delete o._rng; delete o._boot; return JSON.stringify(o); }
-  function restore(json) { const s = JSON.parse(json); s._boot = []; return attachRng(s); }
+  function restore(json) { const s = JSON.parse(json); D.useChapter(s.chapter === 2 ? 2 : 1); s._boot = []; return attachRng(s); }
   // The ending names what the run cost. Built from the state, so every run reads differently.
   function epilogue(s, win, kind) {
     // at most three lines after the ending itself, most important first
