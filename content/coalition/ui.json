@@ -4737,7 +4737,7 @@
   {
    "id": "brief.gov_job_ban",
    "pattern": "P08",
-   "text": "Circulate the travel ban, and every border crossing she tries is harder."
+   "text": "Send out the travel ban, which makes every border crossing harder for her."
   },
   {
    "id": "brief.gov_job_hold",
@@ -4747,7 +4747,7 @@
   {
    "id": "brief.gov_job_search",
    "pattern": "P08",
-   "text": "Move your search to {place}, where the newest report comes from, and search there.",
+   "text": "Move your search to {place}, where the newest report came from, and search there.",
    "args": [
     "place"
    ]
@@ -4780,7 +4780,7 @@
   {
    "id": "brief.hours_gov",
    "pattern": "P08",
-   "text": "Hours until her escape deadline, Tuesday at 2 p.m. Then her immunity ends and she can no longer leave the country."
+   "text": "Hours left until her deadline, Tuesday at 2 p.m. After that, she can no longer leave the country."
   },
   {
    "id": "brief.phone_suggest",
@@ -4819,7 +4819,7 @@
   {
    "id": "brief.gov_report_now",
    "pattern": "P08",
-   "text": "The newest report, which just came in, comes from {place}.",
+   "text": "A report just came in from {place}.",
    "args": [
     "place"
    ]
@@ -4827,7 +4827,7 @@
   {
    "id": "brief.gov_report_hour",
    "pattern": "P08",
-   "text": "The newest report, which came in an hour ago, comes from {place}.",
+   "text": "The newest report came from {place} an hour ago.",
    "args": [
     "place"
    ]
@@ -4835,7 +4835,7 @@
   {
    "id": "brief.gov_report_hours",
    "pattern": "P08",
-   "text": "The newest report, which came in {n} hours ago, comes from {place}.",
+   "text": "The newest report came from {place} {n} hours ago.",
    "args": [
     "place",
     "n"
@@ -4849,7 +4849,7 @@
   {
    "id": "brief.gov_reports_caveat",
    "pattern": "P08",
-   "text": "Reports can be late or false."
+   "text": "Some reports arrive late, and some are false."
   },
   {
    "id": "brief.minister_expects",
@@ -5314,8 +5314,11 @@
   {
    "id": "brief.gov_patrols",
    "pattern": "P02",
-   "text": "Two patrols",
-   "role": "gov"
+   "text": "{n} patrols",
+   "role": "gov",
+   "args": [
+    "n"
+   ]
   },
   {
    "id": "brief.gov_pin_new",

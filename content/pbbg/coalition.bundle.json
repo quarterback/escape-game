@@ -11512,7 +11512,7 @@
    "id": "brief.gov_job_ban",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Circulate the travel ban, and every border crossing she tries is harder.",
+   "text": "Send out the travel ban, which makes every border crossing harder for her.",
    "audience": [
     "player"
    ],
@@ -11536,7 +11536,7 @@
    "id": "brief.gov_job_search",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Move your search to {place}, where the newest report comes from, and search there.",
+   "text": "Move your search to {place}, where the newest report came from, and search there.",
    "audience": [
     "player"
    ],
@@ -11614,7 +11614,7 @@
    "id": "brief.hours_gov",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Hours until her escape deadline, Tuesday at 2 p.m. Then her immunity ends and she can no longer leave the country.",
+   "text": "Hours left until her deadline, Tuesday at 2 p.m. After that, she can no longer leave the country.",
    "audience": [
     "player"
    ],
@@ -11704,7 +11704,7 @@
    "id": "brief.gov_report_now",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The newest report, which just came in, comes from {place}.",
+   "text": "A report just came in from {place}.",
    "audience": [
     "player"
    ],
@@ -11722,7 +11722,7 @@
    "id": "brief.gov_report_hour",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The newest report, which came in an hour ago, comes from {place}.",
+   "text": "The newest report came from {place} an hour ago.",
    "audience": [
     "player"
    ],
@@ -11740,7 +11740,7 @@
    "id": "brief.gov_report_hours",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The newest report, which came in {n} hours ago, comes from {place}.",
+   "text": "The newest report came from {place} {n} hours ago.",
    "audience": [
     "player"
    ],
@@ -11748,13 +11748,13 @@
     "run"
    ],
    "bindings": {
-    "n": {
-     "source": "fact",
-     "ref": "arg.n"
-    },
     "place": {
      "source": "fact",
      "ref": "arg.place"
+    },
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
     }
    }
   },
@@ -11774,7 +11774,7 @@
    "id": "brief.gov_reports_caveat",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Reports can be late or false.",
+   "text": "Some reports arrive late, and some are false.",
    "audience": [
     "player"
    ],
@@ -12843,13 +12843,19 @@
    "id": "brief.gov_patrols",
    "domain": "interface",
    "pattern": "navigation-heading",
-   "text": "Two patrols",
+   "text": "{n} patrols",
    "audience": [
     "player"
    ],
    "phases": [
     "run"
-   ]
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
   },
   {
    "id": "brief.gov_pin_new",
