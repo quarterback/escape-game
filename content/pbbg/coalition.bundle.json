@@ -20733,7 +20733,7 @@
    "id": "event.rita_crew.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Rita's old crew will work on your jet tonight for cash, but paying on the apron gets you noticed.",
+   "text": "Rita's old crew offers to work on your jet tonight for cash, but paying on the apron gets you noticed.",
    "audience": [
     "player"
    ],
