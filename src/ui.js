@@ -22,7 +22,7 @@ const UI = (() => {
   const sibNamed = (t) => { if (gov || !who || !Data.CHARACTERS[who]) return t; const sb = Data.CHARACTERS[who].sibling, n = T('who.sibling', { rel: sb.rel.replace(/^your /, ''), name: sb.short }); return t.replace(/\bYour sibling\b/g, n[0].toUpperCase() + n.slice(1)).replace(/\byour sibling\b/g, n); };
   const esc = (t) => sibNamed(t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   // who a call goes to: the sibling is "your sibling", which reads the same for either candidate
-  const callee = (id) => id === 'sibling' ? T('phone.your_sibling') : pname(id);
+  const callee = (id) => id === 'sibling' ? `${Data.CHARACTERS[who] ? Data.CHARACTERS[who].sibling.rel + ' ' + Data.CHARACTERS[who].sibling.short : T('phone.your_sibling')}` : pname(id);
   const pname = (id) => gov ? Gov.personName(gov, id) : Sim.personName(s, id);
 
   function log(whoId, text, cls) {

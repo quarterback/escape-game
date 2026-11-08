@@ -184,7 +184,7 @@
   {
    "code": "her.exposed",
    "pattern": "P03",
-   "text": "Harder for her to hide"
+   "text": "Police attention on her rises"
   },
   {
    "code": "her.warned",
@@ -215,7 +215,7 @@
   {
    "code": "ban.lost",
    "pattern": "P03",
-   "text": "The post at the line lets the ban slide"
+   "text": "The post at the line stops enforcing the travel ban"
   },
   {
    "code": "hold.esmeralda_moves",
@@ -264,7 +264,7 @@
   {
    "code": "body.car",
    "pattern": "P03",
-   "text": "A few hours of sleep in the car"
+   "text": "A short sleep in the car"
   },
   {
    "code": "body.meal",
@@ -307,7 +307,7 @@
   {
    "code": "search.loses_move_two",
    "pattern": "P03",
-   "text": "The bounty hunters skip their next move"
+   "text": "The bounty hunters skip their next action"
   },
   {
    "code": "search.at_two",

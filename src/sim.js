@@ -93,6 +93,8 @@ const Sim = (() => {
   const onRoute = (s, i) => !(s.route === 'coast' && (i === 2 || i === 3));
   const level = (s) => stopAt(s, s.pos);
   // a stop's name mid-sentence: chapter two's stops carry their own; chapter one says the residence and the line
+  // owner, Nov. 1, 2026: never "your sibling"; the screen says "Your brother Duartē" or "Your sister Līviā"
+  const sibNamed = (s) => { const t = `${ch(s).sibling.rel} ${ch(s).sibling.short}`; return t[0].toUpperCase() + t.slice(1); };
   const placeOf = (s, i) => { const L = stopAt(s, Math.max(0, i)); return L.place || (i <= 0 ? 'the residence' : i === 4 ? 'the line' : L.short); };
   const dest = (s) => D.DESTS[s.dest] || D.DESTS.atlanta;
   const postName = (id) => D.POSTS[id];
@@ -257,14 +259,14 @@ const Sim = (() => {
       if (p && !p.hurried && !p.stall && p.due - s.hour > 2) { out.push({ kind: 'call', id: 'hurry:' + k, hurry: true, name: T('sim.label.hurry', { name: ally === 'sibling' ? `${ch(s).sibling.rel} ${ch(s).sibling.name}` : personName(s, p.ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally: p.ally, arr: k, ok: !s.event, why: s.event ? T('sim.why.answer_the_news_first') : '', hours: 1, cost: hurryCost(k), preview: [hurryCost(k)] }); return; }
       if (p) { out.push({ kind: 'call', id: 'call:' + k, name: T('sim.status.is_on_it', { name: personName(s, ally) }), ok: false, why: T('sim.why.resolves_at', { time: clockText(p.due) }), hours: 0, preview: [text] }); return; }
       if (s.event) whys.unshift(T('sim.why.answer_the_news_first'));
-      out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: ally === 'sibling' ? T('phone.your_sibling') : personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
+      out.push({ kind: 'call', id: 'call:' + k, name: T('sim.label.call_about', { name: ally === 'sibling' ? `${ch(s).sibling.rel} ${ch(s).sibling.short}` : personName(s, ally), what: ({ aircraft: T('arr.what_aircraft'), reception: T('arr.what_reception'), permission: T('arr.what_permission') })[k] }), ally, arr: k, ok: whys.length === 0, why: whys.join(' '), hours: 1,
         preview: [text, T('sim.preview.next_reply_in_hours_needs', { stage: def.stages[a.stage + 1], k: jobHours(k), name: personName(s, ally) })] });
     };
-    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering') : null].filter(Boolean),
-      T('sim.status.arrange_the_next_stage_charter'));
+    add('aircraft', 'sibling', [A.aircraft.stage === 1 && !s.flags.destination && A.permission.stage < 1 ? T('sim.why.name_a_destination_or_engage', { sponsor: sponsor(s).short }) : null, s.people.sibling.turned ? T('sim.why.not_answering', { name: sibNamed(s) }) : null].filter(Boolean),
+      T('sim.status.arrange_the_next_stage_charter', { name: sibNamed(s) }));
     add('reception', A.reception.stage < 2 ? 'sibling' : 'official',
       [A.reception.stage === 2 && s.pos < 3 ? T('sim.status.call_from_salta_to_request') : null].filter(Boolean),
-      T('sim.status.arrange_reception_through_your_sibling'));
+      T('sim.status.arrange_reception_through_your_sibling', { name: sibNamed(s) }));
     add('permission', 'sponsor', [s.pos >= ESMERALDA_FROM && A.permission.stage === 0 ? T('sim.status.contact_salek_before_reaching_susana', { sponsor: sponsor(s).short }) : null].filter(Boolean),
       T('sim.status.ask_salek_to_seek_visa', { name: dest(s).name, sponsor: sponsor(s).short, wants: sponsor(s).wants }));
     // issue #49: tell a helper you have met a false route, once each, and see whether the police go there
@@ -564,11 +566,10 @@ const Sim = (() => {
   function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0 || (D.CARDS[id] && D.CARDS[id].companion)) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }
   function heat(s, d, events) { s.exposure = Math.max(0, Math.min(EXPOSURE_LIMIT, s.exposure + d)); events.push(ev('exposure', { delta: d, exposure: s.exposure })); }
   // an arrangement can move one step only where the same step through an ally could (resolveJob):
-  // the visa is issued only by a country that accepts you, and the crew confirms only once the jet has a destination
+  // the crew confirms only once the jet has a destination (owner, Nov. 1, 2026: every country takes you, so the visa can always be issued)
   function canMove(s, k) {
     const to = s.arr[k].stage + 1;
     if (to > D.ARRANGEMENTS[k].stages.length - 1) return false;
-    if (k === 'permission' && to === 2 && !dest(s).accepts) return false;
     if (k === 'aircraft' && to === 2 && !s.flags.destination && s.arr.permission.stage < 1) return false;
     return true;
   }

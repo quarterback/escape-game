@@ -1333,7 +1333,7 @@
    "id": "gov.next.abroad",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Your police can't act in Costamar until it agrees to hold her.",
+   "text": "Your searches, checkpoints, and call-ins work at Portalba only after Costamar agrees to hold her.",
    "audience": [
     "government"
    ],
@@ -1345,7 +1345,7 @@
    "id": "gov.next.ask_hold",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Ask Costamar to hold her on the desk.",
+   "text": "Open the desk and ask Costamar to hold her.",
    "audience": [
     "government"
    ],
@@ -1934,7 +1934,7 @@
    "id": "need.baca",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Call your sibling to reach Vélez in Cerro Alto.",
+   "text": "Call about your welcome in Costamar to reach Vélez in Cerro Alto.",
    "audience": [
     "player"
    ],
@@ -2102,7 +2102,7 @@
    "id": "need.after",
    "domain": "interface",
    "pattern": "blocked-action",
-   "text": "Wait until 10 at night",
+   "text": "Wait until 10 p.m.",
    "audience": [
     "player"
    ],
@@ -2210,7 +2210,7 @@
    "id": "route.stops_here",
    "domain": "narrative",
    "pattern": "card",
-   "text": "{card} counts here for the last time",
+   "text": "{card} helps here for the last time",
    "audience": [
     "player"
    ],
@@ -2228,7 +2228,7 @@
    "id": "route.starts_here",
    "domain": "narrative",
    "pattern": "card",
-   "text": "{card} starts counting here",
+   "text": "{card} starts helping here",
    "audience": [
     "player"
    ],
@@ -2246,7 +2246,7 @@
    "id": "route.velez_starts",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Vélez's card counts from here once you have it",
+   "text": "Vélez's card helps from here once you have it",
    "audience": [
     "player"
    ],
@@ -2396,7 +2396,7 @@
    "id": "route.card_stops_line",
    "domain": "narrative",
    "pattern": "card",
-   "text": "{card} counts up to and at the line",
+   "text": "{card} helps up to and at the line",
    "audience": [
     "player"
    ],
@@ -2510,7 +2510,7 @@
    "id": "result.lay_low",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You lay low",
+   "text": "You lie low",
    "audience": [
     "player"
    ],
@@ -2720,7 +2720,7 @@
    "id": "round.held",
    "domain": "interface",
    "pattern": "navigation-heading",
-   "text": "{place}, with police stops at step {hold} of three",
+   "text": "{place}, step {hold} of three toward house arrest",
    "audience": [
     "player"
    ],
@@ -3770,7 +3770,7 @@
    "id": "route.esm_intro",
    "domain": "narrative",
    "pattern": "card",
-   "text": "If Costamar agrees to hold her, its introduction lets your search, checkpoint, and call-in orders work at Portalba.",
+   "text": "If Costamar agrees to hold her, your search, checkpoint, and call-in orders work at Portalba.",
    "audience": [
     "player"
    ],
@@ -4606,7 +4606,7 @@
    "id": "mate.celina.yacht_effect",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The police go back to searching the residence, and your police attention drops by two. The story comes from Celina's newsroom, not from you, so it costs you nothing if one of your people later talks to the police.",
+   "text": "The police go back to searching the residence, and your police attention drops by two. Celina's newsroom runs the story, so it costs you nothing if one of your people later talks to the police.",
    "audience": [
     "player"
    ],
@@ -4684,7 +4684,7 @@
    "id": "sim.inquiry.circulate_held",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The police send the travel ban out, but Paulo says it will sit in the clerk's outbox until {time} before it reaches any post.",
+   "text": "The police send out the travel ban, but Paulo says it sits in the clerk's outbox and reaches no post until {time}.",
    "audience": [
     "player"
    ],
@@ -4992,7 +4992,7 @@
    "id": "gov.report.exchange_none",
    "domain": "narrative",
    "pattern": "report",
-   "text": "No call from her side went through the exchanges in the last eight hours.",
+   "text": "No call from her side went through the exchanges in the four hours before you asked.",
    "audience": [
     "government"
    ],
@@ -5004,7 +5004,7 @@
    "id": "gov.report.exchange_none_proves",
    "domain": "narrative",
    "pattern": "report",
-   "text": "Her side has made no calls for eight hours.",
+   "text": "Her side made no calls in those four hours.",
    "audience": [
     "government"
    ],
@@ -6438,7 +6438,7 @@
    "id": "sim.say.was_working_for_sosa_you",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "{name} was working for the police, so you drop every card you got through that contact.",
+   "text": "{name} was working for the police, so you lose every card {name} gave you.",
    "audience": [
     "player"
    ],
@@ -6570,7 +6570,7 @@
    "id": "sim.label.lie_low_one_hour",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Lie low one hour",
+   "text": "Lie low for 1 hr",
    "audience": [
     "player"
    ],
@@ -6660,13 +6660,19 @@
    "id": "sim.status.arrange_reception_through_your_sibling",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Your sibling gets Vélez to expect you, and later Vélez can put officials at one border post.",
+   "text": "{name} gets Vélez to expect you, and later Vélez can put officials at one border post.",
    "audience": [
     "player"
    ],
    "phases": [
     "run"
-   ]
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
   },
   {
    "id": "sim.status.call_from_salta_to_request",
@@ -6684,25 +6690,37 @@
    "id": "sim.status.arrange_the_next_stage_charter",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Your sibling sets up the jet in steps: charter, crew, fuel, then ready at Portalba.",
+   "text": "{name} sets up the jet in steps: charter, crew, fuel, then ready at Portalba.",
    "audience": [
     "player"
    ],
    "phases": [
     "run"
-   ]
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
   },
   {
    "id": "sim.why.not_answering",
    "domain": "interface",
    "pattern": "blocked-action",
-   "text": "Your sibling is not picking up.",
+   "text": "{name} is not picking up.",
    "audience": [
     "player"
    ],
    "phases": [
     "run"
-   ]
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
   },
   {
    "id": "sim.why.name_a_destination_or_engage",
@@ -7079,7 +7097,7 @@
    "id": "sim.effect.an_hour_on_the_phone",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "You keep the police inspector on the line for an hour, and the police skip their next action.",
+   "text": "You keep the police inspector on the line for an hour, and the police wait longer before their next move.",
    "audience": [
     "player"
    ],
@@ -7177,7 +7195,7 @@
    "id": "sim.effect.reception_stands_the_party_at",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Vélez's arrangements stay as they are.",
+   "text": "Your welcome in Costamar stays as it is.",
    "audience": [
     "player"
    ],
@@ -7226,7 +7244,7 @@
    "id": "sim.effect.keep_gianluka_s_support_and",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Gianlūka stays with you, you get \"A friend in the police\" if you lack it, and the police move their search to Pedra Branca.",
+   "text": "Gianlūka stays on your side and gives you \"A friend in the police\" unless you already have it. The police move their search to Pedra Branca.",
    "audience": [
     "player"
    ],
@@ -7591,7 +7609,7 @@
    "id": "gov.debrief.he_has_not_forgotten_the",
    "domain": "narrative",
    "pattern": "ending",
-   "text": " Over the run, he was angry with how you handled things.",
+   "text": " By the end, he was angry with how you ran the case.",
    "audience": [
     "government"
    ],
@@ -7603,7 +7621,7 @@
    "id": "gov.debrief.your_handling_of_the_press",
    "domain": "narrative",
    "pattern": "ending",
-   "text": " Over the run, he was pleased with how you handled things.",
+   "text": " By the end, he was pleased with how you ran the case.",
    "audience": [
     "government"
    ],
@@ -7894,7 +7912,7 @@
    "id": "gov.line.esmeralda_will_hold_her_if",
    "domain": "narrative",
    "pattern": "dialogue",
-   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and their police can stop her once for questioning. The interior ministry gave us a name to call.\"",
+   "text": "\"Costamar has agreed to our request. If she reaches Portalba, her takeoff is harder, and their police can stop her for questioning. The interior ministry gave us a name to call.\"",
    "audience": [
     "government"
    ],
@@ -7955,7 +7973,7 @@
    "id": "gov.report.the_patrol_searches_nobody_there",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The patrol searches {place} and nobody has seen her.",
+   "text": "The patrol searches {place}, and nobody there has seen her.",
    "audience": [
     "government"
    ],
@@ -8278,7 +8296,7 @@
    "id": "gov.status.your_people_a_railway_contact",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "A railway contact here has not been asked yet.",
+   "text": "You have not asked the yardmaster here yet.",
    "audience": [
     "government"
    ],
@@ -8338,7 +8356,7 @@
    "id": "gov.status.not_asked",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Not asked.",
+   "text": "You have not asked yet.",
    "audience": [
     "government"
    ],
@@ -8350,7 +8368,7 @@
    "id": "gov.status.asked_through_the_embassy_in",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Asked through the embassy in Cerro Alto, not answered yet.",
+   "text": "You asked through the embassy in Cerro Alto, and nobody has answered yet.",
    "audience": [
     "government"
    ],
@@ -8410,7 +8428,7 @@
    "id": "gov.status.not_sent",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Not sent.",
+   "text": "You have not sent it yet.",
    "audience": [
     "government"
    ],
@@ -8458,7 +8476,7 @@
    "id": "gov.scene.the_crossing_could_happen_before",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "She could cross before your orders arrive, because the travel ban makes crossing harder without closing the border.",
+   "text": "The travel ban makes crossing harder but leaves the border open. She can cross before your orders arrive.",
    "audience": [
     "government"
    ],
@@ -8590,7 +8608,7 @@
    "id": "gov.preview.the_aviation_desk_takes_six",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The desk answers six hours after your call. If it agrees, it gives you the operator card.",
+   "text": "The aviation desk answers six hours after your call. If it agrees, you can press the charter operator through his license.",
    "audience": [
     "government"
    ],
@@ -8602,7 +8620,7 @@
    "id": "gov.why.the_aviation_desk_opens_on",
    "domain": "interface",
    "pattern": "blocked-action",
-   "text": "The aviation desk opens at 8 on Saturday night.",
+   "text": "The aviation desk opens Saturday evening at 8.",
    "audience": [
     "government"
    ],
@@ -8674,7 +8692,7 @@
    "id": "gov.status.asked_the_embassy_has_not",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "Asked, not answered yet",
+   "text": "You asked, and nobody has answered yet.",
    "audience": [
     "government"
    ],
@@ -8788,7 +8806,7 @@
    "id": "gov.effect.honest_the_minister_briefs_the",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The minister tells the papers she has fled. The police turn to a stop where she is not, and her police attention falls by one.",
+   "text": "The minister loses patience and tells the papers she has fled. The police turn to a stop where she is not, and her police attention falls by one.",
    "audience": [
     "government"
    ],
@@ -9630,7 +9648,7 @@
    "id": "sim.status.ask_salek_to_seek_visa",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, and agreeing is optional.",
+   "text": "{sponsor} asks the ministry for your visa and wants {wants} in return, and you can refuse.",
    "audience": [
     "player"
    ],
@@ -9652,7 +9670,7 @@
    "id": "sim.effect.crew_booking_can_proceed",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The charter jet is booked. Your next call about the jet can hire a crew for {city}, and the visa is a separate request.",
+   "text": "The charter jet is booked, and your next call about the jet asks for a crew for {city}. Your visa is still a separate call.",
    "audience": [
     "player"
    ],
@@ -9872,7 +9890,7 @@
    "id": "map.hint",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The country you pick decides on your entry visa. You can fly without one, but a country that will not take you sends you back.",
+   "text": "The country you pick decides on your entry visa. You can fly without one, and that country still takes you when you land.",
    "audience": [
     "player"
    ],
@@ -9884,7 +9902,7 @@
    "id": "sim.effect.requires_sponsor_help",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "{sponsor} reaches Vélez's uncle, and Costamar's minister hears about you. You get Vélez's card, and you spend your sponsor's line to the ministry.",
+   "text": "{sponsor} reaches Vélez's uncle, and Costamar's minister learns you are coming. You get Vélez's card and give up \"Your sponsor's line to the ministry.\"",
    "audience": [
     "player"
    ],
@@ -10844,7 +10862,7 @@
    "id": "gov.debrief.m_decoys",
    "domain": "narrative",
    "pattern": "ending",
-   "text": "Your search was aimed at a stop a false report had named {n} times.",
+   "text": "Your search was aimed at a stop a false report had named, {n} times in all.",
    "audience": [
     "government"
    ],
@@ -10926,7 +10944,7 @@
    "id": "gov.debrief.desk_sum",
    "domain": "narrative",
    "pattern": "ending",
-   "text": "{ok} of the {total} orders you gave worked.",
+   "text": "Of the {total} orders you gave, {ok} worked.",
    "audience": [
     "government"
    ],
@@ -10934,13 +10952,13 @@
     "run"
    ],
    "bindings": {
-    "ok": {
-     "source": "fact",
-     "ref": "arg.ok"
-    },
     "total": {
      "source": "fact",
      "ref": "arg.total"
+    },
+    "ok": {
+     "source": "fact",
+     "ref": "arg.ok"
     }
    }
   },
@@ -12261,7 +12279,7 @@
    "id": "sim.say.calls_moved_some",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Three hours later, these arrangements have moved one step: {list}. The others did not move.",
+   "text": "Your calls move these one step: {list}. The others stay where they were.",
    "audience": [
     "player"
    ],
@@ -12357,7 +12375,7 @@
    "id": "gov.inquiry.helper_talks",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": " {first} talks and stops helping her, and the police go where she is, but you are not told the place.",
+   "text": " {first} talks and stops helping her. The police go where she is, but nobody tells you the place.",
    "audience": [
     "government"
    ],
@@ -12423,7 +12441,7 @@
    "id": "log.bought",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The Valdórian side let you through, but the Costamaran post turns you back.",
+   "text": "The Valdórian side lets you through, but the Costamaran post turns you back.",
    "audience": [
     "player"
    ],
@@ -12435,7 +12453,7 @@
    "id": "gov.report.stop_1",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A patrol stopped her for questioning in {place}.",
+   "text": "A patrol stopped her for questioning at {place}.",
    "audience": [
     "government"
    ],
@@ -12453,7 +12471,7 @@
    "id": "gov.report.stop_2",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A patrol took her to the station in {place}.",
+   "text": "A patrol took her to the station at {place}.",
    "audience": [
     "government"
    ],
@@ -12471,7 +12489,7 @@
    "id": "gov.report.stop_3",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The court put her under house arrest in {place}.",
+   "text": "The court put her under house arrest at {place}.",
    "audience": [
     "government"
    ],
@@ -13182,7 +13200,7 @@
    "id": "round.held.ch2",
    "domain": "interface",
    "pattern": "navigation-heading",
-   "text": "{place}, with bounty hunter stops at step {hold} of three",
+   "text": "{place}, step {hold} of three toward the international police",
    "audience": [
     "player"
    ],
@@ -13396,7 +13414,7 @@
    "id": "sim.say.was_working_for_sosa_you.ch2",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "{name} was working for the bounty hunters, so you drop every card you got through that contact.",
+   "text": "{name} was working for the bounty hunters, so you lose every card {name} gave you.",
    "audience": [
     "player"
    ],
@@ -13786,6 +13804,54 @@
    "domain": "interface",
    "pattern": "navigation-heading",
    "text": "Flight",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.status.arrange_reception_through_your_sibling.ch2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "{name} gets Dario, a fixer, to meet you at the pier in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "sim.status.arrange_the_next_stage_charter.ch2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "{name} books your flight to Lusara in two steps: a seat on hold, then a ticket.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "need.baca.ch2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Call about the fixer to reach Dario in Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -14661,7 +14727,7 @@
    "id": "level.residence.partycar.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "The party's official car",
+   "text": "Ride out in Gianlūka's car",
    "audience": [
     "player"
    ],
@@ -15009,7 +15075,7 @@
    "id": "level.road.known_car.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You pass the first post before the fax does.",
+   "text": "You pass the first post before the fax does, but the guard writes down your plate.",
    "audience": [
     "player"
    ],
@@ -15117,7 +15183,7 @@
    "id": "level.colonia.work_phone.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Three hours later, all three arrangements have moved one step. Nonā Rosa eats alone.",
+   "text": "Three hours later, the jet, your welcome in Costamar, and your visa have each moved one step. Nonā Rosa eats alone.",
    "audience": [
     "player"
    ],
@@ -15381,7 +15447,7 @@
    "id": "level.salta.foreman.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The registry window is open late tonight. Theo shakes his head and tells you to come back at the shift change.",
+   "text": "The yard office is open late tonight, so Theo shakes his head and tells you to come back at the shift change.",
    "audience": [
     "player"
    ],
@@ -15585,7 +15651,7 @@
    "id": "level.border.post_rail.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The freight's own crossing, where you show your second passport.",
+   "text": "The freight crosses here, and the guard checks your second passport.",
    "audience": [
     "player"
    ],
@@ -15621,7 +15687,7 @@
    "id": "level.border.post_high.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Take the Ālto Verdē road post",
+   "text": "Cross at the Ālto Verdē post",
    "audience": [
     "player"
    ],
@@ -15633,7 +15699,7 @@
    "id": "level.border.post_high.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "A mountain road post toward Cerro Alto, three hours of switchbacks away.",
+   "text": "The road post toward Cerro Alto is three hours of switchbacks up the mountain.",
    "audience": [
     "player"
    ],
@@ -15765,7 +15831,7 @@
    "id": "level.border.post_coast.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Pay the Punta Marēa crossing",
+   "text": "Bribe the guards at Punta Marēa",
    "audience": [
     "player"
    ],
@@ -15777,7 +15843,7 @@
    "id": "level.border.post_coast.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The merchants' crossing to the coast, where the guards take money.",
+   "text": "Merchants cross to the coast here, and the guards take money.",
    "audience": [
     "player"
    ],
@@ -15789,7 +15855,7 @@
    "id": "level.border.post_coast.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The barrier goes up. Nobody says thank you.",
+   "text": "The guards pocket the money and lift the barrier. One of them watches your car until it is out of sight.",
    "audience": [
     "player"
    ],
@@ -15813,7 +15879,7 @@
    "id": "level.border.received.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Walk to the people waiting",
+   "text": "Walk to the officials waiting",
    "audience": [
     "player"
    ],
@@ -16571,7 +16637,7 @@
    "id": "dest.zaryanova.asks",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes him work harder for you.",
+   "text": "Vosk, a former trade envoy, can take your visa request to the ministry. She wants mineral rights you do not control, and agreeing makes her work harder for you.",
    "audience": [
     "player"
    ],
@@ -16620,7 +16686,7 @@
    "id": "dest.zaryanova.effect",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Vosk takes the concession and works harder for you, so she works harder for you. Word reaches home, and your police attention rises by one.",
+   "text": "Vosk takes the concession and works harder for you. Word reaches home, and police attention rises by one.",
    "audience": [
     "player"
    ],
@@ -18111,7 +18177,7 @@
    "id": "card.comp_emilio.works",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Pedra Branca, Nova Trentô and Salta.",
+   "text": "Pedra Branca, Nova Trentô, and Salta.",
    "audience": [
     "player"
    ],
@@ -18399,7 +18465,7 @@
    "id": "event.selfie.beach.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Gianlūka's people post you on the coast.",
+   "text": "Gianlūka's people post an old photo of you on a beach, and the police start looking on the coast.",
    "audience": [
     "player"
    ],
@@ -19347,7 +19413,7 @@
    "id": "event.tourbus.bus.label",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Take the seat in a hat",
+   "text": "Take the seat in disguise",
    "audience": [
     "player"
    ],
@@ -19839,7 +19905,7 @@
    "id": "event.overflight.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The refuel stop will not let the jet cross. The long route adds hours.",
+   "text": "A country on the route will not let the jet fly over it. The long route adds three hours.",
    "audience": [
     "player"
    ],
@@ -20247,7 +20313,7 @@
    "id": "event.night_mechanic.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A mechanic says he can have your jet ready tonight if you pay him in cash.",
+   "text": "A mechanic offers to work on your jet tonight if you pay him in cash.",
    "audience": [
     "player"
    ],
@@ -20799,7 +20865,7 @@
    "id": "event.marta_pump.marta_pump_no.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The car limps on, and Marta can't make it look ordinary here.",
+   "text": "The car limps on, and Marta can't help you at this stop.",
    "audience": [
     "player"
    ],
@@ -21153,7 +21219,7 @@
    "id": "event.nadia_click.nadia_click_no.label",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "There is no time",
+   "text": "Say there is no time",
    "audience": [
     "player"
    ],
@@ -21847,7 +21913,7 @@
    "id": "hold.2.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The court placed you under house arrest. Two officers sit outside the door.",
+   "text": "The court puts you under house arrest. Two officers sit outside the door.",
    "audience": [
     "player"
    ],
@@ -23335,7 +23401,7 @@
    "id": "govevent.tower.paperwork.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The answer will come through the proper channel.",
+   "text": "The answer comes through the proper channel, six hours late.",
    "audience": [
     "government"
    ],
@@ -25123,7 +25189,7 @@
    "id": "ch2.level.eri_ship.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get off at Bahía Clara and never come back.",
+   "text": "Get off the ship at Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -26164,7 +26230,7 @@
    "id": "ch2.hold.1.wait_out.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "They argue for eight hours, take your best card and let you go when the police drive past.",
+   "text": "They argue for eight hours, take the most useful thing you carry, and let you go when the police drive past.",
    "audience": [
     "player"
    ],
