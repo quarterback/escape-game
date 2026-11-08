@@ -135,6 +135,12 @@ How to work under it:
   Cerro Alto, Susana to Portalba, Santa Laura to Pedra Branca, Atlanta to
   Altamira, Tarun to Ardésia, Zaryanova to Nordavia, Gannibal to Krasnomor. Nov. 1, 2026: Lāyūna to Lagoa Funda.
   Internal ids keep the old names.
+- **Chapter two, Erinana Island** (owner, Nov. 8, 2026). Winning chapter one offers "Go on to Erinana Island": the plane
+  lands there because the country you chose elected a new government and revoked your humanitarian parole. It is the same
+  game in new outfits, with no new mechanics: six stops (the airstrip, Erinana town, Tamarind Cove, the quay, the ship,
+  Bahía Clara airport), your companion and nothing else, and a real visa for Lusara from the start. `Data.useChapter(2)`
+  swaps the tables, and an entry `<id>.ch2` (markers: `<code>_two`) replaces a line in chapter two. The opponent there is
+  "the bounty hunters," never the police. Every place and person is invented.
 - **The opponent is "the police"**, never Sosā. Owner, Nov. 1, 2026: "no one knows who Sosā is ... it's too confusing for people," then "Just say police or cops, the precision isn't required." Use a plural verb ("the police act once during these three hours"). Where one person is needed, say "the police inspector" (the phone shows "Police"). Internal ids keep `sosa` and `enemy`.
 - **Endings** read "You win" or "You lose", then one short sentence ("The police put you under house
   arrest."), and nothing more (owner, Nov. 2, 2026: "None of this detail is helpful or necessary").

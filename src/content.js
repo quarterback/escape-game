@@ -22,13 +22,16 @@ const Content = (() => {
   const fill = (text, args) => String(text).replace(/\{(\w+)\}/g, (all, k) => (args && args[k] !== undefined && args[k] !== null) ? String(args[k]) : all);
   // a clock that ends in a.m. or p.m. at the end of a sentence must not print a second period
   const tidy = (x) => x.replace(/\b([ap])\.m\.\./g, '$1.m.');
-  function t(id, args) { const e = UI[id]; if (!e) { missing.push(id); return id; } return tidy(fill(e.text, args)); }
+  // chapter two dresses some lines differently: an entry "<id>.ch2" replaces "<id>" while Content.variant is 2
+  const pick = (id) => (api.variant && UI[id + '.ch' + api.variant]) || UI[id];
+  function t(id, args) { const e = pick(id); if (!e) { missing.push(id); return id; } return tidy(fill(e.text, args)); }
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   // the only markup content may carry: **bold** and paragraphs separated by a blank line (rule C10)
   function rich(text) { return esc(text).split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join(''); }
-  function html(id, args) { const e = UI[id]; if (!e) { missing.push(id); return esc(id); } const a = {}; for (const k in args || {}) a[k] = args[k]; return rich(fill(e.text, a)); }
-  function marker(k, code, args) { const e = MK[code]; if (!e) { missing.push(code); return { k, code, args: args || {}, t: code }; } return { k, code, args: args || {}, t: fill(e.text, args) }; }
+  function html(id, args) { const e = pick(id); if (!e) { missing.push(id); return esc(id); } const a = {}; for (const k in args || {}) a[k] = args[k]; return rich(fill(e.text, a)); }
+  function marker(k, code, args) { const e = (api.variant && MK[code + '_two']) || MK[code]; if (!e) { missing.push(code); return { k, code, args: args || {}, t: code }; } return { k, code, args: args || {}, t: fill(e.text, args) }; }
   const has = (id) => !!UI[id];
-  return { t, html, rich, marker, has, fill, esc, tutorials: P.tutorials, glossary: P.glossary, version: P.manifest ? P.manifest.version : '', missing };
+  const api = { t, html, rich, marker, has, fill, esc, tutorials: P.tutorials, glossary: P.glossary, version: P.manifest ? P.manifest.version : '', missing, variant: 0 };
+  return api;
 })();
 if (typeof module !== 'undefined') module.exports = Content;

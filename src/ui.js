@@ -61,13 +61,13 @@ const UI = (() => {
 
   // ---- runs --------------------------------------------------------------
   let replaying = null; // { queue, speed, timer } while a replay link plays itself
-  function newRun(w, demo, isDaily, dest, seed, extra, mate) {
+  function newRun(w, demo, isDaily, dest, seed, extra, mate, chapter) {
     closeCall(); callShown.clear();
     markSeen(); briefPos = -1; recap = null; newsRecap = null; gov = null; document.body.classList.remove('gov'); daily = isDaily ? dailyInfo() : null; round = 1; $('map').hidden = true;
     lastStop = -1; // the first stop gets its screen too
     if (daily) { who = daily.who; s = Sim.newRun(daily.seed, who, { daily: true, dest }); Tutorial.stop(); }
     else if (demo) { who = Tutorial.WHO; s = Sim.newRun(Tutorial.SEED, who, { dice: Tutorial.DICE, enemy: Tutorial.ENEMY, tutorial: true }); Tutorial.start('escape'); }
-    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null }); Tutorial.stop(); }
+    else { who = w; s = Sim.newRun(seed === undefined ? (Math.random() * 1e9) >>> 0 : seed, who, { dest, extra: extra || [], companion: mate || null, chapter: chapter || 1 }); Tutorial.stop(); }
     if (!demo && !replaying) s.runNo = nextRunNo(); // "Coalition Run #12" in the share card: this player's runs, counted on this device
     sel = null; enemyLog = []; Sfx.theme(false);
     Render.setState(s); Render.view.over = null; Render.view.queue = []; Render.view.current = null;
@@ -335,7 +335,7 @@ const UI = (() => {
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
-      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
+      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
       rail.appendChild(li);
     });
     const ab = document.createElement('li'); ab.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><section id="abroad"><h3>${T('route.abroad_phone')}</h3>${abroad().map(w => `<span class="who">${whoHtml(w)}, ${w.role}</span>`).join('')}</section>`; rail.appendChild(ab);
@@ -343,7 +343,7 @@ const UI = (() => {
     const b = $('board'); b.innerHTML = '';
     const cell = (html, cls) => { const d = document.createElement('div'); d.className = 'cell ' + (cls || ''); d.innerHTML = html; b.appendChild(d); };
     const colCls = (i) => i === s.pos ? 'cur' : i === 5 ? 'esm' : '';
-    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
+    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
     lbl(T('route.who_acts_label')); Sim.route(s).forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
     lbl(T('route.needed')); Sim.route(s).forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
@@ -364,6 +364,8 @@ const UI = (() => {
     const why = endWhy();
     $('overtext').innerHTML = `<p class="overwhy">${esc(why)}</p>` + (gov ? Gov.debrief(gov) : ''); // owner, Nov. 2, 2026: the result and nothing more
     $('changewho').textContent = T(gov ? 'over.play_her' : 'over.choose');
+    // owner, Nov. 8, 2026: winning chapter one opens chapter two, on Erinana Island
+    $('chapter2').hidden = !(s.over.win && !gov && !s.chapter && !s.tutorial && !replaying);
     $('share').hidden = false; $('share').textContent = T('over.share'); $('saverun').hidden = true; // owner, Nov. 2, 2026: every run can be shared; a finished run needs no saved copy
     if (daily && !gov && !dailyResult(daily.key)) { try { localStorage.setItem(DAILY + daily.key, JSON.stringify({ win: s.over.win, line: outcomeLine(s.over), holds: s.holds, round })); } catch (e) { /* storage blocked */ } }
     saveRun();
@@ -372,7 +374,7 @@ const UI = (() => {
   // ---- export and replay ------------------------------------------------------------
   // A run is its seed, who played, where they were going and every accepted action, in order.
   function exportRun() {
-    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', inv: gov ? (gov.inv || 'sofia') : null, seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
+    const st = gov || s; return { v: 1, game: 'coalition', kind: gov ? 'gov' : 'escape', chapter: gov ? 1 : (s.chapter || 1), inv: gov ? (gov.inv || 'sofia') : null, seed: st.seed, who: gov ? null : s.who, dest: gov ? null : s.dest, extra: gov ? null : (s.picked || []), companion: (gov || s).companion || null, actions: (st.actions || []).slice(), ended: s.over ? (gov ? (s.over.win ? 'escaped' : 'stopped') : s.over.kind) : null };
   }
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))));
@@ -393,7 +395,7 @@ const UI = (() => {
     replaying = { queue: rec.actions.slice(), speed: speed || 900, timer: null, last: 0, cutLevel: opts.cutLevel || 99, onDone: opts.onDone || null };
     if (!opts.attract) { $('title').hidden = true; $('replaybadge').hidden = false; Sfx.setMuted(true); }
     $('start').hidden = true;
-    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion, rec.inv); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion);
+    if (rec.kind === 'gov') newGovRun(false, rec.seed, rec.companion, rec.inv); else newRun(rec.who || 'woman', false, false, rec.dest || 'atlanta', rec.seed, rec.extra || [], rec.companion, rec.chapter || 1);
     replaying.timer = setInterval(replayTick, 150);
   }
   function stopReplay() { if (!replaying) return; const done = replaying.onDone; clearInterval(replaying.timer); replaying = null; if (done) done(); else document.body.classList.add('replay-done'); }
@@ -554,7 +556,7 @@ const UI = (() => {
     return out;
   }
   const cap = (t) => t ? t[0].toUpperCase() + t.slice(1) : t;
-  const placeName = (i) => i === 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short;
+  const placeName = (i) => Sim.route(s)[Math.max(0, i)].place || (i <= 0 ? T('brief.the_residence') : i === 4 ? T('brief.the_line') : Sim.route(s)[i].short);
   // A small map of the route (owner, Nov. 1, 2026: "it would be so much better if it had a little map ... instead of a
   // line"): Valdória and Costamar, the border as a dashed line, the stops where they sit, the road you have travelled
   // solid and the road ahead dashed. Wide in the scene and on a desktop stop screen; tall on a phone.
@@ -847,7 +849,7 @@ const UI = (() => {
       const li = document.createElement('li'); li.className = (i === gov.belief ? 'current' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const reps = v.reports.filter(r => r.at === i).map(r => `<span class="need notyet"><b>${esc(T('route.report_src', { source: r.source, age: r.age === 'just now' ? T('report.just_now') : T('report.ago', { age: r.age }) }))}</b><span>${esc(r.text)} ${esc(r.doesnt ? T('route.does_not_prove', { what: r.doesnt.charAt(0).toLowerCase() + r.doesnt.slice(1) }) : '')}</span></span>`).join('');
       const reqs = v.requests.filter(r => r.at === i).map(r => `<span class="need ${r.state}"><span class="sr">${esc(stateWord(r.state))} </span><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></span>`).join('');
-      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === gov.belief ? T('route.may_be_here') : i === 4 ? T('route.border') : i === 5 ? T('route.esmeralda') : ''}</span></div><span class="who">${esc(v.people[i])}</span>${i === 5 ? `<span class="need notyet"><b>${T('route.no_command')}</b><span>${T('route.ask_esm')}</span></span>` : ''}${reqs}${reps}</div>`;
+      li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === gov.belief ? T('route.may_be_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span></div><span class="who">${esc(v.people[i])}</span>${i === 5 ? `<span class="need notyet"><b>${T('route.no_command')}</b><span>${T('route.ask_esm')}</span></span>` : ''}${reqs}${reps}</div>`;
       rail.appendChild(li);
     });
     const ab = document.createElement('li'); ab.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><section id="abroad"><h3>${T('route.cards_count')}</h3>${gov.hand.map(id => `<span class="who">${esc(Data.GOV_CARDS[id].name)}: ${esc(Data.GOV_CARDS[id].works)}</span>`).join('')}<span class="who s">${T('route.esm_intro')}</span></section>`; rail.appendChild(ab);
@@ -1039,6 +1041,7 @@ const UI = (() => {
     $('again').onclick = () => { Sfx.click(); $('over').hidden = true; gov ? newGovRun() : newRun(who, false, !!daily); };
     const closeOver = () => { Sfx.click(); $('over').hidden = true; saveRun(); showStart(); };
     $('overclose').onclick = closeOver;
+    $('chapter2').onclick = () => { Sfx.unlock(); Sfx.click(); $('over').hidden = true; newRun(who, false, false, s.dest, undefined, [], s.companion, 2); };
     $('changewho').onclick = () => { Sfx.click(); $('over').hidden = true; if (gov) newRun(gov.target); else showStart(); };
     $('startscreen').onclick = () => { saveRun(); showStart(); };
     // desktop: one Menu button holds the demo, start screen, help, credits and sound; the top bar is for the game
