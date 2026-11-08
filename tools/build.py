@@ -12,6 +12,15 @@ if shutil.which('node'):
     if _r.returncode != 0:
         sys.stdout.write(_r.stdout); sys.stderr.write(_r.stderr); raise SystemExit('build stopped: content check failed')
     print(_r.stdout.strip().splitlines()[-1])
+    # The owner's PBBG Content Schema checks the same copy on every build. The bundle is written to
+    # content/pbbg/coalition.bundle.json so anyone can read the game's text in that format.
+    _b = subprocess.run(['node', str(_root / 'tools' / 'pbbg-bundle.js')], capture_output=True, text=True)
+    if _b.returncode != 0: sys.stderr.write(_b.stderr); raise SystemExit('build stopped: the PBBG bundle could not be written')
+    (_root / 'content' / 'pbbg').mkdir(exist_ok=True); (_root / 'content' / 'pbbg' / 'coalition.bundle.json').write_text(_b.stdout)
+    _p = subprocess.run(['node', str(_root / 'tools' / 'pbbg-check.js')], capture_output=True, text=True)
+    if _p.returncode == 2: print('warning: pbbg-content-schema not found beside this repo; PBBG check skipped')
+    elif _p.returncode != 0: sys.stdout.write(_p.stdout); sys.stderr.write(_p.stderr); raise SystemExit('build stopped: PBBG check failed')
+    else: print('pbbg-check: ' + (_p.stdout.strip().splitlines() or ['passed'])[-1])
 else:
     print('warning: node not found; content check skipped')
 root = pathlib.Path(__file__).resolve().parent.parent

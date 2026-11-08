@@ -30,7 +30,7 @@ for (const e of json(path.join(C, 'ui.json')).entries) add(e.id, pat(e.pattern),
 for (const t of json(path.join(C, 'tutorials.json')).tutorials) for (const st of t.steps) { add(`tutorial.${t.id}.${st.id}.title`, 'navigation-heading', st.title, [t.id === 'gov' ? 'government' : 'player']); add(`tutorial.${t.id}.${st.id}.body`, 'tutorial', st.body, [t.id === 'gov' ? 'government' : 'player']); }
 // records in src/data.js: levels, approaches, options, events, destinations, posts, stage lines
 const P = ['player'];
-D.LEVELS.forEach((L, i) => {
+D.LEVELS.concat(D.HARBOR ? [D.HARBOR] : []).forEach((L, i) => {
   add(`level.${L.id}.name`, 'navigation-heading', L.name, P); add(`level.${L.id}.objective`, 'scene', L.objective, P); add(`level.${L.id}.arrive`, 'scene', L.arrive, P);
   for (const a of L.approaches || []) { add(`level.${L.id}.${a.id}.name`, 'action-label', a.name, P); add(`level.${L.id}.${a.id}.text`, 'action-preview', a.text, P); if (a.success && a.success.say) add(`level.${L.id}.${a.id}.success`, 'action-result', a.success.say, P); if (a.fail && a.fail.say) add(`level.${L.id}.${a.id}.fail`, 'action-result', a.fail.say, P); }
   if (L.received) { add(`level.${L.id}.received.name`, 'action-label', L.received.name, P); add(`level.${L.id}.received.say`, 'action-result', L.received.say, P); }

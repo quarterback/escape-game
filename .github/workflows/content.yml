@@ -19,5 +19,7 @@ jobs:
         run: node tools/tutorial-check.js
       - name: Government tutorial replays
         run: node tools/gov-tutorial-check.js
-      - name: Committed build matches the sources
-        run: python3 tools/build.py && git diff --exit-code index.html sw.js manifest.webmanifest
+      - name: Owner's PBBG Content Schema checker, beside this repo
+        run: git clone --depth 1 https://github.com/quarterback/pbbg-content-schema ../pbbg-content-schema && (cd ../pbbg-content-schema && npm ci --omit=dev || npm install --omit=dev)
+      - name: Committed build matches the sources (runs the PBBG check)
+        run: python3 tools/build.py && git diff --exit-code index.html sw.js manifest.webmanifest content/pbbg/coalition.bundle.json
