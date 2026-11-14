@@ -445,7 +445,7 @@
      "kind": "read",
      "title": "Reading reports",
      "goal": "Judge a report by what it proves",
-     "body": "She moved while your order ran. Tap **Read the new reports**. Each report says what it proves and what it does not. A car leaving a house does not prove she is in the car.",
+     "body": "New reports are in. Each report says what it proves and what it does not. A car leaving a house does not prove she is in the car.",
      "highlight": [
       "#phasecard"
      ]
@@ -455,7 +455,7 @@
      "kind": "act",
      "title": "Things happen at the ministry",
      "goal": "Weigh a choice by what it costs and brings",
-     "body": "Every four hours, something lands on your desk. Each choice lists what it costs and what it can bring, and a false lead points you to a stop where she is not. On the news card, pick **Check the one that gave plates**.",
+     "body": "Every four hours, something lands on your desk, and a false lead points you to a stop where she is not. On the news card, pick **Check the one that gave plates**.",
      "highlight": [
       "#phasecard"
      ],
@@ -485,7 +485,7 @@
       ]
      },
      "done": {
-      "orders": 2
+      "orders": 3
      }
     },
     {
@@ -493,7 +493,7 @@
      "kind": "read",
      "title": "How she gets caught",
      "goal": "Know how searches turn into stops",
-     "body": "While the police are on her stop, her police attention climbs, and at 10 they stop her; you never see that number. Each stop within 12 hours of the last is worse, and the third is house arrest, which is your win. While your people are on her stop, she also takes riskier moves to get away.",
+     "body": "While the police are on her stop, her police attention climbs, which you never see, and once it is high a search there stops her. Each stop within 12 hours of the last is worse, and the third is house arrest, which is your win. While your people are on her stop, she also takes riskier moves to get away.",
      "highlight": [
       "#scene"
      ]

@@ -146,6 +146,8 @@ const Gov = (() => {
     if (!g.tutorial) { g.awake = (g.awake || 0) + (g.c.hour - from); g.fed = (g.fed || 0) + (g.c.hour - from); }
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
+    // a court on her side can send the ban itself: the desk hears of it, so the briefing's tick has a cause
+    if (g.c.flags.restriction && g.req.ban === 'notyet' && !g.tutorial) { g.req.ban = 'inhand'; enforce(g); events.push(ev('say', { who: 'narrator', text: T('gov.say.court_sent_ban') })); }
     if (g.c.over) g.over = g.c.over;
     // issue #52: 18 hours after you answer him, the minister asks again
     if (!g.c.over && !g.tutorial && g.flags.locationGiven && g.nextAsk && g.c.hour >= g.nextAsk) { g.nextAsk = null; g.flags.locationGiven = false; g.flags.ministerLate = false; g.ministerBy = g.c.hour + 2;
@@ -153,7 +155,9 @@ const Gov = (() => {
         { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
         { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: '' },
       ]); }
-    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
+    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true;
+      // the late question replaces any unanswered one from him, so one answer is scored, never two
+      g.inbox = g.inbox.filter(m => m.from !== 'minister'); msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
       { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
       { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
     ]); }
@@ -217,7 +221,7 @@ const Gov = (() => {
         { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: c.flags.restriction ? 'inhand' : 'notyet', sub: c.flags.restriction ? T(c.flags.lax ? 'gov.status.ban_slides' : 'gov.status.ban_in_force') : T('gov.status.not_sent') }, // the ban is in force once it is sent (owner, Nov. 2, 2026)
         { at: 5, title: T('gov.status.esmeraldan_hold'), state: g.req.hold, sub: g.req.hold === 'inhand' ? T('gov.status.esmeralda_has_agreed_to_hold') : g.req.hold === 'promised' ? T('gov.status.asked_through_the_embassy_in') : T('gov.status.not_asked') },
       ],
-      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
+      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), g.hand.includes('patrol3') ? T('gov.status.your_people_third_patrol') : T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
     };
   }
 

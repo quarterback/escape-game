@@ -1283,7 +1283,7 @@
   {
    "id": "route.no_command",
    "pattern": "P04",
-   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement",
+   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement.",
    "role": "gov"
   },
   {
@@ -1620,7 +1620,7 @@
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "Tomás can close the border tighter.",
+   "text": "Tomás makes the border harder to cross once the ban is out.",
    "role": "gov"
   },
   {
@@ -3238,6 +3238,12 @@
    "role": "gov"
   },
   {
+   "id": "gov.say.court_sent_ban",
+   "pattern": "P10",
+   "text": "The court sends the travel ban to every post itself, so you have no ban left to send.",
+   "role": "gov"
+  },
+  {
    "id": "gov.why.not_an_order_you_can",
    "pattern": "P04",
    "text": "You cannot give that order now.",
@@ -3342,6 +3348,12 @@
    "id": "gov.status.your_people_the_provincial_desk",
    "pattern": "P05",
    "text": "The provincial desk and its patrol work here.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_third_patrol",
+   "pattern": "P05",
+   "text": "Your third patrol starts the run here.",
    "role": "gov"
   },
   {
@@ -4806,6 +4818,14 @@
    "id": "brief.gov_job_search",
    "pattern": "P08",
    "text": "Move your search to {place}, where the newest report came from, and search there.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "brief.gov_job_search_here",
+   "pattern": "P08",
+   "text": "Your search is already at {place}, where the newest report came from, so search there.",
    "args": [
     "place"
    ]

@@ -3806,7 +3806,7 @@
    "id": "route.no_command",
    "domain": "interface",
    "pattern": "blocked-action",
-   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement",
+   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement.",
    "audience": [
     "player"
    ],
@@ -4582,7 +4582,7 @@
    "id": "mate.tomas.gov",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Tomás can close the border tighter.",
+   "text": "Tomás makes the border harder to cross once the ban is out.",
    "audience": [
     "player"
    ],
@@ -8235,6 +8235,18 @@
    }
   },
   {
+   "id": "gov.say.court_sent_ban",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The court sends the travel ban to every post itself, so you have no ban left to send.",
+   "audience": [
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "gov.why.not_an_order_you_can",
    "domain": "interface",
    "pattern": "blocked-action",
@@ -8436,6 +8448,18 @@
    "domain": "interface",
    "pattern": "arrangement-status",
    "text": "The provincial desk and its patrol work here.",
+   "audience": [
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "gov.status.your_people_third_patrol",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "Your third patrol starts the run here.",
    "audience": [
     "government"
    ],
@@ -11684,6 +11708,24 @@
    }
   },
   {
+   "id": "brief.gov_job_search_here",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Your search is already at {place}, where the newest report came from, so search there.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
    "id": "brief.gov_win",
    "domain": "narrative",
    "pattern": "scene",
@@ -14710,7 +14752,7 @@
    "id": "tutorial.gov.reports.body",
    "domain": "interface",
    "pattern": "tutorial",
-   "text": "She moved while your order ran. Tap **Read the new reports**. Each report says what it proves and what it does not. A car leaving a house does not prove she is in the car.",
+   "text": "New reports are in. Each report says what it proves and what it does not. A car leaving a house does not prove she is in the car.",
    "audience": [
     "government"
    ],
@@ -14734,7 +14776,7 @@
    "id": "tutorial.gov.news.body",
    "domain": "interface",
    "pattern": "tutorial",
-   "text": "Every four hours, something lands on your desk. Each choice lists what it costs and what it can bring, and a false lead points you to a stop where she is not. On the news card, pick **Check the one that gave plates**.",
+   "text": "Every four hours, something lands on your desk, and a false lead points you to a stop where she is not. On the news card, pick **Check the one that gave plates**.",
    "audience": [
     "government"
    ],
@@ -14782,7 +14824,7 @@
    "id": "tutorial.gov.pressure.body",
    "domain": "interface",
    "pattern": "tutorial",
-   "text": "While the police are on her stop, her police attention climbs, and at 10 they stop her; you never see that number. Each stop within 12 hours of the last is worse, and the third is house arrest, which is your win. While your people are on her stop, she also takes riskier moves to get away.",
+   "text": "While the police are on her stop, her police attention climbs, which you never see, and once it is high a search there stops her. Each stop within 12 hours of the last is worse, and the third is house arrest, which is your win. While your people are on her stop, she also takes riskier moves to get away.",
    "audience": [
     "government"
    ],
