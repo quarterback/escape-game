@@ -539,7 +539,7 @@ const Sim = (() => {
       s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); heat(s, 2, events); pass(s, a.hours + 12, events); return finish(s, events);
     }
     if (won && a.success.win) {
-      { const after = epilogue(s, true); s.over = { win: true, kind: 'out', story: a.success.say, after, reason: `${a.success.say} ${after}` }; } events.push(ev('over', s.over)); return { ok: true, events }; }
+      { const after = epilogue(s, true); s.over = { win: true, kind: 'out', via: a.id, story: a.success.say, after, reason: `${a.success.say} ${after}` }; } events.push(ev('over', s.over)); return { ok: true, events }; }
     const rest = !!a.stay;
     if (rest) careLine(s, events);
     quietly(s, rest, () => pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events));

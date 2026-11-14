@@ -1436,10 +1436,34 @@
    ]
   },
   {
+   "id": "sim.hurry.aircraft.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The answer comes in two hours. Paying extra for a fast booking brings the bounty hunters one step closer.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "sim.hurry.permission",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The answer comes in two hours. A rushed ministry says no more often.",
+   "text": "The answer comes in two hours, and a rushed ministry is harder to persuade.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.hurry.permission.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The answer comes in two hours, and a rushed visa office is harder to persuade.",
    "audience": [
     "player"
    ],
@@ -1451,7 +1475,19 @@
    "id": "sim.hurry.reception",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The answer comes in two hours. A rushed minister's office says no more often.",
+   "text": "The answer comes in two hours, and a rushed minister's office is harder to persuade.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.hurry.reception.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The answer comes in two hours, and a fixer who is rushed is harder to win over.",
    "audience": [
     "player"
    ],
@@ -2123,6 +2159,18 @@
    ]
   },
   {
+   "id": "route.role_aircraft.ch2",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "arranging your flight to Lusara and the fixer in Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "route.role_visa",
    "domain": "interface",
    "pattern": "arrangement-status",
@@ -2259,6 +2307,18 @@
    "domain": "interface",
    "pattern": "navigation-heading",
    "text": "You are here",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "route.not_on_route",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Not on your route",
    "audience": [
     "player"
    ],
@@ -4423,6 +4483,18 @@
    ]
   },
   {
+   "id": "mate.marta.plates.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Marta swaps the plates before you leave, and the bounty hunters here lose track of the car.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "mate.ines.escape",
    "domain": "interface",
    "pattern": "action-preview",
@@ -4631,6 +4703,24 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": " Celina's station airs a listener's sighting of you at {place}, and the police go there next.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "mate.celina.spin.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": " Celina's station airs a listener's sighting of you at {place}, and the bounty hunters go there next.",
    "audience": [
     "player"
    ],
@@ -6304,6 +6394,19 @@
    "domain": "narrative",
    "pattern": "dialogue",
    "text": "\"I have a name in Cerro Alto. Give me six hours.\"",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "speakerRef": "ally"
+  },
+  {
+   "id": "sim.line.i_have_a_name_in.ch2",
+   "domain": "narrative",
+   "pattern": "dialogue",
+   "text": "\"I know a fixer in Bahía Clara. Give me six hours.\"",
    "audience": [
     "player"
    ],
@@ -11359,6 +11462,18 @@
    ]
   },
   {
+   "id": "over.why_out_airline",
+   "domain": "narrative",
+   "pattern": "ending",
+   "text": "Your airline flight took off, and you got away.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "over.why_time",
    "domain": "narrative",
    "pattern": "ending",
@@ -11831,10 +11946,34 @@
    ]
   },
   {
+   "id": "arr.what_aircraft.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "your flight to Lusara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "arr.what_reception",
    "domain": "narrative",
    "pattern": "scene",
    "text": "your welcome in Costamar",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "arr.what_reception.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "the fixer in Bahía Clara",
    "audience": [
     "player"
    ],
@@ -12983,6 +13122,24 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": "Without a call from you, {name} gets the jet one step closer to ready.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "arr.self_aircraft.ch2",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Without a call from you, {name} gets your flight to Lusara one step closer to booked.",
    "audience": [
     "player"
    ],
@@ -24943,7 +25100,7 @@
    "id": "ch2.level.eri_hideout.cover_cove.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The village calls you Ilse's cousin, and the bounty hunters hear nothing.",
+   "text": "The village calls you Mama Ilse's cousin, and the bounty hunters hear nothing.",
    "audience": [
     "player"
    ],

@@ -171,6 +171,8 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const flat = [];
   for (const k of keys) { const esc = [], gov = [];
     for (let seed = 1; seed <= 30; seed++) { if (escape(seed, seed % 2 ? 'man' : 'woman', k) !== escape(seed, seed % 2 ? 'man' : 'woman', null)) esc.push(seed); if (police(500 + seed, k) !== police(500 + seed, null)) gov.push(seed); }
+    // a companion whose police effect needs her to reach Portalba (Clara) can miss 30 seeds by chance, so look further before calling it flat
+    for (let seed = 31; seed <= 150 && !gov.length; seed++) if (police(500 + seed, k) !== police(500 + seed, null)) gov.push(seed);
     if (!esc.length) flat.push(`${k} changes no escape run`); if (!gov.length) flat.push(`${k} changes no police run`); }
   ok(!flat.length, `C21 every companion changes seeded runs on the escape side and the police side${flat.length ? ': ' + flat.join('; ') : ''}`);
   // the police view with each companion still ignores her hidden state (C04 with every companion's card in hand)

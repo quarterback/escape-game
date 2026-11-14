@@ -76,7 +76,8 @@ const Gov = (() => {
   const personName = (g, id) => ({ minister: T('gov.name.the_minister'), watch: T('gov.name.the_watch_team'), desk: T('gov.name.the_santa_laura_desk'), rail: T('gov.name.the_railway_contact'), embassy: T('gov.name.the_embassy_in_baca'), aviation: T('gov.name.the_aviation_desk'), enemy: T('gov.name.inspector_sosa'), press: T('gov.name.radi_port_venla') })[id] || (D.COMPANIONS[id] ? D.CARDS[D.COMPANIONS[id].card].name : S.personName(g.c, id));
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
-    const r = { at, source, text, proves, doesnt, hour: (hour === undefined ? g.c.hour : hour) + (delay || 0), misleading: !!misleading, seen: false };
+    const seenAt = hour === undefined ? g.c.hour : hour; // seenAt: the hour of the sighting; hour: when the report reaches the desk
+    const r = { at, source, text, proves, doesnt, seenAt, hour: seenAt + (delay || 0), misleading: !!misleading, seen: false };
     if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves.replace(/\.$/, '')}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1).replace(/\.$/, '')})`, at })); }
   }
   function release(g, events) { for (const r of g.pending.slice()) if (!r.job && r.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== r); g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: r.source, text: r.text, at: r.at })); } }
@@ -146,7 +147,7 @@ const Gov = (() => {
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
     if (g.c.over) g.over = g.c.over;
-    // issue #52: 18 hours after you answer him, the minister asks again; a missed deadline costs his patience
+    // issue #52: 18 hours after you answer him, the minister asks again
     if (!g.c.over && !g.tutorial && g.flags.locationGiven && g.nextAsk && g.c.hour >= g.nextAsk) { g.nextAsk = null; g.flags.locationGiven = false; g.flags.ministerLate = false; g.ministerBy = g.c.hour + 2;
       msg(g, events, 'minister', T('gov.line.where_now'), [
         { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
@@ -271,7 +272,7 @@ const Gov = (() => {
     const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.real);
     events.push(ev('roll', o.noRoll ? { die: null, won, auto: true, bonus: [] } : { die, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
-    if (PATROL.includes(id) && g.belief >= 0 && g.belief <= 4 && g.patrols && !g.tutorial) g.patrols[nearest(g)] = g.belief;
+    if (PATROL.includes(id) && (won || !def.missFails) && g.belief >= 0 && g.belief <= 4 && g.patrols && !g.tutorial) g.patrols[nearest(g)] = g.belief;
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
       if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: T('gov.say.you_move_the_search_to', { place: place(g.belief) }) })); }

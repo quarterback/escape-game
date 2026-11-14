@@ -256,14 +256,29 @@
    "text": "The answer comes in two hours. Paying the crew extra raises your police attention by one."
   },
   {
+   "id": "sim.hurry.aircraft.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours. Paying extra for a fast booking brings the bounty hunters one step closer."
+  },
+  {
    "id": "sim.hurry.permission",
    "pattern": "P03",
-   "text": "The answer comes in two hours. A rushed ministry says no more often."
+   "text": "The answer comes in two hours, and a rushed ministry is harder to persuade."
+  },
+  {
+   "id": "sim.hurry.permission.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours, and a rushed visa office is harder to persuade."
   },
   {
    "id": "sim.hurry.reception",
    "pattern": "P03",
-   "text": "The answer comes in two hours. A rushed minister's office says no more often."
+   "text": "The answer comes in two hours, and a rushed minister's office is harder to persuade."
+  },
+  {
+   "id": "sim.hurry.reception.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours, and a fixer who is rushed is harder to win over."
   },
   {
    "id": "sim.hurry_line.aircraft",
@@ -546,6 +561,11 @@
    "text": "arranging the jet and your welcome in Costamar"
   },
   {
+   "id": "route.role_aircraft.ch2",
+   "pattern": "P05",
+   "text": "arranging your flight to Lusara and the fixer in Bahía Clara"
+  },
+  {
    "id": "route.role_visa",
    "pattern": "P05",
    "text": "asking for your visa"
@@ -605,6 +625,11 @@
    "id": "route.you_here",
    "pattern": "P02",
    "text": "You are here"
+  },
+  {
+   "id": "route.not_on_route",
+   "pattern": "P02",
+   "text": "Not on your route"
   },
   {
    "id": "route.border",
@@ -1550,6 +1575,11 @@
    "text": "Marta swaps the plates before you leave, and the police here lose track of the car."
   },
   {
+   "id": "mate.marta.plates.ch2",
+   "pattern": "P10",
+   "text": "Marta swaps the plates before you leave, and the bounty hunters here lose track of the car."
+  },
+  {
    "id": "mate.ines.escape",
    "pattern": "P03",
    "text": "Inês can keep your family on its feet."
@@ -1645,6 +1675,14 @@
    "id": "mate.celina.spin",
    "pattern": "P10",
    "text": " Celina's station airs a listener's sighting of you at {place}, and the police go there next.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "mate.celina.spin.ch2",
+   "pattern": "P10",
+   "text": " Celina's station airs a listener's sighting of you at {place}, and the bounty hunters go there next.",
    "args": [
     "place"
    ]
@@ -2374,6 +2412,12 @@
    "id": "sim.line.i_have_a_name_in",
    "pattern": "P07",
    "text": "\"I have a name in Cerro Alto. Give me six hours.\"",
+   "speaker": "ally"
+  },
+  {
+   "id": "sim.line.i_have_a_name_in.ch2",
+   "pattern": "P07",
+   "text": "\"I know a fixer in Bahía Clara. Give me six hours.\"",
    "speaker": "ally"
   },
   {
@@ -4674,6 +4718,11 @@
    "text": "Your jet took off, and you got away."
   },
   {
+   "id": "over.why_out_airline",
+   "pattern": "P14",
+   "text": "Your airline flight took off, and you got away."
+  },
+  {
    "id": "over.why_time",
    "pattern": "P14",
    "text": "Time ran out before you could fly out."
@@ -4874,9 +4923,19 @@
    "text": "the jet"
   },
   {
+   "id": "arr.what_aircraft.ch2",
+   "pattern": "P08",
+   "text": "your flight to Lusara"
+  },
+  {
    "id": "arr.what_reception",
    "pattern": "P08",
    "text": "your welcome in Costamar"
+  },
+  {
+   "id": "arr.what_reception.ch2",
+   "pattern": "P08",
+   "text": "the fixer in Bahía Clara"
   },
   {
    "id": "arr.what_permission",
@@ -5384,6 +5443,14 @@
    "id": "arr.self_aircraft",
    "pattern": "P10",
    "text": "Without a call from you, {name} gets the jet one step closer to ready.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "arr.self_aircraft.ch2",
+   "pattern": "P10",
+   "text": "Without a call from you, {name} gets your flight to Lusara one step closer to booked.",
    "args": [
     "name"
    ]
