@@ -53,6 +53,29 @@ The owner asked: "Revisit the game's repo and see how things have evolved and wh
   - Resting at the first sign of tiredness got the investigator fired more often, so the bot rests only when she is exhausted or starving, and never inside the minister's deadline.
   - Following only leads ahead of the search cut arrests from 42 to 9, so it still follows every report.
 
+### Phone playtests (one agent per side, played on main)
+
+- **Investigator side:**
+  - The minister could ask twice and score both answers, which ended one run. He now asks one question at a time.
+  - Order results were hidden behind the next briefing. The briefing now opens with the result.
+  - A ban sent by a court on her side ticked with no cause. The desk now hears of it.
+  - "This round" sent you to a stop you were already searching.
+  - Davi's third patrol was missing from the Route tab.
+  - The escape side's help showed on the investigator's side.
+  - The cook said the family left even when she was home.
+  - Five demo lines described buttons, costs or facts that were not on screen. The search step now waits for the search.
+- **Escape side:**
+  - Move hints told you to call Salek at Portalba when that call was closed. They now say why it is closed.
+  - Chapter two's briefing, goal and top bar showed chapter one's jet, Portalba and police.
+  - "Depart without the visa" stayed on offer after the visa was issued.
+  - The freight's story said midnight whatever the hour.
+  - The demo said the truck carries you to Salta. It never did.
+- **Already fixed on the branch when the playtests found them:**
+  - eating and sleeping followed by "starving" and "exhausted";
+  - the airline win's "your jet" ending;
+  - the failed search that left a patrol;
+  - chapter two's calls about the jet and Costamar.
+
 ## Numbers, 300 runs each
 
 | Measure | Before | After |
@@ -61,7 +84,7 @@ The owner asked: "Revisit the game's repo and see how things have evolved and wh
 | Chapter one, Mateu | 26.3% | 31.3% |
 | Chapter two, Teresa | 29.3% | 75.3% |
 | Chapter two, Mateu | 24.0% | 59.0% |
-| She escapes the investigator (police bot) | 62.7% | 58.3% |
+| She escapes the investigator (police bot) | 62.7% | 58.0% |
 
 How chapter two's figures moved:
 
@@ -81,4 +104,7 @@ These are listed in docs/design-issues.md under "Code review, November 14, 2026"
 
 - refusing Bruno costs nothing;
 - chapter two's difficulty;
-- the travel ban still applying on the shepherds' path.
+- the travel ban still applying on the shepherds' path;
+- the papers' verdict on the minister's claim, which tells the investigator where she was;
+- investigator orders that run past their listed hours (part of the no-waiting work);
+- the "harder" wording, the Keep going tap, food and sleep explained in hours, the card picker, and "Run it again" after chapter two.
