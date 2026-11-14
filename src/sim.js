@@ -66,7 +66,10 @@ const Sim = (() => {
     // Two people on the ground are secretly working for the inquiry. Which two changes every run.
     // how many allies have already gone over: two, or one to three on a daily
     const approached = opts.daily ? 1 + Math.floor(s._rng() * 3) : 2;
-    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < approached; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
+    // chapter two leaves out people who never appear on the island, anyone who is the only way through a stop, and keeps at
+    // most one per group (the ship's two ways off); chapter one's pool is unchanged
+    if (!s.tutorial) { let pool = SUSPECTS.filter(k => D.PEOPLE[k].where >= 0 && !D.PEOPLE[k].loyal);
+      for (let i = 0; i < approached && pool.length; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; const grp = D.PEOPLE[k].onePer; if (grp) pool = pool.filter(x => D.PEOPLE[x].onePer !== grp); } }
     if (opts.daily) {
       // the daily draws more from its date: how hot the morning starts, where Sosā is looking, and the fourth card
       s.exposure = Math.max(0, Math.min(4, (ch.exposure || 1) + Math.floor(s._rng() * 3) - 1));
@@ -560,7 +563,7 @@ const Sim = (() => {
     if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
     if (fx.advance) for (const k of fx.advance) if (canMove(s, k)) { stage(s, k, s.arr[k].stage + 1, events); if (k === 'permission' && s.arr.permission.stage === 1) s.flags.destination = true; }
   }
-  function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || s.used.includes(id)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
+  function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || (s.used.includes(id) && !D.CARDS[id].again)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
   // a companion travels with you for the whole run: nothing takes their card
   const mateLine = (k) => ({ bruno: T('mate.bruno.help'), clara: T('mate.clara.help'), rita: T('mate.rita.help'), marta: T('mate.marta.help'), tomas: T('mate.tomas.help'), joana: T('mate.joana.help') })[k] || '';
   function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0 || (D.CARDS[id] && D.CARDS[id].companion)) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }

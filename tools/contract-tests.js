@@ -102,6 +102,8 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
 // ---- C17: no code hidden behind a line comment (a comment swallowed a "break" twice on Nov. 1, 2026)
 { const fs = require('fs'), hits = [];
   for (const f of ['src/sim.js', 'src/gov.js', 'src/ui.js', 'src/render.js', 'src/tutorial.js']) fs.readFileSync(path.join(__dirname, '..', f), 'utf8').split('\n').forEach((l, i) => { const c = l.indexOf(' // '); if (c >= 0 && /\b(break;|case '|Render\.enqueue\(|return [^;]*;)/.test(l.slice(c)) && !/['"`]/.test(l.slice(c).split(/break;|case '/)[0].slice(4, 6))) hits.push(`${f}:${i + 1}`); });
+  // and in the data tables: a comment that swallows the rest of an object (Nov. 14, 2026: a passport lost its reach list this way)
+  fs.readFileSync(path.join(__dirname, '..', 'src/data.js'), 'utf8').split('\n').forEach((l, i) => { const c = l.indexOf(' // '); if (c >= 0 && /^\s*[\w$]+\s*:\s*\{/.test(l) && /,\s*[\w$]+:\s*[\[{'"`\d]/.test(l.slice(c))) hits.push(`src/data.js:${i + 1}`); });
   ok(!hits.length, `C17 no statement sits inside a line comment${hits.length ? ': ' + hits.slice(0, 4).join(', ') : ''}`); }
 
 // ---- C20: every answered choice names itself; a rumor answer once read "You chose \"undefined.\"" (owner screenshot, Nov. 1, 2026)
@@ -183,6 +185,23 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   // a saved run with a companion resumes with them, on both sides
   const sv = Sim.restore(Sim.serialize(Sim.newRun(9, 'man', { companion: 'joana' }))), gv = Gov.restore(Gov.serialize(Gov.newRun(9, 'woman', { companion: 'nadia' })));
   ok(sv.companion === 'joana' && sv.hand.includes('comp_joana') && gv.companion === 'nadia' && gv.hand.includes('exchange'), 'C21 saved runs keep the companion on both sides'); }
+
+
+// ---- C23: no stop can be closed for good by the traitors (Nov. 14, 2026: chapter two trapped a run at Tamarind Cove,
+// on the ship and at Bahía Clara when the person behind every way on was working for the other side)
+{ const trapped = [];
+  for (const ch of [1, 2]) for (let seed = 1; seed <= 400; seed++) {
+    const s = Sim.newRun(seed, seed % 2 ? 'man' : 'woman', { chapter: ch }); const bad = new Set(Object.keys(s.people).filter(k => s.people[k].bad));
+    const all = []; Data.LEVELS.forEach((L, i) => (L.approaches || []).forEach(a => all.push({ a, i })));
+    // a card kind is out of reach if every move that hands it over goes through a traitor and nobody starts with it
+    const held = new Set(s.hand.map(id => Data.CARDS[id] && Data.CARDS[id].tag));
+    const open = (k) => held.has(k) || Object.values(Data.EVENTS || {}).length >= 0 && all.some(({ a }) => a.success && a.success.card && Data.CARDS[a.success.card] && Data.CARDS[a.success.card].tag === k && !(a.with && bad.has(a.with)));
+    Data.LEVELS.forEach((L, i) => { if (i === Data.LEVELS.length - 1 && !(L.approaches || []).some(a => a.success && a.success.win)) return;
+      const exits = Sim.EXITS[L.id] && Sim.EXITS[L.id].length ? (L.approaches || []).filter(a => Sim.EXITS[L.id].includes(a.id)) : (L.approaches || []).filter(a => a.success && !a.noExit);
+      const way = exits.some(a => !(a.with && bad.has(a.with)) && a.needs.every(n => !n.card || open(n.card)));
+      if (!way) trapped.push(`chapter ${ch} seed ${seed} ${L.id} (traitors ${[...bad].join(', ')})`); });
+  }
+  ok(!trapped.length, `C23 in 800 runs, every stop keeps a way on that no traitor controls${trapped.length ? ': ' + trapped.slice(0, 3).join('; ') : ''}`); }
 
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

@@ -72,7 +72,8 @@ const Data = (() => {
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "A straw-lined crate in the third boxcar. Holt leaves at midnight and does not wait." },
-    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
+    // again: a hold can take it, and paying Silas again makes another
+    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
                     text: 'Silas made it in the back of the village shop. The photo is yours, and the name is not.' },
     airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
                     text: "A seat on the next flight out of Costamar, in the name on your second passport." },
@@ -926,10 +927,12 @@ const Data = (() => {
     nando:    { name: 'Kofi', role: 'the taxi driver at the Erinana airstrip', where: 0, reliability: 3 },
     aide:     { name: 'Gianlūka Moretī', role: 'party chief of staff, calling from Valdória', where: -1, reliability: 4 },
     host:     { name: 'Mama Ilse', short: 'Mama Ilse', role: 'owner of the guesthouse at Tamarind Cove', where: 2, reliability: 2 },
-    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 2, reliability: 3 },
-    theo:     { name: 'Marisa', role: 'purser on the Long Horizon', where: 3, reliability: 3 },
-    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 4, reliability: 3 },
-    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 5, reliability: 3 },
+    // loyal: the only way through a stop, so never one of the two who talk (a traitor here would leave no way on)
+    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 2, reliability: 3, loyal: true },
+    // onePer: the ship's two ways off; at most one of them talks, so one way off always stays open
+    theo:     { name: 'Marisa', role: 'purser on the Long Horizon', where: 3, reliability: 3, onePer: 'ship' },
+    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 4, reliability: 3, onePer: 'ship' },
+    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 5, reliability: 3, loyal: true },
   });
   const ARRANGEMENTS2 = {
     aircraft:   { name: 'Flight', stages: ['none', 'a seat on hold', 'a ticket to Lusara in your new name'],
