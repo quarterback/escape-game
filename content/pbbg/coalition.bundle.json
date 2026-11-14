@@ -1126,6 +1126,18 @@
    ]
   },
   {
+   "id": "scene.goal.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Fly out of Bahía Clara by",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "scene.sosa_here",
    "domain": "narrative",
    "pattern": "report",
@@ -1604,7 +1616,7 @@
    "id": "next.night",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "{move} opens at 10 p.m.",
+   "text": "The move {move} opens at 10 at night.",
    "audience": [
     "player"
    ],
@@ -7420,7 +7432,7 @@
    "id": "sim.line.two_men_in_a_car",
    "domain": "narrative",
    "pattern": "dialogue",
-   "text": "\"Two men in a car at the yard gate are asking about you. Midnight or never.\"",
+   "text": "\"Two men in a car at the yard gate are asking about you. Tonight or never.\"",
    "audience": [
     "player"
    ],
@@ -11534,6 +11546,18 @@
    ]
   },
   {
+   "id": "brief.need_jet.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Your flight to Lusara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "brief.need_visa",
    "domain": "interface",
    "pattern": "navigation-heading",
@@ -11550,6 +11574,18 @@
    "domain": "interface",
    "pattern": "navigation-heading",
    "text": "Costamar",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "brief.need_reception.ch2",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The fixer in Bahía Clara",
    "audience": [
     "player"
    ],
@@ -11750,6 +11786,18 @@
    ]
   },
   {
+   "id": "brief.escape_win.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Fly out of Bahía Clara before Tuesday at 2 p.m.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "over.why_gov_arrest",
    "domain": "narrative",
    "pattern": "ending",
@@ -11864,10 +11912,34 @@
    ]
   },
   {
+   "id": "brief.visa_note.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Your visa for Lusara is already issued.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "brief.reception_note",
    "domain": "narrative",
    "pattern": "scene",
    "text": "The first step opens the road to Salta. The second matters if the police have asked Costamar to hold you: without it, your takeoff is harder. The third puts Vélez's officials at one border post.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "brief.reception_note.ch2",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Dario meets you at the pier in Bahía Clara, and going ashore there needs him.",
    "audience": [
     "player"
    ],
@@ -14416,7 +14488,7 @@
    "id": "tutorial.escape.nona_rosa.body",
    "domain": "interface",
    "pattern": "tutorial",
-   "text": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Confirm**. It takes three hours. She gives you the truck either way, and if it works, the truck carries you on to Salta.",
+   "text": "Her cooperative's truck was impounded this morning. Pick **Help Nonā Rosa free the truck**, then tap **Confirm**. It takes three hours. Either way, she lends you the truck, and it counts when you look for help in the Salta rail yard.",
    "audience": [
     "player"
    ],
@@ -15580,7 +15652,7 @@
    "id": "level.salta.board.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The freight to the border leaves at midnight.",
+   "text": "The freight to the border boards between 10 at night and 5 in the morning.",
    "audience": [
     "player"
    ],
@@ -15592,7 +15664,7 @@
    "id": "level.salta.board.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The train pulls out at 12 minutes past midnight, and you lie in cold straw as it climbs the grade.",
+   "text": "The train pulls out into the dark, and you lie in cold straw as it climbs the grade.",
    "audience": [
     "player"
    ],
@@ -15640,7 +15712,7 @@
    "id": "level.salta.crate.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Holt pockets the notes without counting them. \"Third car. Midnight. I don't wait.\"",
+   "text": "Holt pockets the notes without counting them. \"Third car. Tonight. I don't wait.\"",
    "audience": [
     "player"
    ],
@@ -17554,7 +17626,7 @@
    "id": "card.crate.text",
    "domain": "narrative",
    "pattern": "card",
-   "text": "A straw-lined crate in the third boxcar. Holt leaves at midnight and does not wait.",
+   "text": "A straw-lined crate in the third boxcar. Holt leaves on the night freight and does not wait.",
    "audience": [
     "player"
    ],
@@ -19342,7 +19414,7 @@
    "id": "event.bishop.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "The bishop will bless you in public at evening mass. The whole colônia would see you.",
+   "text": "The bishop will bless you in public at the next mass. The whole colônia would see you.",
    "audience": [
     "player"
    ],
@@ -26141,7 +26213,7 @@
    "id": "ch2.event.eri_storm.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A tropical storm has washed out the coast road for the afternoon.",
+   "text": "A tropical storm has washed out the coast road for the next few hours.",
    "audience": [
     "player"
    ],

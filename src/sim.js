@@ -212,6 +212,7 @@ const Sim = (() => {
   function approachList(s) {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
+      if (a.gone && s.arr[a.gone.arr].stage >= a.gone.stage) continue;
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
       if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
       if (a.unlessHeld && s.hand.includes(a.unlessHeld)) whys.push(T('sim.why.already_hold', { card: D.CARDS[a.unlessHeld].name.replace(/^./, c => c.toLowerCase()) }));

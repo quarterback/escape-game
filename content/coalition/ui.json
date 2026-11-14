@@ -120,6 +120,11 @@
    "text": "Leave Costamaran airspace by"
   },
   {
+   "id": "scene.goal.ch2",
+   "pattern": "P08",
+   "text": "Fly out of Bahía Clara by"
+  },
+  {
    "id": "scene.sosa_here",
    "pattern": "P06",
    "text": "The police are searching where you are"
@@ -328,7 +333,7 @@
   {
    "id": "next.night",
    "pattern": "P05",
-   "text": "{move} opens at 10 p.m.",
+   "text": "The move {move} opens at 10 at night.",
    "args": [
     "move"
    ]
@@ -2854,7 +2859,7 @@
   {
    "id": "sim.line.two_men_in_a_car",
    "pattern": "P07",
-   "text": "\"Two men in a car at the yard gate are asking about you. Midnight or never.\"",
+   "text": "\"Two men in a car at the yard gate are asking about you. Tonight or never.\"",
    "speaker": "holt"
   },
   {
@@ -4750,6 +4755,11 @@
    "text": "Your jet"
   },
   {
+   "id": "brief.need_jet.ch2",
+   "pattern": "P02",
+   "text": "Your flight to Lusara"
+  },
+  {
    "id": "brief.need_visa",
    "pattern": "P02",
    "text": "Entry visa"
@@ -4758,6 +4768,11 @@
    "id": "brief.need_reception",
    "pattern": "P02",
    "text": "Costamar"
+  },
+  {
+   "id": "brief.need_reception.ch2",
+   "pattern": "P02",
+   "text": "The fixer in Bahía Clara"
   },
   {
    "id": "brief.you",
@@ -4841,6 +4856,11 @@
    "text": "Fly out of Portalba before Tuesday at 2 p.m."
   },
   {
+   "id": "brief.escape_win.ch2",
+   "pattern": "P08",
+   "text": "Fly out of Bahía Clara before Tuesday at 2 p.m."
+  },
+  {
    "id": "over.why_gov_arrest",
    "pattern": "P14",
    "text": "The police put her under house arrest."
@@ -4890,9 +4910,19 @@
    "text": "Without it you can still fly, and the country you chose takes you when you land."
   },
   {
+   "id": "brief.visa_note.ch2",
+   "pattern": "P08",
+   "text": "Your visa for Lusara is already issued."
+  },
+  {
    "id": "brief.reception_note",
    "pattern": "P08",
    "text": "The first step opens the road to Salta. The second matters if the police have asked Costamar to hold you: without it, your takeoff is harder. The third puts Vélez's officials at one border post."
+  },
+  {
+   "id": "brief.reception_note.ch2",
+   "pattern": "P08",
+   "text": "Dario meets you at the pier in Bahía Clara, and going ashore there needs him."
   },
   {
    "id": "brief.gov_report_now",

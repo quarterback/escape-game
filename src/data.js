@@ -71,7 +71,7 @@ const Data = (() => {
     delay_report: { name: 'A report held one day', tag: 'delay', from: 'aide', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.',
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
-                    text: "A straw-lined crate in the third boxcar. Holt leaves at midnight and does not wait." },
+                    text: "A straw-lined crate in the third boxcar. Holt leaves on the night freight and does not wait." },
     // again: a hold can take it, and paying Silas again makes another
     new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
                     text: 'Silas made it in the back of the village shop. The photo is yours, and the name is not.' },
@@ -215,12 +215,12 @@ const Data = (() => {
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
-          mods: { passage: 2 }, text: "The freight to the border leaves at midnight.",
-          success: { say: 'The train pulls out at 12 minutes past midnight, and you lie in cold straw as it climbs the grade.' },
+          mods: { passage: 2 }, text: "The freight to the border boards between 10 at night and 5 in the morning.",
+          success: { say: 'The train pulls out into the dark, and you lie in cold straw as it climbs the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars, and you drop back to try again while it is dark.' } },
         { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
           mods: { vehicle: 1, information: 1 }, text: "Holt, a brakeman on the freight, saves you a crate in the third boxcar for cash.",
-          success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Midnight. I don\'t wait."' },
+          success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Tonight. I don\'t wait."' },
           fail: { exposure: 1, say: 'Holt wants to see who else is asking, and you wait two hours in a shed.' } },
         { id: 'foreman', with: 'theo', name: 'Ask Theo to walk you through', hours: 2, dc: 4, needs: [],
           mods: { vehicle: 2, information: 1, influence: 1 }, text: "Theo runs the rail yard and can walk you past the yard office to the train.",
@@ -277,7 +277,8 @@ const Data = (() => {
           mods: { introduction: 1, document: 1 }, text: "Capitān Olsēn flies you out once the jet is ready and your visa is in.",
           success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Costamaran airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you two hours on the apron while it reads, and rereads, a request from Valdória.' } },
-        { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
+        // gone: not offered once that arrangement reaches that step (with the visa issued, you board with it)
+        { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }], gone: { arr: 'permission', stage: 2 },
           mods: { introduction: 1, permission: 2 }, text: "You ask Capitān Olsēn to fly without the visa.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
           fail: { exposure: 2, hours: 3, say: 'Snow closes the path below the ridge, and a herder watches you turn back after three hours.' } },
@@ -577,7 +578,7 @@ const Data = (() => {
       { id: 'claim', label: 'Say it was you', fx: { belief: 'away', exposure: -2, lose: 'decoy_cars', say: 'For one evening you are in a ditch 200 kilometers away.' } },
       { id: 'quiet', label: 'Say nothing', fx: { exposure: 1 } } ] },
     // the colônia
-    { id: 'bishop', at: ['colonia'], title: 'The bishop offers a blessing', text: 'The bishop will bless you in public at evening mass. The whole colônia would see you.', choices: [
+    { id: 'bishop', at: ['colonia'], title: 'The bishop offers a blessing', text: 'The bishop will bless you in public at the next mass. The whole colônia would see you.', choices: [
       { id: 'blessing', label: 'Accept the blessing', fx: { exposure: 2, trust: { host: 1 } } },
       { id: 'decline', label: 'Decline', fx: { trust: { host: -1 } } } ] },
     { id: 'wedding', at: ['colonia'], title: 'A wedding for 300', text: "A cousin's wedding fills every street tonight. Nobody counts faces at a wedding.", choices: [
@@ -982,7 +983,7 @@ const Data = (() => {
     { id: 'eri_poster', at: ['eri_airstrip', 'eri_town'], title: 'The reward goes up', text: 'A new poster says the reward for you has doubled.', choices: [
       { id: 'tear_down', label: 'Tear the posters down', fx: { hours: 1, exposure: 1, say: 'You pull down every poster on the street while a shopkeeper watches.' } },
       { id: 'ignore_poster', label: 'Keep your head down', fx: {} } ] },
-    { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the afternoon.', choices: [
+    { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the next few hours.', choices: [
       { id: 'wait_storm', label: 'Wait out the storm', fx: { hours: 3, exposure: -1, say: 'The storm keeps the bounty hunters indoors too, and it passes in three hours.' } },
       { id: 'drive_storm', label: 'Drive through it', fx: { roll: { need: 4, win: { advance: true, say: 'You drive through the rain and reach the next stop while the hunters stay indoors.' }, lose: { hours: 2, exposure: 1, say: 'The car stalls in a flooded dip, and a farmer tows you out two hours later.' } } } } ] },
     { id: 'eri_tourists', at: ['eri_quay', 'eri_ship'], title: 'A tour group wants a photo', text: 'A tour group recognizes you and wants a picture with you.', choices: [

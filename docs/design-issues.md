@@ -281,3 +281,8 @@ Every player-facing string (1,483) was checked against Humanizer, AP style and t
 - **The papers' verdict tells the investigator where she was.** Six hours after you name a stop, the papers say whether she was there, with no search behind it (the help states this as a rule). In a playtest it showed she had left Salta before any report did. Keep it as a deliberate late confirmation, or tie it to what the investigation found.
 - **Investigator orders run past their listed hours.** An order waits for her whole move to finish, so "Move your search to the line, 1 hr" took 15 hours in a playtest, and news choices show no time but can cost 7. This belongs to the no-waiting design work, which changes how time passes.
 - **The computer-played candidate barely moves on the investigator's side.** In three playtest runs she sat 34 and 37 hours at one stop and never reached Portalba.
+- **"Harder" and "easier" in news and effects.** The escape playtest counted lines like "every move there that can fail is harder" and "crossing here gets easier" as odds talk. They name a direction, never a chance, and the move previews use the same words; say if you want them gone too.
+- **Each new stop waits for "Keep going".** Rounds advance on their own, but the stop screen still needs a tap. Part of the no-waiting design.
+- **Food and sleep are explained in hours** ("After 12 hours without food you are hungry"), in the news and in help.
+- **The card picker at the start has no limit,** so a new player has no reason not to take every card.
+- **"Run it again" after chapter two starts chapter one.**

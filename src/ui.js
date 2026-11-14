@@ -130,7 +130,7 @@ const UI = (() => {
     $('sosa-next').parentElement.hidden = true;
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
-    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-top').textContent = T('scene.exposure'); $('goaltxt').textContent = T('scene.goal'); // the shell bakes chapter one's words $('expl-b').textContent = '';
     { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
@@ -184,7 +184,8 @@ const UI = (() => {
     for (const a of exits) for (const n of a.needs) {
       if (n.arr && s.arr[n.arr].stage < n.stage && !seen[n.arr]) { seen[n.arr] = 1; const job = s.jobs.find(j => j.arr === n.arr && !j.stall), call = A.calls.find(c => c.arr === n.arr && c.ally);
         if (job) out.push(T('next.waiting', { name: cap(sibNamed1(job.ally)), what: what[n.arr], time: short(job.due) }));
-        else if (call) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] })); }
+        else if (call && call.ok) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] }));
+        else if (call && call.why) out.push(call.why); } // a call you cannot make says why, never 'call them'
       else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name })); }
     }
     return out.slice(0, 2);
@@ -511,7 +512,8 @@ const UI = (() => {
       { k: 'aircraft', full: 4, name: T('brief.need_jet'), note: '' },
       { k: 'permission', full: 2, name: T('brief.need_visa'), note: T('brief.visa_note') },
       { k: 'reception', full: 3, name: T('brief.need_reception'), note: T('brief.reception_note') },
-    ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, status: status(n.k, n.full), now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
+    ].map(n => Object.assign(n, { full: Math.min(n.full, A[n.k].stages.length - 1) })) // chapter two's flight and fixer have fewer steps
+     .map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, status: status(n.k, n.full), now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
     out.job.push(L.objective);
     if (out.arrived && s.pos > 0) { out.stats = shortStats(); out.marks = routeMarks(); return out; } // a stop screen: what happened, where you stand, what is next
     const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
@@ -615,7 +617,7 @@ const UI = (() => {
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
     $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
-    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short }) : Sim.route(s)[s.pos].short;
+    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
