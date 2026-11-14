@@ -1478,7 +1478,7 @@
   {
    "id": "mate.tomas.help",
    "pattern": "P10",
-   "text": "Tomás says, \"Go now, while that booth changes shift.\""
+   "text": "Tomás says, \"Go now, while nobody is looking this way.\""
   },
   {
    "id": "mate.marta.help",
@@ -5059,6 +5059,14 @@
    "text": "You can make this move once per run, and you already have."
   },
   {
+   "id": "sim.why.already_hold",
+   "pattern": "P04",
+   "text": "You already hold {card}, so there is nothing more to buy here.",
+   "args": [
+    "card"
+   ]
+  },
+  {
    "id": "sim.why.nothing_left_to_move",
    "pattern": "P04",
    "text": "These calls cannot move anything right now."
@@ -5757,6 +5765,21 @@
    "id": "need.baca.ch2",
    "pattern": "P05",
    "text": "Call about the fixer to reach Dario in Bahía Clara."
+  },
+  {
+   "id": "sim.inquiry.found_no_power",
+   "pattern": "P03",
+   "text": " They find you, but Costamar has not agreed to let anyone stop you here."
+  },
+  {
+   "id": "sim.inquiry.found_no_power.ch2",
+   "pattern": "P03",
+   "text": " They find you, but they cannot grab you inside the airport."
+  },
+  {
+   "id": "gov.inquiry.found_no_power",
+   "pattern": "P03",
+   "text": " They find her, but Costamar has not agreed to let anyone stop her there."
   }
  ]
 }

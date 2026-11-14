@@ -46,6 +46,8 @@ const Gov = (() => {
       patience: 3, patrols: [0, 1] };
     // a companion gives Sofia one police card from the start
     g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    // Rita's charter crews drag their feet on every step of her jet, with or without a call pending
+    if (g.companion === 'rita') g.c.flags.stepLag = { aircraft: 3 };
     // which investigator: Sofia, or Davi with a third patrol that starts at Nova Trentô (issue #33)
     g.inv = D.GOVS[opts.inv] ? opts.inv : 'sofia';
     if (g.inv === 'davi' && !opts.tutorial) { g.hand.push('patrol3'); g.patrols.push(2); }
@@ -387,7 +389,7 @@ const Gov = (() => {
     if (fx.lose) g.hand = g.hand.filter(x => x !== fx.lose);
     if (fx.press) S.heat(c, fx.press, []);
     if (fx.warn) { S.heat(c, -fx.warn, []); if (c.belief === c.pos) c.belief = -1; }
-    if (fx.stall) for (const j of c.jobs) j.due += fx.stall;
+    if (fx.stall) { for (const j of c.jobs) j.due += fx.stall; S.lag(c, ['aircraft', 'permission'], fx.stall); }
     if (fx.crossing) c.flags.roadblock = { pos: 4, until: c.hour + fx.crossing };
     if (fx.ban) { if (!c.flags.restriction) c.flags.banAt = c.hour; c.flags.restriction = true; c.flags.lax = false; g.req.ban = 'inhand'; enforce(g); }
     if (fx.unban) c.flags.lax = true; // the post at the line lets the ban slide: her crossings there are no longer harder because of it

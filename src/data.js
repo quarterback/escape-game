@@ -75,7 +75,7 @@ const Data = (() => {
     // again: a hold can take it, and paying Silas again makes another
     new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
                     text: 'Silas made it in the back of the village shop. The photo is yours, and the name is not.' },
-    airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
+    airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', again: true, reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
                     text: "A seat on the next flight out of Costamar, in the name on your second passport." },
     berth:        { name: "A berth on the night boat", tag: 'passage', from: 'self', reach: ['harbor'], works: 'Riding the night boat to Punta Marēa.',
                     text: "The skipper keeps a berth in his hold for you on Pier 4." },
@@ -133,7 +133,7 @@ const Data = (() => {
     comp_nadia:   { name: 'Nadia', tag: 'phone', from: 'self', reach: ALL, works: 'Every call you make.', companion: true,
                     text: 'Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment.' },
     // lodging: Emilio's room under another name at Pedra Branca, Nova Trentô and Salta, in the food and sleep screen.
-    comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Pedra Branca, Nova Trentô, and Salta.', companion: true,
+    comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta', 'harbor'], works: 'Pedra Branca, Nova Trentô, Salta, and Barra Velha.', companion: true,
                     text: "Emilio manages small hotels along the south road. He can find a room under someone else's reservation." },
     // union: a train the crew holds in Salta, and the strike.
     comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
@@ -252,7 +252,8 @@ const Data = (() => {
           mods: { introduction: 2, border: 1 }, text: "The road post toward Cerro Alto is three hours of switchbacks up the mountain.",
           success: { say: 'The sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name, and you wait two hours while they wake someone in Cerro Alto.' } },
-        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [],
+        // noFace: no officer sees you on the path, so a known face does not make it harder
+        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [], noFace: true,
           mods: { border: 2, care: 1 }, text: "An old shepherds' path climbs over the ridge between the posts, where no guard checks a passport.",
           success: { exposure: -1, say: "You walk five hours through the snow and come down in Costamar, where no post has your name." },
           fail: { exposure: 1, hours: 3, say: "The wind closes the path near the top, and you lose three more hours walking back down." } },
@@ -279,9 +280,10 @@ const Data = (() => {
         { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
           mods: { introduction: 1, permission: 2 }, text: "You ask Capitān Olsēn to fly without the visa.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
-          fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.' } },
+          fail: { exposure: 2, hours: 3, say: 'Snow closes the path below the ridge, and a herder watches you turn back after three hours.' } },
         // owner, Nov. 5, 2026: a second way out of Costamar that does not wait on the charter jet
-        { id: 'ticket', name: 'Buy an airline ticket', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true,
+        // unlessHeld: offered only while you do not hold the boarding pass it buys
+        { id: 'ticket', name: 'Buy an airline ticket', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true, unlessHeld: 'airline_seat',
           mods: { information: 1 }, text: "The airline desk in the terminal sells seats on the next flight out of Costamar.",
           success: { card: 'airline_seat', exposure: 1, say: "The clerk prints a boarding pass in your second passport's name, with your photo on her screen." },
           fail: { exposure: 1, say: "The clerk says the flight is full, and she writes something down after you leave." } },
@@ -871,7 +873,7 @@ const Data = (() => {
       arrive: 'The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.',
       approaches: [
         { id: 'board_papers', name: 'Board with your new passport', hours: 1, dc: 3, needs: [{ card: 'document' }, { night: true }],
-          mods: { document: 2, introduction: 1 }, text: 'The gangway opens after dark, and an officer scans every passport.',
+          mods: { document: 2, introduction: 1, border: 2 }, text: 'The gangway opens after dark, and an officer scans every passport.',
           success: { say: 'The gangway officer scans the new passport and wishes you a pleasant voyage.' },
           fail: { exposure: 1, say: 'The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.' } },
         { id: 'steward', with: 'theo', name: 'Sign on as a steward', hours: 2, dc: 4, needs: [],
@@ -892,7 +894,7 @@ const Data = (() => {
       arrive: 'Two hundred residents live aboard the Long Horizon. The next stop is Bahía Clara, in Solandia, where the airport has flights to Lusara.',
       approaches: [
         { id: 'go_ashore', with: 'official', name: 'Go ashore and keep walking', hours: 2, dc: 3, needs: [{ arr: 'reception', stage: 1 }],
-          mods: { introduction: 1, information: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
+          mods: { introduction: 1, information: 1, border: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
           success: { say: 'You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.' },
           fail: { exposure: 1, hours: 2, say: 'A resident recognizes you at the gangway and asks for a photo, so you wait two hours in your cabin for the next tender.' } },
         { id: 'supply_boat', with: 'theo', name: 'Slip off on the supply boat', hours: 2, dc: 4, needs: [],
@@ -909,7 +911,7 @@ const Data = (() => {
       arrive: 'The flight to Lusara leaves twice a day. Bounty hunters watch the departures hall.',
       approaches: [
         { id: 'fly_lusara', with: 'pilot', name: 'Board your flight to Lusara', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 2 }],
-          mods: { document: 2, permission: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
+          mods: { document: 2, permission: 1, border: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
           success: { win: true, say: 'The flight to Lusara takes off on time, and the officer at the other end stamps your real visa.' },
           fail: { exposure: 1, hours: 2, say: 'A second check at the gate makes you miss the flight, and the next one leaves in two hours.' } },
         { id: 'desk_seat', name: 'Buy a seat at the desk', hours: 1, dc: 2, needs: [{ card: 'document' }], pay: true,
@@ -997,6 +999,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_town', at: ['eri_town'], title: 'A place to stop in town', text: 'The harbor hotel asks for a passport, and the market feeds anyone.', choices: [
       { id: 'hotel', label: 'Take a harbor hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: "The harbor hotel's manager owes Emilio a favor, and your room goes under another guest's name." } },
       { id: 'market', label: 'Eat at the market', fx: { hours: 1, meal: true, rest: true, say: 'You eat fried fish standing up at a market stall.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys food at the market and brings it back.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
@@ -1006,6 +1009,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_quay', at: ['eri_quay'], title: 'A place to stop at the harbor', text: "The seamen's hostel rents bunks by the night.", choices: [
       { id: 'hostel', label: "Take a seamen's hostel bunk", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden writes your new name in his book, and everyone eats and sleeps five hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio knows the hostel warden, who books you a back room under another guest\'s name.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_ship', at: ['eri_ship'], title: 'Your cabin aboard', text: 'Meals come to the cabin, and the bunk is yours.', choices: [
       { id: 'cabin_rest', label: 'Eat and sleep in the cabin', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps six hours while the ship sails.' } },

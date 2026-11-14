@@ -4258,7 +4258,7 @@
    "id": "mate.tomas.help",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Tomás says, \"Go now, while that booth changes shift.\"",
+   "text": "Tomás says, \"Go now, while nobody is looking this way.\"",
    "audience": [
     "player"
    ],
@@ -12264,6 +12264,24 @@
    ]
   },
   {
+   "id": "sim.why.already_hold",
+   "domain": "interface",
+   "pattern": "blocked-action",
+   "text": "You already hold {card}, so there is nothing more to buy here.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "card": {
+     "source": "fact",
+     "ref": "arg.card"
+    }
+   }
+  },
+  {
    "id": "sim.why.nothing_left_to_move",
    "domain": "interface",
    "pattern": "blocked-action",
@@ -13854,6 +13872,42 @@
    "text": "Call about the fixer to reach Dario in Bahía Clara.",
    "audience": [
     "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.inquiry.found_no_power",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": " They find you, but Costamar has not agreed to let anyone stop you here.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "sim.inquiry.found_no_power.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": " They find you, but they cannot grab you inside the airport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "gov.inquiry.found_no_power",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": " They find her, but Costamar has not agreed to let anyone stop her there.",
+   "audience": [
+    "government"
    ],
    "phases": [
     "run"
@@ -16035,7 +16089,7 @@
    "id": "level.airfield.depart_nopermit.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.",
+   "text": "Snow closes the path below the ridge, and a herder watches you turn back after three hours.",
    "audience": [
     "player"
    ],
@@ -18177,7 +18231,7 @@
    "id": "card.comp_emilio.works",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Pedra Branca, Nova Trentô, and Salta.",
+   "text": "Pedra Branca, Nova Trentô, Salta, and Barra Velha.",
    "audience": [
     "player"
    ],
@@ -26455,6 +26509,30 @@
    ]
   },
   {
+   "id": "ch2.lodging.lodge_eri_town.emilio_room.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take Emilio's room",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_town.emilio_room.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The harbor hotel's manager owes Emilio a favor, and your room goes under another guest's name.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "ch2.lodging.lodge_eri_town.market.label",
    "domain": "interface",
    "pattern": "action-label",
@@ -26639,6 +26717,30 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": "The warden writes your new name in his book, and everyone eats and sleeps five hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.emilio_room.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take Emilio's room",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_quay.emilio_room.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Emilio knows the hostel warden, who books you a back room under another guest's name.",
    "audience": [
     "player"
    ],
