@@ -32,7 +32,7 @@ belongs here.
 5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta. **Resolved November 1, 2026:** a way onto the freight is dropped only when you leave the stop where it counts.
 6. **"Have Gianlūka ask for a delay" can never be chosen.** It needs a card kind no card has, and if it worked it would move the deadline 4 hours sooner while its line says the clerk grants two days. **Resolved November 1, 2026:** it now needs the party machine. With Monday noon gone, it holds the court's travel ban order back instead of moving a deadline.
 7. **Resolved, checked Nov. 14, 2026:** ~~**"Call your contacts" at Nova Trentô can be repeated.** Each use moves all three arrangements one step with no ally, roll or check; twice on a Tarun run marks a visa as issued for a country that never agreed.~~ The move is now once per run (`once: true`, src/data.js), and item 35 keeps its calls within the arrangement rules.
-8. **Resolved, checked Nov. 14, 2026:** ~~**"Help Nonā Rosa free the truck" leaves for Salta on success**, which skips the "Esmeralda expects you" requirement on the road out.~~ Winning it now gives the truck card and leaves you at Nova Trentô (src/data.js `help_host`).
+8. **"Help Nonā Rosa free the truck" leaves for Salta on success**, which skips the "Esmeralda expects you" requirement on the road out.
 
 ### Priority 2: names and labels promise something the rules do not do
 
