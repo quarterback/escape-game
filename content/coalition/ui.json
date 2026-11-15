@@ -2060,7 +2060,7 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick a move, read what it does and how long it takes, then tap **Confirm**. Use the phone to line up help while you travel, but a call can fail and an answer takes hours."
+   "text": "Pick a move, read what it takes and what happens if it works or fails, then tap **Confirm**. Use the phone to line up help while you travel, but a call can fail and an answer takes hours. Under **Places nearby**, you can leave the stop for a side place with its own costs, and when there is nothing to do, the clock skips ahead to the next thing that needs you."
   },
   {
    "id": "help.cards",
