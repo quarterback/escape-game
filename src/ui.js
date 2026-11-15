@@ -186,7 +186,7 @@ const UI = (() => {
         if (job) out.push(T('next.waiting', { name: cap(sibNamed1(job.ally)), what: what[n.arr], time: short(job.due) }));
         else if (call && call.ok) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] }));
         else if (call && call.why) out.push(call.why); } // a call you cannot make says why, never 'call them'
-      else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name })); }
+      else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name.replace(/^./, c => c.toLowerCase()) })); }
     }
     return out.slice(0, 2);
   }

@@ -72,6 +72,28 @@ While building the cost lines I found that the review run had wrongly "corrected
 - **Phone width,** both sides: the Salta move list, a side place card, an opened move, and the desk's list.
 - **Cost-line contrast:** the lines are drawn at full contrast, with no faded text.
 
+## Editorial pass (owner, Nov. 15, 2026: "Make sure the text is run against my editorial tools")
+
+Scope: every player string that this run and the review run (#60) added or changed, 270 strings in all.
+
+- **Prosekeep 0.3.0** (`prosekeep check --profile vloora`, then `audit`): 0 mechanical findings before the edits and 0 after.
+- **Red Pen Editor:**
+  - **inspect** flagged four near-duplicates. They are the three hurry lines, which repeat one sentence on purpose (one per call), and chapter-two variants of the same name. All four were kept.
+  - **The rewrites:** all 16 passed its guard (`applyEdits`), with none rejected and no number or date lost.
+- **Humanizer and plain language, read by hand.** 16 strings were rewritten:
+  - **A forced triad:** the canteen's "the yard, the guards, and the cars".
+  - **A staged parallel:** the market's "Any of them could sell a sighting, and any of them could help".
+  - **A couplet and a two-idea sentence:** the help paragraph.
+  - **Passives and fragments:** the route sheet, the crew vest, the scooter, the shepherds' hut and the quiet room.
+  - **A hyphenated pair:** "hi-vis".
+  - **A hedge:** the storm's "few hours" is now "three hours", which is what the rules give it.
+  - **Lines that claimed more than the rules do:**
+    - The registry now says a report on where she is arrives in four hours. It had named a farmhouse and a patrol that never exist.
+    - The railway's help was about guards on the freight, but it eases every order for six hours, so it now says that.
+  - **A blocked-choice line** told you there was nothing more to "buy" at a shepherd's hut. It now says only that you already hold the card.
+  - **The night hint** now reads as a sentence: "From 10 at night, you can board the midnight freight."
+- **Branches.** Four of these strings came from #60, so the fixes for them are in this branch. They arrive when #61 merges.
+
 ## Held for the owner
 - **The stop screen.** It still needs a tap ("Keep going") at each new stop. It is a reading screen, not waiting, so I left it.
 - **Card labels on news cards.** The small label ("A place nearby", "News") above a card's title is the game's existing pattern, kept for side places.

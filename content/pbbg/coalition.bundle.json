@@ -1713,7 +1713,7 @@
    "id": "next.night",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "The move {move} opens at 10 at night.",
+   "text": "From 10 at night, you can {move}.",
    "audience": [
     "player"
    ],
@@ -5637,7 +5637,7 @@
    "id": "help.approach",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Pick a move, read what it takes and what happens if it works or fails, then tap **Confirm**. Use the phone to line up help while you travel, but a call can fail and an answer takes hours. Under **Places nearby**, you can leave the stop for a side place with its own costs, and when there is nothing to do, the clock skips ahead to the next thing that needs you.",
+   "text": "Open a move to see how long it takes and what happens if it works or fails. **Confirm** makes the move. Use the phone to line up help while you travel, but a call can fail and an answer takes hours. **Places nearby** lists side trips from the stop, each with its own costs. When you have nothing to do, the clock skips ahead to the next thing that needs you.",
    "audience": [
     "player"
    ],
@@ -12084,7 +12084,7 @@
    "id": "brief.reception_note.ch2",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Dario meets you at the pier in Bahía Clara, and going ashore there needs him.",
+   "text": "Going ashore at Bahía Clara needs Dario, who meets you at the pier.",
    "audience": [
     "player"
    ],
@@ -13157,7 +13157,7 @@
    "id": "sim.why.already_hold",
    "domain": "interface",
    "pattern": "blocked-action",
-   "text": "You already hold {card}, so there is nothing more to buy here.",
+   "text": "You already hold {card}.",
    "audience": [
     "player"
    ],
@@ -19199,7 +19199,7 @@
    "id": "card.route_sheet.text",
    "domain": "narrative",
    "pattern": "card",
-   "text": "Long-haul drivers mark every checkpoint between the capital and Salta, with the hours they are manned.",
+   "text": "Long-haul drivers mark every checkpoint between the capital and Salta, and the hours the police work it.",
    "audience": [
     "player"
    ],
@@ -19343,7 +19343,7 @@
    "id": "card.crew_vest.text",
    "domain": "narrative",
    "pattern": "card",
-   "text": "A hi-vis vest from the hangar, with a laminated badge nobody looks at closely.",
+   "text": "A high visibility vest from the hangar comes with a laminated badge that nobody looks at closely.",
    "audience": [
     "player"
    ],
@@ -19379,7 +19379,7 @@
    "id": "card.scooter_hire.text",
    "domain": "narrative",
    "pattern": "card",
-   "text": "A scooter hired for the day from a stall behind the fish market.",
+   "text": "A stall behind the fish market rents you the scooter for the day.",
    "audience": [
     "player"
    ],
@@ -27138,7 +27138,7 @@
    "id": "ch2.event.eri_storm.text",
    "domain": "narrative",
    "pattern": "report",
-   "text": "A tropical storm has washed out the coast road for the next few hours.",
+   "text": "A tropical storm has washed out the coast road for the next three hours.",
    "audience": [
     "player"
    ],
