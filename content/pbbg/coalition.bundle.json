@@ -811,6 +811,61 @@
    ]
   },
   {
+   "id": "arg.a",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "arg.b",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "arg.last",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "arg.win",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "arg.lose",
+   "type": "string",
+   "audience": [
+    "player",
+    "government"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "arg.word",
    "type": "string",
    "audience": [
@@ -1387,7 +1442,49 @@
    "id": "action.wait_on",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Skip to what happens next",
+   "text": "Skip ahead",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "skip.auto",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Nothing to do here yet, so the clock moves on.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "action.skip_answer",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Skip to {name}'s answer",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "action.skip_dark",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Skip to 10 at night",
    "audience": [
     "player"
    ],
@@ -4053,6 +4150,30 @@
    "domain": "interface",
    "pattern": "action-label",
    "text": "Stop to eat and sleep",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "side.go",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Go there",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "side.heading",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Places nearby",
    "audience": [
     "player"
    ],
@@ -12372,6 +12493,480 @@
    }
   },
   {
+   "id": "lead.escape",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "you get away",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.move_on",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "you move on to {place}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "lead.hours",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "it takes {n} hour{s}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    },
+    "s": {
+     "source": "fact",
+     "ref": "arg.s"
+    }
+   }
+  },
+  {
+   "id": "lead.more_hours",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "you lose {n} more hour{s}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    },
+    "s": {
+     "source": "fact",
+     "ref": "arg.s"
+    }
+   }
+  },
+  {
+   "id": "lead.trip",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "it takes {hours} hour{s} there and back",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "hours": {
+     "source": "fact",
+     "ref": "arg.hours"
+    },
+    "s": {
+     "source": "fact",
+     "ref": "arg.s"
+    }
+   }
+  },
+  {
+   "id": "lead.attention_up",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "police attention rises by {n}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
+  },
+  {
+   "id": "lead.attention_up.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the bounty hunters' attention rises by {n}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
+  },
+  {
+   "id": "lead.attention_down",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "police attention falls by {n}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
+  },
+  {
+   "id": "lead.attention_down.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the bounty hunters' attention falls by {n}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "n": {
+     "source": "fact",
+     "ref": "arg.n"
+    }
+   }
+  },
+  {
+   "id": "lead.card",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "you get {card}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "card": {
+     "source": "fact",
+     "ref": "arg.card"
+    }
+   }
+  },
+  {
+   "id": "lead.meal",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "everyone eats",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.sleep",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "everyone sleeps",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.sleep_some",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "everyone gets some sleep",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.trust_up",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "{name} trusts you more",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "lead.trust_down",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "{name} trusts you less",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
+   "id": "lead.easier_here",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "your moves here get easier",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.harder_here",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "your moves here get harder",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.search_away",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the police search somewhere else",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.search_away.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the bounty hunters search somewhere else",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.search_here",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the police learn where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.search_here.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the bounty hunters learn where you are",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.calls_move",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "your arrangements move up a step",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.stage",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "it moves {what} up one step",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "what": {
+     "source": "fact",
+     "ref": "arg.what"
+    }
+   }
+  },
+  {
+   "id": "lead.lose_card",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "you lose a card",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.stopped",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the police stop you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.stopped.ch2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "the bounty hunters stop you",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.nothing",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "nothing else changes",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.and2",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "{a} and {b}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "a": {
+     "source": "fact",
+     "ref": "arg.a"
+    },
+    "b": {
+     "source": "fact",
+     "ref": "arg.b"
+    }
+   }
+  },
+  {
+   "id": "lead.and_n",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "{list}, and {last}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "list": {
+     "source": "fact",
+     "ref": "arg.list"
+    },
+    "last": {
+     "source": "fact",
+     "ref": "arg.last"
+    }
+   }
+  },
+  {
+   "id": "lead.roll",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "If it works, {win}. If not, {lose}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "win": {
+     "source": "fact",
+     "ref": "arg.win"
+    },
+    "lose": {
+     "source": "fact",
+     "ref": "arg.lose"
+    }
+   }
+  },
+  {
    "id": "action.done_by",
    "domain": "interface",
    "pattern": "action-preview",
@@ -18539,6 +19134,294 @@
    "domain": "narrative",
    "pattern": "card",
    "text": "The Salta rail yard and its workers.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.route_sheet.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A hauler's route sheet",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.route_sheet.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Long-haul drivers mark every checkpoint between the capital and Salta, with the hours they are manned.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.route_sheet.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Any move the police could be watching, from Pedra Branca to Salta.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.shepherd.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A shepherd's word on the posts",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.shepherd.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "A shepherd who crosses the ridge every week knows which post is busy and when.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.shepherd.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "The crossings at the line.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.tower_shift.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The tower's shift change",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.tower_shift.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "The dockers know which controller is on the night shift and which one asks no questions.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.tower_shift.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "The Portalba departure.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.mooring.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The night boat's mooring",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.mooring.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "From the lighthouse you watched the night boat tie up and saw who stood watch on the quay.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.mooring.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Every move at Barra Velha.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.crew_vest.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A ground crew vest",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.crew_vest.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "A hi-vis vest from the hangar, with a laminated badge nobody looks at closely.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.crew_vest.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Leaving the airstrip with the crew.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.scooter_hire.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A rented scooter",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.scooter_hire.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "A scooter hired for the day from a stall behind the fish market.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.scooter_hire.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Leaving Erinana town by road.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.purser_ways.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The purser's habits",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.purser_ways.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "The chandlers know when the purser checks papers and when she waves the crew through.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.purser_ways.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Boarding the Long Horizon and going ashore from it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.supply_tip.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The supply boat's hours",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.supply_tip.text",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "The deck crew told you which hour the supply boat comes alongside and who rows it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "card.supply_tip.works",
+   "domain": "narrative",
+   "pattern": "card",
+   "text": "Leaving the ship on the supply boat.",
    "audience": [
     "player"
    ],

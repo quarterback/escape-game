@@ -556,3 +556,7 @@ body.ringing #phoneh{color:var(--mint)}
 /* the pill labels on the route maps: no outline (the world map's point style gave them a dark 2px stroke that smeared the letters) */
 .routemap text.pt{stroke:none}
 #helpbox.govside .eschelp{display:none}
+
+.choice .lead{display:block;font-weight:400;font-size:14px;line-height:1.4;margin-top:4px;opacity:.85}
+.ctx.lead{font-size:14px;opacity:.9}
+.sidehead{margin:14px 0 6px;font-size:15px;font-weight:700;letter-spacing:0}

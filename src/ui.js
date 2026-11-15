@@ -168,7 +168,7 @@ const UI = (() => {
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div>${a.text ? `<p class="ctx">${esc(a.text)}</p>` : ''}<div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div>${a.text ? `<p class="ctx">${esc(a.text)}</p>` : ''}${a.lead ? `<p class="ctx lead">${esc(a.lead)}</p>` : ''}<div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
     if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
     box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons stay on screen
@@ -197,12 +197,25 @@ const UI = (() => {
     // waiting is a choice like any move: it says how long it takes and what can happen while you wait
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
+    // side places (docs/no-waiting.md): somewhere to go instead of waiting; each says its trip cost before you go
+    { const sides = (A.sides || []).filter(x => x.ok); if (sides.length && phase === 'move') { const h = document.createElement('h3'); h.className = 'sidehead'; h.textContent = T('side.heading'); box.appendChild(h);
+      for (const x of sides) { if (sel === 'side:' + x.id) box.appendChild(expanded({ id: x.id, name: x.name, hours: x.hours, text: x.text, lead: x.lead }, T('side.go'), () => doCommit('side:' + x.id))); else { const b = approachBtn({ id: 'side:' + x.id, name: x.name, hours: x.hours }, phase === 'move' && !Tutorial.active()); b.classList.add('sideact'); b.onclick = () => { Sfx.unlock(); sel = 'side:' + x.id; Sfx.select(); renderAll(); }; box.appendChild(b); } } } }
+    // no waiting (owner, Nov. 14, 2026): one skip that names what it skips to, and food and sleep; no hour-by-hour waits
     const waits = [];
-    if (A.waitDark.ok) { const nm = (Sim.route(s)[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
-    if (A.waitOn.ok) waits.unshift({ id: 'wait_on', name: T('action.wait_on'), hours: A.waitOn.hours, lines: [], upTo: true }); // one click to the next thing
-    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
+    if (A.waitOn.ok) waits.push({ id: 'wait_on', name: skipName(A.waitOn), hours: A.waitOn.hours, lines: [], upTo: A.waitOn.target === 'next' });
     if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
+    autoSkip(A);
+  }
+  const skipName = (w) => w.target === 'dark' ? T('action.skip_dark') : w.target === 'answer' && w.ally ? T('action.skip_answer', { name: sibNamed1(w.ally) }) : T('action.wait_on');
+  // nothing to do here but wait: the clock moves on by itself, to the next thing that needs you
+  let skipping = false;
+  function autoSkip(A) {
+    if (skipping || gov || !s || s.over || s.event || s.tutorial || Tutorial.active() || phase !== 'move' || !A.waitOn.ok || replaying) return;
+    const sides = (A.sides || []).some(x => x.ok);
+    if (A.approaches.some(a => a.ok) || A.calls.some(c => c.ok) || A.messages.length || sides) return;
+    skipping = true; const what = skipName(A.waitOn);
+    setTimeout(() => { skipping = false; if (phase !== 'move' || s.event || s.over) return; toast(T('skip.auto'), what); doCommit('wait_on'); }, 700);
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
   const waitMeta = (w) => w.id === 'wait' || w.id === 'lodge' ? '' : `<span class="meta"><span class="hrs">${esc(T(w.upTo ? 'action.up_to' : 'action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
@@ -697,7 +710,7 @@ const UI = (() => {
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: Sim.num(v.rung) }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.lead ? `<span class="lead">${esc(c.lead)}</span>` : ''}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   // owner, Nov. 1, 2026 ("Ask Theo to walk you through" then "Theo walks you through" is redundant): when the move
   // has its own line, that line is the result. The move's name, the outcome word and the gains it already

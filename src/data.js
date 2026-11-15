@@ -138,6 +138,23 @@ const Data = (() => {
     // union: a train the crew holds in Salta, and the strike.
     comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
                     text: 'Joana organizes railway and dock workers. She knows who is on shift, who is angry, and who can make a train wait.' },
+    // cards found at side places (docs/no-waiting.md): from 'self', so no one can take them back by talking
+    route_sheet:  { does: "The sheet shows where the trucks get stopped.", name: "A hauler's route sheet", tag: 'information', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Any move the police could be watching, from Pedra Branca to Salta.',
+                    text: 'Long-haul drivers mark every checkpoint between the capital and Salta, with the hours they are manned.' },
+    shepherd:     { does: "A shepherd knows when each post changes its guard.", name: "A shepherd's word on the posts", tag: 'information', from: 'self', reach: ['border'], works: 'The crossings at the line.',
+                    text: 'A shepherd who crosses the ridge every week knows which post is busy and when.' },
+    tower_shift:  { does: "The dockers know when the tower changes shift.", name: "The tower's shift change", tag: 'introduction', from: 'self', reach: ['airfield'], works: 'The Portalba departure.',
+                    text: 'The dockers know which controller is on the night shift and which one asks no questions.' },
+    mooring:      { does: "You know where the night boat ties up and who guards it.", name: "The night boat's mooring", tag: 'information', from: 'self', reach: ['harbor'], works: 'Every move at Barra Velha.',
+                    text: 'From the lighthouse you watched the night boat tie up and saw who stood watch on the quay.' },
+    crew_vest:    { does: "A crew vest gets you past the terminal staff.", name: 'A ground crew vest', tag: 'introduction', from: 'self', reach: ['eri_airstrip'], works: 'Leaving the airstrip with the crew.',
+                    text: 'A hi-vis vest from the hangar, with a laminated badge nobody looks at closely.' },
+    scooter_hire: { does: "A rented scooter takes the back lanes.", name: 'A rented scooter', tag: 'vehicle', from: 'self', reach: ['eri_town'], works: 'Leaving Erinana town by road.',
+                    text: 'A scooter hired for the day from a stall behind the fish market.' },
+    purser_ways:  { does: "You know how the purser runs the gangway.", name: "The purser's habits", tag: 'introduction', from: 'self', reach: ['eri_quay', 'eri_ship'], works: 'Boarding the Long Horizon and going ashore from it.',
+                    text: 'The chandlers know when the purser checks papers and when she waves the crew through.' },
+    supply_tip:   { does: "The deck crew told you when the supply boat runs.", name: "The supply boat's hours", tag: 'vehicle', from: 'self', reach: ['eri_ship'], works: 'Leaving the ship on the supply boat.',
+                    text: 'The deck crew told you which hour the supply boat comes alongside and who rows it.' },
     road_map:     { does: "The map can keep you out of the police's sight.", name: 'A map of the back roads', tag: 'information', from: 'self', reach: VALDORIA, works: 'Any move the police could be watching, up to the line.', pick: true,
                     text: 'Every checkpoint and back road between here and the line is marked.' },
   };
@@ -1022,10 +1039,118 @@ const Data = (() => {
       { id: 'cafe', label: 'Eat at the café', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat at the café with your back to the hall.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
   ];
-  const CH1 = {}, CH2 = { LEVELS: LEVELS2, PEOPLE: PEOPLE2, ARRANGEMENTS: ARRANGEMENTS2, STAGE_LINES: STAGE_LINES2, ENEMY: ENEMY2, ENEMY_ACTIONS: ENEMY_ACTIONS2, RUMORS: RUMORS2, HOLDS: HOLDS2, EVENTS: EVENTS2, LODGING: LODGING2 };
-  Object.assign(CH1, { LEVELS, PEOPLE, ARRANGEMENTS, STAGE_LINES, ENEMY, ENEMY_ACTIONS, RUMORS, HOLDS, EVENTS, LODGING });
+  // ---- side places (owner, Nov. 14, 2026: "an opportunity to wander off like an open world") --------------------
+  // A side place hangs off one stop. Going there costs hours there and back and can raise police attention on the way;
+  // then it opens its own small story. Each can be visited once per run, and every one has a way back with nothing.
+  // Choices use the same effects as the news (fx), so what each costs and leads to is stated the same way.
+  const BACK = { id: 'back', label: 'Head back', fx: { say: 'You go back the way you came.' } };
+  const SIDES = [
+    { id: 'market', at: 'residence', name: 'The old covered market', hours: 2, exposure: 1,
+      text: 'The stallholders who sold to your family for years open again at dusk. Any of them could sell a sighting, and any of them could help.',
+      choices: [
+        { id: 'map', label: 'Buy a map at a stall', fx: { card: 'road_map', say: 'A stall keeper sells you a map with the farm tracks marked in pencil.' } },
+        { id: 'watchers', label: 'Ask who watches your house', fx: { mod: -1, say: 'A fruit seller tells you which corner the watchers use and when they change.' } },
+        BACK ] },
+    { id: 'truckstop', at: 'road', name: 'The truck stop on the bypass', hours: 2, exposure: 1,
+      text: 'Long-haul drivers eat here at every hour, and none of them watches the news.',
+      choices: [
+        { id: 'eat', label: 'Eat at the counter', fx: { hours: 1, meal: true, say: 'You eat hot food at the counter with your backs to the door.' } },
+        { id: 'sheet', label: "Buy a hauler's route sheet", fx: { card: 'route_sheet', say: 'A driver sells you the sheet his company hands out, checkpoints and all.' } },
+        BACK ] },
+    { id: 'pressing', at: 'colonia', name: 'The pressing shed', hours: 1, exposure: 0,
+      text: 'The cooperative presses its grapes in a long shed below the vines. After dark nobody comes down here.',
+      choices: [
+        { id: 'hayloft', label: 'Sleep in the hayloft', fx: { hours: 5, sleep: 'full', rest: true, say: 'You sleep in the hayloft over the presses and wake to the smell of crushed grapes.' } },
+        { id: 'harvest', label: 'Help load the harvest', fx: { hours: 2, trust: { host: 1 }, say: 'You load crates onto the cooperative truck, and Nonā Rosa hears who helped.' } },
+        BACK ] },
+    { id: 'canteen', at: 'salta', name: "The rail workers' canteen", hours: 2, exposure: 1,
+      text: 'The night shift eats here before the freight goes out. They talk about the yard, the guards, and the cars that ride empty.',
+      choices: [
+        { id: 'eat', label: 'Eat with the night shift', fx: { hours: 1, meal: true, say: 'You eat stew at a long table with men who never ask your name.' } },
+        { id: 'empty', label: 'Ask which car rides empty', fx: { roll: { need: 3, win: { card: 'rail_friend', say: 'A brakeman draws the car number on your napkin and says he will be on the platform.' }, lose: { exposure: 1, say: 'The brakeman goes quiet, and someone at the next table leaves to make a call.' } } } },
+        BACK ] },
+    { id: 'bathhouse', at: 'salta', name: 'The river bathhouse', hours: 2, exposure: 0,
+      text: 'An old bathhouse on the river rents back rooms by the hour and keeps no register.',
+      choices: [
+        { id: 'room', label: 'Rent a back room', fx: { hours: 5, sleep: 'full', rest: true, say: 'You sleep behind a bolted door while the river runs under the floor.' } },
+        { id: 'forget', label: 'Pay the attendant to forget you', fx: { hours: 1, exposure: -2, say: 'The attendant pockets the money and tells the next caller he has seen nobody.' } },
+        BACK ] },
+    { id: 'hut', at: 'border', name: "The shepherds' hut", hours: 3, exposure: 0,
+      text: 'A stone hut on the ridge above the posts, with a stove and a view of all three crossings.',
+      choices: [
+        { id: 'guide', label: 'Ask a shepherd about the posts', fx: { card: 'shepherd', say: 'A shepherd tells you which post is busy at dawn and which one sleeps.' } },
+        { id: 'rest', label: 'Rest out of the wind', fx: { hours: 4, sleep: 'full', rest: true, say: 'You sleep by the stove while the wind works at the shutters.' } },
+        BACK ] },
+    { id: 'chandlery', at: 'airfield', name: 'The dockside chandlery', hours: 2, exposure: 1,
+      text: 'Dockers buy rope and coffee here at the end of each shift, and they know everyone who works the port and the airfield.',
+      choices: [
+        { id: 'tower', label: 'Ask the dockers about the tower', fx: { card: 'tower_shift', say: 'A docker names the controller who works nights and never asks for papers.' } },
+        { id: 'eat', label: 'Buy food for the flight', fx: { hours: 1, meal: true, say: 'You eat bread and sardines on a crate behind the shop.' } },
+        BACK ] },
+    { id: 'chapel', at: 'airfield', name: "The seamen's chapel", hours: 1, exposure: 0,
+      text: 'A small chapel by the harbor wall stays open all night for crews between ships.',
+      choices: [
+        { id: 'pew', label: 'Sleep in a back pew', fx: { hours: 4, sleep: 'car', rest: true, exposure: -1, say: 'You sleep in a back pew, and nobody who comes in looks twice at a family resting.' } },
+        BACK ] },
+    { id: 'lighthouse', at: 'harbor', name: 'The old lighthouse', hours: 2, exposure: 0,
+      text: 'The lighthouse at the end of the breakwater has not been lit in years, and its door does not lock.',
+      choices: [
+        { id: 'lamp', label: 'Sleep in the lamp room', fx: { hours: 5, sleep: 'full', rest: true, say: 'You sleep in the lamp room with the sea on three sides.' } },
+        { id: 'watch', label: "Watch the night boat's mooring", fx: { hours: 1, card: 'mooring', say: 'From the gallery you watch the night boat tie up and count the men who guard it.' } },
+        BACK ] },
+    { id: 'netsheds', at: 'harbor', name: 'The net sheds', hours: 1, exposure: 1,
+      text: 'Fishermen mend nets in the sheds behind the harbor. Some of them sell space on the night boat when the skipper is short.',
+      choices: [
+        { id: 'berth', label: 'Buy a berth from a fisherman', fx: { roll: { need: 3, win: { card: 'berth', say: 'A fisherman sells you his cousin\'s berth and walks you past the skipper\'s mate.' }, lose: { exposure: 1, say: 'The fisherman takes your money to the harbor police instead.' } } } },
+        BACK ] },
+  ];
+  const SIDES2 = [
+    { id: 'hangar', at: 'eri_airstrip', name: 'The hangar café', hours: 1, exposure: 1,
+      text: 'Ground crew drink coffee in a café at the back of the hangar, out of sight of the terminal.',
+      choices: [
+        { id: 'vest', label: 'Borrow a crew vest', fx: { card: 'crew_vest', say: 'A mechanic tosses you a spare vest and a badge from the lost and found.' } },
+        { id: 'eat', label: 'Eat before you go', fx: { hours: 1, meal: true, say: 'You eat fried plantain and drink sweet coffee at the back table.' } },
+        BACK ] },
+    { id: 'fishmarket', at: 'eri_town', name: 'The fish market', hours: 2, exposure: 1,
+      text: 'The fish market fills at dawn and dusk, and everyone in it is too busy to look at faces.',
+      choices: [
+        { id: 'scooter', label: 'Rent a scooter for the day', fx: { card: 'scooter_hire', say: 'A stall behind the market rents you a scooter and asks for no license.' } },
+        { id: 'eat', label: 'Buy bread and fruit', fx: { hours: 1, meal: true, say: 'You eat on a bench by the boats while the stalls close around you.' } },
+        BACK ] },
+    { id: 'smokehouse', at: 'eri_hideout', name: 'The smokehouse on the point', hours: 1, exposure: 0,
+      text: 'The village smokes its catch in a shed on the point, and the fire keeps it warm all night.',
+      choices: [
+        { id: 'sleep', label: 'Sleep among the nets', fx: { hours: 5, sleep: 'full', rest: true, say: 'You sleep on piled nets by the smoking racks, warm for the first time in days.' } },
+        { id: 'mend', label: 'Help mend the nets', fx: { hours: 2, trust: { host: 1 }, say: 'You mend nets with the women of the village, and Mama Ilse hears who helped.' } },
+        BACK ] },
+    { id: 'chandlers', at: 'eri_quay', name: "The chandlers' row", hours: 2, exposure: 1,
+      text: 'The shops that supply the ships line the road behind the quay, and their owners know every purser in port.',
+      choices: [
+        { id: 'purser', label: "Ask about the purser's habits", fx: { card: 'purser_ways', say: 'A chandler tells you when the purser checks papers and when she waves the crew through.' } },
+        { id: 'eat', label: 'Eat at a dock stall', fx: { hours: 1, meal: true, say: 'You eat grilled fish from a stall while the cranes load the Long Horizon.' } },
+        BACK ] },
+    { id: 'seawall', at: 'eri_quay', name: 'The seawall bars', hours: 1, exposure: 1,
+      text: 'Deckhands drink in the bars along the seawall until the ship calls them back.',
+      choices: [
+        { id: 'gangway', label: 'Hear when the gangway opens', fx: { mod: -1, say: 'A deckhand tells you which hour the gangway goes unwatched.' } },
+        BACK ] },
+    { id: 'mess', at: 'eri_ship', name: 'The crew mess', hours: 1, exposure: 1,
+      text: 'The deck crew eats below the waterline, where passengers never come.',
+      choices: [
+        { id: 'eat', label: 'Eat with the deck crew', fx: { hours: 1, meal: true, say: 'You eat rice and beans with the deck crew, who ask nothing.' } },
+        { id: 'tip', label: 'Ask about the supply boat', fx: { card: 'supply_tip', say: 'A deckhand tells you when the supply boat comes alongside and who rows it.' } },
+        BACK ] },
+    { id: 'quietroom', at: 'eri_airport', name: "The airport's quiet room", hours: 1, exposure: 0,
+      text: 'A small prayer room past the toilets, with dim lights and nobody in it.',
+      choices: [
+        { id: 'rest', label: 'Rest in the quiet room', fx: { hours: 3, sleep: 'car', rest: true, exposure: -1, say: 'You rest in the dim room while the departures board turns over outside.' } },
+        BACK ] },
+  ];
+
+  const CH1 = {}, CH2 = { LEVELS: LEVELS2, PEOPLE: PEOPLE2, ARRANGEMENTS: ARRANGEMENTS2, STAGE_LINES: STAGE_LINES2, ENEMY: ENEMY2, ENEMY_ACTIONS: ENEMY_ACTIONS2, RUMORS: RUMORS2, HOLDS: HOLDS2, EVENTS: EVENTS2, LODGING: LODGING2, SIDES: SIDES2 };
+  Object.assign(CH1, { LEVELS, PEOPLE, ARRANGEMENTS, STAGE_LINES, ENEMY, ENEMY_ACTIONS, RUMORS, HOLDS, EVENTS, LODGING, SIDES });
   // one shared object: Data.useChapter(n) swaps the tables chapter two dresses differently, so the engine runs unchanged
-  const api = { HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  const api = { SIDES, HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
   api.ERI = ERI; api.CH2 = CH2; api.chapter = 1;
   api.useChapter = (n) => {
     Object.assign(api, n === 2 ? CH2 : CH1); api.chapter = n === 2 ? 2 : 1;

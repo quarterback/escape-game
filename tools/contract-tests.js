@@ -205,5 +205,37 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   }
   ok(!trapped.length, `C23 in 800 runs, every stop keeps a way on that no traitor controls${trapped.length ? ': ' + trapped.slice(0, 3).join('; ') : ''}`); }
 
+// ---- C24 (no waiting, docs/no-waiting.md): every side place opens, every choice there states its cost and works,
+// no cost line names odds, and the skip always names a target and moves the clock
+{ const bad = []; let places = 0, choices = 0; const ODDS = /%|chance|likel|odds|probab|guarantee|sure to|will work|can't fail|cannot fail/i;
+  for (const chapter of [1, 2]) { Data.useChapter(chapter);
+    for (const x of Data.SIDES) {
+      const base = Sim.newRun(31, 'woman', { chapter }); base.event = null; base.nextEventAt = 999; base.inbox = [];
+      if (x.at === 'harbor') { base.route = 'coast'; base.pos = 3; } else base.pos = Data.LEVELS.findIndex(L => L.id === x.at);
+      if (base.pos < 0) { bad.push(`${x.id}: no stop ${x.at}`); continue; }
+      const listed = Sim.actions(base).sides.find(y => y.id === x.id); places += 1;
+      if (!listed || !listed.ok || !listed.lead) { bad.push(`${x.id}: not listed with its trip cost`); continue; }
+      if (ODDS.test(listed.lead)) bad.push(`${x.id}: odds in "${listed.lead}"`);
+      for (const c of x.choices) {
+        const s = Sim.restore(Sim.serialize(base)); s.nextEventAt = 999; s._dice = [20];
+        const r = Sim.commit(s, 'side:' + x.id); const v = Sim.actions(s).event;
+        if (!r.ok || !v || v.kind !== 'side') { bad.push(`${x.id}: did not open (${r.why || (v && v.kind)})`); break; }
+        const cv = v.choices.find(y => y.id === c.id); choices += 1;
+        if (c.label.split(/\s+/).length > 6) bad.push(`${x.id}.${c.id}: label over six words`);
+        if (c.id !== 'back' && !cv.lead) bad.push(`${x.id}.${c.id}: no cost line`);
+        if (cv.lead && ODDS.test(cv.lead)) bad.push(`${x.id}.${c.id}: odds in "${cv.lead}"`);
+        const r2 = Sim.commit(s, 'evt:' + c.id); if (!r2.ok) bad.push(`${x.id}.${c.id}: ${r2.why}`);
+        if (Sim.actions(s).sides.some(y => y.id === x.id)) bad.push(`${x.id}: offered again after a visit`);
+      }
+    }
+    for (let pos = 0; pos < Data.LEVELS.length; pos++) { const s = Sim.newRun(5, 'man', { chapter }); s.pos = pos; s.event = null; s.inbox = []; s.nextEventAt = 999;
+      const w = Sim.actions(s).waitOn, h0 = s.hour; if (!w.ok || !(w.hours > 0) || !w.target) { bad.push(`skip at ${Data.LEVELS[pos].id}: no target`); continue; }
+      Sim.commit(s, 'wait_on'); if (!(s.hour > h0)) bad.push(`skip at ${Data.LEVELS[pos].id}: the clock did not move`); }
+  }
+  Data.useChapter(1);
+  for (const who of ['woman', 'man']) for (let pos = 0; pos < Data.LEVELS.length; pos++) { const s = Sim.newRun(9, who); s.pos = pos; s.event = null; s.hour = 10;
+    for (const a of Sim.actions(s).approaches) if (!a.lead || ODDS.test(a.lead)) bad.push(`${a.id}: cost line "${a.lead}"`); }
+  ok(!bad.length && places >= 16, `C24 ${places} side places and ${choices} choices state their costs and work, moves state theirs, and the skip always moves on${bad.length ? ': ' + bad.slice(0, 4).join('; ') : ''}`); }
+
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

@@ -236,7 +236,25 @@
   {
    "id": "action.wait_on",
    "pattern": "P01",
-   "text": "Skip to what happens next"
+   "text": "Skip ahead"
+  },
+  {
+   "id": "skip.auto",
+   "pattern": "P10",
+   "text": "Nothing to do here yet, so the clock moves on."
+  },
+  {
+   "id": "action.skip_answer",
+   "pattern": "P01",
+   "text": "Skip to {name}'s answer",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "action.skip_dark",
+   "pattern": "P01",
+   "text": "Skip to 10 at night"
   },
   {
    "id": "action.up_to",
@@ -1391,6 +1409,16 @@
    "id": "action.lodge",
    "pattern": "P01",
    "text": "Stop to eat and sleep"
+  },
+  {
+   "id": "side.go",
+   "pattern": "P01",
+   "text": "Go there"
+  },
+  {
+   "id": "side.heading",
+   "pattern": "P02",
+   "text": "Places nearby"
   },
   {
    "id": "card.kind_lodging",
@@ -5102,6 +5130,207 @@
    "text": "{hours} hr",
    "args": [
     "hours"
+   ]
+  },
+  {
+   "id": "lead.escape",
+   "pattern": "P03",
+   "text": "you get away"
+  },
+  {
+   "id": "lead.move_on",
+   "pattern": "P03",
+   "text": "you move on to {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "lead.hours",
+   "pattern": "P03",
+   "text": "it takes {n} hour{s}",
+   "args": [
+    "n",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.more_hours",
+   "pattern": "P03",
+   "text": "you lose {n} more hour{s}",
+   "args": [
+    "n",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.trip",
+   "pattern": "P03",
+   "text": "it takes {hours} hour{s} there and back",
+   "args": [
+    "hours",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.attention_up",
+   "pattern": "P03",
+   "text": "police attention rises by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_up.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters' attention rises by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_down",
+   "pattern": "P03",
+   "text": "police attention falls by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_down.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters' attention falls by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.card",
+   "pattern": "P03",
+   "text": "you get {card}",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "lead.meal",
+   "pattern": "P03",
+   "text": "everyone eats"
+  },
+  {
+   "id": "lead.sleep",
+   "pattern": "P03",
+   "text": "everyone sleeps"
+  },
+  {
+   "id": "lead.sleep_some",
+   "pattern": "P03",
+   "text": "everyone gets some sleep"
+  },
+  {
+   "id": "lead.trust_up",
+   "pattern": "P03",
+   "text": "{name} trusts you more",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "lead.trust_down",
+   "pattern": "P03",
+   "text": "{name} trusts you less",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "lead.easier_here",
+   "pattern": "P03",
+   "text": "your moves here get easier"
+  },
+  {
+   "id": "lead.harder_here",
+   "pattern": "P03",
+   "text": "your moves here get harder"
+  },
+  {
+   "id": "lead.search_away",
+   "pattern": "P03",
+   "text": "the police search somewhere else"
+  },
+  {
+   "id": "lead.search_away.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters search somewhere else"
+  },
+  {
+   "id": "lead.search_here",
+   "pattern": "P03",
+   "text": "the police learn where you are"
+  },
+  {
+   "id": "lead.search_here.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters learn where you are"
+  },
+  {
+   "id": "lead.calls_move",
+   "pattern": "P03",
+   "text": "your arrangements move up a step"
+  },
+  {
+   "id": "lead.stage",
+   "pattern": "P03",
+   "text": "it moves {what} up one step",
+   "args": [
+    "what"
+   ]
+  },
+  {
+   "id": "lead.lose_card",
+   "pattern": "P03",
+   "text": "you lose a card"
+  },
+  {
+   "id": "lead.stopped",
+   "pattern": "P03",
+   "text": "the police stop you"
+  },
+  {
+   "id": "lead.stopped.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters stop you"
+  },
+  {
+   "id": "lead.nothing",
+   "pattern": "P03",
+   "text": "nothing else changes"
+  },
+  {
+   "id": "lead.and2",
+   "pattern": "P03",
+   "text": "{a} and {b}",
+   "args": [
+    "a",
+    "b"
+   ]
+  },
+  {
+   "id": "lead.and_n",
+   "pattern": "P03",
+   "text": "{list}, and {last}",
+   "args": [
+    "list",
+    "last"
+   ]
+  },
+  {
+   "id": "lead.roll",
+   "pattern": "P03",
+   "text": "If it works, {win}. If not, {lose}.",
+   "args": [
+    "win",
+    "lose"
    ]
   },
   {
