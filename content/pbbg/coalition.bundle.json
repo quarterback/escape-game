@@ -4182,6 +4182,18 @@
    ]
   },
   {
+   "id": "side.heading_gov",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "Away from the desk",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "card.kind_lodging",
    "domain": "interface",
    "pattern": "navigation-heading",
@@ -12541,6 +12553,24 @@
     "s": {
      "source": "fact",
      "ref": "arg.s"
+    }
+   }
+  },
+  {
+   "id": "lead.hours_gov",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "it takes {hours}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "hours": {
+     "source": "fact",
+     "ref": "arg.hours"
     }
    }
   },

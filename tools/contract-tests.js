@@ -30,7 +30,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const h0 = shown().hours; a.hours = before + 3; const after = shown(); a.hours = before;
   ok(after.hours === h0 + 3 && after.preview.join(' ').includes(String(h0 + 3)), `C03 escape: changing ${a.id} from ${h0} to ${h0 + 3} hours changes the button and the preview without editing text`); }
 { let checked = 0, wrong = [];
-  for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13;
+  for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; g.hour = 13;
     for (const o of Gov.view(g).orders.filter(o => o.ok && o.real >= 2 && o.real <= 20)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.real]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || !roll.won) wrong.push(`${o.id}: hidden target ${o.real} did not win on a die of ${o.real}`); } }
   ok(!wrong.length && checked > 0, `C03 government: ${checked} orders roll against their hidden target${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
 
@@ -67,7 +67,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   for (let i = 0; i < 6; i++) { const s = Sim.newRun(900 + i, i % 2 ? 'man' : 'woman'); for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p;
     for (const a of Sim.actions(s).approaches) { if (a.noRoll) continue; shown += 1; if (leaks(a.odds + ' ' + a.preview.join(' ')) || /\d/.test(a.odds)) bad.push(`${a.id}: "${a.odds}"`);
       const die = a.real <= 20 ? a.real : 20, h = Sim.restore(Sim.serialize(s)); h.nextEventAt = 999; h._dice = [die]; const r = Sim.commit(h, a.id); const roll = r.ok && r.events.find(e => e.type === 'roll' && !e.who); if (r.ok && roll && roll.won !== Data.DICE.wins(die, a.real)) bad.push(`${a.id}: roll ignores the real target`); } } }
-  for (let i = 0; i < 4; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; for (const o of Gov.view(g).orders) { shown += 1; if (leaks(o.odds + ' ' + o.preview.join(' ')) || /\d/.test(o.odds)) bad.push(`order ${o.id}: "${o.odds}"`); } }
+  for (let i = 0; i < 4; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; g.hour = 13; for (const o of Gov.view(g).orders) { shown += 1; if (leaks(o.odds + ' ' + o.preview.join(' ')) || /\d/.test(o.odds)) bad.push(`order ${o.id}: "${o.odds}"`); } }
   ok(!bad.length && shown > 40, `C16 ${shown} move and order views carry no target or chance, and rolls use the hidden target${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
   // 3. news chips, result lines and logs carry no target either
   let news = 0; bad = [];
@@ -236,6 +236,17 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   for (const who of ['woman', 'man']) for (let pos = 0; pos < Data.LEVELS.length; pos++) { const s = Sim.newRun(9, who); s.pos = pos; s.event = null; s.hour = 10;
     for (const a of Sim.actions(s).approaches) if (!a.lead || ODDS.test(a.lead)) bad.push(`${a.id}: cost line "${a.lead}"`); }
   ok(!bad.length && places >= 16, `C24 ${places} side places and ${choices} choices state their costs and work, moves state theirs, and the skip always moves on${bad.length ? ': ' + bad.slice(0, 4).join('; ') : ''}`); }
+
+// ---- C25 (no waiting): on the investigator's side an order takes exactly the hours it lists, however long her move runs
+{ const off = []; let n = 0;
+  for (let seed = 1; seed <= 40; seed++) { const g = Gov.newRun(900 + seed, seed % 2 ? 'woman' : 'man');
+    for (let k = 0; k < 25 && !g.over; k++) { const v = Gov.view(g);
+      if (v.event) { Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id); continue; }
+      if (v.messages.length) { Gov.commit(g, v.messages[0].id, v.messages[0].options.find(o => o.ok).id); continue; }
+      const o = v.orders.filter(x => x.ok)[k % Math.max(1, v.orders.filter(x => x.ok).length)]; if (!o) { Gov.commit(g, 'wait'); continue; }
+      const h0 = g.hour; Gov.commit(g, o.id); if (g.over) break; n += 1;
+      if (g.hour - h0 !== o.hours) off.push(`seed ${900 + seed} ${o.id}: listed ${o.hours} hr, took ${g.hour - h0}`); } }
+  ok(!off.length && n > 100, `C25 ${n} investigator orders each took exactly their listed hours${off.length ? ': ' + off.slice(0, 3).join('; ') : ''}`); }
 
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

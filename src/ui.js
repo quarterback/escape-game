@@ -103,10 +103,10 @@ const UI = (() => {
 
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
-    const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
+    const hoursLeft = Sim.HOURS_TOTAL - nowH(), deadline = short(Sim.HOURS_TOTAL);
     const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
     // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
-    $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
+    $('clock').textContent = short(nowH()); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
     const L = Sim.route(s)[s.pos];
     if (gov) {
       const v = Gov.view(gov);
@@ -190,6 +190,7 @@ const UI = (() => {
     }
     return out.slice(0, 2);
   }
+  const nowH = () => gov ? gov.hour : s.hour; // the investigator's desk keeps its own clock
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
     { const nx = nextLines(A); if (nx.length && phase === 'move' && !s.event) { const d = document.createElement('div'); d.className = 'nextbox'; d.innerHTML = nx.map(x => `<p>${esc(x)}</p>`).join(''); box.appendChild(d); } }
@@ -500,7 +501,7 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
-    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
+    if (replaying) interstitial(short(nowH()), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
   const waitingMsgs = () => gov ? Gov.view(gov).messages.length : Sim.actions(s).messages.length;
@@ -542,7 +543,7 @@ const UI = (() => {
   const attnWord = (x) => ({ low: T('attn.low'), rising: T('attn.rising'), high: T('attn.high') })[attnLevel(x)];
   // the numbers alone; what they mean is in Help and opens from the top bar
   const shortStats = () => [
-    { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
+    { big: `${Math.max(0, Sim.HOURS_TOTAL - nowH())}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
   ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
   // a level as a bar of three steps with its word beside it, never a number (owner, Nov. 2, 2026: "Rest or food can be a level bar")
@@ -588,7 +589,7 @@ const UI = (() => {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
     put(gov.belief, ['you', T('brief.gov_search')]);
     const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? cap(T('brief.gov_patrols', { n: Sim.num(ps.filter(x => x === i).length) })) : T('brief.gov_patrol')]));
-    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - (r.seenAt !== undefined ? r.seenAt : r.hour)); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
+    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.hour - (r.seenAt !== undefined ? r.seenAt : r.hour)); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
   }
@@ -629,7 +630,7 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
     $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
@@ -654,7 +655,7 @@ const UI = (() => {
   // reaching a stop is its own moment: which stop of how many, the route so far, and what this stop asks of you; it leaves on its own
   function stopScreen(pos) {
     const L = Sim.route(s)[pos], el = $('stopscreen');
-    $('s-clock').textContent = short(s.hour);
+    $('s-clock').textContent = short(nowH());
     $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
     $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
@@ -728,7 +729,7 @@ const UI = (() => {
     card.className = 'sosa';
     // what happened, in short lines: your move, then what changed while it took its hours. The full sentences are in the log.
     const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span>` : '';
-    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
+    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(nowH()) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
     if (exp && gov) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
@@ -789,7 +790,7 @@ const UI = (() => {
   const apTime = (h) => T('daily.at', { when: Sim.clockText(h) });
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
-  function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
+  function outcomeLine(o) { return o.win ? T('daily.out', { hours: nowH(), round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
   // the ending's one sentence, shared by the ending screen and the share card
   function endWhy() { const k = s.over.kind; return gov ? (k === 'fired' ? T('over.why_gov_fired') : s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T(s.over.via === 'airline' ? 'over.why_out_airline' : 'over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
@@ -807,7 +808,7 @@ const UI = (() => {
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - nowH()), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -854,9 +855,12 @@ const UI = (() => {
     { const can = !s.over && phase === 'move' && Tutorial.allowsWait() && !v.event, ws = [];
       if (v.waitOn.ok) ws.push({ id: 'wait_on', name: T('action.wait_on'), hours: 12, lines: [], upTo: true });
       if (v.lodge.ok) ws.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] });
-      const at = box.querySelector('.reports'); for (const w of ws) box.insertBefore(waitBtn(w, can), at); }
+      for (const w of ws) box.appendChild(waitBtn(w, can)); }
+    // the desk's side places (docs/no-waiting.md)
+    { const sides = (v.sides || []).filter(x => x.ok); if (sides.length && phase === 'move' && !Tutorial.active()) { const h = document.createElement('h3'); h.className = 'sidehead'; h.textContent = T('side.heading_gov'); box.appendChild(h);
+      for (const x of sides) { if (sel === 'side:' + x.id) box.appendChild(expanded({ id: x.id, name: x.name, hours: x.hours, text: x.text, lead: x.lead }, T('side.go'), () => doGov('side:' + x.id))); else { const b = approachBtn({ id: 'side:' + x.id, name: x.name, hours: x.hours }, true); b.classList.add('sideact'); b.onclick = () => { Sfx.unlock(); sel = 'side:' + x.id; Sfx.select(); renderAll(); }; box.appendChild(b); } } } }
     box.appendChild(rep);
-    $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait(); $('waitdark').hidden = true;
+    $('wait').hidden = true; $('waitdark').hidden = true; // no hour-by-hour waits on either side
   }
   function renderGovPhone() {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';

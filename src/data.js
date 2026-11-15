@@ -1147,10 +1147,31 @@ const Data = (() => {
         BACK ] },
   ];
 
+  // the investigator's side places (docs/no-waiting.md): somewhere to go instead of waiting at the desk, once each per run;
+  // the hours away are real, and nothing at the desk moves while you are gone
+  const GOV_SIDES = [
+    { id: 'registry', name: 'The land registry', hours: 3,
+      text: 'The registry keeps every deed in the province, including the farms and houses her family has owned for three generations.',
+      choices: [
+        { id: 'deeds', label: "Pull her family's property deeds", fx: { lead: 4, say: 'A clerk finds a farmhouse on the road south that nobody has searched, and a patrol drives out to look.' } },
+        { id: 'back', label: 'Head back', fx: { say: 'You go back to the desk.' } } ] },
+    { id: 'pressclub', name: 'The press club bar', hours: 2,
+      text: 'Reporters from every paper drink here after the evening edition closes.',
+      choices: [
+        { id: 'columnist', label: 'Brief a friendly columnist', fx: { minister: 1, say: 'The columnist promises the minister a kind paragraph in the morning edition.' } },
+        { id: 'story', label: 'Plant a story about her', fx: { press: true, say: 'A reporter runs her description with a phone number for sightings.' } },
+        { id: 'back', label: 'Head back', fx: { say: 'You go back to the desk.' } } ] },
+    { id: 'railoffice', name: "The rail company's office", hours: 2,
+      text: 'The freight company runs every train out of Salta from an office above the central station.',
+      choices: [
+        { id: 'rosters', label: 'Ask for the freight rosters', fx: { card: 'rail', say: 'The duty manager gives you the night rosters and the name of a yard contact in Salta.' } },
+        { id: 'searches', label: 'Ask them to search the trains', fx: { dc: [-1, 6], say: 'The company puts guards on every freight for the next six hours.' } },
+        { id: 'back', label: 'Head back', fx: { say: 'You go back to the desk.' } } ] },
+  ];
   const CH1 = {}, CH2 = { LEVELS: LEVELS2, PEOPLE: PEOPLE2, ARRANGEMENTS: ARRANGEMENTS2, STAGE_LINES: STAGE_LINES2, ENEMY: ENEMY2, ENEMY_ACTIONS: ENEMY_ACTIONS2, RUMORS: RUMORS2, HOLDS: HOLDS2, EVENTS: EVENTS2, LODGING: LODGING2, SIDES: SIDES2 };
   Object.assign(CH1, { LEVELS, PEOPLE, ARRANGEMENTS, STAGE_LINES, ENEMY, ENEMY_ACTIONS, RUMORS, HOLDS, EVENTS, LODGING, SIDES });
   // one shared object: Data.useChapter(n) swaps the tables chapter two dresses differently, so the engine runs unchanged
-  const api = { SIDES, HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  const api = { SIDES, GOV_SIDES, HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
   api.ERI = ERI; api.CH2 = CH2; api.chapter = 1;
   api.useChapter = (n) => {
     Object.assign(api, n === 2 ? CH2 : CH1); api.chapter = n === 2 ? 2 : 1;

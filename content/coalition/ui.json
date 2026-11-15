@@ -1421,6 +1421,11 @@
    "text": "Places nearby"
   },
   {
+   "id": "side.heading_gov",
+   "pattern": "P02",
+   "text": "Away from the desk"
+  },
+  {
    "id": "card.kind_lodging",
    "pattern": "P02",
    "text": "Food and sleep"
@@ -5152,6 +5157,14 @@
    "args": [
     "n",
     "s"
+   ]
+  },
+  {
+   "id": "lead.hours_gov",
+   "pattern": "P03",
+   "text": "it takes {hours}",
+   "args": [
+    "hours"
    ]
   },
   {
