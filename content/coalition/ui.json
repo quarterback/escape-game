@@ -1431,6 +1431,11 @@
    "text": "Food and sleep"
   },
   {
+   "id": "card.kind_side",
+   "pattern": "P02",
+   "text": "A place nearby"
+  },
+  {
    "id": "card.kind_sick",
    "pattern": "P02",
    "text": "Your family"

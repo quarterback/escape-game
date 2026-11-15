@@ -367,7 +367,7 @@ const Gov = (() => {
     return D.GOV_SIDES.filter(x => !done.includes(x.id)).map(x => ({ id: x.id, name: x.name, hours: x.hours, text: x.text, ok: !g.event, lead: T('lead.trip', { hours: S.num(x.hours), s: x.hours === 1 ? '' : 's' }).replace(/^./, c => c.toUpperCase()) + '.' })); }
   function eventView(g) {
     if (!g.event) return null; const d = govEventDef(g);
-    return { kind: 'event', title: fill(g, d.title || d.name), text: fill(g, d.text), choices: d.choices.map(c => { const why = c.needs && !g.hand.includes(c.needs) ? `Needs ${D.GOV_CARDS[c.needs].name.toLowerCase()}.` : c.fx && c.fx.card && g.hand.includes(c.fx.card) ? T('sim.why.already_hold', { card: D.GOV_CARDS[c.fx.card].name.replace(/^(A|An|The) /, m => m.toLowerCase()) }) : ''; return { id: c.id, label: fill(g, c.label), ok: !why, why, tags: govTags(g, c.fx), lead: govLead(g, c.fx) }; }) };
+    return { kind: g.event.side ? 'side' : 'event', title: fill(g, d.title || d.name), text: fill(g, d.text), choices: d.choices.map(c => { const why = c.needs && !g.hand.includes(c.needs) ? `Needs ${D.GOV_CARDS[c.needs].name.toLowerCase()}.` : c.fx && c.fx.card && g.hand.includes(c.fx.card) ? T('sim.why.already_hold', { card: D.GOV_CARDS[c.fx.card].name.replace(/^(A|An|The) /, m => m.toLowerCase()) }) : ''; return { id: c.id, label: fill(g, c.label), ok: !why, why, tags: govTags(g, c.fx), lead: govLead(g, c.fx) }; }) };
   }
   const govEventDef = (g) => (g.event.side ? D.GOV_SIDES : D.GOV_EVENTS).find(e => e.id === g.event.id);
   function resolveEvent(g, choiceId, events) {

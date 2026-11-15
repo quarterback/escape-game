@@ -4206,6 +4206,18 @@
    ]
   },
   {
+   "id": "card.kind_side",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place nearby",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "card.kind_sick",
    "domain": "interface",
    "pattern": "navigation-heading",

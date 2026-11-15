@@ -8,6 +8,7 @@ const path = require('path');
 global.Data = require(path.join(__dirname, '..', 'src', 'data.js'));
 const Sim = require(path.join(__dirname, '..', 'src', 'sim.js'));
 const N = parseInt(process.argv[2], 10) || 300;
+const SIDES = process.argv.includes('--sides'); // visit side places instead of waiting
 const DEST = (process.argv.find(a => a.startsWith('--dest=')) || '--dest=atlanta').slice(7); // which country the policy flies to
 const EXTRA = ((process.argv.find(a => a.startsWith('--extra=')) || '--extra=').slice(8)).split(',').filter(Boolean); // cards chosen before the run
 const MATE = (process.argv.find(a => a.startsWith('--companion=')) || '--companion=').slice(12) || null; // who travels with you
@@ -38,6 +39,8 @@ function play(seed, who, mate) {
     const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => ((Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(a.id)) - (Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(b.id))) || a.real - b.real); // moves that leave the stop first, as the government side's candidate already plays (owner bug report, Nov. 1, 2026: the bot sat at Nonā Rosa's)
     { const i = apps.findIndex(a => PREFER.includes(a.id)); if (i > 0) apps.unshift(apps.splice(i, 1)[0]); }
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { used.push(`${s.pos}:${apps[0].id}`); (apps[0].bonusFrom || []).forEach(t => cards[t] = (cards[t] || 0) + 1); Sim.commit(s, apps[0].id); if (s.pos !== lastPos) { lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour); lastPos = s.pos; lastHour = s.hour; } continue; }
+    // --sides (docs/no-waiting.md): instead of waiting, go to a side place and take its first choice that is not the way back
+    if (SIDES) { const x = (A.sides || []).find(y => y.ok); if (x) { Sim.commit(s, 'side:' + x.id); const e = Sim.actions(s).event; if (e && e.kind === 'side') { const c = e.choices.find(y => y.ok && y.id !== 'back') || e.choices.find(y => y.ok); Sim.commit(s, 'evt:' + c.id); } continue; } }
     Sim.commit(s, 'wait');
   }
   if (!s.over) throw new Error('stuck seed ' + seed + ' ' + JSON.stringify({ hour: s.hour, pos: s.pos, ev: s.event }));

@@ -55,3 +55,39 @@ On the investigator's side, the playtest found that orders ran far past their li
 - No odds anywhere. Cards still work in the background.
 - The end screen is still only the result.
 - The stop screen that opens each new stop stays; it is a reading screen, not waiting.
+
+## What was built (Nov. 15, 2026)
+
+### The skip
+- **One skip, named for what it skips to.** The escape side shows "Skip to 10 at night", "Skip to {name}'s answer" or "Skip ahead". It runs to that target and stops early for anything that needs you.
+- **The skip moves on by itself.** When a stop offers no move, call, answer or side place, the game skips without being asked and says so.
+- **Gone from both screens:** "1 hr wait" and "Wait until dark".
+
+### Side places
+- **17 for the escape:** 10 in chapter one and 7 in chapter two. The list is under "Places nearby" (data.js `SIDES` and `SIDES2`).
+- **8 new cards,** all from `self`, so no traitor can take them back.
+- **3 for the investigator,** under "Away from the desk" (data.js `GOV_SIDES`).
+
+### Cost lines
+- **Every move,** once opened, says what happens if it works and if it fails.
+- **Every news, lodging, hold and side-place choice** says what it costs and leads to, in one sentence built from the rules (sim.js `leadText` and `moveLead`, gov.js `govLead`).
+- **Contract test C24** checks that no cost line names odds.
+
+### The investigator's clock
+- **The desk keeps `g.hour`.** Her hidden run keeps `g.c.hour` and may be up to one move ahead.
+- **Reports from her side are stamped with her hour.** They are released only when the desk's clock reaches them.
+- **Contract test C25:** 556 orders each took exactly their listed hours.
+
+### Numbers, 300 runs each
+
+| Measure | Before | After |
+|---|---|---|
+| Chapter one, Teresa | 36.0% | 36.0% |
+| Chapter one, Mateu | 31.3% | 31.3% |
+| Chapter one with the bot visiting side places, Teresa | | 36.3% |
+| Chapter one with the bot visiting side places, Mateu | | 30.0% |
+| Chapter two, Teresa (every target up by one) | 75.3% | 50.3% |
+| Chapter two, Mateu (every target up by one) | 59.0% | 38.3% |
+| She escapes the investigator | 58.0% | 48.0% |
+
+**Why she escapes the investigator less often:** the desk now gets every hour it is owed, where before her longer moves swallowed some of its hours.

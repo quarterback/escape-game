@@ -489,7 +489,7 @@ const Sim = (() => {
     else if (kind === 'side') def = D.SIDES.find(x => x.id === e.id);
     else if (kind === 'sick') def = D.SICK;
     else def = D.EVENTS.find(x => x.id === e.id);
-    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, rolls: !!(c.fx && c.fx.roll), tags: fxTags(s, c.fx), lead: leadText(s, c.fx) }; }) };
+    return { kind, rung: e.rung || 0, title: fill(s, def.title || def.name), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, rolls: !!(c.fx && c.fx.roll), tags: fxTags(s, c.fx), lead: leadText(s, c.fx) }; }) };
   }
   function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, label: c.label, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; if (v.kind === 'lodging') return D.LODGING.find(x => x.id === v.id); if (v.kind === 'side') return D.SIDES.find(x => x.id === v.id); if (v.kind === 'sick') return D.SICK; return D.EVENTS.find(x => x.id === v.id); }
   function resolveEvent(s, choiceId, events) {

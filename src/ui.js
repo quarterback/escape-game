@@ -705,7 +705,7 @@ const UI = (() => {
     el.hidden = !parts.length || !s || !!s.over;
     el.innerHTML = parts.length ? `<details open><summary>${T('recap.title')}</summary><div class="recapbody">${parts.join('')}</div></details>` : '';
   }
-  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick' };
+  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick', side: 'card.kind_side' };
   function newsCard(card) {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
