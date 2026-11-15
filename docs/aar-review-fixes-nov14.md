@@ -69,7 +69,6 @@ The owner asked: "Revisit the game's repo and see how things have evolved and wh
   - Chapter two's briefing, goal and top bar showed chapter one's jet, Portalba and police.
   - "Depart without the visa" stayed on offer after the visa was issued.
   - The freight's story said midnight whatever the hour.
-  - The demo said the truck carries you to Salta. It never did.
 - **Already fixed on the branch when the playtests found them:**
   - eating and sleeping followed by "starving" and "exhausted";
   - the airline win's "your jet" ending;
@@ -108,3 +107,11 @@ These are listed in docs/design-issues.md under "Code review, November 14, 2026"
 - the papers' verdict on the minister's claim, which tells the investigator where she was;
 - investigator orders that run past their listed hours (part of the no-waiting work);
 - the "harder" wording, the Keep going tap, food and sleep explained in hours, the card picker, and "Run it again" after chapter two.
+
+## Correction, Nov. 15, 2026
+
+Two changes in this run were wrong, and both are reverted:
+- **The demo's truck line was correct.** Winning "Help Nonā Rosa free the truck" does carry you on to Salta: the move is one of Nova Trentô's exits. I had changed the line to say otherwise.
+- **Backlog item 8 is open again.** I had marked it resolved.
+
+I found the mistake while writing the cost lines for the no-waiting work. Those lines state each move's result from the rules themselves.
