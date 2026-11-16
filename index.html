@@ -677,6 +677,12 @@ body.ringing #phoneh{color:var(--mint)}
 .ctx.lead{font-size:14px}
 .sidehead{margin:14px 0 6px;font-size:15px;font-weight:700;letter-spacing:0}
 
+/* chapter two's island: the rail at every width, grouped by strip */
+body.island #board{display:none!important}
+@media(min-width:1000px){body.island #rail{display:flex}}
+#rail li.striphead{padding-bottom:6px}#rail li.striphead h3{margin:0;font-size:15px}
+.stopmap text.nm.small,svg text.nm.small{font-size:12px}
+
 </style>
 </head>
 <body>
@@ -6167,6 +6173,10 @@ const Sfx = (() => {
       // Barra Velha sounds like the river at Pedra Branca: water against wood
       harbor(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
       ship(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
+      // chapter two's strips: water against wood on the town, coast and bay
+      strip_town(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
+      strip_coast(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
+      strip_bay(ac, out, night, every, nodes) { BEDS.road(ac, out, night, every, nodes); },
       road(ac, out, night, every, nodes) {
         bed(ac, out, 'bandpass', 900, 0.5, 0.5, { rate: 0.3, depth: 0.12, on: 'gain' }, nodes); // river
         bed(ac, out, 'bandpass', 2600, 1.2, 0.12, { rate: 0.9, depth: 0.06, on: 'gain' }, nodes); // ripples
@@ -6440,16 +6450,18 @@ const Art = (() => {
   }
 
   // ---- drawing helpers -------------------------------------------------
+  // the width being painted: one screen, or a whole chapter-two strip
+  const span = { x1: X1 };
   function sky(g, top, bottom, night, t) {
     g.layer('sky');
-    for (let y = 0; y < GROUND + 2; y++) { const k = y / GROUND; g.fill(mix(top, bottom, k * k * 0.4 + k * 0.6)); g.rect(X0, y, X1 - X0, 1); }
-    if (night) { for (let i = 0; i < 48; i++) { const x = (i * 97 + 13) % W, y = (i * 53 + 7) % 64; g.star(x, y, i * 1.7, i % 9 === 0); } }
+    for (let y = 0; y < GROUND + 2; y++) { const k = y / GROUND; g.fill(mix(top, bottom, k * k * 0.4 + k * 0.6)); g.rect(X0, y, span.x1 - X0, 1); }
+    if (night) { const n = Math.round(48 * (span.x1 - X0) / (X1 - X0)), sw = span.x1 - 10; for (let i = 0; i < n; i++) { const x = (i * 97 + 13) % sw, y = (i * 53 + 7) % 64; g.star(x, y, i * 1.7, i % 9 === 0); } }
     else g.fx('clouds');
   }
   // A ridge line: a silhouette from layered sines, filled down to `base`.
   function ridge(g, col, base, top, amp, seed, step) {
     g.fill(col); step = step || 1;
-    for (let x = X0; x < X1; x += step) { const h = top + amp * (0.5 + 0.28 * Math.sin((x + seed) / 23) + 0.16 * Math.sin((x * 1.7 + seed * 3) / 11) + 0.06 * Math.sin((x * 3.1 + seed) / 5)); g.rect(x, base - h, step, h); }
+    for (let x = X0; x < span.x1; x += step) { const h = top + amp * (0.5 + 0.28 * Math.sin((x + seed) / 23) + 0.16 * Math.sin((x * 1.7 + seed * 3) / 11) + 0.06 * Math.sin((x * 3.1 + seed) / 5)); g.rect(x, base - h, step, h); }
   }
   function box(g, x, y, w, h, col, light, dark) { g.fill(col); g.rect(x, y, w, h); g.fill(light || tint(col, 0.14)); g.rect(x, y, w, 1); g.rect(x, y, 1, h); g.fill(dark || shade(col, 0.25)); g.rect(x + w - 1, y, 1, h); g.rect(x, y + h - 1, w, 1); }
   function windowPane(g, x, y, w, h, lit, night, frame) {
@@ -6717,6 +6729,138 @@ const Art = (() => {
     },
   };
 
+  // ---- chapter two's strips (docs/chapter-two-relay.md) -------------------------------------
+  // Each strip is one long side view, several screens wide; every place sits at its own x, and the camera pans
+  // along the strip when you walk. The ship keeps its own one-screen scene.
+  const wide = (w, fn) => (g, s, t, night) => { const was = span.x1; span.x1 = w + 10; try { fn(g, s, t, night, w); } finally { span.x1 = was; } };
+  function seaBand(g, night, y, w, deep) {
+    g.fill(night ? '#16233e' : (deep || '#3f6f96')); g.rect(X0, y, w - X0 + 10, GROUND - y);
+    g.fill(night ? '#24365a' : '#6a9cc0'); for (let x = X0; x < w + 10; x += 10) g.rect(x, y + 4 + ((x * 7) % 9), 6, 1);
+    g.fx('glints', { x0: 0, x1: w, y0: y + 2, y1: GROUND - 2, col: night ? '#8fa8d8' : '#f2f8ff', rate: 14 });
+  }
+  function shop(g, x, w, h, wall, stripe, night, sign) {
+    box(g, x, GROUND - h, w, h, night ? shade(wall, 0.55) : wall);
+    for (let i = 0; i < w; i += 4) { g.fill((i / 4) % 2 ? stripe : '#f4f0e8'); g.rect(x - 2 + i, GROUND - 28, Math.min(4, w + 4 - i), 4); g.rect(x - 2 + i, GROUND - 24, Math.min(4, w + 4 - i), 1); }
+    windowPane(g, x + 4, GROUND - h + 6, 8, 8, night, night); if (w > 30) windowPane(g, x + w - 12, GROUND - h + 6, 8, 8, (x >> 3) % 2 === 0 && night, night);
+    g.fill('#3a2a24'); g.rect(x + (w >> 1) - 4, GROUND - 16, 8, 16);
+    if (sign) { g.fill(night ? '#e8d8a0' : '#f6efe0'); g.rect(x + 3, GROUND - h - 5, w - 6, 4); g.fill(stripe); g.rect(x + 5, GROUND - h - 4, w - 10, 1); }
+  }
+  function boat(g, bx, col, night, mast) {
+    g.fill(shade(col, 0.2)); g.rect(bx, GROUND - 12, 40, 6); g.fill(col); g.rect(bx + 2, GROUND - 14, 36, 3); g.rect(bx - 2, GROUND - 16, 6, 4); g.rect(bx + 36, GROUND - 16, 6, 4);
+    box(g, bx + 10, GROUND - 24, 14, 10, night ? '#4a4652' : '#e8e0d0'); windowPane(g, bx + 13, GROUND - 22, 4, 4, night, night);
+    if (mast) { g.fill('#3a2a20'); g.rect(bx + 28, GROUND - 44, 2, 30); g.rect(bx + 20, GROUND - 40, 18, 1); }
+  }
+  function poster(g, x, y) { g.fill('#f2ead8'); g.rect(x, y, 9, 12); g.fill('#c83a3a'); g.rect(x + 1, y + 1, 7, 2); g.fill('#5a4a40'); g.rect(x + 3, y + 4, 3, 4); g.fill('#2a2430'); g.rect(x + 2, y + 9, 5, 1); }
+  function bigShip(g, x, night) {
+    // the Long Horizon alongside: a white hull with rows of portholes and a red funnel
+    g.fill(night ? '#c8ccd8' : '#f4f4f6'); g.rect(x, GROUND - 40, 300, 30); g.fill(night ? '#a8acb8' : '#d8dce4'); g.rect(x, GROUND - 14, 300, 4);
+    g.fill('#2b3450'); g.rect(x, GROUND - 12, 300, 2);
+    box(g, x + 40, GROUND - 66, 200, 26, night ? '#d8dce6' : '#ffffff'); box(g, x + 70, GROUND - 84, 130, 18, night ? '#d0d4de' : '#f6f6f8');
+    for (let r = 0; r < 3; r++) for (let i = 0; i < 16; i++) { const px = x + 14 + i * 18 + (r === 2 ? 30 : 0), py = GROUND - 34 + (r === 0 ? 0 : r === 1 ? -26 : -44); if (r === 2 && i > 6) continue; g.fill('#2a2a3a'); g.rect(px, py, 4, 4); g.fill(night && (i + r) % 3 ? '#ffd27a' : '#9ab4cc'); g.rect(px + 1, py + 1, 2, 2); if (night && (i + r) % 3) g.glow(px + 2, py + 2, 6, '#ffd27a', 0.35, 0.02); }
+    box(g, x + 150, GROUND - 106, 24, 22, '#c83a3a'); g.fill('#2a2a32'); g.rect(x + 150, GROUND - 108, 24, 3);
+    g.fx('steam', { x: x + 162, y: GROUND - 110, col: '#cfd4dc', rate: 0.6 });
+    g.fill('#2b3450'); g.rect(x + 210, GROUND - 38, 50, 2); // the name board
+  }
+
+  const STRIPS = {
+    // Erinana town: the airstrip, Market Street, the fishing harbor and the cruise quay, west to east
+    strip_town: { w: 1280, at: { eri_airstrip: 150, eri_town: 470, eri_fishharbor: 800, eri_quay: 1110 }, draw: wide(1280, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#7fb2de', night ? '#2a1e44' : '#f6d8b0', night, t);
+      g.layer('far');
+      ridge(g, night ? '#18203a' : '#5f8a6a', GROUND - 18, 22, 26, 7, 2); // green hills behind the town
+      g.fill(night ? '#20283c' : '#7a9a7a'); for (let x = 20; x < 620; x += 22) { const h = 8 + ((x * 13) % 12); g.rect(x, GROUND - 18 - h, 2, h); g.rect(x - 4, GROUND - 18 - h, 10, 2); } // cane and palms on the slope
+      seaBand(g, night, GROUND - 26, w); g.fill(night ? '#18203a' : '#5f8a6a'); g.rect(X0, GROUND - 26, 640, 8); // the sea opens east of the market
+      g.layer('mid');
+      // the airstrip: control tower, a low terminal with your poster, a prop plane on the apron
+      box(g, 18, GROUND - 70, 14, 70, night ? '#3a3a44' : '#a8adb5'); box(g, 10, GROUND - 82, 30, 13, night ? '#4a4a56' : '#c0c6ce'); g.fill(night ? '#ffd27a' : '#c8e0f0'); g.rect(13, GROUND - 79, 24, 6); if (night) g.glow(25, GROUND - 76, 16, '#ffd27a', 0.8, 0.02);
+      g.fx('beacon', { x: 25, y: GROUND - 84, col: '#ff4d4d', period: 1400 });
+      box(g, 46, GROUND - 34, 110, 34, night ? '#4a4652' : '#e8e0d0'); g.fill(night ? '#3a3640' : '#c8b890'); g.rect(42, GROUND - 38, 118, 4);
+      for (let i = 0; i < 5; i++) windowPane(g, 54 + i * 20, GROUND - 26, 10, 8, night && i % 2 === 0, night);
+      poster(g, 140, GROUND - 30);
+      g.fill('#e8e8ee'); g.rect(196, GROUND - 16, 70, 8); g.rect(206, GROUND - 26, 8, 10); g.rect(228, GROUND - 12, 30, 2); g.fill('#3b6db0'); g.rect(196, GROUND - 12, 70, 1); g.fill('#2a2a32'); g.rect(262, GROUND - 14, 4, 4); g.rect(270, GROUND - 22, 1, 14); // the island hopper
+      palm(g, 296, 40); palm(g, 330, 34);
+      // Market Street: a row of painted shops and a bus stop
+      const walls = ['#e8a07a', '#7ac8b8', '#f0d070', '#c890c8', '#8ab4e0', '#e88a8a'];
+      for (let i = 0; i < 6; i++) shop(g, 350 + i * 44, 40, 40 + (i % 3) * 6, walls[i], ['#c83a3a', '#2f5a7a', '#3f7a42', '#7a4ea8', '#e88a2a', '#2f5a7a'][i], night, true);
+      g.fill('#3a3a42'); g.rect(608, GROUND - 30, 1, 30); g.fill('#2f7a5a'); g.rect(603, GROUND - 34, 11, 6); g.fill('#f4f0e8'); g.rect(605, GROUND - 32, 7, 2); // the bus stop
+      poster(g, 588, GROUND - 26);
+      // the fishing harbor: a jetty, boats three deep, net racks
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(660, GROUND - 6, 260, 6);
+      boat(g, 676, '#2f5a7a', night, true); boat(g, 724, '#8a3a2a', night, true); boat(g, 772, '#3f7a42', night, false); boat(g, 838, '#c8a040', night, true);
+      g.fill(night ? '#4a4a52' : '#9a8a70'); for (let i = 0; i < 4; i++) { g.rect(892 + i * 8, GROUND - 30, 1, 24); } g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 24; i++) g.rect(892 + (i % 4) * 8, GROUND - 28 + (i >> 2) * 4, 8, 1); // net racks
+      // the cruise quay: the Long Horizon alongside and its terminal shed
+      bigShip(g, 960, night);
+      box(g, 944, GROUND - 30, 40, 30, night ? '#3a3040' : '#c8a878'); g.fill(night ? '#2a2030' : '#6a8a9a'); g.rect(940, GROUND - 33, 48, 3);
+      g.fill(night ? '#5a5a62' : '#9a9aa2'); for (let i = 0; i < 10; i++) g.rect(1030 + i * 4, GROUND - 6 - i * 2, 4, 1); // the gangway
+      g.layer('near');
+      // the ground changes under your feet: tarmac, the street, planks, the quay
+      g.fill(night ? '#26262e' : '#4a4a54'); g.rect(X0, GROUND, 350, H - GROUND); g.fill(night ? '#8a7a40' : '#e8d070'); for (let x = 0; x < 330; x += 24) g.rect(x, GROUND + 22, 12, 2);
+      g.fill(night ? '#4a4248' : '#b8a898'); g.rect(340, GROUND, 320, 6); g.fill(night ? '#2a2830' : '#5a5660'); g.rect(340, GROUND + 6, 320, H - GROUND - 6); g.fill(night ? '#6a6050' : '#e8e0c0'); for (let x = 350; x < 660; x += 22) g.rect(x, GROUND + 26, 12, 2);
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(660, GROUND, 300, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = 660; x < 960; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#3a3a44' : '#9aa0a8'); g.rect(960, GROUND, w - 950, H - GROUND); g.fill(night ? '#4a4a54' : '#b8bec6'); for (let x = 960; x < w + 10; x += 16) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#1a1410' : '#5a3e28'); for (const px of [700, 780, 860, 1000, 1080, 1160, 1240]) g.rect(px, GROUND - 6, 4, 6); // bollards
+      lamp(g, 420, night, 34); lamp(g, 560, night, 34); lamp(g, 900, night, 30); lamp(g, 1200, night, 34);
+      g.ally('nando', 112, 'nando'); g.figure('clerk', 200, {}); g.figure('local', 512, {}); g.figure('watch', 600, {}); g.figure('local', 740, {}); g.ally('theo', 1150, 'theo'); g.figure('watch', 1230, {});
+    }) },
+    // the south coast: Tamarind Cove's guesthouse and village shop, then the point with its lighthouse
+    strip_coast: { w: 640, at: { eri_hideout: 150, eri_point: 470 }, draw: wide(640, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#78b8e0', night ? '#2a1e44' : '#f8e0b8', night, t);
+      g.layer('far');
+      seaBand(g, night, GROUND - 40, w, '#2f7aa0');
+      g.fill(night ? '#1a2230' : '#6a7a5a'); for (let x = 260; x < 420; x += 2) { const h = 30 + Math.round(18 * Math.sin((x - 260) / 52)); g.rect(x, GROUND - h, 2, h); } // the headland between
+      g.fill(night ? '#3a3a40' : '#c8b898'); for (let i = 0; i < 9; i++) g.rect(300 + i * 12, GROUND - 40 + ((i * 5) % 14) - i * 2, 8, 1); // the cliff path zigzags up
+      g.layer('mid');
+      // the guesthouse with its veranda, and the village shop where Silas works
+      box(g, 20, GROUND - 46, 96, 46, night ? '#5a4a3a' : '#f0d8a8'); g.fill(night ? '#4a2a2a' : '#c86a4a'); g.triangle(14, GROUND - 46, 122, GROUND - 46, 68, GROUND - 66);
+      g.fill(night ? '#3a2a20' : '#8a6a48'); g.rect(20, GROUND - 22, 96, 2); for (let x = 22; x < 116; x += 12) g.rect(x, GROUND - 22, 2, 22); // the veranda
+      windowPane(g, 32, GROUND - 40, 10, 10, night, night); windowPane(g, 92, GROUND - 40, 10, 10, night, night);
+      shop(g, 140, 46, 36, '#7ac8b8', '#2f5a7a', night, true);
+      palm(g, 128, 44); palm(g, 204, 38); palm(g, 236, 46);
+      for (const [bx, col] of [[214, '#e8a040'], [246, '#2f7a5a']]) { g.fill(col); g.rect(bx, GROUND - 6, 24, 4); g.fill(shade(col, 0.25)); g.rect(bx + 2, GROUND - 3, 20, 2); } // boats drawn up on the sand
+      // Lighthouse Point: the tower, the net shed and the slipway
+      box(g, 500, GROUND - 72, 14, 72, night ? '#d8d8e0' : '#f4f4f8'); g.fill('#c83a3a'); for (let y = 60; y > 10; y -= 16) g.rect(500, GROUND - y, 14, 5);
+      g.fill('#2a2a32'); g.rect(497, GROUND - 80, 20, 8); g.fill(night ? '#ffe4a0' : '#e8e0b0'); g.rect(501, GROUND - 79, 12, 6);
+      if (night) { g.fx('beacon', { x: 507, y: GROUND - 76, col: '#ffe4a0', period: 3200 }); g.glow(507, GROUND - 76, 40, '#ffe4a0', 0.5, 0.05); }
+      box(g, 414, GROUND - 26, 50, 26, night ? '#3a3040' : '#a88a68'); g.fill(night ? '#2a2030' : '#5a4a3a'); g.rect(410, GROUND - 29, 58, 3);
+      g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 16; i++) g.rect(420 + (i % 4) * 10, GROUND - 22 + (i >> 2) * 4, 9, 1); // nets drying
+      boat(g, 560, '#2f5a7a', night, true);
+      g.layer('near');
+      g.fill(night ? '#5a5040' : '#f0dca8'); g.rect(X0, GROUND, 280 - X0, H - GROUND); g.fill(night ? '#4a4234' : '#e0c890'); for (let x = 0; x < 280; x += 5) g.rect(x + ((x * 7) % 3), GROUND + 3 + ((x * 11) % 20), 2, 1); // sand
+      g.fill(night ? '#3a3a40' : '#8a8478'); g.rect(280, GROUND, w - 270, H - GROUND); g.fill(night ? '#4a4a50' : '#a8a298'); for (let x = 280; x < w + 10; x += 9) g.rect(x, GROUND + ((x * 13) % 14), 5, 2); // rock
+      g.fill(night ? '#3a2a20' : '#7a5a3a'); g.rect(540, GROUND - 2, 100, 3); // the slipway
+      g.ally('host', 70, 'host'); g.ally('holt', 162, 'holt'); g.figure('local', 440, {}); g.figure('local', 590, {});
+    }) },
+    // Bahía Clara: the pier, the old town climbing to the cathedral, and the airport
+    strip_bay: { w: 960, at: { bc_pier: 150, bc_oldtown: 470, eri_airport: 800 }, draw: wide(960, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#86a8d8', night ? '#2a1e44' : '#f0c8b0', night, t);
+      g.layer('far');
+      seaBand(g, night, GROUND - 30, 330);
+      g.fill(night ? '#1c2236' : '#8a98b0'); for (let x = 320, i = 0; x < 960; i++) { const ww = 10 + (i * 7) % 12, h = 18 + (i * 13) % 26; g.rect(x, GROUND - 20 - h, ww, h + 20); x += ww + 2; } // the city behind
+      if (night) { g.fill('#e8c87a'); for (let i = 0; i < 60; i++) g.rect(324 + (i * 41) % 630, GROUND - 26 - (i * 7) % 30, 1, 1); }
+      g.layer('mid');
+      // the pier: tenders tied up, a taxi rank
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND - 6, 300, 6); boat(g, 30, '#f0f0f4', night, false); boat(g, 96, '#2f5a7a', night, true);
+      car(g, 200, '#e8c040', night, -1); car(g, 244, '#e8c040', night, -1);
+      // the old town: stacked houses, the fish market, the cathedral and its square
+      const cols = ['#e8b07a', '#f0d890', '#a8d0c0', '#e89a9a', '#c8b0e0', '#f0c0a0', '#a0c0e0'];
+      for (let i = 0; i < 7; i++) { const hx = 330 + i * 30, hh = 30 + ((i * 17) % 30); box(g, hx, GROUND - hh, 28, hh, night ? shade(cols[i], 0.55) : cols[i]); windowPane(g, hx + 5, GROUND - hh + 5, 6, 6, night && i % 2 === 0, night); windowPane(g, hx + 17, GROUND - hh + 5, 6, 6, night && i % 3 === 0, night); g.fill(night ? '#3a2424' : '#b85a3a'); g.rect(hx - 1, GROUND - hh - 3, 30, 3); }
+      box(g, 548, GROUND - 60, 46, 60, night ? '#5a5260' : '#f0e8d8'); box(g, 562, GROUND - 92, 18, 34, night ? '#5a5260' : '#f0e8d8'); g.fill(night ? '#3a3040' : '#c8b898'); g.triangle(560, GROUND - 92, 582, GROUND - 92, 571, GROUND - 108);
+      g.fill('#2a2430'); g.rect(567, GROUND - 84, 8, 10); g.fill(night ? '#ffd27a' : '#9ab4cc'); g.rect(566, GROUND - 46, 10, 14); if (night) g.glow(571, GROUND - 40, 14, '#ffd27a', 0.5, 0.05); // the cathedral
+      g.fill('#2f7a5a'); g.rect(608, GROUND - 16, 38, 10); g.fill('#f4f0e8'); g.rect(612, GROUND - 14, 30, 4); g.fill('#101014'); g.rect(612, GROUND - 6, 6, 4); g.rect(636, GROUND - 6, 6, 4); // the airport bus
+      // the airport: a glass terminal, the tower, a jet at the gate
+      box(g, 690, GROUND - 40, 170, 40, night ? '#3a4a5a' : '#c8d8e4'); g.fill(night ? '#ffd27a' : '#9ab8d0'); for (let i = 0; i < 16; i++) g.rect(694 + i * 10, GROUND - 34, 7, 18); if (night) g.glow(775, GROUND - 26, 60, '#ffd27a', 0.3, 0.02);
+      g.fill(night ? '#2a3440' : '#7a8a9a'); g.rect(686, GROUND - 44, 178, 4);
+      box(g, 880, GROUND - 74, 12, 74, night ? '#3a3a44' : '#a8adb5'); box(g, 874, GROUND - 84, 24, 11, night ? '#4a4a56' : '#c0c6ce'); g.fx('beacon', { x: 886, y: GROUND - 86, col: '#ff4d4d', period: 1500 });
+      g.fill('#ecebf4'); g.rect(900, GROUND - 22, 60, 10); g.rect(904, GROUND - 38, 8, 16); g.fill('#3b6db0'); g.rect(905, GROUND - 34, 6, 3); // a tail at the gate
+      g.layer('near');
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND, 310 - X0, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = 0; x < 310; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#4a4040' : '#c8a888'); g.rect(310, GROUND, 360, H - GROUND); g.fill(night ? '#3a3232' : '#a88a6a'); for (let x = 310; x < 670; x += 8) for (let y = GROUND + 2; y < H; y += 6) g.rect(x + ((y >> 1) % 8), y, 6, 1); // cobbles
+      g.fill(night ? '#26262e' : '#4a4a54'); g.rect(670, GROUND, w - 660, H - GROUND); g.fill(night ? '#8a7a40' : '#e8d070'); for (let x = 680; x < w; x += 24) g.rect(x, GROUND + 22, 12, 2);
+      lamp(g, 120, night, 30); lamp(g, 420, night, 34); lamp(g, 520, night, 34); lamp(g, 680, night, 34);
+      if (s && s.arr && s.arr.reception.stage >= 1) g.ally('official', 172, 'official'); g.figure('watch', 286, {}); g.figure('local', 450, {}); g.figure('watch', 640, {}); g.ally('pilot', 760, 'pilot'); g.figure('watch', 830, {});
+    }) },
+  };
+
   // ---- the runway family photo ---------------------------------------------
   function runway(g) {
     const G = GROUND; sky(g, '#2c1e58', '#ffa868', false, 0);
@@ -6753,7 +6897,7 @@ const Art = (() => {
   };
   const ITEM_COLOR = { vehicle: '#2EE6B5', supplies: '#FF9F43', delay: '#C9A4F5', passage: '#2EE6B5', introduction: '#7FB2E5', permission: '#FF9DAE', information: '#FFC93C' };
   const itemPalette = (tag) => ({ 1: ITEM_COLOR[tag] || '#FFC93C', 2: '#F6F1FF', 3: '#150F2E' });
-  return { ITEMS, ITEM_COLOR, itemPalette, W, H, GROUND, X0, X1, ROLES, KIDS, SCENES, PLAYER_X, rows, size, palette, drawSprite, runway, shade, tint, gray };
+  return { STRIPS, ITEMS, ITEM_COLOR, itemPalette, W, H, GROUND, X0, X1, ROLES, KIDS, SCENES, PLAYER_X, rows, size, palette, drawSprite, runway, shade, tint, gray };
 })();
 if (typeof module !== 'undefined') module.exports = Art;
 
@@ -6797,6 +6941,7 @@ const Render = (() => {
   }
   function float(x, y, text, color) { enqueue({ dur: 100, start(v) { v.floats.push({ x, y, text, color, t: 0, life: 1500, obj: null }); } }); }
   function dice(die, need, won) { enqueue({ dur: 900, start(v) { v.die = { die, need, won, t: 0 }; }, update(v, k) { v.die.t = k; }, end(v) { v.die = null; } }); }
+  function pan() { view.panNext = true; }
   function travel() { enqueue({ dur: 700, update(v, k) { v.fade = Math.sin(k * Math.PI); }, end(v) { v.fade = 0; v.walk = { t: 0, dur: 1300 }; } }); }
   function enemy() { enqueue({ dur: 600, update(v, k) { v.enemyPulse = Math.sin(k * Math.PI); v.shake = (1 - k) * 2; }, end(v) { v.enemyPulse = 0; v.shake = 0; } }); }
   // Police walk up to the player. kind: 'questioned' | 'held' | 'arrest'.
@@ -6813,7 +6958,7 @@ const Render = (() => {
   const mkCanvas = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
   function painter(target, collect, shown) {
     const ctxs = {};
-    if (collect) for (const k of LAYERS) { const c = target[k].getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, LW, H); c.translate(PAD, 0); ctxs[k] = c; }
+    if (collect) for (const k of LAYERS) { const c = target[k].getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, target[k].width, H); c.translate(PAD, 0); ctxs[k] = c; }
     else { const c = target.getContext('2d'); for (const k of LAYERS) ctxs[k] = c; }
     let c = ctxs.sky, cur = 'sky';
     const g = {
@@ -6861,9 +7006,14 @@ const Render = (() => {
     return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who, f.mate || '', (s.picked || []).join(',')].join('|');
   }
   const sceneId = (f) => Sim.stopAt(f.s, f.pos).scene;
+  // chapter two's strips (docs/chapter-two-relay.md): one long side view per strip, the camera on the current place
+  const stripOf = (f) => Art.STRIPS && Art.STRIPS[sceneId(f)];
+  const stripX = (f) => { const st = stripOf(f); return st ? st.at[Sim.stopAt(f.s, f.pos).id] : null; };
+  const camFor = (f) => { const st = stripOf(f); return st ? Math.max(0, Math.min(st.w - W, stripX(f) - 110)) : 0; };
+  const PF = { sky: 0.15, far: 0.5, mid: 1, near: 1 }; // how fast each layer moves with the camera
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
-    const x = Art.PLAYER_X[sceneId(f)] || 110;
+    const x = stripOf(f) ? stripX(f) : (Art.PLAYER_X[sceneId(f)] || 110);
     // the companion walks a step behind; the cards you added ride along as items at your feet
     const mate = f.mate && Data.COMPANIONS[f.mate] ? [{ dx: -14, role: Data.COMPANIONS[f.mate].sprite, mate: f.mate }] : [];
     const items = f.gov ? [] : (f.s.picked || []).filter(id => Art.ITEMS[id] && Data.CARDS[id]).map((id, i) => ({ id, dx: -30 - i * 14 - (mate.length ? 0 : -14) }));
@@ -6885,7 +7035,8 @@ const Render = (() => {
 
   // ---- stills for the title, start screen and debrief (2D, synchronous) ----
   function flatScene(c, f) {
-    const g = painter(c, false, f.s); Art.SCENES[sceneId(f)](g, f.s, 4000, f.night);
+    const st = stripOf(f); if (st) c.getContext('2d').translate(-camFor(f), 0);
+    const g = painter(c, false, f.s); (st ? st.draw : Art.SCENES[sceneId(f)])(g, f.s, 4000, f.night);
     const p = playerSpec(f); g.layer('near'); for (const m of p.list) Art.drawSprite(g, m.role, p.x + m.dx, GROUND, 'idle0');
     for (const it of p.items) g.px(p.x + it.dx - 6, GROUND - 8, Art.ITEMS[it.id], Art.itemPalette(Data.CARDS[it.id].tag));
     g.fill(p.marker); g.rect(p.x - 1, GROUND - 26, 3, 2); return g;
@@ -6903,7 +7054,7 @@ const Render = (() => {
   }
   function toCanvas(canvas, e) { const m = fit(canvas); if (!m) return null; return { x: (e.clientX - m.r.left - m.ox) / m.k, y: (e.clientY - m.r.top - m.oy) / m.k }; }
   function visibleBox(canvas) { const m = fit(canvas); if (!m) return { x0: 0, x1: CW, y0: 0, y1: CH }; return { x0: Math.max(0, -m.ox / m.k), x1: Math.min(CW, (m.r.width - m.ox) / m.k), y0: Math.max(0, -m.oy / m.k), y1: CH }; }
-  function hitTest(p) { if (!p) return null; let best = null; for (const h of hotspots) if (p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h) best = h; return best; }
+  function hitTest(p) { if (!p) return null; if (view.cam) p = { x: p.x + view.cam * SCALE, y: p.y }; let best = null; for (const h of hotspots) if (p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h) best = h; return best; }
   function wirePointer(canvas) {
     let tapTimer = 0;
     canvas.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') hover = hitTest(toCanvas(canvas, e)); });
@@ -6983,8 +7134,14 @@ const Render = (() => {
 
   // Rebuild the layers, the people and the weather when the state changes.
   function rebuild(f) {
+    const st = stripOf(f), need = st ? st.w + 2 * PAD : LW;
+    for (const k of LAYERS) if (X.layerCanvas[k].width !== need) { const c = mkCanvas(need, H); X.layerCanvas[k] = c; X.layerTex[k] = canvasTexture(c); X.layerSprite[k].texture = X.layerTex[k]; }
+    const lastStrip = X.strip, lastCam = view.cam || 0, lastX = X.player ? X.player.x : 0;
+    X.strip = st ? sceneId(f) : null; view.cam = camFor(f);
+    // a walk along the same strip pans the camera instead of cutting
+    view.pan = view.panNext && st && lastStrip === X.strip ? { from: lastCam, to: view.cam, ax: lastX, bx: stripX(f), t: 0, dur: 1600 } : null; view.panNext = false;
     const g = painter(X.layerCanvas, true, f.s);
-    Art.SCENES[sceneId(f)](g, f.s, 0, f.night);
+    (st ? st.draw : Art.SCENES[sceneId(f)])(g, f.s, 0, f.night);
     for (const k of LAYERS) X.layerTex[k].source.update();
     for (const layer of [X.sky, X.farFx, X.midFx, X.actors, X.weather, X.lights]) layer.removeChildren().forEach(c => c.destroy());
     X.part = []; X.people = []; X.lightList = []; X.starList = [];
@@ -7041,23 +7198,26 @@ const Render = (() => {
     const gr = grade(f);
     if (gr.a) { const k = gr.a; X.grade.alpha = 1; X.grade.tint = ((Math.round(255 - (255 - ((gr.col >> 16) & 255)) * k) << 16) | (Math.round(255 - (255 - ((gr.col >> 8) & 255)) * k) << 8) | Math.round(255 - (255 - (gr.col & 255)) * k)); } else X.grade.alpha = 0;
     // Parallax: the camera settles as the player walks in after travel.
-    let pk = 0, px0 = X.player.x, striding = false;
-    if (view.walk) { view.walk.t += dt; const k = Math.min(1, view.walk.t / view.walk.dur), e = 1 - (1 - k) * (1 - k); pk = 1 - e; px0 = Math.round(X.player.x - 80 * (1 - e)); striding = k < 1; if (k >= 1) view.walk = null; }
-    for (const k of LAYERS) X.layerSprite[k].x = -PAD + Math.round(PARALLAX[k] * pk);
-    X.farFx.x = Math.round(PARALLAX.far * pk); X.midFx.x = Math.round(PARALLAX.mid * pk); X.weather.x = 0; X.actors.x = Math.round(PARALLAX.near * pk);
-    for (const L of X.lightList) { L.sp.x = L.x0 + Math.round((PARALLAX[L.layer] || 0) * pk); L.sp.alpha = Math.max(0, gr.light * L.a * (1 - L.flicker * (0.5 + 0.5 * Math.sin(now / 90 + L.ph) * Math.sin(now / 230 + L.ph * 0.7)))); }
+    let pk = 0, cam = view.cam || 0, px = X.player.x, striding = false;
+    if (view.pan) { view.pan.t += dt; const k = Math.min(1, view.pan.t / view.pan.dur), e = k < 0.5 ? 2 * k * k : 1 - 2 * (1 - k) * (1 - k); cam = Math.round(view.pan.from + (view.pan.to - view.pan.from) * e); px = Math.round(view.pan.ax + (view.pan.bx - view.pan.ax) * e); striding = k < 1; if (k >= 1) view.pan = null; }
+    let px0 = px - cam;
+    if (view.walk && !view.pan) { view.walk.t += dt; const k = Math.min(1, view.walk.t / view.walk.dur), e = 1 - (1 - k) * (1 - k); pk = 1 - e; px0 = Math.round(px - cam - 80 * (1 - e)); striding = k < 1; if (k >= 1) view.walk = null; }
+    const walkT = view.pan ? view.pan.t : view.walk ? view.walk.t : 0;
+    for (const k of LAYERS) X.layerSprite[k].x = -PAD - Math.round(cam * PF[k]) + Math.round(PARALLAX[k] * pk);
+    X.sky.x = -Math.round(cam * PF.sky); X.farFx.x = -Math.round(cam * PF.far) + Math.round(PARALLAX.far * pk); X.midFx.x = -cam + Math.round(PARALLAX.mid * pk); X.weather.x = 0; X.actors.x = -cam + Math.round(PARALLAX.near * pk);
+    for (const L of X.lightList) { L.sp.x = L.x0 - Math.round(cam * (PF[L.layer] || 1)) + Math.round((PARALLAX[L.layer] || 0) * pk); L.sp.alpha = Math.max(0, gr.light * L.a * (1 - L.flicker * (0.5 + 0.5 * Math.sin(now / 90 + L.ph) * Math.sin(now / 230 + L.ph * 0.7)))); }
     for (const st of X.starList) st.sp.alpha = 0.35 + 0.65 * Math.max(0, Math.sin(now / 700 + st.ph));
     // People breathe out of step with each other.
     for (const p of X.people) setFrame(p, p.role, ((now + p.ph) % 3200) < 420 ? 'idle1' : 'idle0', p.turned);
     // The player walks in, then breathes; the marker bobs over the head.
-    for (const m of X.player.sprites) { setFrame(m, m.role, striding ? 'walk' + (Math.floor(view.walk.t / 120) % 4) : (((now + m.dx * 97) % 3600) > 1800 && ((now + m.dx * 97) % 3600) < 2240 ? 'idle1' : 'idle0')); m.sp.x = px0 + m.dx - 6 - X.actors.x; }
+    for (const m of X.player.sprites) { setFrame(m, m.role, striding ? 'walk' + (Math.floor(walkT / 120) % 4) : (((now + m.dx * 97) % 3600) > 1800 && ((now + m.dx * 97) % 3600) < 2240 ? 'idle1' : 'idle0')); m.sp.x = px0 + m.dx - 6 - X.actors.x; }
     X.player.marker.position.set(px0 - 1 - X.actors.x, GROUND - 27 + Math.round(Math.sin(now / 300)));
-    for (const it of X.player.items || []) { it.sp.x = px0 + it.dx - 6 - X.actors.x; it.sp.y = GROUND - 8 - (striding && (Math.floor(view.walk.t / 120) + it.dx) % 2 ? 1 : 0); } // the cards bounce along when you walk
+    for (const it of X.player.items || []) { it.sp.x = px0 + it.dx - 6 - X.actors.x; it.sp.y = GROUND - 8 - (striding && (Math.floor(walkT / 120) + it.dx) % 2 ? 1 : 0); } // the cards bounce along when you walk
     // A detention: two officers walk in from the right and stop beside the player.
     const d = view.detain;
     X.cops.forEach((c, i) => {
       c.sp.visible = !!d; if (!d) return;
-      const target = X.player.x + 16 + i * 14, k = Math.min(1, d.k / 0.55), e = 1 - (1 - k) * (1 - k), x = Math.round(W + 14 + i * 16 - (W + 14 + i * 16 - target) * e);
+      const target = X.player.x - cam + 16 + i * 14, k = Math.min(1, d.k / 0.55), e = 1 - (1 - k) * (1 - k), x = Math.round(W + 14 + i * 16 - (W + 14 + i * 16 - target) * e);
       setFrame(c, 'police', k < 1 ? 'walk' + (Math.floor(now / 120 + i * 2) % 4) : 'idle0'); c.sp.x = x - 6 - X.actors.x; c.sp.y = GROUND - 22;
     });
     updateParticles(now, dt);
@@ -7117,7 +7277,7 @@ const Render = (() => {
     const f = frame(), ctx = X.ctx; if (!f) return;
     const key = sceneKey(f);
     if (key !== X.key) {
-      X.key = key; const fc = X.flat.getContext('2d'); fc.clearRect(0, 0, W, H); const g = flatScene(X.flat, f), p = playerSpec(f);
+      X.key = key; const fc = X.flat.getContext('2d'); fc.setTransform(1, 0, 0, 1, 0, 0); fc.clearRect(0, 0, W, H); view.cam = camFor(f); const g = flatScene(X.flat, f), p = playerSpec(f);
       hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }], partySpots(p));
     }
     view.walk = null; for (const fl of view.floats) fl.t += dt; view.floats = view.floats.filter(fl => fl.t < fl.life);
@@ -7148,7 +7308,7 @@ const Render = (() => {
     requestAnimationFrame(loop);
     startPixi().catch((err) => { console.warn('PixiJS unavailable, drawing in 2D', err); start2D(); });
   }
-  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
 })();
 
 </script>
@@ -7503,10 +7663,12 @@ const UI = (() => {
   }
   function renderRoute() {
     // phone: the rail
-    const rail = $('rail'); rail.innerHTML = '';
+    const rail = $('rail'); rail.innerHTML = ''; document.body.classList.toggle('island', !!(s.chapter === 2 && Data.STRIPS));
+    const stripStart = s.chapter === 2 && Data.STRIPS ? Object.fromEntries(Data.STRIPS.map(st => [st.places[0], st.name])) : {};
     Sim.route(s).forEach((L, i) => {
+      if (stripStart[L.id]) { const hd = document.createElement('li'); hd.className = 'striphead'; hd.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><h3>${esc(stripStart[L.id])}</h3>`; rail.appendChild(hd); }
       if (s.route === 'coast' && i === 2) return; // the coast route skips Nova Trentô, and nobody from Nova Trentô or Salta acts on it
-      const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
+      const li = document.createElement('li'); li.className = s.chapter === 2 ? (i === s.pos ? 'current' : s.visited.includes(i) ? 'passed' : '') : (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
@@ -7659,6 +7821,8 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
+    // chapter two: a walk along the same strip keeps scrolling; the briefing opens only when you reach another strip
+    if (!replaying && !gov && !first && s.chapter === 2 && Data.STRIPS && briefPos >= 0 && Data.STRIPS.some(st => st.places.includes(Sim.route(s)[briefPos].id) && st.places.includes(Sim.route(s)[s.pos].id))) { briefPos = s.pos; renderAll(); return; }
     if (replaying) interstitial(short(nowH()), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
@@ -7742,6 +7906,7 @@ const UI = (() => {
   const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
   const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
   const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
+  const stripName = (i) => { const id = Sim.route(s)[i].id, st = Data.STRIPS && Data.STRIPS.find(x => x.places.includes(id)); return st ? st.name : ''; };
   // issue #52: Sofia's board. Her search, her two patrols, and the newest report from each stop, fading as it ages
   function govMarks(v) {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
@@ -7751,7 +7916,28 @@ const UI = (() => {
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
   }
+  // chapter two (docs/chapter-two-relay.md): the island as its strips, west to east, and the legs between them
+  const STRIPXY = { wide: { town: [30, 34, 270], coast: [30, 112, 150], ship: [320, 74, 0], bay: [420, 34, 200] }, tall: { town: [20, 26, 0], coast: [20, 178, 0], ship: [20, 238, 0], bay: [20, 270, 0] } };
+  function islandXY(tall) {
+    const at = {}; for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id]; st.places.forEach((id, j) => { at[id] = tall ? [x0 + 14, y0 + 12 + j * 34] : [x0 + 20 + (st.places.length > 1 ? j * (w - 40) / (st.places.length - 1) : 0), y0 + 18]; }); }
+    return at;
+  }
+  function islandMap(marks, tall) {
+    const at = islandXY(tall), idx = (id) => Data.LEVELS.findIndex(L => L.id === id); let h = ''; const said = [];
+    for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id], n = st.places.length;
+      h += tall ? `<rect class="land" x="${x0 - 12}" y="${y0 - 6}" width="300" height="${n * 34 + 8}" rx="14"/>` : `<rect class="land${st.id === 'bay' ? ' far' : ''}" x="${x0}" y="${y0}" width="${Math.max(w, 60)}" height="36" rx="14"/>`;
+      for (const [a, b] of st.walk) h += `<line class="leg went" x1="${at[a][0]}" y1="${at[a][1]}" x2="${at[b][0]}" y2="${at[b][1]}"/>`; }
+    if (!tall) for (const L of Data.LEVELS) for (const a of L.approaches) if (a.to && !Data.STRIPS.some(st => st.places.includes(L.id) && st.places.includes(a.to))) h += `<line class="border" x1="${at[L.id][0]}" y1="${at[L.id][1]}" x2="${at[a.to][0]}" y2="${at[a.to][1]}"/>`;
+    for (const L of Data.LEVELS) { const i = idx(L.id), [x, y] = at[L.id], m = marks[i] || [], here = m.some(k => k[0] === 'you');
+      h += `<circle class="stopdot${here ? ' here' : ''}${L.final ? ' end' : ''}" cx="${x}" cy="${y}" r="${here ? 8 : 6}"/>`;
+      h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 14}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm small${here ? ' here' : ''}" x="${x}" y="${y + 24}" text-anchor="middle">${esc(L.short)}</text>`;
+      let ox = tall ? 190 : x; m.forEach((k, j) => { const w = Math.round(k[1].length * 8.4 + 20), px = tall ? ox : x - w / 2, py = tall ? y - 11 : y - 32 - j * 24; ox += w + 4;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`; said.push(`${L.short}: ${k[1]}`); }); }
+    const label = Data.STRIPS.map(st => `${st.name}: ${st.places.map(id => Data.LEVELS[idx(id)].short).join(', ')}`).join('. ') + (said.length ? '. ' + said.join('. ') : '');
+    return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+  }
   function routeMap(marks, tall, upto) {
+    if (s && s.chapter === 2 && Data.STRIPS) return islandMap(marks, tall);
     const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
       ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
@@ -7778,7 +7964,8 @@ const UI = (() => {
     return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function briefRoute(marks) {
-    return Sim.route(s).map((L, i) => { if (skipped(i)) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+    const strip = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[s.pos].id)) : null; // the island: this strip's places only
+    return Sim.route(s).map((L, i) => { if (skipped(i) || (strip && !strip.places.includes(L.id))) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
       return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Sim.route(s).length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
@@ -7788,7 +7975,7 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : (s.chapter === 2 && Data.STRIPS ? stripName(s.pos) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() }));
     $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
@@ -7814,9 +8001,9 @@ const UI = (() => {
   function stopScreen(pos) {
     const L = Sim.route(s)[pos], el = $('stopscreen');
     $('s-clock').textContent = short(nowH());
-    $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
+    $('s-step').textContent = s.chapter === 2 && Data.STRIPS ? stripName(pos) : T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
-    $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-dots').innerHTML = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[pos].id)).places.map(id => { const i = Sim.route(s).findIndex(L => L.id === id); return `<li class="${i === pos ? 'now' : s.visited.includes(i) ? 'past' : ''}"><i></i><span>${esc(Sim.route(s)[i].short)}</span></li>`; }).join('') : Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
     $('s-goal').textContent = L.objective || '';
     el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
     clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
@@ -7990,7 +8177,8 @@ const UI = (() => {
         case 'enemy': Render.enemy(); Render.enqueue({ dur: 10, start() { Sfx.patrol(); enemyLog.push(e.text); log('enemy', e.text, 'enemy'); } }); break;
         case 'report': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log(e.from, e.text); } }); break;
         case 'order': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.order', { name: e.name })), 'sys'); } }); break;
-        case 'travel': Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
+        // a walk along a chapter-two strip pans the camera; a leg to another strip fades
+        case 'travel': if (e.walk && Render.pan) Render.pan(); else Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
         case 'dispatch': Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting('event'); log('sys', esc(e.id === 'rumor' ? T('log.news_rumor', { name: e.title }) : T('log.news', { title: e.title })), 'sys'); } }); break;
         case 'hold': { const kind = e.rung === 1 ? 'questioned' : e.rung === 2 ? 'held' : 'arrest'; if (Render.detain) Render.detain(kind); else Render.enemy(); Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting(kind); log('enemy', `${e.title}. ${e.text}`, 'enemy'); } }); break; }
         case 'chose': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.chose', { label: e.label })), 'sys'); } }); break;

@@ -560,3 +560,9 @@ body.ringing #phoneh{color:var(--mint)}
 .choice .lead{display:block;font-weight:400;font-size:14px;line-height:1.4;margin-top:4px}
 .ctx.lead{font-size:14px}
 .sidehead{margin:14px 0 6px;font-size:15px;font-weight:700;letter-spacing:0}
+
+/* chapter two's island: the rail at every width, grouped by strip */
+body.island #board{display:none!important}
+@media(min-width:1000px){body.island #rail{display:flex}}
+#rail li.striphead{padding-bottom:6px}#rail li.striphead h3{margin:0;font-size:15px}
+.stopmap text.nm.small,svg text.nm.small{font-size:12px}

@@ -345,10 +345,12 @@ const UI = (() => {
   }
   function renderRoute() {
     // phone: the rail
-    const rail = $('rail'); rail.innerHTML = '';
+    const rail = $('rail'); rail.innerHTML = ''; document.body.classList.toggle('island', !!(s.chapter === 2 && Data.STRIPS));
+    const stripStart = s.chapter === 2 && Data.STRIPS ? Object.fromEntries(Data.STRIPS.map(st => [st.places[0], st.name])) : {};
     Sim.route(s).forEach((L, i) => {
+      if (stripStart[L.id]) { const hd = document.createElement('li'); hd.className = 'striphead'; hd.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><h3>${esc(stripStart[L.id])}</h3>`; rail.appendChild(hd); }
       if (s.route === 'coast' && i === 2) return; // the coast route skips Nova Trentô, and nobody from Nova Trentô or Salta acts on it
-      const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
+      const li = document.createElement('li'); li.className = s.chapter === 2 ? (i === s.pos ? 'current' : s.visited.includes(i) ? 'passed' : '') : (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
@@ -501,6 +503,8 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
+    // chapter two: a walk along the same strip keeps scrolling; the briefing opens only when you reach another strip
+    if (!replaying && !gov && !first && s.chapter === 2 && Data.STRIPS && briefPos >= 0 && Data.STRIPS.some(st => st.places.includes(Sim.route(s)[briefPos].id) && st.places.includes(Sim.route(s)[s.pos].id))) { briefPos = s.pos; renderAll(); return; }
     if (replaying) interstitial(short(nowH()), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
@@ -584,6 +588,7 @@ const UI = (() => {
   const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
   const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
   const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
+  const stripName = (i) => { const id = Sim.route(s)[i].id, st = Data.STRIPS && Data.STRIPS.find(x => x.places.includes(id)); return st ? st.name : ''; };
   // issue #52: Sofia's board. Her search, her two patrols, and the newest report from each stop, fading as it ages
   function govMarks(v) {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
@@ -593,7 +598,28 @@ const UI = (() => {
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
   }
+  // chapter two (docs/chapter-two-relay.md): the island as its strips, west to east, and the legs between them
+  const STRIPXY = { wide: { town: [30, 34, 270], coast: [30, 112, 150], ship: [320, 74, 0], bay: [420, 34, 200] }, tall: { town: [20, 26, 0], coast: [20, 178, 0], ship: [20, 238, 0], bay: [20, 270, 0] } };
+  function islandXY(tall) {
+    const at = {}; for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id]; st.places.forEach((id, j) => { at[id] = tall ? [x0 + 14, y0 + 12 + j * 34] : [x0 + 20 + (st.places.length > 1 ? j * (w - 40) / (st.places.length - 1) : 0), y0 + 18]; }); }
+    return at;
+  }
+  function islandMap(marks, tall) {
+    const at = islandXY(tall), idx = (id) => Data.LEVELS.findIndex(L => L.id === id); let h = ''; const said = [];
+    for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id], n = st.places.length;
+      h += tall ? `<rect class="land" x="${x0 - 12}" y="${y0 - 6}" width="300" height="${n * 34 + 8}" rx="14"/>` : `<rect class="land${st.id === 'bay' ? ' far' : ''}" x="${x0}" y="${y0}" width="${Math.max(w, 60)}" height="36" rx="14"/>`;
+      for (const [a, b] of st.walk) h += `<line class="leg went" x1="${at[a][0]}" y1="${at[a][1]}" x2="${at[b][0]}" y2="${at[b][1]}"/>`; }
+    if (!tall) for (const L of Data.LEVELS) for (const a of L.approaches) if (a.to && !Data.STRIPS.some(st => st.places.includes(L.id) && st.places.includes(a.to))) h += `<line class="border" x1="${at[L.id][0]}" y1="${at[L.id][1]}" x2="${at[a.to][0]}" y2="${at[a.to][1]}"/>`;
+    for (const L of Data.LEVELS) { const i = idx(L.id), [x, y] = at[L.id], m = marks[i] || [], here = m.some(k => k[0] === 'you');
+      h += `<circle class="stopdot${here ? ' here' : ''}${L.final ? ' end' : ''}" cx="${x}" cy="${y}" r="${here ? 8 : 6}"/>`;
+      h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 14}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm small${here ? ' here' : ''}" x="${x}" y="${y + 24}" text-anchor="middle">${esc(L.short)}</text>`;
+      let ox = tall ? 190 : x; m.forEach((k, j) => { const w = Math.round(k[1].length * 8.4 + 20), px = tall ? ox : x - w / 2, py = tall ? y - 11 : y - 32 - j * 24; ox += w + 4;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`; said.push(`${L.short}: ${k[1]}`); }); }
+    const label = Data.STRIPS.map(st => `${st.name}: ${st.places.map(id => Data.LEVELS[idx(id)].short).join(', ')}`).join('. ') + (said.length ? '. ' + said.join('. ') : '');
+    return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+  }
   function routeMap(marks, tall, upto) {
+    if (s && s.chapter === 2 && Data.STRIPS) return islandMap(marks, tall);
     const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
       ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
@@ -620,7 +646,8 @@ const UI = (() => {
     return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function briefRoute(marks) {
-    return Sim.route(s).map((L, i) => { if (skipped(i)) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+    const strip = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[s.pos].id)) : null; // the island: this strip's places only
+    return Sim.route(s).map((L, i) => { if (skipped(i) || (strip && !strip.places.includes(L.id))) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
       return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Sim.route(s).length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
@@ -630,7 +657,7 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : (s.chapter === 2 && Data.STRIPS ? stripName(s.pos) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() }));
     $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
@@ -656,9 +683,9 @@ const UI = (() => {
   function stopScreen(pos) {
     const L = Sim.route(s)[pos], el = $('stopscreen');
     $('s-clock').textContent = short(nowH());
-    $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
+    $('s-step').textContent = s.chapter === 2 && Data.STRIPS ? stripName(pos) : T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
-    $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-dots').innerHTML = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[pos].id)).places.map(id => { const i = Sim.route(s).findIndex(L => L.id === id); return `<li class="${i === pos ? 'now' : s.visited.includes(i) ? 'past' : ''}"><i></i><span>${esc(Sim.route(s)[i].short)}</span></li>`; }).join('') : Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
     $('s-goal').textContent = L.objective || '';
     el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
     clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
@@ -832,7 +859,8 @@ const UI = (() => {
         case 'enemy': Render.enemy(); Render.enqueue({ dur: 10, start() { Sfx.patrol(); enemyLog.push(e.text); log('enemy', e.text, 'enemy'); } }); break;
         case 'report': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log(e.from, e.text); } }); break;
         case 'order': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.order', { name: e.name })), 'sys'); } }); break;
-        case 'travel': Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
+        // a walk along a chapter-two strip pans the camera; a leg to another strip fades
+        case 'travel': if (e.walk && Render.pan) Render.pan(); else Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
         case 'dispatch': Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting('event'); log('sys', esc(e.id === 'rumor' ? T('log.news_rumor', { name: e.title }) : T('log.news', { title: e.title })), 'sys'); } }); break;
         case 'hold': { const kind = e.rung === 1 ? 'questioned' : e.rung === 2 ? 'held' : 'arrest'; if (Render.detain) Render.detain(kind); else Render.enemy(); Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting(kind); log('enemy', `${e.title}. ${e.text}`, 'enemy'); } }); break; }
         case 'chose': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.chose', { label: e.label })), 'sys'); } }); break;
