@@ -120,6 +120,11 @@
    "text": "Leave Costamaran airspace by"
   },
   {
+   "id": "scene.goal.ch2",
+   "pattern": "P08",
+   "text": "Fly out of Bahía Clara by"
+  },
+  {
    "id": "scene.sosa_here",
    "pattern": "P06",
    "text": "The police are searching where you are"
@@ -256,14 +261,29 @@
    "text": "The answer comes in two hours. Paying the crew extra raises your police attention by one."
   },
   {
+   "id": "sim.hurry.aircraft.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours. Paying extra for a fast booking brings the bounty hunters one step closer."
+  },
+  {
    "id": "sim.hurry.permission",
    "pattern": "P03",
-   "text": "The answer comes in two hours. A rushed ministry says no more often."
+   "text": "The answer comes in two hours, and a rushed ministry is harder to persuade."
+  },
+  {
+   "id": "sim.hurry.permission.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours, and a rushed visa office is harder to persuade."
   },
   {
    "id": "sim.hurry.reception",
    "pattern": "P03",
-   "text": "The answer comes in two hours. A rushed minister's office says no more often."
+   "text": "The answer comes in two hours, and a rushed minister's office is harder to persuade."
+  },
+  {
+   "id": "sim.hurry.reception.ch2",
+   "pattern": "P03",
+   "text": "The answer comes in two hours, and a fixer who is rushed is harder to win over."
   },
   {
    "id": "sim.hurry_line.aircraft",
@@ -313,7 +333,7 @@
   {
    "id": "next.night",
    "pattern": "P05",
-   "text": "{move} opens at 10 p.m.",
+   "text": "The move {move} opens at 10 at night.",
    "args": [
     "move"
    ]
@@ -546,6 +566,11 @@
    "text": "arranging the jet and your welcome in Costamar"
   },
   {
+   "id": "route.role_aircraft.ch2",
+   "pattern": "P05",
+   "text": "arranging your flight to Lusara and the fixer in Bahía Clara"
+  },
+  {
    "id": "route.role_visa",
    "pattern": "P05",
    "text": "asking for your visa"
@@ -605,6 +630,11 @@
    "id": "route.you_here",
    "pattern": "P02",
    "text": "You are here"
+  },
+  {
+   "id": "route.not_on_route",
+   "pattern": "P02",
+   "text": "Not on your route"
   },
   {
    "id": "route.border",
@@ -1258,7 +1288,7 @@
   {
    "id": "route.no_command",
    "pattern": "P04",
-   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement",
+   "text": "Search, checkpoint, and call-in orders here need Costamar's agreement.",
    "role": "gov"
   },
   {
@@ -1478,7 +1508,7 @@
   {
    "id": "mate.tomas.help",
    "pattern": "P10",
-   "text": "Tomás says, \"Go now, while that booth changes shift.\""
+   "text": "Tomás says, \"Go now, while nobody is looking this way.\""
   },
   {
    "id": "mate.marta.help",
@@ -1550,6 +1580,11 @@
    "text": "Marta swaps the plates before you leave, and the police here lose track of the car."
   },
   {
+   "id": "mate.marta.plates.ch2",
+   "pattern": "P10",
+   "text": "Marta swaps the plates before you leave, and the bounty hunters here lose track of the car."
+  },
+  {
    "id": "mate.ines.escape",
    "pattern": "P03",
    "text": "Inês can keep your family on its feet."
@@ -1590,7 +1625,7 @@
   {
    "id": "mate.tomas.gov",
    "pattern": "P03",
-   "text": "Tomás can close the border tighter.",
+   "text": "Tomás makes the border harder to cross once the ban is out.",
    "role": "gov"
   },
   {
@@ -1645,6 +1680,14 @@
    "id": "mate.celina.spin",
    "pattern": "P10",
    "text": " Celina's station airs a listener's sighting of you at {place}, and the police go there next.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "mate.celina.spin.ch2",
+   "pattern": "P10",
+   "text": " Celina's station airs a listener's sighting of you at {place}, and the bounty hunters go there next.",
    "args": [
     "place"
    ]
@@ -2377,6 +2420,12 @@
    "speaker": "ally"
   },
   {
+   "id": "sim.line.i_have_a_name_in.ch2",
+   "pattern": "P07",
+   "text": "\"I know a fixer in Bahía Clara. Give me six hours.\"",
+   "speaker": "ally"
+  },
+  {
    "id": "sim.line.i_will_see_what_the",
    "pattern": "P07",
    "text": "\"I will see what the minister can spare. Call it a courtesy.\"",
@@ -2810,7 +2859,7 @@
   {
    "id": "sim.line.two_men_in_a_car",
    "pattern": "P07",
-   "text": "\"Two men in a car at the yard gate are asking about you. Midnight or never.\"",
+   "text": "\"Two men in a car at the yard gate are asking about you. Tonight or never.\"",
    "speaker": "holt"
   },
   {
@@ -3194,6 +3243,12 @@
    "role": "gov"
   },
   {
+   "id": "gov.say.court_sent_ban",
+   "pattern": "P10",
+   "text": "The court sends the travel ban to every post itself, so you have no ban left to send.",
+   "role": "gov"
+  },
+  {
    "id": "gov.why.not_an_order_you_can",
    "pattern": "P04",
    "text": "You cannot give that order now.",
@@ -3298,6 +3353,12 @@
    "id": "gov.status.your_people_the_provincial_desk",
    "pattern": "P05",
    "text": "The provincial desk and its patrol work here.",
+   "role": "gov"
+  },
+  {
+   "id": "gov.status.your_people_third_patrol",
+   "pattern": "P05",
+   "text": "Your third patrol starts the run here.",
    "role": "gov"
   },
   {
@@ -4674,6 +4735,11 @@
    "text": "Your jet took off, and you got away."
   },
   {
+   "id": "over.why_out_airline",
+   "pattern": "P14",
+   "text": "Your airline flight took off, and you got away."
+  },
+  {
    "id": "over.why_time",
    "pattern": "P14",
    "text": "Time ran out before you could fly out."
@@ -4689,6 +4755,11 @@
    "text": "Your jet"
   },
   {
+   "id": "brief.need_jet.ch2",
+   "pattern": "P02",
+   "text": "Your flight to Lusara"
+  },
+  {
    "id": "brief.need_visa",
    "pattern": "P02",
    "text": "Entry visa"
@@ -4697,6 +4768,11 @@
    "id": "brief.need_reception",
    "pattern": "P02",
    "text": "Costamar"
+  },
+  {
+   "id": "brief.need_reception.ch2",
+   "pattern": "P02",
+   "text": "The fixer in Bahía Clara"
   },
   {
    "id": "brief.you",
@@ -4762,6 +4838,14 @@
    ]
   },
   {
+   "id": "brief.gov_job_search_here",
+   "pattern": "P08",
+   "text": "Your search is already at {place}, where the newest report came from, so search there.",
+   "args": [
+    "place"
+   ]
+  },
+  {
    "id": "brief.gov_win",
    "pattern": "P08",
    "text": "Stop her from flying out before Tuesday at 2 p.m."
@@ -4770,6 +4854,11 @@
    "id": "brief.escape_win",
    "pattern": "P08",
    "text": "Fly out of Portalba before Tuesday at 2 p.m."
+  },
+  {
+   "id": "brief.escape_win.ch2",
+   "pattern": "P08",
+   "text": "Fly out of Bahía Clara before Tuesday at 2 p.m."
   },
   {
    "id": "over.why_gov_arrest",
@@ -4821,9 +4910,19 @@
    "text": "Without it you can still fly, and the country you chose takes you when you land."
   },
   {
+   "id": "brief.visa_note.ch2",
+   "pattern": "P08",
+   "text": "Your visa for Lusara is already issued."
+  },
+  {
    "id": "brief.reception_note",
    "pattern": "P08",
    "text": "The first step opens the road to Salta. The second matters if the police have asked Costamar to hold you: without it, your takeoff is harder. The third puts Vélez's officials at one border post."
+  },
+  {
+   "id": "brief.reception_note.ch2",
+   "pattern": "P08",
+   "text": "Dario meets you at the pier in Bahía Clara, and going ashore there needs him."
   },
   {
    "id": "brief.gov_report_now",
@@ -4874,9 +4973,19 @@
    "text": "the jet"
   },
   {
+   "id": "arr.what_aircraft.ch2",
+   "pattern": "P08",
+   "text": "your flight to Lusara"
+  },
+  {
    "id": "arr.what_reception",
    "pattern": "P08",
    "text": "your welcome in Costamar"
+  },
+  {
+   "id": "arr.what_reception.ch2",
+   "pattern": "P08",
+   "text": "the fixer in Bahía Clara"
   },
   {
    "id": "arr.what_permission",
@@ -5057,6 +5166,14 @@
    "id": "sim.why.already_done",
    "pattern": "P04",
    "text": "You can make this move once per run, and you already have."
+  },
+  {
+   "id": "sim.why.already_hold",
+   "pattern": "P04",
+   "text": "You already hold {card}, so there is nothing more to buy here.",
+   "args": [
+    "card"
+   ]
   },
   {
    "id": "sim.why.nothing_left_to_move",
@@ -5376,6 +5493,14 @@
    "id": "arr.self_aircraft",
    "pattern": "P10",
    "text": "Without a call from you, {name} gets the jet one step closer to ready.",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "arr.self_aircraft.ch2",
+   "pattern": "P10",
+   "text": "Without a call from you, {name} gets your flight to Lusara one step closer to booked.",
    "args": [
     "name"
    ]
@@ -5757,6 +5882,21 @@
    "id": "need.baca.ch2",
    "pattern": "P05",
    "text": "Call about the fixer to reach Dario in Bahía Clara."
+  },
+  {
+   "id": "sim.inquiry.found_no_power",
+   "pattern": "P03",
+   "text": " They find you, but Costamar has not agreed to let anyone stop you here."
+  },
+  {
+   "id": "sim.inquiry.found_no_power.ch2",
+   "pattern": "P03",
+   "text": " They find you, but they cannot grab you inside the airport."
+  },
+  {
+   "id": "gov.inquiry.found_no_power",
+   "pattern": "P03",
+   "text": " They find her, but Costamar has not agreed to let anyone stop her there."
   }
  ]
 }

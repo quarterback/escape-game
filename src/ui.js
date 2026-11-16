@@ -130,7 +130,7 @@ const UI = (() => {
     $('sosa-next').parentElement.hidden = true;
     { const ar = $('sosa').querySelector('.arrive'); ar.textContent = ''; ar.hidden = true; }
     $('sosa').querySelector('.exp').hidden = false; $('heat').hidden = true; $('heat2').hidden = true;
-    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-b').textContent = '';
+    for (const id of ['heatnum', 'heatnum2']) { const h = $(id); const lv = ['low', 'rising', 'high'].indexOf(attnLevel(s.exposure)); h.innerHTML = levelBar('', attnWord(s.exposure), lv + 1, lv); h.className = 'mono'; } $('expl-l').textContent = T('scene.exposure'); $('expl-top').textContent = T('scene.exposure'); $('goaltxt').textContent = T('scene.goal'); // the shell bakes chapter one's words $('expl-b').textContent = '';
     { const bl = $('bodyline'), b = Sim.body(s), w = bodyWords(); bl.hidden = !!s.tutorial; bl.className = 'bodyline'; bl.innerHTML = levelBar(T('body.brief_sleep'), w.tire, 3 - b.tire, b.tire) + levelBar(T('body.brief_food'), w.hunger, 3 - b.hunger, b.hunger); }
     $('lvlname').textContent = L.name; $('lvlobj').textContent = L.objective; $('lvlname2').textContent = L.name; $('lvlobj2').textContent = L.objective;
     $('wait').textContent = T('action.wait'); $('phoneh').textContent = T('nav.phone'); document.querySelector('#herehead h2').textContent = T('nav.here');
@@ -184,7 +184,8 @@ const UI = (() => {
     for (const a of exits) for (const n of a.needs) {
       if (n.arr && s.arr[n.arr].stage < n.stage && !seen[n.arr]) { seen[n.arr] = 1; const job = s.jobs.find(j => j.arr === n.arr && !j.stall), call = A.calls.find(c => c.arr === n.arr && c.ally);
         if (job) out.push(T('next.waiting', { name: cap(sibNamed1(job.ally)), what: what[n.arr], time: short(job.due) }));
-        else if (call) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] })); }
+        else if (call && call.ok) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] }));
+        else if (call && call.why) out.push(call.why); } // a call you cannot make says why, never 'call them'
       else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name })); }
     }
     return out.slice(0, 2);
@@ -316,7 +317,7 @@ const UI = (() => {
     }
     return out;
   }
-  function whoActs(i) { return Object.keys(Data.PEOPLE).filter(k => Data.PEOPLE[k].where === i).map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned })); }
+  function whoActs(i) { if (!Sim.onRoute(s, i)) return []; return Object.keys(Data.PEOPLE).filter(k => Data.PEOPLE[k].where === i).map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned })); }
   const abroad = () => ['sibling', 'sponsor'].map(k => ({ k, name: pname(k), trust: s.people[k].trust >= 2, turned: s.people[k].turned, role: T(k === 'sibling' ? 'route.role_aircraft' : 'route.role_visa') }));
   function whoMark(k) { const p = s.people[k]; if (!p) return ['unknown', T('who.unknown')]; if (p.cut) return ['cut', T('who.cut')]; if (p.turned) return ['talked', T('who.talked')]; if (p.known) return ['trust', T('who.clean')]; if (p.doubt) return ['doubt', T('who.doubted')]; if (p.trust >= 2) return ['trust', T('who.trusted')]; return ['unknown', T('who.unknown')]; }
   const lastLedger = (k) => { const L = (s.ledger || []).filter(x => x.who === k).slice(-2); return L.length ? `<span class="ledger">${L.map(x => `<span class="h">${short(x.hour)}</span> ${esc(x.text)}`).join('<br>')}</span>` : ''; };
@@ -332,6 +333,7 @@ const UI = (() => {
     // phone: the rail
     const rail = $('rail'); rail.innerHTML = '';
     Sim.route(s).forEach((L, i) => {
+      if (s.route === 'coast' && i === 2) return; // the coast route skips Nova Trentô, and nobody from Nova Trentô or Salta acts on it
       const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
@@ -343,10 +345,10 @@ const UI = (() => {
     const b = $('board'); b.innerHTML = '';
     const cell = (html, cls) => { const d = document.createElement('div'); d.className = 'cell ' + (cls || ''); d.innerHTML = html; b.appendChild(d); };
     const colCls = (i) => i === s.pos ? 'cur' : i === 5 ? 'esm' : '';
-    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
+    cell('', 'head'); Sim.route(s).forEach((L, i) => cell(`<b>${esc(L.short)}</b><span>${s.route === 'coast' && i === 2 ? T('route.not_on_route') : i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span>`, 'head ' + colCls(i))); cell(`<b>${T('route.abroad')}</b><span>${T('route.by_phone')}</span>`, 'head abr');
     const lbl = (t, cls) => { const d = document.createElement('div'); d.className = 'rowlbl ' + (cls || ''); d.textContent = t; b.appendChild(d); };
     lbl(T('route.who_acts_label')); Sim.route(s).forEach((L, i) => cell(`<span class="who">${whoActs(i).map(whoHtml).join('')}</span>`, colCls(i))); cell(`<span class="who">${abroad().map(whoHtml).join('')}</span>`, 'abr');
-    lbl(T('route.needed')); Sim.route(s).forEach((L, i) => cell(`<span class="needs">${needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
+    lbl(T('route.needed')); Sim.route(s).forEach((L, i) => cell(`<span class="needs">${(s.route === 'coast' && i === 2 ? [] : needCells(L)).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('')}</span>`, colCls(i))); cell('', 'abr');
     const cr = document.createElement('div'); cr.className = 'cardsrow'; cr.hidden = true; // cards work in the background now
     for (const id of s.hand) { const c = Data.CARDS[id]; const idx = c.reach.map(r => Sim.route(s).findIndex(L => L.id === r)); const a = Math.min(...idx) + 1, z = Math.max(...idx) + 2; const sp = document.createElement('span'); sp.className = `cbar t-${c.tag} card`; sp.style.gridColumn = `${a} / ${z}`; sp.style.cssText += ';min-height:0;transform:none;box-shadow:none;display:block;padding:8px 12px'; sp.textContent = z === 6 ? T('route.card_stops_line', { card: c.name }) : c.name; cr.appendChild(sp); }
     if (!s.hand.includes('intro_vel')) { const sp = document.createElement('span'); sp.className = 'cbar ghost card t-introduction'; sp.style.gridColumn = '5 / 7'; sp.style.cssText += ';min-height:0;transform:none;display:block;padding:8px 12px'; sp.textContent = T('route.velez_starts_short'); cr.appendChild(sp); }
@@ -510,7 +512,8 @@ const UI = (() => {
       { k: 'aircraft', full: 4, name: T('brief.need_jet'), note: '' },
       { k: 'permission', full: 2, name: T('brief.need_visa'), note: T('brief.visa_note') },
       { k: 'reception', full: 3, name: T('brief.need_reception'), note: T('brief.reception_note') },
-    ].map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, status: status(n.k, n.full), now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
+    ].map(n => Object.assign(n, { full: Math.min(n.full, A[n.k].stages.length - 1) })) // chapter two's flight and fixer have fewer steps
+     .map(n => ({ name: n.name, have: st(n.k), of: n.full, done: st(n.k) >= n.full, status: status(n.k, n.full), now: [steps(n.k, n.full), st(n.k) >= n.full ? '' : n.note].filter(Boolean).join(' ') }));
     out.job.push(L.objective);
     if (out.arrived && s.pos > 0) { out.stats = shortStats(); out.marks = routeMarks(); return out; } // a stop screen: what happened, where you stand, what is next
     const order = s.pos >= 2 && s.pos < 4 ? ['reception', 'aircraft', 'permission'] : ['aircraft', 'permission', 'reception'];
@@ -541,15 +544,17 @@ const UI = (() => {
     if (s.pos === 5) m[5] = m[5].concat([['jet', T('brief.jet')]]);
     return m;
   }
+  let lastOrderLine = '';
   function briefGov() {
     const v = Gov.view(gov), c = gov.c, out = { story: [], need: [], job: [] };
+    if (lastOrderLine) { out.story.push(lastOrderLine); lastOrderLine = ''; } // the briefing covers the result card, so it opens with how your order went
     const r = v.reports[0];
     out.story.push(r ? (c.hour - r.hour <= 0 ? T('brief.gov_report_now', { place: placeName(r.at) }) : c.hour - r.hour === 1 ? T('brief.gov_report_hour', { place: placeName(r.at) }) : T('brief.gov_report_hours', { place: placeName(r.at), n: Sim.num(c.hour - r.hour) })) : T('brief.gov_no_report'));
     if (r) out.story.push(T('brief.gov_reports_caveat'));
     const ban = v.requests[0].state, hold = v.requests[1].state;
     out.need = [{ name: T('brief.gov_need_ban'), have: ban !== 'notyet' ? 1 : 0, of: 1, done: ban !== 'notyet', now: '' },
       { name: T('brief.gov_need_hold'), have: hold === 'inhand' ? 2 : hold === 'promised' ? 1 : 0, of: 2, done: hold === 'inhand', now: hold === 'promised' ? T('brief.gov_asked') : '' }];
-    out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : T('brief.gov_job_search', { place: placeName(r ? r.at : gov.belief) }));
+    out.job.push(ban === 'notyet' ? T('brief.gov_job_ban') : hold === 'notyet' ? T('brief.gov_job_hold') : (r && r.at !== gov.belief ? T('brief.gov_job_search', { place: placeName(r.at) }) : T('brief.gov_job_search_here', { place: placeName(gov.belief) })));
     out.stats = [{ big: String(Math.max(0, Sim.HOURS_TOTAL - c.hour)), text: T('brief.hours_gov') }];
     if (v.ministerBy !== null && v.ministerBy !== undefined && v.ministerBy >= c.hour) out.stats.push({ big: short(v.ministerBy), text: T('brief.minister_expects', { time: Sim.clockText(v.ministerBy) }) });
     out.marks = govMarks(v);
@@ -570,7 +575,7 @@ const UI = (() => {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
     put(gov.belief, ['you', T('brief.gov_search')]);
     const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? cap(T('brief.gov_patrols', { n: Sim.num(ps.filter(x => x === i).length) })) : T('brief.gov_patrol')]));
-    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - r.hour); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
+    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - (r.seenAt !== undefined ? r.seenAt : r.hour)); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
   }
@@ -612,7 +617,7 @@ const UI = (() => {
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
     $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
-    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short }) : Sim.route(s)[s.pos].short;
+    $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
     $('b-story').innerHTML = b.story.map(P).join(''); $('b-story').hidden = !b.story.length;
@@ -774,7 +779,7 @@ const UI = (() => {
   function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
   // the ending's one sentence, shared by the ending screen and the share card
   function endWhy() { const k = s.over.kind; return gov ? (k === 'fired' ? T('over.why_gov_fired') : s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
-      : s.over.win ? T('over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
+      : s.over.win ? T(s.over.via === 'airline' ? 'over.why_out_airline' : 'over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
   function nextRunNo() { try { const n = (parseInt(localStorage.getItem('coalition.runs'), 10) || 0) + 1; localStorage.setItem('coalition.runs', String(n)); return n; } catch (e) { return 1; } }
   // owner, Nov. 2, 2026: a grid like Wordle's. One row per stop reached, numbered; one square per move there: green when
   // police attention held or fell, orange when it rose, red for a police stop. The last row ends with how the run ended.
@@ -871,7 +876,7 @@ const UI = (() => {
     else if (sid.startsWith('req:')) { phoneCalls += 1; phase = 'move'; if (window.innerWidth < 1000) setTab('here'); } // one request ends the desk step, as one call ends the phone step
     else if (sid.startsWith('msg:')) { if (window.innerWidth < 1000 && !waitingMsgs()) setTab('here'); }
     else if (sid === 'lodge') { phase = 'news'; if (window.innerWidth < 1000) setTab('here'); } // her rest screen is a choice card
-    else { movedThisRound = true; result = sm; if (sid === 'wait' || sid === 'wait_on') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); autoNext(); }
+    else { movedThisRound = true; result = sm; lastOrderLine = sid === 'wait' || sid === 'wait_on' ? '' : sm.line; if (sid === 'wait' || sid === 'wait_on') { result.kind = T('result.waited'); result.title = T('result.waited_title'); result.waited = true; } phase = 'sosa'; if (window.innerWidth < 1000) setTab('here'); autoNext(); }
     renderAll(); saveRun();
   }
 
@@ -1081,7 +1086,8 @@ const UI = (() => {
     $('coach-next').onclick = () => { Sfx.click(); Tutorial.next(); released(); renderAll(); saveRun(); };
     $('coach-leave').onclick = () => { Sfx.click(); Tutorial.stop(); released(); log('sys', T('log.tutorial_ended'), 'sys'); renderAll(); saveRun(); };
     const toggleMute = () => { Sfx.unlock(); Sfx.setMuted(!Sfx.isMuted()); $('mute').setAttribute('aria-label', T(Sfx.isMuted() ? 'sound.off' : 'sound.on')); $('mute-wave').style.display = Sfx.isMuted() ? 'none' : ''; document.querySelector('#menu2 [data-act=mute]').textContent = T(Sfx.isMuted() ? 'sound.menu_off' : 'sound.menu_on'); };
-    const toggleHelp = () => { $('helpbox').hidden = !$('helpbox').hidden; if (!$('helpbox').hidden) setTab('phone'); };
+    const toggleHelp = () => { $('helpbox').hidden = !$('helpbox').hidden; if (!$('helpbox').hidden) { // each side sees only its own help
+      $('helpbox').classList.toggle('govside', !!gov); $('govhelp').hidden = !gov; setTab('phone'); } };
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
     document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
     // the result card ends each turn with Continue (owner, Nov. 1, 2026: "Six hours pass ... Then continue."), so this only tracks the busy state

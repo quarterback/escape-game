@@ -71,10 +71,11 @@ const Data = (() => {
     delay_report: { name: 'A report held one day', tag: 'delay', from: 'aide', reach: VALDORIA, works: 'Valdórian posts checking the travel ban, including Pedra Branca and the line.',
                     text: "Gianlūka's contact keeps the travel ban off the desk at Valdórian posts." },
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
-                    text: "A straw-lined crate in the third boxcar. Holt leaves at midnight and does not wait." },
-    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
+                    text: "A straw-lined crate in the third boxcar. Holt leaves on the night freight and does not wait." },
+    // again: a hold can take it, and paying Silas again makes another
+    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
                     text: 'Silas made it in the back of the village shop. The photo is yours, and the name is not.' },
-    airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
+    airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', again: true, reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
                     text: "A seat on the next flight out of Costamar, in the name on your second passport." },
     berth:        { name: "A berth on the night boat", tag: 'passage', from: 'self', reach: ['harbor'], works: 'Riding the night boat to Punta Marēa.',
                     text: "The skipper keeps a berth in his hold for you on Pier 4." },
@@ -132,7 +133,7 @@ const Data = (() => {
     comp_nadia:   { name: 'Nadia', tag: 'phone', from: 'self', reach: ALL, works: 'Every call you make.', companion: true,
                     text: 'Nadia maintained the provincial telephone network. She knows which exchanges keep records and which calls disappear into old equipment.' },
     // lodging: Emilio's room under another name at Pedra Branca, Nova Trentô and Salta, in the food and sleep screen.
-    comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta'], works: 'Pedra Branca, Nova Trentô, and Salta.', companion: true,
+    comp_emilio:  { name: 'Emilio', tag: 'lodging', from: 'self', reach: ['road', 'colonia', 'salta', 'harbor'], works: 'Pedra Branca, Nova Trentô, Salta, and Barra Velha.', companion: true,
                     text: "Emilio manages small hotels along the south road. He can find a room under someone else's reservation." },
     // union: a train the crew holds in Salta, and the strike.
     comp_joana:   { name: 'Joana', tag: 'union', from: 'self', reach: ['salta'], works: 'The Salta rail yard and its workers.', companion: true,
@@ -214,12 +215,12 @@ const Data = (() => {
       arrive: "The midnight freight climbs to the border. Holt and Theo can get you aboard.",
       approaches: [
         { id: 'board', name: 'Board the midnight freight', hours: 1, dc: 3, needs: [{ card: 'passage' }, { night: true }],
-          mods: { passage: 2 }, text: "The freight to the border leaves at midnight.",
-          success: { say: 'The train pulls out at 12 minutes past midnight, and you lie in cold straw as it climbs the grade.' },
+          mods: { passage: 2 }, text: "The freight to the border boards between 10 at night and 5 in the morning.",
+          success: { say: 'The train pulls out into the dark, and you lie in cold straw as it climbs the grade.' },
           fail: { exposure: 1, say: 'A lamp swings down the cars, and you drop back to try again while it is dark.' } },
         { id: 'crate', with: 'holt', name: "Pay Holt for a crate", hours: 2, dc: 3, needs: [], pay: true,
           mods: { vehicle: 1, information: 1 }, text: "Holt, a brakeman on the freight, saves you a crate in the third boxcar for cash.",
-          success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Midnight. I don\'t wait."' },
+          success: { card: 'crate', say: 'Holt pockets the notes without counting them. "Third car. Tonight. I don\'t wait."' },
           fail: { exposure: 1, say: 'Holt wants to see who else is asking, and you wait two hours in a shed.' } },
         { id: 'foreman', with: 'theo', name: 'Ask Theo to walk you through', hours: 2, dc: 4, needs: [],
           mods: { vehicle: 2, information: 1, influence: 1 }, text: "Theo runs the rail yard and can walk you past the yard office to the train.",
@@ -251,7 +252,8 @@ const Data = (() => {
           mods: { introduction: 2, border: 1 }, text: "The road post toward Cerro Alto is three hours of switchbacks up the mountain.",
           success: { say: 'The sergeant at Ālto Verdē checks your passport and waves the car through.' },
           fail: { exposure: 1, hours: 2, say: 'The post has no list with your name, and you wait two hours while they wake someone in Cerro Alto.' } },
-        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [],
+        // noFace: no officer sees you on the path, so a known face does not make it harder
+        { id: 'mountain', name: 'Walk over the mountains', hours: 5, dc: 3, needs: [], noFace: true,
           mods: { border: 2, care: 1 }, text: "An old shepherds' path climbs over the ridge between the posts, where no guard checks a passport.",
           success: { exposure: -1, say: "You walk five hours through the snow and come down in Costamar, where no post has your name." },
           fail: { exposure: 1, hours: 3, say: "The wind closes the path near the top, and you lose three more hours walking back down." } },
@@ -275,12 +277,14 @@ const Data = (() => {
           mods: { introduction: 1, document: 1 }, text: "Capitān Olsēn flies you out once the jet is ready and your visa is in.",
           success: { win: true, say: "You take off. Forty minutes later, the pilot confirms you have left Costamaran airspace." },
           fail: { exposure: 1, hours: 2, say: 'The tower holds you two hours on the apron while it reads, and rereads, a request from Valdória.' } },
-        { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }],
+        // gone: not offered once that arrangement reaches that step (with the visa issued, you board with it)
+        { id: 'depart_nopermit', with: 'pilot', name: 'Depart without the visa', hours: 2, dc: 5, needs: [{ arr: 'aircraft', stage: 4 }], gone: { arr: 'permission', stage: 2 },
           mods: { introduction: 1, permission: 2 }, text: "You ask Capitān Olsēn to fly without the visa.",
           success: { win: true, say: 'Capitān Olsēn files the flight plan and asks no questions. Your sponsor\'s phone rings somewhere over the ocean.' },
-          fail: { exposure: 2, hours: 3, say: 'The pilot will not go without a landing clearance, and you spend three hours arguing in a hangar.' } },
+          fail: { exposure: 2, hours: 3, say: 'Snow closes the path below the ridge, and a herder watches you turn back after three hours.' } },
         // owner, Nov. 5, 2026: a second way out of Costamar that does not wait on the charter jet
-        { id: 'ticket', name: 'Buy an airline ticket', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true,
+        // unlessHeld: offered only while you do not hold the boarding pass it buys
+        { id: 'ticket', name: 'Buy an airline ticket', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true, unlessHeld: 'airline_seat',
           mods: { information: 1 }, text: "The airline desk in the terminal sells seats on the next flight out of Costamar.",
           success: { card: 'airline_seat', exposure: 1, say: "The clerk prints a boarding pass in your second passport's name, with your photo on her screen." },
           fail: { exposure: 1, say: "The clerk says the flight is full, and she writes something down after you leave." } },
@@ -414,18 +418,21 @@ const Data = (() => {
   };
   // Orders: what the government player can do where it is looking. who: who acts. act: the inquiry action it runs.
   const GOV_ORDERS = [
-    { id: 'search', name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1, vehicles: 1, border: 2, rail: 1, lodging: 1 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and her police attention is High, they stop her. The police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
+    // missFails: a failure means the patrol never reaches the stop, so it does not stay there
+    { id: 'search', missFails: true, name: (lv) => `Search ${lv}`, hours: 3, dc: 4, who: 'the provincial patrol', mods: { patrol: 1, vehicles: 1, border: 2, rail: 1, lodging: 1 }, act: 'check_belief', text: 'The patrol searches the stop you are watching and you get a report. If she is there and her police attention is High, they stop her. The police keep watching that stop afterward.', fail: 'The patrol never gets there, and you learn nothing.' },
     { id: 'watch_house', name: () => 'Keep watch on the house', hours: 1, dc: 1, who: 'the watch team', mods: {}, text: 'The watch team tells you whether anyone is still in the house.', where: [0, 1] },
     { id: 'follow', name: (lv, rep) => `Move your search to ${rep}`, hours: 1, dc: 1, who: 'you', mods: {}, text: 'Your next orders act at the stop the newest report names. The police stay where they last searched until you order a search or a checkpoint at the new stop.' },
     { id: 'circulate', name: () => 'Circulate the travel ban', hours: 3, dc: 4, who: 'the provincial desks', mods: { court: 2 }, act: 'circulate', text: 'The ban reaches every post and the border and takes effect at once. From then on, police who stop her take her straight to the station, and her crossings at the line are harder.', fail: 'A clerk tips off her side before the ban goes out. The police lose the stop they were watching.' },
     { id: 'press', name: () => 'Call in one of her people', hours: 2, dc: 3, who: 'the police', mods: { union: 2 }, act: 'press_ally', text: 'The police question one of her helpers. If the helper talks, the police go to where she is, her police attention rises by two, and she loses that helper. You do not learn the place.', fail: 'Nobody answers the summons today.' },
-    { id: 'roadblock', name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2, vehicles: 1, border: 2, rail: 1 }, act: 'roadblock', text: 'For the next six hours, every risky move she makes at that stop is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
+    // missFails: a failure means the patrol never reaches the stop, so it does not stay there
+    { id: 'roadblock', missFails: true, name: (lv) => `Set a checkpoint at ${lv}`, hours: 2, dc: 3, who: 'the provincial patrol', mods: { patrol: 2, vehicles: 1, border: 2, rail: 1 }, act: 'roadblock', text: 'For the next six hours, every risky move she makes at that stop is harder. A new checkpoint replaces this one.', fail: 'The checkpoint stands on the wrong road.' },
     { id: 'story', name: () => 'Brief the papers that she has left', hours: 1, dc: 2, who: 'the ministry press office', mods: { media: 2 }, act: 'press_story', text: 'The police turn to a stop where she is not. Her police attention also falls by one.' },
     { id: 'rail_ask', name: () => 'Ask the yardmaster who is paying', hours: 2, dc: 3, who: 'the railway contact', mods: { rail: 2, union: 2 }, text: 'He names who took money for the midnight freight, and he becomes your railway contact.', where: [3], fail: 'He wants to see who else is asking first.' },
     // owner, Nov. 2, 2026 ("the options for this side are very boring"): two orders of its own at each stop
     { id: 'tap_phone', where: [0], name: () => 'Tap the house phone', hours: 2, dc: 3, who: 'the watch team', mods: { watch: 1 }, fx: { lead: 2, say: 'The tap catches a call from her side. You hear where it came from, two hours late.' }, text: 'A call on the house line places her, two hours late.', fail: 'The phone company wants a court order first.' },
-    { id: 'staff', where: [0], name: () => 'Question the household staff', hours: 2, dc: 3, who: 'the police', mods: {}, fx: { press: 1, lead: 3, say: 'The cook says the family left in a hurry and names the road they took.' }, text: 'The staff know which way the family went.', fail: 'The staff say nothing and call her lawyer.' },
-    { id: 'bridge', where: [1], name: () => 'Stop every car at the bridge', hours: 3, dc: 3, who: 'the provincial patrol', mods: { patrol: 1, vehicles: 1 }, act: 'roadblock', fx: { press: 1, say: 'The patrol stops and checks every car on the bridge.' }, text: 'The patrol sets a checkpoint on the bridge out of Pedra Branca, and the drivers talk.', fail: 'The patrol goes to the wrong bridge.' },
+    { id: 'staff', where: [0], name: () => 'Question the household staff', hours: 2, dc: 3, who: 'the police', mods: {}, fx: { press: 1, lead: 3, say: 'The cook talks, and in three hours the desk will hear where she says the family is.' }, text: 'The staff know where the family went.', fail: 'The staff say nothing and call her lawyer.' },
+    // missFails: a failure means the patrol never reaches the stop, so it does not stay there
+    { id: 'bridge', missFails: true, where: [1], name: () => 'Stop every car at the bridge', hours: 3, dc: 3, who: 'the provincial patrol', mods: { patrol: 1, vehicles: 1 }, act: 'roadblock', fx: { press: 1, say: 'The patrol stops and checks every car on the bridge.' }, text: 'The patrol sets a checkpoint on the bridge out of Pedra Branca, and the drivers talk.', fail: 'The patrol goes to the wrong bridge.' },
     { id: 'fuel_watch', where: [1], name: () => 'Watch the fuel stations', hours: 2, dc: 2, who: 'the provincial patrol', mods: { vehicles: 1 }, fx: { lead: 3, say: 'An attendant remembers a car that paid in cash.' }, text: 'Every car stops for fuel somewhere on the road south.', fail: 'Nobody at the pumps remembers anything.' },
     { id: 'cooperative', where: [2], name: () => 'Lean on the cooperative', hours: 2, dc: 3, who: 'the police', mods: {}, fx: { stall: 3, minister: -1, say: 'The police cut the cooperative\'s phone line for "maintenance." Anyone calling out from the colônia waits.' }, text: 'The colônia shares one phone line, and the police can cut it.', fail: 'The cooperative\'s lawyer is the mayor\'s brother.' },
     { id: 'bishop', where: [2], name: () => "Ask the bishop's office", hours: 1, dc: 3, who: 'you', mods: {}, fx: { lead: 2, say: 'A priest says a family from the capital came to evening mass.' }, text: 'The parish knows every stranger in the colônia.', fail: 'The bishop\'s office does not take your call.' },
@@ -571,7 +578,7 @@ const Data = (() => {
       { id: 'claim', label: 'Say it was you', fx: { belief: 'away', exposure: -2, lose: 'decoy_cars', say: 'For one evening you are in a ditch 200 kilometers away.' } },
       { id: 'quiet', label: 'Say nothing', fx: { exposure: 1 } } ] },
     // the colônia
-    { id: 'bishop', at: ['colonia'], title: 'The bishop offers a blessing', text: 'The bishop will bless you in public at evening mass. The whole colônia would see you.', choices: [
+    { id: 'bishop', at: ['colonia'], title: 'The bishop offers a blessing', text: 'The bishop will bless you in public at the next mass. The whole colônia would see you.', choices: [
       { id: 'blessing', label: 'Accept the blessing', fx: { exposure: 2, trust: { host: 1 } } },
       { id: 'decline', label: 'Decline', fx: { trust: { host: -1 } } } ] },
     { id: 'wedding', at: ['colonia'], title: 'A wedding for 300', text: "A cousin's wedding fills every street tonight. Nobody counts faces at a wedding.", choices: [
@@ -859,7 +866,7 @@ const Data = (() => {
           success: { advance: ['aircraft', 'reception'], say: 'Two hours later, your flight and the fixer in Bahía Clara have both moved one step.' }, fail: { say: '' } },
         { id: 'cover_cove', name: 'Cover your tracks', hours: 2, dc: 3, stay: true, needs: [],
           mods: { information: 1 }, text: 'Mama Ilse tells the village you are her cousin from the main island.',
-          success: { exposure: -1, say: "The village calls you Ilse's cousin, and the bounty hunters hear nothing." },
+          success: { exposure: -1, say: "The village calls you Mama Ilse's cousin, and the bounty hunters hear nothing." },
           fail: { exposure: 1, say: 'A fisherman tells a bounty hunter that Mama Ilse has no cousins.' } },
         { id: 'cliff_path', name: 'Take the cliff path', hours: 2, dc: 1, noRoll: true, needs: [{ card: 'document' }],
           mods: {}, text: 'The cliff path drops down to the cruise quay.',
@@ -870,7 +877,7 @@ const Data = (() => {
       arrive: 'The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.',
       approaches: [
         { id: 'board_papers', name: 'Board with your new passport', hours: 1, dc: 3, needs: [{ card: 'document' }, { night: true }],
-          mods: { document: 2, introduction: 1 }, text: 'The gangway opens after dark, and an officer scans every passport.',
+          mods: { document: 2, introduction: 1, border: 2 }, text: 'The gangway opens after dark, and an officer scans every passport.',
           success: { say: 'The gangway officer scans the new passport and wishes you a pleasant voyage.' },
           fail: { exposure: 1, say: 'The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.' } },
         { id: 'steward', with: 'theo', name: 'Sign on as a steward', hours: 2, dc: 4, needs: [],
@@ -891,7 +898,7 @@ const Data = (() => {
       arrive: 'Two hundred residents live aboard the Long Horizon. The next stop is Bahía Clara, in Solandia, where the airport has flights to Lusara.',
       approaches: [
         { id: 'go_ashore', with: 'official', name: 'Go ashore and keep walking', hours: 2, dc: 3, needs: [{ arr: 'reception', stage: 1 }],
-          mods: { introduction: 1, information: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
+          mods: { introduction: 1, information: 1, border: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
           success: { say: 'You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.' },
           fail: { exposure: 1, hours: 2, say: 'A resident recognizes you at the gangway and asks for a photo, so you wait two hours in your cabin for the next tender.' } },
         { id: 'supply_boat', with: 'theo', name: 'Slip off on the supply boat', hours: 2, dc: 4, needs: [],
@@ -908,7 +915,7 @@ const Data = (() => {
       arrive: 'The flight to Lusara leaves twice a day. Bounty hunters watch the departures hall.',
       approaches: [
         { id: 'fly_lusara', with: 'pilot', name: 'Board your flight to Lusara', hours: 2, dc: 3, needs: [{ arr: 'aircraft', stage: 2 }],
-          mods: { document: 2, permission: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
+          mods: { document: 2, permission: 1, border: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
           success: { win: true, say: 'The flight to Lusara takes off on time, and the officer at the other end stamps your real visa.' },
           fail: { exposure: 1, hours: 2, say: 'A second check at the gate makes you miss the flight, and the next one leaves in two hours.' } },
         { id: 'desk_seat', name: 'Buy a seat at the desk', hours: 1, dc: 2, needs: [{ card: 'document' }], pay: true,
@@ -926,10 +933,12 @@ const Data = (() => {
     nando:    { name: 'Kofi', role: 'the taxi driver at the Erinana airstrip', where: 0, reliability: 3 },
     aide:     { name: 'Gianlūka Moretī', role: 'party chief of staff, calling from Valdória', where: -1, reliability: 4 },
     host:     { name: 'Mama Ilse', short: 'Mama Ilse', role: 'owner of the guesthouse at Tamarind Cove', where: 2, reliability: 2 },
-    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 2, reliability: 3 },
-    theo:     { name: 'Marisa', role: 'purser on the Long Horizon', where: 3, reliability: 3 },
-    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 4, reliability: 3 },
-    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 5, reliability: 3 },
+    // loyal: the only way through a stop, so never one of the two who talk (a traitor here would leave no way on)
+    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 2, reliability: 3, loyal: true },
+    // onePer: the ship's two ways off; at most one of them talks, so one way off always stays open
+    theo:     { name: 'Marisa', role: 'purser on the Long Horizon', where: 3, reliability: 3, onePer: 'ship' },
+    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 4, reliability: 3, onePer: 'ship' },
+    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 5, reliability: 3, loyal: true },
   });
   const ARRANGEMENTS2 = {
     aircraft:   { name: 'Flight', stages: ['none', 'a seat on hold', 'a ticket to Lusara in your new name'],
@@ -974,7 +983,7 @@ const Data = (() => {
     { id: 'eri_poster', at: ['eri_airstrip', 'eri_town'], title: 'The reward goes up', text: 'A new poster says the reward for you has doubled.', choices: [
       { id: 'tear_down', label: 'Tear the posters down', fx: { hours: 1, exposure: 1, say: 'You pull down every poster on the street while a shopkeeper watches.' } },
       { id: 'ignore_poster', label: 'Keep your head down', fx: {} } ] },
-    { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the afternoon.', choices: [
+    { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the next few hours.', choices: [
       { id: 'wait_storm', label: 'Wait out the storm', fx: { hours: 3, exposure: -1, say: 'The storm keeps the bounty hunters indoors too, and it passes in three hours.' } },
       { id: 'drive_storm', label: 'Drive through it', fx: { roll: { need: 4, win: { advance: true, say: 'You drive through the rain and reach the next stop while the hunters stay indoors.' }, lose: { hours: 2, exposure: 1, say: 'The car stalls in a flooded dip, and a farmer tows you out two hours later.' } } } } ] },
     { id: 'eri_tourists', at: ['eri_quay', 'eri_ship'], title: 'A tour group wants a photo', text: 'A tour group recognizes you and wants a picture with you.', choices: [
@@ -994,6 +1003,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_town', at: ['eri_town'], title: 'A place to stop in town', text: 'The harbor hotel asks for a passport, and the market feeds anyone.', choices: [
       { id: 'hotel', label: 'Take a harbor hotel room', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The clerk copies your passport into the register. Everyone eats and sleeps six hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: "The harbor hotel's manager owes Emilio a favor, and your room goes under another guest's name." } },
       { id: 'market', label: 'Eat at the market', fx: { hours: 1, meal: true, rest: true, say: 'You eat fried fish standing up at a market stall.' } },
       { id: 'ines_food', label: 'Have Inês buy food', needs: [{ card: 'care' }], fx: { hours: 1, meal: true, rest: true, say: 'Inês buys food at the market and brings it back.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
@@ -1003,6 +1013,7 @@ const Data = (() => {
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_quay', at: ['eri_quay'], title: 'A place to stop at the harbor', text: "The seamen's hostel rents bunks by the night.", choices: [
       { id: 'hostel', label: "Take a seamen's hostel bunk", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden writes your new name in his book, and everyone eats and sleeps five hours.' } },
+      { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio knows the hostel warden, who books you a back room under another guest\'s name.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_ship', at: ['eri_ship'], title: 'Your cabin aboard', text: 'Meals come to the cabin, and the bunk is yours.', choices: [
       { id: 'cabin_rest', label: 'Eat and sleep in the cabin', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps six hours while the ship sails.' } },

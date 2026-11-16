@@ -66,7 +66,10 @@ const Sim = (() => {
     // Two people on the ground are secretly working for the inquiry. Which two changes every run.
     // how many allies have already gone over: two, or one to three on a daily
     const approached = opts.daily ? 1 + Math.floor(s._rng() * 3) : 2;
-    if (!s.tutorial) { const pool = SUSPECTS.slice(); for (let i = 0; i < approached; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; } }
+    // chapter two leaves out people who never appear on the island, anyone who is the only way through a stop, and keeps at
+    // most one per group (the ship's two ways off); chapter one's pool is unchanged
+    if (!s.tutorial) { let pool = SUSPECTS.filter(k => D.PEOPLE[k].where >= 0 && !D.PEOPLE[k].loyal);
+      for (let i = 0; i < approached && pool.length; i++) { const k = pool.splice(Math.floor(s._rng() * pool.length), 1)[0]; s.people[k].bad = true; const grp = D.PEOPLE[k].onePer; if (grp) pool = pool.filter(x => D.PEOPLE[x].onePer !== grp); } }
     if (opts.daily) {
       // the daily draws more from its date: how hot the morning starts, where Sosā is looking, and the fourth card
       s.exposure = Math.max(0, Math.min(4, (ch.exposure || 1) + Math.floor(s._rng() * 3) - 1));
@@ -209,8 +212,10 @@ const Sim = (() => {
   function approachList(s) {
     const L = level(s), m = mods(s, L), out = [];
     for (const a of L.approaches) {
+      if (a.gone && s.arr[a.gone.arr].stage >= a.gone.stage) continue;
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
       if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
+      if (a.unlessHeld && s.hand.includes(a.unlessHeld)) whys.push(T('sim.why.already_hold', { card: D.CARDS[a.unlessHeld].name.replace(/^./, c => c.toLowerCase()) }));
       else if (a.success && a.success.advance && !a.success.advance.some(k => canMove(s, k))) whys.push(T('sim.why.nothing_left_to_move'));
       if (s.event) whys.unshift(s.event.kind === 'hold' ? T('sim.why.you_are_being_held') : T('sim.why.answer_the_news_first'));
       if (a.with && s.people[a.with] && s.people[a.with].cut) whys.push(T('sim.why.you_cut_off', { name: personName(s, a.with) }));
@@ -234,7 +239,7 @@ const Sim = (() => {
       if (news) { dc += news; why.push(T(news > 0 ? 'sim.preview.harder_news' : 'sim.preview.easier_news')); }
       // Clara on the police side: passport control at Portalba has her photo, for the charter and the airline alike
       if (s.flags.terminal && ['depart', 'depart_nopermit', 'airline'].includes(a.id)) { dc += 1; why.push(T('sim.preview.harder_terminal')); }
-      if (ch(s).faceKnown && (L.border || a.id === 'airline') && a.id !== 'received') { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresa's face
+      if (ch(s).faceKnown && (L.border || a.id === 'airline') && a.id !== 'received' && !a.noFace) { dc += 1; why.push(T('sim.preview.harder_face')); } // every officer knows Teresa's face
       // no failure written, or Vélez's officials walk you through: commit() never rolls these
       const free = !!a.noRoll || escorted;
       const real = tgt(dc - bonus); // the target the roll uses; it never reaches the view, because the player is told no odds (owner, Nov. 1, 2026)
@@ -326,7 +331,7 @@ const Sim = (() => {
   // after every hour: the levels move, a change is said once, and the youngest falls sick once at a stop when one runs out
   function bodyHour(s, events) {
     if (s.tutorial) return;
-    const was = body(s); s.awake = (s.awake || 0) + 1; s.fed = (s.fed || 0) + 1; const now = body(s);
+    const was = body(s); const r = s._resting || {}; if (!r.sleep) s.awake = (s.awake || 0) + 1; if (!r.meal) s.fed = (s.fed || 0) + 1; const now = body(s);
     if (now.tire > was.tire) say(events, 'narrator', T(now.tire === 2 ? 'body.now_exhausted' : 'body.now_tired'));
     if (now.hunger > was.hunger) say(events, 'narrator', T(now.hunger === 2 ? 'body.now_starving' : 'body.now_hungry'));
     if (now.tire !== was.tire || now.hunger !== was.hunger) events.push(ev('body', now));
@@ -458,7 +463,8 @@ const Sim = (() => {
     if (fx.hide) s.flags.hidden = { pos: s.pos, until: s.hour + (fx.hours || 0) };
     if (fx.stay) (s.stays = s.stays || []).push({ pos: s.pos, hour: s.hour, kind: fx.stay }); // a register at this stop: your name, or the name Emilio booked
     if (fx.clinic) (s.clinics = s.clinics || []).push({ pos: s.pos, hour: s.hour }); // the clinic book has your youngest's name
-    if (fx.hours) quietly(s, !!fx.rest, () => pass(s, fx.hours, events));
+    // while you sleep or eat, that need does not grow, so a bed or a meal can never make the youngest sick
+    if (fx.hours) { s._resting = { sleep: !!fx.sleep, meal: !!fx.meal }; try { quietly(s, !!fx.rest, () => pass(s, fx.hours, events)); } finally { delete s._resting; } }
     if (!s.over) bodyFx(s, fx, events);
   }
   // The travel ban goes out. Paulo knows the clerk's office: with him, the order sits in the outbox for 12 hours first.
@@ -534,7 +540,7 @@ const Sim = (() => {
       s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); heat(s, 2, events); pass(s, a.hours + 12, events); return finish(s, events);
     }
     if (won && a.success.win) {
-      { const after = epilogue(s, true); s.over = { win: true, kind: 'out', story: a.success.say, after, reason: `${a.success.say} ${after}` }; } events.push(ev('over', s.over)); return { ok: true, events }; }
+      { const after = epilogue(s, true); s.over = { win: true, kind: 'out', via: a.id, story: a.success.say, after, reason: `${a.success.say} ${after}` }; } events.push(ev('over', s.over)); return { ok: true, events }; }
     const rest = !!a.stay;
     if (rest) careLine(s, events);
     quietly(s, rest, () => pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events));
@@ -560,7 +566,7 @@ const Sim = (() => {
     if (fx.commit) { if (!s.commitments.some(c => c.to === fx.commit)) { s.commitments.push({ to: fx.commit, text: D.PEOPLE[fx.commit].terms, kept: null }); events.push(ev('commit', { to: fx.commit, text: D.PEOPLE[fx.commit].terms })); gain(s, 'delay_report', events); } }
     if (fx.advance) for (const k of fx.advance) if (canMove(s, k)) { stage(s, k, s.arr[k].stage + 1, events); if (k === 'permission' && s.arr.permission.stage === 1) s.flags.destination = true; }
   }
-  function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || s.used.includes(id)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
+  function gain(s, id, events) { if (!D.CARDS[id] || s.hand.includes(id) || (s.used.includes(id) && !D.CARDS[id].again)) return; s.hand.push(id); events.push(ev('card', { id, name: D.CARDS[id].name, from: D.CARDS[id].from })); }
   // a companion travels with you for the whole run: nothing takes their card
   const mateLine = (k) => ({ bruno: T('mate.bruno.help'), clara: T('mate.clara.help'), rita: T('mate.rita.help'), marta: T('mate.marta.help'), tomas: T('mate.tomas.help'), joana: T('mate.joana.help') })[k] || '';
   function lose(s, id, events) { const i = s.hand.indexOf(id); if (i < 0 || (D.CARDS[id] && D.CARDS[id].companion)) return; s.hand.splice(i, 1); events.push(ev('cardlost', { id, name: D.CARDS[id].name })); }
@@ -661,11 +667,14 @@ const Sim = (() => {
       const a = SELF[k], p = s.people[a.ally];
       if (!p || p.turned || p.cut || s.jobs.some(j => j.arr === k) || !canMove(s, k)) continue;
       if (k === 'permission' && s.arr.permission.stage < 1) continue;
-      if (s.hour - ((s.arrAt || {})[k] || 0) < a.every) continue;
+      // the same slowdowns as a call: the family's 'dark' story (two hours), and a lag the other side has added (the phone tap, the tower, Rita's crews)
+      if (s.hour - ((s.arrAt || {})[k] || 0) < a.every + (s.flags.dark ? 2 : 0) + ((s.flags.selfLag || {})[k] || 0) + ((s.flags.stepLag || {})[k] || 0)) continue;
       say(events, 'narrator', k === 'aircraft' ? T('arr.self_aircraft', { name: `${ch(s).sibling.rel} ${ch(s).sibling.short}` }) : T('arr.self_permission', { sponsor: sponsor(s).short }));
-      stage(s, k, s.arr[k].stage + 1, events);
+      stage(s, k, s.arr[k].stage + 1, events); if (s.flags.selfLag) delete s.flags.selfLag[k]; // a one-off lag is spent once the step comes; stepLag (Rita's crews) slows every step
     }
   }
+  // a slowdown on someone's work reaches a pending call and the next step they would make without one
+  function lag(s, keys, h) { s.flags.selfLag = s.flags.selfLag || {}; for (const k of keys) s.flags.selfLag[k] = (s.flags.selfLag[k] || 0) + h; }
   function pass(s, hours, events) {
     for (let i = 0; i < hours && !s.over; i++) {
       s.hour += 1; events.push(ev('hour', { hour: s.hour, clock: clockText(s.hour) })); bodyHour(s, events);
@@ -706,7 +715,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = placeOf(s, s.belief); text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { text += V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
+      case 'check_belief': { const where = placeOf(s, s.belief); text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { const noPower = s.pos >= ESMERALDA_FROM && !s.flags.asked; text += noPower ? V('sim.inquiry.found_no_power', 'gov.inquiry.found_no_power') : V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
           // Celina: once at each stop in Valdória, a sighting on her station sends the search one stop back
           if (!s._manual && hasTag(s, 'media') && !(s.flags.spun || {})[s.pos]) { (s.flags.spun = s.flags.spun || {})[s.pos] = true; s.belief = s.pos === 0 ? 1 : s.pos - 1; text += T('mate.celina.spin', { place: placeOf(s, s.belief) }); events.push(ev('belief', { belief: s.belief })); } } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
       case 'trace': { text = say3(pick)(); if (s.hour - s.calledAt <= 3 && hasTag(s, 'phone')) text += T('mate.nadia.untraced'); else if (s.hour - s.calledAt <= 3) { traced = true; s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += V('sim.inquiry.the_last_call_came_from', 'gov.inquiry.last_call'); } else text += V('sim.inquiry.nothing_new', 'gov.inquiry.no_calls'); break; }
@@ -718,7 +727,7 @@ const Sim = (() => {
       case 'ask_esmeralda': s.flags.asked = true; text = say3(pick)(); break;
       case 'press_story': { s.belief = s.pos === 0 ? 1 : 0; heat(s, -1, events); text = say3(pick)(); break; }
       case 'roadblock': { s.flags.roadblock = { pos: s.belief, until: s.hour + 6 }; text = say3(pick)(placeOf(s, s.belief)); break; }
-      case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); if (hasTag(s, 'phone')) { text += T('mate.nadia.rerouted', { name: personName(s, 'sibling') }); s.flags.rerouted = true; break; } for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; break; }
+      case 'watch_sibling': { text = say3(pick)(personName(s, 'sibling')); if (hasTag(s, 'phone')) { text += T('mate.nadia.rerouted', { name: personName(s, 'sibling') }); s.flags.rerouted = true; break; } for (const j of s.jobs) if (j.ally === 'sibling') j.due += 4; lag(s, ['aircraft'], 4); break; }
     }
     events.push(ev('enemy', { id: pick.id, text, belief: s.belief, talked, who: pressed, hit: pick.id === 'trace' ? s.belief === s.pos && traced : pick.id === 'check_belief' ? s.belief === s.pos : undefined }));
     return text;
@@ -757,9 +766,16 @@ const Sim = (() => {
     const L = lodgingAt(s); if (!L || s.tutorial || s.over) return null;
     const ok = L.choices.filter(c => c.id !== 'keep_going' && !choiceWhy(s, c)).map(c => c.id), b = body(s), nightMove = level(s).approaches.some(a => a.needs.some(n => n.night)), sleepy = b.tire === 2 || (b.tire === 1 && isNight(s) && !nightMove); // never sleep through the midnight freight
     const BED = ['emilio_room', 'nona_room', 'home_sleep', 'lounge', 'hostel', 'motel', 'rail_hotel', 'car_sleep'], MEAL = ['ines_food', 'nona_meal', 'home_meal', 'truck_stop', 'canteen'], FREE = MEAL.slice(0, 3);
-    const order = sleepy ? BED : b.hunger === 2 ? MEAL.concat(BED) : b.hunger === 1 ? FREE : []; // hungry: only a meal nobody sees; starving: any meal
+    // any other bed or meal (chapter two, Barra Velha) is ranked by what it does: a full night before a nap, then the least seen
+    const fx = (id) => (L.choices.find(c => c.id === id) || {}).fx || {}, seen = (id) => fx(id).exposure || 0;
+    const rest = ok.filter(id => !BED.includes(id) && !MEAL.includes(id));
+    const bed2 = rest.filter(id => fx(id).sleep).sort((x, y) => (fx(x).sleep === 'full' ? 0 : 1) - (fx(y).sleep === 'full' ? 0 : 1) || seen(x) - seen(y));
+    const meal2 = rest.filter(id => fx(id).meal && !fx(id).sleep).sort((x, y) => seen(x) - seen(y)), free2 = meal2.filter(id => seen(id) <= 0);
+    // sleepy first; where there is no bed, a starving or hungry family still eats
+    const eat = b.hunger === 2 ? MEAL.concat(meal2, BED, bed2) : b.hunger === 1 ? FREE.concat(free2) : []; // hungry: only a meal nobody sees; starving: any meal
+    const order = sleepy ? BED.concat(bed2, eat) : eat;
     return order.find(id => ok.includes(id)) || null;
   }
-  return { stopAt, route, onRoute, lodgePick, body, approachList, HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName, shortName, endTutorial };
+  return { stopAt, route, onRoute, lodgePick, body, approachList, HOURS_TOTAL, EXPOSURE_LIMIT, START_HOUR, ESMERALDA_FROM, ENEMY_EVERY, POST_IDS, dest, sponsor, postName, num, personRole, reaches, eventView, fxTags, newRun, serialize, restore, enemyAct, heat, EXITS, passHours, actions, commit, clockText, isNight, personName, shortName, endTutorial, lag };
 })();
 if (typeof module !== 'undefined') module.exports = Sim;

@@ -31,7 +31,7 @@ belongs here.
 4. **Resolved Nov. 1, 2026:** ~~**Naming a town to the minister reveals her real position.** His reply differs depending on whether she is there, with no roll.~~ The reply and the announcement are the same either way; a wrong claim still sends the police there unseen.
 5. **Nonā Rosa's grandson card is lost before it can be used.** It is given at Nova Trentô, works only in the Salta yard, and every card of its kind is discarded on any move to a new stop, so it disappears on arrival at Salta. **Resolved November 1, 2026:** a way onto the freight is dropped only when you leave the stop where it counts.
 6. **"Have Gianlūka ask for a delay" can never be chosen.** It needs a card kind no card has, and if it worked it would move the deadline 4 hours sooner while its line says the clerk grants two days. **Resolved November 1, 2026:** it now needs the party machine. With Monday noon gone, it holds the court's travel ban order back instead of moving a deadline.
-7. **"Call your contacts" at Nova Trentô can be repeated.** Each use moves all three arrangements one step with no ally, roll or check; twice on a Tarun run marks a visa as issued for a country that never agreed.
+7. **Resolved, checked Nov. 14, 2026:** ~~**"Call your contacts" at Nova Trentô can be repeated.** Each use moves all three arrangements one step with no ally, roll or check; twice on a Tarun run marks a visa as issued for a country that never agreed.~~ The move is now once per run (`once: true`, src/data.js), and item 35 keeps its calls within the arrangement rules.
 8. **"Help Nonā Rosa free the truck" leaves for Salta on success**, which skips the "Esmeralda expects you" requirement on the road out.
 
 ### Priority 2: names and labels promise something the rules do not do
@@ -61,7 +61,7 @@ belongs here.
 
 ### Priority 3: smaller mismatches
 
-24. **Cancelling her own passport does nothing by itself.** `src/sim.js` checks a move called `own_passport` that does not exist; only the travel ban and the station stop change at the passport deadline.
+24. **Resolved, checked Nov. 14, 2026:** ~~**Cancelling her own passport does nothing by itself.** `src/sim.js` checks a move called `own_passport` that does not exist; only the travel ban and the station stop change at the passport deadline.~~ The dead `own_passport` check is gone from src/sim.js.
 25. **Hang up stays bright during demo steps** that ask for something else; check whether the demo should disable it.
 
 17. The freight boards from 10 p.m. to 5 a.m., though the story says midnight.
@@ -272,3 +272,17 @@ Every player-facing string (1,483) was checked against Humanizer, AP style and t
 37. **Resolved Nov. 2, 2026 (owner: "The border is closed once it is sent"):** ~~Confirming the travel ban at the post changes nothing unless Tomás is Sofia's companion.~~ The confirm step is gone; the ban is in force once sent, and the judge and the sergeant can get the post to let it slide.
 38. **Resolved Nov. 2, 2026 (issue #47):** ~~The police's circulate line says "From now on" even when Paulo holds the order.~~ When Paulo holds it, the whole line says the ban sits in the clerk's outbox until the hour it reaches the posts.
 39. **Resolved Nov. 2, 2026:** ~~Inês and Emilio stand in for lodging and food systems that do not exist yet.~~ Food and sleep are built (see docs/companions.md); Inês and Emilio work through the food and sleep screen.
+
+## Code review, November 14, 2026: held for the owner
+
+- **Refusing Bruno costs nothing.** His moment offers help or a refusal, and the refusal changes no state, so there is no reason ever to accept a worse result from him. Needs a design choice about what refusing should cost.
+- **Chapter two is much easier than chapter one.** With the bots eating and sleeping and no traitor able to close a stop, Teresa wins 75.3% and Mateu 59.0% of chapter-two runs, against 35.7% and 31.3% in chapter one (docs/chapter-two.md). Tune it with the no-waiting design work.
+- **The travel ban still makes the shepherds' path harder.** The path's text says no guard checks a passport there, and since Nov. 14 a known face no longer counts, but the ban rule (src/sim.js, `L.border && s.flags.restriction`) applies to every move at the line. Removing it would make the path the easiest way across, so it is a balance question.
+- **The papers' verdict tells the investigator where she was.** Six hours after you name a stop, the papers say whether she was there, with no search behind it (the help states this as a rule). In a playtest it showed she had left Salta before any report did. Keep it as a deliberate late confirmation, or tie it to what the investigation found.
+- **Investigator orders run past their listed hours.** An order waits for her whole move to finish, so "Move your search to the line, 1 hr" took 15 hours in a playtest, and news choices show no time but can cost 7. This belongs to the no-waiting design work, which changes how time passes.
+- **The computer-played candidate barely moves on the investigator's side.** In three playtest runs she sat 34 and 37 hours at one stop and never reached Portalba.
+- **"Harder" and "easier" in news and effects.** The escape playtest counted lines like "every move there that can fail is harder" and "crossing here gets easier" as odds talk. They name a direction, never a chance, and the move previews use the same words; say if you want them gone too.
+- **Each new stop waits for "Keep going".** Rounds advance on their own, but the stop screen still needs a tap. Part of the no-waiting design.
+- **Food and sleep are explained in hours** ("After 12 hours without food you are hungry"), in the news and in help.
+- **The card picker at the start has no limit,** so a new player has no reason not to take every card.
+- **"Run it again" after chapter two starts chapter one.**

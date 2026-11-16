@@ -46,6 +46,8 @@ const Gov = (() => {
       patience: 3, patrols: [0, 1] };
     // a companion gives Sofia one police card from the start
     g.companion = D.COMPANIONS[opts.companion] ? opts.companion : null;
+    // Rita's charter crews drag their feet on every step of her jet, with or without a call pending
+    if (g.companion === 'rita') g.c.flags.stepLag = { aircraft: 3 };
     // which investigator: Sofia, or Davi with a third patrol that starts at Nova Trentô (issue #33)
     g.inv = D.GOVS[opts.inv] ? opts.inv : 'sofia';
     if (g.inv === 'davi' && !opts.tutorial) { g.hand.push('patrol3'); g.patrols.push(2); }
@@ -74,7 +76,8 @@ const Gov = (() => {
   const personName = (g, id) => ({ minister: T('gov.name.the_minister'), watch: T('gov.name.the_watch_team'), desk: T('gov.name.the_santa_laura_desk'), rail: T('gov.name.the_railway_contact'), embassy: T('gov.name.the_embassy_in_baca'), aviation: T('gov.name.the_aviation_desk'), enemy: T('gov.name.inspector_sosa'), press: T('gov.name.radi_port_venla') })[id] || (D.COMPANIONS[id] ? D.CARDS[D.COMPANIONS[id].card].name : S.personName(g.c, id));
   function msg(g, events, from, text, options) { const m = { id: g.nextMsg++, from, text, options }; g.inbox.push(m); events.push(ev('message', { id: m.id, from, text })); }
   function report(g, events, at, source, text, proves, doesnt, delay, hour, misleading) {
-    const r = { at, source, text, proves, doesnt, hour: (hour === undefined ? g.c.hour : hour) + (delay || 0), misleading: !!misleading, seen: false };
+    const seenAt = hour === undefined ? g.c.hour : hour; // seenAt: the hour of the sighting; hour: when the report reaches the desk
+    const r = { at, source, text, proves, doesnt, seenAt, hour: seenAt + (delay || 0), misleading: !!misleading, seen: false };
     if (delay) g.pending.push(r); else { g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: source, text: `${text} (${proves.replace(/\.$/, '')}; does not prove ${doesnt.charAt(0).toLowerCase() + doesnt.slice(1).replace(/\.$/, '')})`, at })); }
   }
   function release(g, events) { for (const r of g.pending.slice()) if (!r.job && r.hour <= g.c.hour) { g.pending = g.pending.filter(x => x !== r); g.reports.unshift(r); g.lastReportHour = r.hour; events.push(ev('report', { from: r.source, text: r.text, at: r.at })); } }
@@ -143,14 +146,18 @@ const Gov = (() => {
     if (!g.tutorial) { g.awake = (g.awake || 0) + (g.c.hour - from); g.fed = (g.fed || 0) + (g.c.hour - from); }
     if (g.c.hour > from) events.push(ev('passed', { hours: g.c.hour - from }));
     release(g, events);
+    // a court on her side can send the ban itself: the desk hears of it, so the briefing's tick has a cause
+    if (g.c.flags.restriction && g.req.ban === 'notyet' && !g.tutorial) { g.req.ban = 'inhand'; enforce(g); events.push(ev('say', { who: 'narrator', text: T('gov.say.court_sent_ban') })); }
     if (g.c.over) g.over = g.c.over;
-    // issue #52: 18 hours after you answer him, the minister asks again; a missed deadline costs his patience
+    // issue #52: 18 hours after you answer him, the minister asks again
     if (!g.c.over && !g.tutorial && g.flags.locationGiven && g.nextAsk && g.c.hour >= g.nextAsk) { g.nextAsk = null; g.flags.locationGiven = false; g.flags.ministerLate = false; g.ministerBy = g.c.hour + 2;
       msg(g, events, 'minister', T('gov.line.where_now'), [
         { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
         { id: 'ask_time', label: T('gov.opt.ask_for_six_hours'), hours: 0, effect: '' },
       ]); }
-    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true; msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
+    if (!g.c.over && g.c.hour >= g.ministerBy && !g.flags.locationGiven && !g.flags.ministerLate) { g.flags.ministerLate = true;
+      // the late question replaces any unanswered one from him, so one answer is scored, never two
+      g.inbox = g.inbox.filter(m => m.from !== 'minister'); msg(g, events, 'minister', T('gov.line.you_asked_for_time_the'), [
       { id: 'tell_now', label: T('gov.opt.name_where_you_think_she'), hours: 0, effect: '' },
       { id: 'admit', label: T('gov.opt.say_you_do_not_know'), hours: 0, effect: T('gov.effect.honest_the_minister_briefs_the') },
     ]); }
@@ -214,7 +221,7 @@ const Gov = (() => {
         { at: 4, title: T('gov.status.travel_ban_at_the_post'), state: c.flags.restriction ? 'inhand' : 'notyet', sub: c.flags.restriction ? T(c.flags.lax ? 'gov.status.ban_slides' : 'gov.status.ban_in_force') : T('gov.status.not_sent') }, // the ban is in force once it is sent (owner, Nov. 2, 2026)
         { at: 5, title: T('gov.status.esmeraldan_hold'), state: g.req.hold, sub: g.req.hold === 'inhand' ? T('gov.status.esmeralda_has_agreed_to_hold') : g.req.hold === 'promised' ? T('gov.status.asked_through_the_embassy_in') : T('gov.status.not_asked') },
       ],
-      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
+      people: [T('gov.status.your_people_the_watch_team'), T('gov.status.your_people_the_provincial_desk'), g.hand.includes('patrol3') ? T('gov.status.your_people_third_patrol') : T('gov.status.no_one_here_yet'), g.hand.includes('rail') ? T('gov.status.your_people_the_railway_contact') : T('gov.status.your_people_a_railway_contact'), T('gov.status.your_people_the_border_post'), g.hand.includes('esm_intro') ? T('gov.status.your_people_a_name_at') : T('gov.status.no_one_here_your_ministry')],
     };
   }
 
@@ -269,7 +276,7 @@ const Gov = (() => {
     const die = o.noRoll ? null : roll(g), won = o.noRoll || wins(die, o.real);
     events.push(ev('roll', o.noRoll ? { die: null, won, auto: true, bonus: [] } : { die, won, bonus: o.bonusFrom }));
     g.orders.push({ id, hour: c.hour, won, who: def.who });
-    if (PATROL.includes(id) && g.belief >= 0 && g.belief <= 4 && g.patrols && !g.tutorial) g.patrols[nearest(g)] = g.belief;
+    if (PATROL.includes(id) && (won || !def.missFails) && g.belief >= 0 && g.belief <= 4 && g.patrols && !g.tutorial) g.patrols[nearest(g)] = g.belief;
     g.timeline.push({ hour: c.hour, pos: c.pos, belief: g.belief, order: o.name });
     if (won) {
       if (id === 'follow') { const latest = g.reports.find(r => r.at !== g.belief); g.belief = latest.at; events.push(ev('say', { who: 'narrator', text: T('gov.say.you_move_the_search_to', { place: place(g.belief) }) })); }
@@ -387,7 +394,7 @@ const Gov = (() => {
     if (fx.lose) g.hand = g.hand.filter(x => x !== fx.lose);
     if (fx.press) S.heat(c, fx.press, []);
     if (fx.warn) { S.heat(c, -fx.warn, []); if (c.belief === c.pos) c.belief = -1; }
-    if (fx.stall) for (const j of c.jobs) j.due += fx.stall;
+    if (fx.stall) { for (const j of c.jobs) j.due += fx.stall; S.lag(c, ['aircraft', 'permission'], fx.stall); }
     if (fx.crossing) c.flags.roadblock = { pos: 4, until: c.hour + fx.crossing };
     if (fx.ban) { if (!c.flags.restriction) c.flags.banAt = c.hour; c.flags.restriction = true; c.flags.lax = false; g.req.ban = 'inhand'; enforce(g); }
     if (fx.unban) c.flags.lax = true; // the post at the line lets the ban slide: her crossings there are no longer harder because of it

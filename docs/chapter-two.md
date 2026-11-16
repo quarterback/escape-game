@@ -21,4 +21,6 @@ Owner, Nov. 8, 2026: "the game ending when you leave the country is fine." Winni
 - **Wording:** entries `<id>.ch2` in the catalog and `<code>_two` in the markers replace chapter one's police lines.
 - **Art:** the ship's deck is new; the other stops reuse the airfield, road, colônia and harbor scenes.
 
-Calibration, 300 runs (`node tools/calibrate.js 300 --chapter=2`): Teresa 29.3%, Mateu 24.0%. Chapter one is unchanged (30.0%, 25.0%).
+Calibration, 300 runs (`node tools/calibrate.js 300 --chapter=2`), Nov. 14, 2026: Teresa 75.3%, Mateu 59.0%; chapter one is 35.7% and 31.3%.
+
+The earlier figures (29.3% and 24.0%) were measured with two faults: the bots never ate or slept on the islands, and a traitor could close the only way on from Tamarind Cove or the ship. Fixing the traitor rule alone took chapter two to 39.3% and 31.0%; letting the bots rest took it to the figures above. Chapter two is now much easier than chapter one for a player who eats and sleeps, and needs tuning; that is held for the no-waiting design work, which changes its pacing anyway.
