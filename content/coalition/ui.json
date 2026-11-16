@@ -5352,6 +5352,60 @@
    ]
   },
   {
+   "id": "sim.relay.hand_on",
+   "pattern": "P10",
+   "text": "{from} sends you on to {to}, who will trust you more.",
+   "args": [
+    "from",
+    "to"
+   ]
+  },
+  {
+   "id": "sim.walk.name",
+   "pattern": "P01",
+   "text": "Walk to {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.text",
+   "pattern": "P05",
+   "text": "{place} is an hour's walk from here.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.say",
+   "pattern": "P10",
+   "text": "You walk to {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.back",
+   "pattern": "P10",
+   "text": "You are back at {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "lead.walk",
+   "pattern": "P03",
+   "text": "It takes an hour, and the hunters' search goes on while you walk."
+  },
+  {
+   "id": "lead.hand_on",
+   "pattern": "P03",
+   "text": "{name} trusts you more",
+   "args": [
+    "name"
+   ]
+  },
+  {
    "id": "action.done_by",
    "pattern": "P03",
    "text": ", done {who}",

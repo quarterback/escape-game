@@ -198,6 +198,14 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
     // a card kind is out of reach if every move that hands it over goes through a traitor and nobody starts with it
     const held = new Set(s.hand.map(id => Data.CARDS[id] && Data.CARDS[id].tag));
     const open = (k) => held.has(k) || Object.values(Data.EVENTS || {}).length >= 0 && all.some(({ a }) => a.success && a.success.card && Data.CARDS[a.success.card] && Data.CARDS[a.success.card].tag === k && !(a.with && bad.has(a.with)));
+    // chapter two is a map (docs/chapter-two-relay.md): every place must still reach the airport by walks and legs no traitor runs
+    if (ch === 2) { const ok2 = (a) => !(a.with && bad.has(a.with)) && a.needs.every(n => !n.card || open(n.card));
+      const edges = {}; for (const L of Data.LEVELS) edges[L.id] = (L.approaches || []).filter(a => a.to && ok2(a)).map(a => a.to);
+      for (const st of Data.STRIPS) for (const [x, y] of st.walk) { edges[x].push(y); edges[y].push(x); }
+      const goal = Data.LEVELS.find(L => L.approaches.some(a => a.success && a.success.win && ok2(a)));
+      for (const L of Data.LEVELS) { const seen = new Set([L.id]), q = [L.id]; while (q.length) { const x = q.shift(); for (const y of edges[x]) if (!seen.has(y)) { seen.add(y); q.push(y); } }
+        if (!goal || !seen.has(goal.id)) trapped.push(`chapter 2 seed ${seed} ${L.id} (traitors ${[...bad].join(', ')})`); }
+      continue; }
     Data.LEVELS.forEach((L, i) => { if (i === Data.LEVELS.length - 1 && !(L.approaches || []).some(a => a.success && a.success.win)) return;
       const exits = Sim.EXITS[L.id] && Sim.EXITS[L.id].length ? (L.approaches || []).filter(a => Sim.EXITS[L.id].includes(a.id)) : (L.approaches || []).filter(a => a.success && !a.noExit);
       const way = exits.some(a => !(a.with && bad.has(a.with)) && a.needs.every(n => !n.card || open(n.card)));

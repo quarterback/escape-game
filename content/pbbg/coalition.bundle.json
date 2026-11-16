@@ -13009,6 +13009,130 @@
    }
   },
   {
+   "id": "sim.relay.hand_on",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "{from} sends you on to {to}, who will trust you more.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "from": {
+     "source": "fact",
+     "ref": "arg.from"
+    },
+    "to": {
+     "source": "fact",
+     "ref": "arg.to"
+    }
+   }
+  },
+  {
+   "id": "sim.walk.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Walk to {place}",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "sim.walk.text",
+   "domain": "interface",
+   "pattern": "arrangement-status",
+   "text": "{place} is an hour's walk from here.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "sim.walk.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You walk to {place}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "sim.walk.back",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You are back at {place}.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "place": {
+     "source": "fact",
+     "ref": "arg.place"
+    }
+   }
+  },
+  {
+   "id": "lead.walk",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "It takes an hour, and the hunters' search goes on while you walk.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "lead.hand_on",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "{name} trusts you more",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ],
+   "bindings": {
+    "name": {
+     "source": "fact",
+     "ref": "arg.name"
+    }
+   }
+  },
+  {
    "id": "action.done_by",
    "domain": "interface",
    "pattern": "action-preview",
@@ -25647,7 +25771,7 @@
    "id": "ch2.level.eri_airstrip.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get out of the airport and into town.",
+   "text": "Get off the airstrip, into town or along the coast to Tamarind Cove.",
    "audience": [
     "player"
    ],
@@ -25683,7 +25807,7 @@
    "id": "ch2.level.eri_airstrip.crew_van.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The crew's van leaves by the service gate, and the guard never checks the back.",
+   "text": "The crew's van leaves by the service gate and drops its riders on Market Street.",
    "audience": [
     "player"
    ],
@@ -25695,7 +25819,7 @@
    "id": "ch2.level.eri_airstrip.crew_van.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You ride on a suitcase in the back, and the gate guard waves the van through.",
+   "text": "You ride on a suitcase in the back, and the gate guard waves the van through to Market Street.",
    "audience": [
     "player"
    ],
@@ -25719,7 +25843,7 @@
    "id": "ch2.level.eri_airstrip.taxi.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Take Kofi's taxi",
+   "text": "Take Kofi's taxi to the cove",
    "audience": [
     "player"
    ],
@@ -25731,7 +25855,7 @@
    "id": "ch2.level.eri_airstrip.taxi.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "Kofi drives the only taxi with tinted windows and talks the whole way.",
+   "text": "Kofi drives the only taxi with tinted windows, and he knows the guesthouse at Tamarind Cove.",
    "audience": [
     "player"
    ],
@@ -25743,7 +25867,7 @@
    "id": "ch2.level.eri_airstrip.taxi.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "Kofi drives you into town and tells everyone at the rank about his fare.",
+   "text": "Kofi drives you along the coast to Tamarind Cove and tells Mama Ilse you are friends of his.",
    "audience": [
     "player"
    ],
@@ -25779,7 +25903,7 @@
    "id": "ch2.level.eri_airstrip.fence.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The airstrip fence has a gap onto a cane field.",
+   "text": "The airstrip fence has a gap onto a cane field that runs down to Market Street.",
    "audience": [
     "player"
    ],
@@ -25791,7 +25915,7 @@
    "id": "ch2.level.eri_airstrip.fence.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You cross the cane field in the dark and reach the edge of town by the first bus.",
+   "text": "You cross the cane field in the dark and come out at the top of Market Street.",
    "audience": [
     "player"
    ],
@@ -25815,7 +25939,7 @@
    "id": "ch2.level.eri_town.name",
    "domain": "interface",
    "pattern": "navigation-heading",
-   "text": "Erinana town",
+   "text": "Market Street, Erinana town",
    "audience": [
     "player"
    ],
@@ -25827,7 +25951,7 @@
    "id": "ch2.level.eri_town.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get to the guesthouse at Tamarind Cove.",
+   "text": "Take the bus or a scooter along the coast, or walk down to the harbors.",
    "audience": [
     "player"
    ],
@@ -25839,7 +25963,7 @@
    "id": "ch2.level.eri_town.arrive",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Erinana town is one main street and a harbor. Two strangers in new sun hats are showing your photo at the bus stop.",
+   "text": "Market Street runs from the cane fields down to the harbor. Two strangers in new sun hats are showing your photo at the bus stop.",
    "audience": [
     "player"
    ],
@@ -25851,7 +25975,7 @@
    "id": "ch2.level.eri_town.bus.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Ride the market bus",
+   "text": "Take the bus to the cove",
    "audience": [
     "player"
    ],
@@ -25887,7 +26011,7 @@
    "id": "ch2.level.eri_town.bus.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "A bounty hunter boards at the second stop, so you get off and walk the rest.",
+   "text": "A bounty hunter boards at the second stop, so you get off and walk back to town.",
    "audience": [
     "player"
    ],
@@ -25899,7 +26023,7 @@
    "id": "ch2.level.eri_town.scooter.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Rent a scooter",
+   "text": "Ride a scooter to the point",
    "audience": [
     "player"
    ],
@@ -25911,7 +26035,7 @@
    "id": "ch2.level.eri_town.scooter.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The rental shop by the harbor rents scooters for cash.",
+   "text": "The rental shop by the bus stop rents scooters for cash.",
    "audience": [
     "player"
    ],
@@ -25923,7 +26047,7 @@
    "id": "ch2.level.eri_town.scooter.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You ride the coast road with the sea on your left and reach the cove before dark.",
+   "text": "You ride the coast road with the sea on your left and reach Lighthouse Point before the hunters look up.",
    "audience": [
     "player"
    ],
@@ -25992,6 +26116,270 @@
    ]
   },
   {
+   "id": "ch2.level.eri_fishharbor.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The fishing harbor, Erinana town",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Pay a skipper to take you across to Bahía Clara, or walk on to the cruise quay.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Fishing boats tie up three deep at the bottom of Market Street, and a few skippers take passengers across to Bahía Clara for cash.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.boat_across.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Pay a skipper to cross",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.boat_across.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "A skipper will run you across to the pier at Bahía Clara overnight, for cash and no questions.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.boat_across.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The skipper runs without lights all night and puts you ashore at the pier in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_fishharbor.boat_across.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The skipper takes half the money and tells the harbor master, so you go back up the street.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The cruise quay, Erinana harbor",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Get aboard the Long Horizon before it sails.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Board with your new passport",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The gangway opens after dark, and an officer scans every passport.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The gangway officer scans the new passport and wishes you a pleasant voyage.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.board_papers.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Sign on as a steward",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Marisa, the ship's purser, is short of cabin stewards this week.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Marisa signs you on as a cabin steward, hands you a white jacket and gives you the name of a fixer in Bahía Clara.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.steward.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Marisa says the crew list is full, and she remembers your face.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Pay the gangway officer",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The gangway officer takes cash from anyone who boards without papers.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "He waves you aboard, and two bounty hunters on the pier see the money change hands.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.eri_quay.pay_gangway.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "He takes the money and points you out to the bounty hunters on the pier.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
    "id": "ch2.level.eri_hideout.name",
    "domain": "interface",
    "pattern": "navigation-heading",
@@ -26007,7 +26395,7 @@
    "id": "ch2.level.eri_hideout.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get your new passport, then take the cliff path to the harbor.",
+   "text": "Get a new passport from Silas, then take the cliff path to the cruise quay or walk to Lighthouse Point.",
    "audience": [
     "player"
    ],
@@ -26175,7 +26563,7 @@
    "id": "ch2.level.eri_hideout.cliff_path.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The cliff path drops down to the cruise quay.",
+   "text": "The cliff path drops down to the cruise quay at the far end of town.",
    "audience": [
     "player"
    ],
@@ -26196,10 +26584,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.name",
+   "id": "ch2.level.eri_point.name",
    "domain": "interface",
    "pattern": "navigation-heading",
-   "text": "The cruise quay, Erinana harbor",
+   "text": "Lighthouse Point",
    "audience": [
     "player"
    ],
@@ -26208,10 +26596,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.objective",
+   "id": "ch2.level.eri_point.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get aboard the Long Horizon.",
+   "text": "Go out with Mama Ilse's night boats to Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -26220,10 +26608,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.arrive",
+   "id": "ch2.level.eri_point.arrive",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.",
+   "text": "The lighthouse stands at the end of the point. Below it, Mama Ilse's nephews keep three boats that fish at night.",
    "audience": [
     "player"
    ],
@@ -26232,10 +26620,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.board_papers.name",
+   "id": "ch2.level.eri_point.night_boats.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Board with your new passport",
+   "text": "Go out with the night boats",
    "audience": [
     "player"
    ],
@@ -26244,10 +26632,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.board_papers.text",
+   "id": "ch2.level.eri_point.night_boats.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The gangway opens after dark, and an officer scans every passport.",
+   "text": "Mama Ilse's nephews fish the channel at night and land their catch at the old town in Bahía Clara.",
    "audience": [
     "player"
    ],
@@ -26256,10 +26644,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.board_papers.success",
+   "id": "ch2.level.eri_point.night_boats.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The gangway officer scans the new passport and wishes you a pleasant voyage.",
+   "text": "The boats land their catch at dawn on the old town beach, and a nephew tells you Dario will find you there.",
    "audience": [
     "player"
    ],
@@ -26268,154 +26656,10 @@
    ]
   },
   {
-   "id": "ch2.level.eri_quay.board_papers.fail",
+   "id": "ch2.level.eri_point.night_boats.fail",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.steward.name",
-   "domain": "interface",
-   "pattern": "action-label",
-   "text": "Sign on as a steward",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.steward.text",
-   "domain": "interface",
-   "pattern": "action-preview",
-   "text": "Marisa, the ship's purser, is short of cabin stewards this week.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.steward.success",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "Marisa signs you on as a cabin steward and hands you a white jacket.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.steward.fail",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "Marisa says the crew list is full, and she remembers your face.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.pay_gangway.name",
-   "domain": "interface",
-   "pattern": "action-label",
-   "text": "Pay the gangway officer",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.pay_gangway.text",
-   "domain": "interface",
-   "pattern": "action-preview",
-   "text": "The gangway officer takes cash from anyone who boards without papers.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.pay_gangway.success",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "He waves you aboard, and two bounty hunters on the pier see the money change hands.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.pay_gangway.fail",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "He takes the money and points you out to the bounty hunters on the pier.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.cover_quay.name",
-   "domain": "interface",
-   "pattern": "action-label",
-   "text": "Cover your tracks",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.cover_quay.text",
-   "domain": "interface",
-   "pattern": "action-preview",
-   "text": "You wait in the back room of a boat supply shop.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.cover_quay.success",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "The shop owner keeps the front door locked until dark.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_quay.cover_quay.fail",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "A delivery driver sees you in the back room and asks about the reward.",
+   "text": "A patrol launch crosses the channel, and the boats turn back to the point.",
    "audience": [
     "player"
    ],
@@ -26463,7 +26707,7 @@
    "id": "ch2.level.eri_ship.go_ashore.name",
    "domain": "interface",
    "pattern": "action-label",
-   "text": "Go ashore and keep walking",
+   "text": "Go ashore to meet Dario",
    "audience": [
     "player"
    ],
@@ -26487,7 +26731,7 @@
    "id": "ch2.level.eri_ship.go_ashore.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.",
+   "text": "You leave with the shore excursion, and Dario is waiting at the end of the pier. He knows the gate agent at the airport.",
    "audience": [
     "player"
    ],
@@ -26523,7 +26767,7 @@
    "id": "ch2.level.eri_ship.supply_boat.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The supply boat runs to the fish market in Bahía Clara twice a day.",
+   "text": "The supply boat runs to the fish market in the old town twice a day.",
    "audience": [
     "player"
    ],
@@ -26535,7 +26779,7 @@
    "id": "ch2.level.eri_ship.supply_boat.success",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The supply boat drops you at the fish market, where nobody checks passports.",
+   "text": "The supply boat drops you at the old town fish market, where nobody checks passports.",
    "audience": [
     "player"
    ],
@@ -26596,6 +26840,222 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": "A neighbor asks the purser why you never come to dinner.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The pier, Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Ride to the airport in Dario's car, or walk into the old town.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The pier at Bahía Clara takes the cruise tenders and the fishing boats. Bounty hunters wait among the taxi drivers.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.dario_car.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Ride with Dario to the airport",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.dario_car.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "Dario drives the back road to the airport and parks at the staff entrance.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.dario_car.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Dario drops you at the staff entrance and tells the gate agent you are his cousins.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_pier.dario_car.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A roadblock on the back road sends Dario round by the coast, and you lose an hour.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.name",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "The old town, Bahía Clara",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.objective",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "Take the airport bus, or walk to the pier to find Dario.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.arrive",
+   "domain": "narrative",
+   "pattern": "scene",
+   "text": "The old town climbs from the fish market to the cathedral.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.airport_bus.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take the airport bus",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.airport_bus.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "The airport bus leaves the cathedral square every hour, and the hunters watch it.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.airport_bus.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The bus is full of cruise passengers, and you get off at departures with them.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.airport_bus.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A hunter boards at the square, so you step off and wait for the next bus.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.cover_old.name",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Cover your tracks",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.cover_old.text",
+   "domain": "interface",
+   "pattern": "action-preview",
+   "text": "You sit out the heat in the cathedral with the tourists.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.cover_old.success",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "Nobody looks at another family resting in the pews.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.level.bc_oldtown.cover_old.fail",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "A verger asks where you are staying and writes it down.",
    "audience": [
     "player"
    ],
@@ -26728,54 +27188,6 @@
    "domain": "interface",
    "pattern": "action-result",
    "text": "The agent says the flight is full and writes something down after you leave.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_airport.cover_airport2.name",
-   "domain": "interface",
-   "pattern": "action-label",
-   "text": "Cover your tracks",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_airport.cover_airport2.text",
-   "domain": "interface",
-   "pattern": "action-preview",
-   "text": "You wait in the chapel at the airport with the door shut.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_airport.cover_airport2.success",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "Nobody looks into the chapel.",
-   "audience": [
-    "player"
-   ],
-   "phases": [
-    "run"
-   ]
-  },
-  {
-   "id": "ch2.level.eri_airport.cover_airport2.fail",
-   "domain": "interface",
-   "pattern": "action-result",
-   "text": "A bounty hunter sits down in the back row of the chapel.",
    "audience": [
     "player"
    ],
@@ -27946,6 +28358,246 @@
   },
   {
    "id": "ch2.lodging.lodge_eri_quay.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_fishharbor.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A stall at the end of the jetty fries the morning catch.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_fishharbor.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the fishing harbor",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_fishharbor.fry.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at the jetty stall",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_fishharbor.fry.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You eat fried fish on an upturned crate.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_fishharbor.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_point.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "The nephews' net shed has a bench and a kettle.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_point.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the point",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_point.shed.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Sleep in the net shed",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_point.shed.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You sleep on the nets while the lighthouse turns overhead.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_eri_point.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_pier.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A café on the pier serves the tender crews.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_pier.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop at the pier",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_pier.cafe.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Eat at the pier café",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_pier.cafe.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "You eat with the tender crews, who watch the hunters more than you.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_pier.keep_going.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Keep going",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_oldtown.text",
+   "domain": "narrative",
+   "pattern": "report",
+   "text": "A pension above the bakery rents rooms by the night and asks for cash.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_oldtown.title",
+   "domain": "interface",
+   "pattern": "navigation-heading",
+   "text": "A place to stop in the old town",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_oldtown.pension.label",
+   "domain": "interface",
+   "pattern": "action-label",
+   "text": "Take a room above the bakery",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_oldtown.pension.say",
+   "domain": "interface",
+   "pattern": "action-result",
+   "text": "The landlady takes cash up front, and everyone eats and sleeps six hours.",
+   "audience": [
+    "player"
+   ],
+   "phases": [
+    "run"
+   ]
+  },
+  {
+   "id": "ch2.lodging.lodge_bc_oldtown.keep_going.label",
    "domain": "interface",
    "pattern": "action-label",
    "text": "Keep going",

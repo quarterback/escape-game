@@ -15,6 +15,26 @@ const MATE = (process.argv.find(a => a.startsWith('--companion=')) || '--compani
 const CHAPTER = parseInt((process.argv.find(a => a.startsWith('--chapter=')) || '--chapter=1').slice(10), 10); // --chapter=2 plays Erinana Island
 const PREFER = ((process.argv.find(a => a.startsWith('--prefer=')) || '--prefer=').slice(9)).split(',').filter(Boolean); // moves the policy takes first when it can, e.g. --prefer=river,mountain (issue #51)
 const PREF = { confirm_dest: 1, sign_person: 1, keep_calling: 1, via_sponsor: 0, keep_word: 1, crew_bonus: 1, velez_word: 0, celina_yacht: 2 };
+function nextOnIsland(s, A) {
+  const L = Sim.stopAt(s, s.pos), D = Data, night = Sim.isNight(s);
+  const hasDoc = s.hand.some(id => D.CARDS[id] && D.CARDS[id].tag === 'document');
+  const usable = (a) => !(a.with && s.people[a.with] && s.people[a.with].turned) && a.needs.every(n => !n.card || (n.card === 'document' ? hasDoc : true)) && !(a.needs.some(n => n.arr === 'reception') && s.arr.reception.stage < 1);
+  // the passport first, where Silas is; then the flight, once you are at the airport
+  const forge = A.approaches.find(a => a.id === 'forger' && a.ok); if (forge && !hasDoc) return 'forger';
+  const fly = A.approaches.find(a => a.ok && a.id === 'fly_lusara'); if (fly) return fly.id;
+  const seat = A.approaches.find(a => a.ok && a.id === 'desk_seat'); if (seat && s.arr.aircraft.stage < 2) return seat.id;
+  // two tiers: a way that is open now, and failing that the way that opens after dark (wait for it where it starts)
+  const plan = (nowOnly) => { const edges = {};
+    for (const P of D.LEVELS) edges[P.id] = P.approaches.filter(a => a.to && usable(a) && (!nowOnly || night || !a.needs.some(n => n.night))).map(a => [a.to, a.id]);
+    for (const st of D.STRIPS) for (const [x, y] of st.walk) { edges[x].push([y, 'walk_' + y]); edges[y].push([x, 'walk_' + x]); }
+    const prev = { [L.id]: null }, q = [L.id];
+    while (q.length) { const x = q.shift(); for (const [y, via] of edges[x]) if (!(y in prev)) { prev[y] = [x, via]; q.push(y); } }
+    const goal = hasDoc || s.people.holt.turned ? 'eri_airport' : 'eri_hideout'; // Silas's passport first
+    if (!(goal in prev) || L.id === goal) return null;
+    let step = goal; while (prev[step][0] !== L.id) step = prev[step][0]; return prev[step][1]; };
+  const via = plan(true) || plan(false); if (!via) return null;
+  const a = A.approaches.find(x => x.id === via && x.ok && (x.noRoll || x.real <= 20)); return a ? a.id : 'wait';
+}
 function play(seed, who, mate) {
   const s = Sim.newRun(seed, who, { dest: DEST, daily: process.argv.includes('--daily'), extra: EXTRA, companion: mate === undefined ? MATE : mate, chapter: CHAPTER }); let guard = 0; const used = [], cards = {}, lvlHours = {}; let lastPos = 0, lastHour = 0;
   while (!s.over && guard++ < 800) {
@@ -29,14 +49,18 @@ function play(seed, who, mate) {
     // push arrangements that are not pending and not complete, before trying the border or the airfield
     const calls = A.calls.filter(c => c.ok && !c.hurry && !c.feed);
     const lvl = s.pos;
-    if (calls.length && (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2)))) {
+    // chapter two's places are a map, not six stops in a row: call whenever the flight or Dario is not done
+    if (calls.length && (CHAPTER === 2 ? (s.arr.aircraft.stage < 2 || s.arr.reception.stage < 1) : (lvl < 4 || (lvl === 4 && s.arr.reception.stage < 3) || (lvl === 5 && (s.arr.aircraft.stage < 4 || s.arr.permission.stage < 2))))) {
       const order = ['permission', 'aircraft', 'reception'];
       calls.sort((a, b) => order.indexOf(a.arr) - order.indexOf(b.arr)); Sim.commit(s, calls[0].id); continue;
     }
+    // chapter two is a map (docs/chapter-two-relay.md): take the next step of the shortest way to the airport through legs and
+    // walks whose helper has not been seen talking, getting the passport first; wait for the dark when the next leg needs it
+    if (CHAPTER === 2) { const nx = nextOnIsland(s, A); if (nx) { used.push(`${s.pos}:${nx}`); Sim.commit(s, nx); if (s.pos !== lastPos) { lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour); lastPos = s.pos; lastHour = s.hour; } continue; } }
     // best approach: highest odds among ok ones, certain first; never the impossible
     // never repeat an approach whose only product is a card already in hand (the harness used to pay Holt five times)
     const L = Sim.stopAt(s, s.pos);
-    const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d.success.card && s.hand.includes(d.success.card)); }).sort((a, b) => ((Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(a.id)) - (Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(b.id))) || a.real - b.real); // moves that leave the stop first, as the government side's candidate already plays (owner bug report, Nov. 1, 2026: the bot sat at Nonā Rosa's)
+    const apps = A.approaches.filter(a => a.ok && (a.noRoll || a.real <= 20)).filter(a => { const d = L.approaches.find(x => x.id === a.id); return !(d && d.success.card && s.hand.includes(d.success.card)) && !a.walk; }).sort((a, b) => ((Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(a.id)) - (Sim.EXITS[L.id] && !Sim.EXITS[L.id].includes(b.id))) || a.real - b.real); // moves that leave the stop first, as the government side's candidate already plays (owner bug report, Nov. 1, 2026: the bot sat at Nonā Rosa's)
     { const i = apps.findIndex(a => PREFER.includes(a.id)); if (i > 0) apps.unshift(apps.splice(i, 1)[0]); }
     if (apps.length && (lvl !== 5 || apps[0].id !== 'fuel_now' || s.arr.aircraft.stage < 3)) { used.push(`${s.pos}:${apps[0].id}`); (apps[0].bonusFrom || []).forEach(t => cards[t] = (cards[t] || 0) + 1); Sim.commit(s, apps[0].id); if (s.pos !== lastPos) { lvlHours[lastPos] = (lvlHours[lastPos] || 0) + (s.hour - lastHour); lastPos = s.pos; lastHour = s.hour; } continue; }
     // --sides (docs/no-waiting.md): instead of waiting, go to a side place and take its first choice that is not the way back

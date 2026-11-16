@@ -73,7 +73,7 @@ const Data = (() => {
     crate:        { name: "Holt's chalk-marked crate", tag: 'passage', from: 'holt', reach: ['salta'], works: 'Boarding the midnight freight.',
                     text: "A straw-lined crate in the third boxcar. Holt leaves on the night freight and does not wait." },
     // again: a hold can take it, and paying Silas again makes another
-    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
+    new_papers:   { name: 'A passport in a new name', tag: 'document', from: 'holt', again: true, reach: ['eri_airstrip', 'eri_town', 'eri_fishharbor', 'eri_quay', 'eri_hideout', 'eri_point', 'eri_ship', 'bc_pier', 'bc_oldtown', 'eri_airport'], works: 'Boarding the Long Horizon and flying out of Bahía Clara.',
                     text: 'Silas made it in the back of the village shop. The photo is yours, and the name is not.' },
     airline_seat: { name: 'An airline boarding pass', tag: 'passage', from: 'self', again: true, reach: ['airfield'], works: 'Boarding the airline flight out of Portalba.',
                     text: "A seat on the next flight out of Costamar, in the name on your second passport." },
@@ -834,102 +834,140 @@ const Data = (() => {
   // outfits: from the airstrip to town, to a hiding spot, to a new identity, onto a ship, off it at one stop for
   // good, and out through another airport. Bounty hunters chasing a reward take the place of the police.
   // Every place and person here is invented. The same ids as chapter one keep the engine unchanged.
-  const ERI = ['eri_airstrip', 'eri_town', 'eri_hideout', 'eri_quay', 'eri_ship', 'eri_airport'];
-  // Nov. 15, 2026: every target here is one higher than at first; with the bots eating and sleeping, chapter two
-  // had measured far easier than chapter one (docs/no-waiting.md)
+  const ERI = ['eri_airstrip', 'eri_town', 'eri_fishharbor', 'eri_quay', 'eri_hideout', 'eri_point', 'eri_ship', 'bc_pier', 'bc_oldtown', 'eri_airport'];
+// The island relay (docs/chapter-two-relay.md, owner, Nov. 16, 2026): 10 places on four strips. Inside a strip you walk
+  // both ways (the sim adds the walks from STRIPS2); a move with to: is a leg to another place, most of them run by a helper
+  // who hands you on (intro: the next helper trusts you more). With walks and longer legs, the targets went back to
+  // chapter two's first values: the bot then wins 38.0% and 29.3%, beside chapter one's 36.0% and 31.3% (Nov. 16, 2026).
   const LEVELS2 = [
-    { id: 'eri_airstrip', name: 'The airstrip, Erinana Island', short: 'The airstrip', place: 'the airstrip', scene: 'airfield',
-      objective: 'Get out of the airport and into town.',
+    { id: 'eri_airstrip', strip: 'town', name: 'The airstrip, Erinana Island', short: 'The airstrip', place: 'the airstrip', scene: 'strip_town',
+      objective: 'Get off the airstrip, into town or along the coast to Tamarind Cove.',
       arrive: 'The airstrip has one terminal, two taxis and a reward poster with your face on it.',
       approaches: [
-        { id: 'crew_van', name: 'Ride out with the flight crew', hours: 1, dc: 4, needs: [], with: 'self',
-          mods: { introduction: 1, permission: 1 }, text: "The crew's van leaves by the service gate, and the guard never checks the back.",
-          success: { say: 'You ride on a suitcase in the back, and the gate guard waves the van through.' },
+        { id: 'crew_van', name: 'Ride out with the flight crew', hours: 1, dc: 4, needs: [], with: 'self', to: 'eri_town',
+          mods: { introduction: 1, permission: 1 }, text: "The crew's van leaves by the service gate and drops its riders on Market Street.",
+          success: { say: 'You ride on a suitcase in the back, and the gate guard waves the van through to Market Street.' },
           fail: { exposure: 1, hours: 1, say: 'The guard opens the van, and you slip back into the terminal before he looks inside.' } },
-        { id: 'taxi', with: 'nando', name: "Take Kofi's taxi", hours: 1, dc: 3, needs: [], pay: true,
-          mods: { vehicle: 1 }, text: 'Kofi drives the only taxi with tinted windows and talks the whole way.',
-          success: { exposure: 1, say: 'Kofi drives you into town and tells everyone at the rank about his fare.' },
+        { id: 'taxi', with: 'nando', name: "Take Kofi's taxi to the cove", hours: 2, dc: 3, needs: [], pay: true, to: 'eri_hideout', intro: 'host',
+          mods: { vehicle: 1 }, text: 'Kofi drives the only taxi with tinted windows, and he knows the guesthouse at Tamarind Cove.',
+          success: { exposure: 1, say: 'Kofi drives you along the coast to Tamarind Cove and tells Mama Ilse you are friends of his.' },
           fail: { exposure: 1, say: "Kofi asks for double, and a man in a new sun hat notes the taxi's plate." } },
-        { id: 'fence', name: 'Climb the fence after dark', hours: 1, dc: 4, needs: [{ night: true }],
-          mods: { information: 1 }, text: 'The airstrip fence has a gap onto a cane field.',
-          success: { say: 'You cross the cane field in the dark and reach the edge of town by the first bus.' },
+        { id: 'fence', name: 'Climb the fence after dark', hours: 1, dc: 4, needs: [{ night: true }], to: 'eri_town',
+          mods: { information: 1 }, text: 'The airstrip fence has a gap onto a cane field that runs down to Market Street.',
+          success: { say: 'You cross the cane field in the dark and come out at the top of Market Street.' },
           fail: { exposure: 1, say: 'A security light drives you back to the terminal, but you can try again while it is dark.' } },
       ] },
-    { id: 'eri_town', name: 'Erinana town', short: 'Erinana town', place: 'Erinana town', scene: 'road',
-      objective: 'Get to the guesthouse at Tamarind Cove.',
-      arrive: 'Erinana town is one main street and a harbor. Two strangers in new sun hats are showing your photo at the bus stop.',
+    { id: 'eri_town', strip: 'town', name: 'Market Street, Erinana town', short: 'Market Street', place: 'Market Street', scene: 'strip_town',
+      objective: 'Take the bus or a scooter along the coast, or walk down to the harbors.',
+      arrive: 'Market Street runs from the cane fields down to the harbor. Two strangers in new sun hats are showing your photo at the bus stop.',
       approaches: [
-        { id: 'bus', name: 'Ride the market bus', hours: 2, dc: 3, needs: [],
+        { id: 'bus', name: 'Take the bus to the cove', hours: 2, dc: 3, needs: [], to: 'eri_hideout',
           mods: { information: 1, union: 1 }, text: 'The market bus stops at every village on the way to Tamarind Cove.',
           success: { say: 'The bus stops at every village, and nobody looks up from the market baskets.' },
-          fail: { exposure: 1, hours: 1, say: 'A bounty hunter boards at the second stop, so you get off and walk the rest.' } },
-        { id: 'scooter', name: 'Rent a scooter', hours: 1, dc: 4, needs: [], pay: true,
-          mods: { vehicle: 2, mechanic: 1 }, text: 'The rental shop by the harbor rents scooters for cash.',
-          success: { say: 'You ride the coast road with the sea on your left and reach the cove before dark.' },
+          fail: { exposure: 1, hours: 1, say: 'A bounty hunter boards at the second stop, so you get off and walk back to town.' } },
+        { id: 'scooter', name: 'Ride a scooter to the point', hours: 1, dc: 4, needs: [], pay: true, to: 'eri_point',
+          mods: { vehicle: 2, mechanic: 1 }, text: 'The rental shop by the bus stop rents scooters for cash.',
+          success: { say: 'You ride the coast road with the sea on your left and reach Lighthouse Point before the hunters look up.' },
           fail: { exposure: 1, say: 'The clerk copies your passport and makes a call after you leave.' } },
         { id: 'cover_town', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
           mods: { information: 1 }, text: 'You buy island clothes and a straw hat at the market.',
           success: { exposure: -1, say: 'Nobody in the market looks twice at another tourist.' },
           fail: { exposure: 1, say: 'The stall owner recognizes you from the reward poster.' } },
       ] },
-    { id: 'eri_hideout', name: 'The guesthouse at Tamarind Cove', short: 'Tamarind Cove', place: 'Tamarind Cove', scene: 'colonia',
-      objective: 'Get your new passport, then take the cliff path to the harbor.',
+    { id: 'eri_fishharbor', strip: 'town', name: 'The fishing harbor, Erinana town', short: 'The fishing harbor', place: 'the fishing harbor', scene: 'strip_town',
+      objective: 'Pay a skipper to take you across to Bahía Clara, or walk on to the cruise quay.',
+      arrive: 'Fishing boats tie up three deep at the bottom of Market Street, and a few skippers take passengers across to Bahía Clara for cash.',
+      approaches: [
+        { id: 'boat_across', name: 'Pay a skipper to cross', hours: 5, dc: 5, needs: [{ night: true }], pay: true, to: 'bc_pier',
+          mods: { boat: 2, information: 1 }, text: 'A skipper will run you across to the pier at Bahía Clara overnight, for cash and no questions.',
+          success: { exposure: 1, say: 'The skipper runs without lights all night and puts you ashore at the pier in Bahía Clara.' },
+          fail: { exposure: 2, hours: 1, say: 'The skipper takes half the money and tells the harbor master, so you go back up the street.' } },
+      ] },
+    { id: 'eri_quay', strip: 'town', name: 'The cruise quay, Erinana harbor', short: 'The cruise quay', place: 'the cruise quay', scene: 'strip_town',
+      objective: 'Get aboard the Long Horizon before it sails.',
+      arrive: 'The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.',
+      approaches: [
+        { id: 'board_papers', name: 'Board with your new passport', hours: 1, dc: 4, needs: [{ card: 'document' }, { night: true }], to: 'eri_ship',
+          mods: { document: 2, introduction: 1, border: 2 }, text: 'The gangway opens after dark, and an officer scans every passport.',
+          success: { say: 'The gangway officer scans the new passport and wishes you a pleasant voyage.' },
+          fail: { exposure: 1, say: 'The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.' } },
+        { id: 'steward', with: 'theo', name: 'Sign on as a steward', hours: 2, dc: 5, needs: [], to: 'eri_ship', intro: 'official',
+          mods: { union: 2, care: 1 }, text: "Marisa, the ship's purser, is short of cabin stewards this week.",
+          success: { say: 'Marisa signs you on as a cabin steward, hands you a white jacket and gives you the name of a fixer in Bahía Clara.' },
+          fail: { exposure: 1, say: 'Marisa says the crew list is full, and she remembers your face.' } },
+        { id: 'pay_gangway', name: 'Pay the gangway officer', hours: 1, dc: 7, needs: [], pay: true, to: 'eri_ship',
+          mods: {}, text: 'The gangway officer takes cash from anyone who boards without papers.',
+          success: { exposure: 2, say: 'He waves you aboard, and two bounty hunters on the pier see the money change hands.' },
+          fail: { exposure: 2, say: 'He takes the money and points you out to the bounty hunters on the pier.' } },
+      ] },
+    { id: 'eri_hideout', strip: 'coast', name: 'The guesthouse at Tamarind Cove', short: 'Tamarind Cove', place: 'Tamarind Cove', scene: 'strip_coast',
+      objective: 'Get a new passport from Silas, then take the cliff path to the cruise quay or walk to Lighthouse Point.',
       arrive: 'Mama Ilse runs the guesthouse and asks no questions. Silas, a forger in the village, can make you a new passport.',
       approaches: [
-        { id: 'forger', with: 'holt', name: 'Pay Silas for a new passport', hours: 3, dc: 4, needs: [], pay: true,
+        { id: 'forger', with: 'holt', name: 'Pay Silas for a new passport', hours: 3, dc: 4, needs: [], pay: true, stay: true,
           mods: { court: 1, information: 1 }, text: 'Silas works in the back of the village shop with a camera and a laminator.',
           success: { card: 'new_papers', say: 'Silas hands you a passport in a new name, with your photo and old-looking stamps.' },
           fail: { exposure: 1, hours: 2, say: "Silas's camera breaks, and he needs two more hours and more money." } },
-        { id: 'cove_phone', name: 'Call your contacts', hours: 2, dc: 2, noRoll: true, once: true, needs: [],
+        { id: 'cove_phone', name: 'Call your contacts', hours: 2, dc: 2, noRoll: true, once: true, needs: [], stay: true,
           mods: {}, text: "You use Mama Ilse's phone to push your flight and the fixer in Bahía Clara.",
           success: { advance: ['aircraft', 'reception'], say: 'Two hours later, your flight and the fixer in Bahía Clara have both moved one step.' }, fail: { say: '' } },
         { id: 'cover_cove', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
           mods: { information: 1 }, text: 'Mama Ilse tells the village you are her cousin from the main island.',
           success: { exposure: -1, say: "The village calls you Mama Ilse's cousin, and the bounty hunters hear nothing." },
           fail: { exposure: 1, say: 'A fisherman tells a bounty hunter that Mama Ilse has no cousins.' } },
-        { id: 'cliff_path', name: 'Take the cliff path', hours: 2, dc: 2, noRoll: true, needs: [{ card: 'document' }],
-          mods: {}, text: 'The cliff path drops down to the cruise quay.',
+        { id: 'cliff_path', name: 'Take the cliff path', hours: 2, dc: 2, noRoll: true, needs: [{ card: 'document' }], to: 'eri_quay',
+          mods: {}, text: 'The cliff path drops down to the cruise quay at the far end of town.',
           success: { say: 'The cliff path drops down to the cruise quay, and the ship is in.' }, fail: { say: '' } },
       ] },
-    { id: 'eri_quay', name: 'The cruise quay, Erinana harbor', short: 'The quay', place: 'the quay', scene: 'harbor',
-      objective: 'Get aboard the Long Horizon.',
-      arrive: 'The Long Horizon, a ship where retirees live year-round, calls at Erinana once a week. It sails tonight.',
+    { id: 'eri_point', strip: 'coast', name: 'Lighthouse Point', short: 'Lighthouse Point', place: 'Lighthouse Point', scene: 'strip_coast',
+      objective: "Go out with Mama Ilse's night boats to Bahía Clara.",
+      arrive: "The lighthouse stands at the end of the point. Below it, Mama Ilse's nephews keep three boats that fish at night.",
       approaches: [
-        { id: 'board_papers', name: 'Board with your new passport', hours: 1, dc: 4, needs: [{ card: 'document' }, { night: true }],
-          mods: { document: 2, introduction: 1, border: 2 }, text: 'The gangway opens after dark, and an officer scans every passport.',
-          success: { say: 'The gangway officer scans the new passport and wishes you a pleasant voyage.' },
-          fail: { exposure: 1, say: 'The officer calls a supervisor, and you leave the line before he arrives but can try again before the ship sails.' } },
-        { id: 'steward', with: 'theo', name: 'Sign on as a steward', hours: 2, dc: 5, needs: [],
-          mods: { union: 2, care: 1 }, text: "Marisa, the ship's purser, is short of cabin stewards this week.",
-          success: { say: 'Marisa signs you on as a cabin steward and hands you a white jacket.' },
-          fail: { exposure: 1, say: 'Marisa says the crew list is full, and she remembers your face.' } },
-        { id: 'pay_gangway', name: 'Pay the gangway officer', hours: 1, dc: 7, needs: [], pay: true,
-          mods: {}, text: 'The gangway officer takes cash from anyone who boards without papers.',
-          success: { exposure: 2, say: 'He waves you aboard, and two bounty hunters on the pier see the money change hands.' },
-          fail: { exposure: 2, say: 'He takes the money and points you out to the bounty hunters on the pier.' } },
-        { id: 'cover_quay', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
-          mods: { information: 1 }, text: 'You wait in the back room of a boat supply shop.',
-          success: { exposure: -1, say: 'The shop owner keeps the front door locked until dark.' },
-          fail: { exposure: 1, say: 'A delivery driver sees you in the back room and asks about the reward.' } },
+        { id: 'night_boats', with: 'host', name: 'Go out with the night boats', hours: 6, dc: 4, needs: [{ night: true }], to: 'bc_oldtown', intro: 'official',
+          mods: { boat: 2, care: 1 }, text: "Mama Ilse's nephews fish the channel at night and land their catch at the old town in Bahía Clara.",
+          success: { say: 'The boats land their catch at dawn on the old town beach, and a nephew tells you Dario will find you there.' },
+          fail: { exposure: 1, hours: 2, say: 'A patrol launch crosses the channel, and the boats turn back to the point.' } },
       ] },
-    { id: 'eri_ship', name: 'Aboard the Long Horizon', short: 'The ship', place: 'the ship', scene: 'ship',
+    { id: 'eri_ship', strip: 'ship', name: 'Aboard the Long Horizon', short: 'The Long Horizon', place: 'the ship', scene: 'ship',
       objective: 'Get off the ship at Bahía Clara.',
       arrive: 'Two hundred residents live aboard the Long Horizon. The next stop is Bahía Clara, in Solandia, where the airport has flights to Lusara.',
       approaches: [
-        { id: 'go_ashore', with: 'official', name: 'Go ashore and keep walking', hours: 2, dc: 4, needs: [{ arr: 'reception', stage: 1 }],
+        { id: 'go_ashore', with: 'official', name: 'Go ashore to meet Dario', hours: 2, dc: 4, needs: [{ arr: 'reception', stage: 1 }], to: 'bc_pier', intro: 'pilot',
           mods: { introduction: 1, information: 1, border: 1 }, text: 'Dario, a fixer in Bahía Clara, waits at the end of the pier with a car.',
-          success: { say: 'You leave with the shore excursion, walk past the buses and find Dario waiting at the end of the pier.' },
+          success: { say: 'You leave with the shore excursion, and Dario is waiting at the end of the pier. He knows the gate agent at the airport.' },
           fail: { exposure: 1, hours: 2, say: 'A resident recognizes you at the gangway and asks for a photo, so you wait two hours in your cabin for the next tender.' } },
-        { id: 'supply_boat', with: 'theo', name: 'Slip off on the supply boat', hours: 2, dc: 5, needs: [],
-          mods: { union: 1, vehicle: 1 }, text: 'The supply boat runs to the fish market in Bahía Clara twice a day.',
-          success: { say: 'The supply boat drops you at the fish market, where nobody checks passports.' },
+        { id: 'supply_boat', with: 'theo', name: 'Slip off on the supply boat', hours: 2, dc: 5, needs: [], to: 'bc_oldtown',
+          mods: { union: 1, vehicle: 1 }, text: 'The supply boat runs to the fish market in the old town twice a day.',
+          success: { say: 'The supply boat drops you at the old town fish market, where nobody checks passports.' },
           fail: { exposure: 1, say: 'The bosun counts heads before the supply boat leaves, and you stay aboard.' } },
         { id: 'cabin', name: 'Stay in your cabin', hours: 2, dc: 4, stay: true, needs: [],
           mods: { care: 1 }, text: 'You order meals to the cabin and keep the curtain shut.',
           success: { exposure: -1, say: 'Nobody aboard sees you for two hours.' },
           fail: { exposure: 1, say: 'A neighbor asks the purser why you never come to dinner.' } },
       ] },
-    { id: 'eri_airport', name: 'Bahía Clara airport, Solandia', short: 'Bahía Clara', place: 'Bahía Clara airport', scene: 'airfield', final: true,
+    { id: 'bc_pier', strip: 'bay', name: 'The pier, Bahía Clara', short: 'The pier', place: 'the pier', scene: 'strip_bay',
+      objective: "Ride to the airport in Dario's car, or walk into the old town.",
+      arrive: 'The pier at Bahía Clara takes the cruise tenders and the fishing boats. Bounty hunters wait among the taxi drivers.',
+      approaches: [
+        { id: 'dario_car', with: 'official', name: 'Ride with Dario to the airport', hours: 1, dc: 3, needs: [{ arr: 'reception', stage: 1 }], to: 'eri_airport', intro: 'pilot',
+          mods: { introduction: 1, vehicle: 1 }, text: 'Dario drives the back road to the airport and parks at the staff entrance.',
+          success: { say: 'Dario drops you at the staff entrance and tells the gate agent you are his cousins.' },
+          fail: { exposure: 1, hours: 1, say: 'A roadblock on the back road sends Dario round by the coast, and you lose an hour.' } },
+      ] },
+    { id: 'bc_oldtown', strip: 'bay', name: 'The old town, Bahía Clara', short: 'The old town', place: 'the old town', scene: 'strip_bay',
+      objective: 'Take the airport bus, or walk to the pier to find Dario.',
+      arrive: 'The old town climbs from the fish market to the cathedral.',
+      approaches: [
+        { id: 'airport_bus', name: 'Take the airport bus', hours: 1, dc: 4, needs: [], to: 'eri_airport',
+          mods: { information: 1, union: 1 }, text: 'The airport bus leaves the cathedral square every hour, and the hunters watch it.',
+          success: { say: 'The bus is full of cruise passengers, and you get off at departures with them.' },
+          fail: { exposure: 1, hours: 1, say: 'A hunter boards at the square, so you step off and wait for the next bus.' } },
+        { id: 'cover_old', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
+          mods: { information: 1 }, text: 'You sit out the heat in the cathedral with the tourists.',
+          success: { exposure: -1, say: 'Nobody looks at another family resting in the pews.' },
+          fail: { exposure: 1, say: 'A verger asks where you are staying and writes it down.' } },
+      ] },
+    { id: 'eri_airport', strip: 'bay', name: 'Bahía Clara airport, Solandia', short: 'Bahía Clara airport', place: 'Bahía Clara airport', scene: 'strip_bay', final: true,
       objective: 'Board your flight to Lusara.',
       arrive: 'The flight to Lusara leaves twice a day. Bounty hunters watch the departures hall.',
       approaches: [
@@ -937,27 +975,30 @@ const Data = (() => {
           mods: { document: 2, permission: 1, border: 1 }, text: 'The gate agent checks your visa for Lusara and your new passport.',
           success: { win: true, say: 'The flight to Lusara takes off on time, and the officer at the other end stamps your real visa.' },
           fail: { exposure: 1, hours: 2, say: 'A second check at the gate makes you miss the flight, and the next one leaves in two hours.' } },
-        { id: 'desk_seat', name: 'Buy a seat at the desk', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true,
+        { id: 'desk_seat', name: 'Buy a seat at the desk', hours: 1, dc: 3, needs: [{ card: 'document' }], pay: true, stay: true,
           mods: { information: 1 }, text: 'The airline desk sells seats on the next flight to Lusara.',
           success: { advance: ['aircraft'], exposure: 1, say: "The desk sells you a seat while your photo sits on the agent's screen." },
           fail: { exposure: 1, say: 'The agent says the flight is full and writes something down after you leave.' } },
-        { id: 'cover_airport2', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
-          mods: { information: 1 }, text: 'You wait in the chapel at the airport with the door shut.',
-          success: { exposure: -1, say: 'Nobody looks into the chapel.' },
-          fail: { exposure: 1, say: 'A bounty hunter sits down in the back row of the chapel.' } },
       ] },
+  ];
+  // the four strips, west to east, and which neighbors you can walk between (an hour each way)
+  const STRIPS2 = [
+    { id: 'town', name: 'Erinana town', places: ['eri_airstrip', 'eri_town', 'eri_fishharbor', 'eri_quay'], walk: [['eri_airstrip', 'eri_town'], ['eri_town', 'eri_fishharbor'], ['eri_fishharbor', 'eri_quay']] },
+    { id: 'coast', name: 'The south coast', places: ['eri_hideout', 'eri_point'], walk: [['eri_hideout', 'eri_point']] },
+    { id: 'ship', name: 'The Long Horizon', places: ['eri_ship'], walk: [] },
+    { id: 'bay', name: 'Bahía Clara', places: ['bc_pier', 'bc_oldtown', 'eri_airport'], walk: [['bc_pier', 'bc_oldtown']] },
   ];
   const PEOPLE2 = Object.assign({}, PEOPLE, {
     sibling:  { role: 'booking your flight to Lusara and a fixer in Bahía Clara from abroad', where: -1, reliability: 3 },
     nando:    { name: 'Kofi', role: 'the taxi driver at the Erinana airstrip', where: 0, reliability: 3 },
     aide:     { name: 'Gianlūka Moretī', role: 'party chief of staff, calling from Valdória', where: -1, reliability: 4 },
-    host:     { name: 'Mama Ilse', short: 'Mama Ilse', role: 'owner of the guesthouse at Tamarind Cove', where: 2, reliability: 2 },
+    host:     { name: 'Mama Ilse', short: 'Mama Ilse', role: 'owner of the guesthouse at Tamarind Cove', where: 4, reliability: 2 },
     // loyal: the only way through a stop, so never one of the two who talk (a traitor here would leave no way on)
-    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 2, reliability: 3, loyal: true },
+    holt:     { name: 'Silas', role: 'a forger in the village at Tamarind Cove', where: 4, reliability: 3, loyal: true },
     // onePer: the ship's two ways off; at most one of them talks, so one way off always stays open
     theo:     { name: 'Marisa', role: 'purser on the Long Horizon', where: 3, reliability: 3, onePer: 'ship' },
-    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 4, reliability: 3, onePer: 'ship' },
-    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 5, reliability: 3, loyal: true },
+    official: { name: 'Dario', role: 'a fixer in Bahía Clara', where: 7, reliability: 3, onePer: 'ship' },
+    pilot:    { name: 'the gate agent', short: 'the gate agent', role: 'the airline agent at Bahía Clara', where: 9, reliability: 3, loyal: true },
   });
   const ARRANGEMENTS2 = {
     aircraft:   { name: 'Flight', stages: ['none', 'a seat on hold', 'a ticket to Lusara in your new name'],
@@ -1002,16 +1043,16 @@ const Data = (() => {
     { id: 'eri_poster', at: ['eri_airstrip', 'eri_town'], title: 'The reward goes up', text: 'A new poster says the reward for you has doubled.', choices: [
       { id: 'tear_down', label: 'Tear the posters down', fx: { hours: 1, exposure: 1, say: 'You pull down every poster on the street while a shopkeeper watches.' } },
       { id: 'ignore_poster', label: 'Keep your head down', fx: {} } ] },
-    { id: 'eri_storm', at: ['eri_town', 'eri_hideout'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the next three hours.', choices: [
+    { id: 'eri_storm', at: ['eri_town', 'eri_fishharbor'], title: 'A storm closes the roads', text: 'A tropical storm has washed out the coast road for the next three hours.', choices: [
       { id: 'wait_storm', label: 'Wait out the storm', fx: { hours: 3, exposure: -1, say: 'The storm keeps the bounty hunters indoors too, and it passes in three hours.' } },
-      { id: 'drive_storm', label: 'Drive through it', fx: { roll: { need: 4, win: { advance: true, say: 'You drive through the rain and reach the next stop while the hunters stay indoors.' }, lose: { hours: 2, exposure: 1, say: 'The car stalls in a flooded dip, and a farmer tows you out two hours later.' } } } } ] },
-    { id: 'eri_tourists', at: ['eri_quay', 'eri_ship'], title: 'A tour group wants a photo', text: 'A tour group recognizes you and wants a picture with you.', choices: [
+      { id: 'drive_storm', label: 'Drive through it', fx: { roll: { need: 4, win: { to: 'eri_hideout', say: 'You drive through the rain to Tamarind Cove while the hunters stay indoors.' }, lose: { hours: 2, exposure: 1, say: 'The car stalls in a flooded dip, and a farmer tows you out two hours later.' } } } } ] },
+    { id: 'eri_tourists', at: ['eri_quay', 'eri_ship', 'bc_pier'], title: 'A tour group wants a photo', text: 'A tour group recognizes you and wants a picture with you.', choices: [
       { id: 'smile', label: 'Smile for one photo', fx: { exposure: 1, say: 'The photo is online within the hour.' } },
       { id: 'walk_away', label: 'Walk away', fx: { roll: { need: 3, win: { say: 'You turn a corner, and the group loses interest.' }, lose: { exposure: 2, say: 'They follow you and film you walking away.' } } } } ] },
     { id: 'eri_residents', at: ['eri_ship'], title: 'The residents ask questions', text: 'At dinner, three residents ask what you did before you retired.', choices: [
       { id: 'tell_story', label: 'Tell them a made-up life', fx: { roll: { need: 3, win: { exposure: -1, say: 'They believe you ran a bakery, and they invite you to their card game.' }, lose: { exposure: 1, say: 'One of them has read about you in the news.' } } } },
       { id: 'skip_dinner', label: 'Leave dinner early', fx: { hours: 1, say: 'You go back to your cabin before dessert.' } } ] },
-    { id: 'eri_rival', at: ['eri_ship', 'eri_airport'], title: 'Two hunters fight over you', text: 'Two bounty hunters are arguing on the pier about who saw you first.', choices: [
+    { id: 'eri_rival', at: ['bc_pier', 'bc_oldtown', 'eri_airport'], title: 'Two hunters fight over you', text: 'Two bounty hunters are arguing on the pier about who saw you first.', choices: [
       { id: 'slip_by', label: 'Slip past while they argue', fx: { roll: { need: 3, win: { exposure: -1, say: 'They are still shouting when you walk past them.' }, lose: { exposure: 2, say: 'They stop arguing and follow you together.' } } } },
       { id: 'wait_fight', label: 'Wait for them to leave', fx: { hours: 2, say: 'They leave together after two hours.' } } ] },
   ];
@@ -1033,6 +1074,18 @@ const Data = (() => {
     { id: 'lodge_eri_quay', at: ['eri_quay'], title: 'A place to stop at the harbor', text: "The seamen's hostel rents bunks by the night.", choices: [
       { id: 'hostel', label: "Take a seamen's hostel bunk", fx: { hours: 5, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The warden writes your new name in his book, and everyone eats and sleeps five hours.' } },
       { id: 'emilio_room', label: "Take Emilio's room", needs: [{ card: 'lodging' }], fx: { hours: 6, sleep: 'full', meal: true, stay: 'emilio', hide: true, rest: true, exposure: -1, say: 'Emilio knows the hostel warden, who books you a back room under another guest\'s name.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_eri_fishharbor', at: ['eri_fishharbor'], title: 'A place to stop at the fishing harbor', text: 'A stall at the end of the jetty fries the morning catch.', choices: [
+      { id: 'fry', label: 'Eat at the jetty stall', fx: { hours: 1, meal: true, rest: true, say: 'You eat fried fish on an upturned crate.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_eri_point', at: ['eri_point'], title: 'A place to stop at the point', text: "The nephews' net shed has a bench and a kettle.", choices: [
+      { id: 'shed', label: 'Sleep in the net shed', fx: { hours: 5, sleep: 'full', rest: true, say: 'You sleep on the nets while the lighthouse turns overhead.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_bc_pier', at: ['bc_pier'], title: 'A place to stop at the pier', text: 'A café on the pier serves the tender crews.', choices: [
+      { id: 'cafe', label: 'Eat at the pier café', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the tender crews, who watch the hunters more than you.' } },
+      { id: 'keep_going', label: 'Keep going', fx: {} } ] },
+    { id: 'lodge_bc_oldtown', at: ['bc_oldtown'], title: 'A place to stop in the old town', text: 'A pension above the bakery rents rooms by the night and asks for cash.', choices: [
+      { id: 'pension', label: 'Take a room above the bakery', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The landlady takes cash up front, and everyone eats and sleeps six hours.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_ship', at: ['eri_ship'], title: 'Your cabin aboard', text: 'Meals come to the cabin, and the bunk is yours.', choices: [
       { id: 'cabin_rest', label: 'Eat and sleep in the cabin', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps six hours while the ship sails.' } },
@@ -1170,10 +1223,10 @@ const Data = (() => {
         { id: 'searches', label: 'Ask the railway for help', fx: { dc: [-1, 6], say: 'The company puts its guards at your service for the next six hours.' } },
         { id: 'back', label: 'Head back', fx: { say: 'You go back to the desk.' } } ] },
   ];
-  const CH1 = {}, CH2 = { LEVELS: LEVELS2, PEOPLE: PEOPLE2, ARRANGEMENTS: ARRANGEMENTS2, STAGE_LINES: STAGE_LINES2, ENEMY: ENEMY2, ENEMY_ACTIONS: ENEMY_ACTIONS2, RUMORS: RUMORS2, HOLDS: HOLDS2, EVENTS: EVENTS2, LODGING: LODGING2, SIDES: SIDES2 };
-  Object.assign(CH1, { LEVELS, PEOPLE, ARRANGEMENTS, STAGE_LINES, ENEMY, ENEMY_ACTIONS, RUMORS, HOLDS, EVENTS, LODGING, SIDES });
+  const CH1 = {}, CH2 = { LEVELS: LEVELS2, PEOPLE: PEOPLE2, ARRANGEMENTS: ARRANGEMENTS2, STAGE_LINES: STAGE_LINES2, ENEMY: ENEMY2, ENEMY_ACTIONS: ENEMY_ACTIONS2, RUMORS: RUMORS2, HOLDS: HOLDS2, EVENTS: EVENTS2, LODGING: LODGING2, SIDES: SIDES2, STRIPS: STRIPS2 };
+  Object.assign(CH1, { LEVELS, PEOPLE, ARRANGEMENTS, STAGE_LINES, ENEMY, ENEMY_ACTIONS, RUMORS, HOLDS, EVENTS, LODGING, SIDES, STRIPS: null });
   // one shared object: Data.useChapter(n) swaps the tables chapter two dresses differently, so the engine runs unchanged
-  const api = { SIDES, GOV_SIDES, HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
+  const api = { STRIPS: null, SIDES, GOV_SIDES, HARBOR, LODGING, SICK, DICE, DESTS, PLACES, POSTS, EVENTS, HOLDS, RUMORS, CHARACTERS, PEOPLE, ENEMY, ARRANGEMENTS, CARDS, LEVELS, STAGE_LINES, ENEMY_ACTIONS, VALDORIA, ESMERALDA, GOV, GOVS, GOV_CARDS, GOV_ORDERS, COMPANIONS, GOV_EVENTS };
   api.ERI = ERI; api.CH2 = CH2; api.chapter = 1;
   api.useChapter = (n) => {
     Object.assign(api, n === 2 ? CH2 : CH1); api.chapter = n === 2 ? 2 : 1;
