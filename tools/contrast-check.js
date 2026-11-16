@@ -38,7 +38,9 @@ async function overArt(page, selectors) {
     await page.addStyleTag({ content: '*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important} svg{visibility:hidden!important}' });
     const clip = { x: Math.max(0, info.x), y: Math.max(0, info.y), width: Math.max(1, info.w), height: Math.max(1, info.h) };
     // the style that hides the text comes off even when the screenshot times out, or every later sample reads black text
-    let shot; try { shot = await page.screenshot({ clip, timeout: 60000 }); } finally { await page.evaluate(() => { const s = document.querySelectorAll('style'); s[s.length - 1].remove(); }); }
+    // freeze the scene first: with software WebGL a moving frame can take a minute to capture
+    let shot; try { await page.evaluate(() => typeof Render !== 'undefined' && Render.hold && Render.hold(true)); shot = await page.screenshot({ clip, timeout: 60000 }); }
+    finally { await page.evaluate(() => { const s = document.querySelectorAll('style'); s[s.length - 1].remove(); if (typeof Render !== 'undefined' && Render.hold) Render.hold(false); }); }
     const png = PNG.sync.read(shot);
     const ls = []; for (let i = 0; i < png.data.length; i += 4) ls.push([png.data[i], png.data[i + 1], png.data[i + 2]]);
     const sorted = ls.map(p => [lum(p), p]).sort((a, b) => a[0] - b[0]);

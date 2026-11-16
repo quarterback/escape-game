@@ -98,7 +98,7 @@ const UI = (() => {
     if (Sfx.ambience) Sfx.ambience(s.over ? null : Sim.route(s)[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
-    renderOver(); document.body.classList.toggle('busy', Render.busy());
+    renderOver(); setBusy(Render.busy());
   }
 
   // ---- the scene header: clock, goal, the inquiry, the level -------------
@@ -189,6 +189,11 @@ const UI = (() => {
       else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name.replace(/^./, c => c.toLowerCase()) })); }
     }
     return out.slice(0, 2);
+  }
+  const BUSY_SEL = ['#phasecard button', '#approaches .act', '#wait', '#waitdark', '#inbox .opt', '.call']; // what fades while the scene animates
+  function setBusy(b) {
+    document.body.classList.toggle('busy', b);
+    for (const el of document.querySelectorAll(BUSY_SEL.join())) { if (b) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled'); }
   }
   const nowH = () => gov ? gov.hour : s.hour; // the investigator's desk keeps its own clock
   function renderHere() {
@@ -1137,7 +1142,7 @@ const UI = (() => {
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
     document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
     // the result card ends each turn with Continue (owner, Nov. 1, 2026: "Six hours pass ... Then continue."), so this only tracks the busy state
-    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
+    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) setBusy(b); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();
     if (replayFromHash()) return;

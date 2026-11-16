@@ -390,7 +390,10 @@ const Render = (() => {
   }
 
   // ---- the loop -----------------------------------------------------
+  // hold: tools freeze the scene so a screenshot does not wait on a software-drawn frame (tools/contrast-check.js)
+  let held = false; function hold(on) { held = !!on; }
   function loop(now) {
+    if (held) { last = now; requestAnimationFrame(loop); return; }
     const dt = Math.min(50, now - (last || now)); last = now;
     stepQueue(dt);
     try { if (mode === 'pixi') drawPixi(now, dt); else if (mode === '2d') draw2D(now, dt); else for (const fl of view.floats) fl.t += dt; }
@@ -403,5 +406,5 @@ const Render = (() => {
     requestAnimationFrame(loop);
     startPixi().catch((err) => { console.warn('PixiJS unavailable, drawing in 2D', err); start2D(); });
   }
-  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, hold, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
 })();

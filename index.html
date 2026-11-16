@@ -7295,7 +7295,10 @@ const Render = (() => {
   }
 
   // ---- the loop -----------------------------------------------------
+  // hold: tools freeze the scene so a screenshot does not wait on a software-drawn frame (tools/contrast-check.js)
+  let held = false; function hold(on) { held = !!on; }
   function loop(now) {
+    if (held) { last = now; requestAnimationFrame(loop); return; }
     const dt = Math.min(50, now - (last || now)); last = now;
     stepQueue(dt);
     try { if (mode === 'pixi') drawPixi(now, dt); else if (mode === '2d') draw2D(now, dt); else for (const fl of view.floats) fl.t += dt; }
@@ -7308,7 +7311,7 @@ const Render = (() => {
     requestAnimationFrame(loop);
     startPixi().catch((err) => { console.warn('PixiJS unavailable, drawing in 2D', err); start2D(); });
   }
-  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, hold, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
 })();
 
 </script>
@@ -7416,7 +7419,7 @@ const UI = (() => {
     if (Sfx.ambience) Sfx.ambience(s.over ? null : Sim.route(s)[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
-    renderOver(); document.body.classList.toggle('busy', Render.busy());
+    renderOver(); setBusy(Render.busy());
   }
 
   // ---- the scene header: clock, goal, the inquiry, the level -------------
@@ -7507,6 +7510,11 @@ const UI = (() => {
       else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name.replace(/^./, c => c.toLowerCase()) })); }
     }
     return out.slice(0, 2);
+  }
+  const BUSY_SEL = ['#phasecard button', '#approaches .act', '#wait', '#waitdark', '#inbox .opt', '.call']; // what fades while the scene animates
+  function setBusy(b) {
+    document.body.classList.toggle('busy', b);
+    for (const el of document.querySelectorAll(BUSY_SEL.join())) { if (b) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled'); }
   }
   const nowH = () => gov ? gov.hour : s.hour; // the investigator's desk keeps its own clock
   function renderHere() {
@@ -8455,7 +8463,7 @@ const UI = (() => {
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
     document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
     // the result card ends each turn with Continue (owner, Nov. 1, 2026: "Six hours pass ... Then continue."), so this only tracks the busy state
-    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
+    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) setBusy(b); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();
     if (replayFromHash()) return;
