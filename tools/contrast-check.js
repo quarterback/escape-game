@@ -35,7 +35,8 @@ async function overArt(page, selectors) {
     }, sel);
     if (!info) continue;
     // hide every text glyph on the page, keep backgrounds and shading, then sample behind this element
-    await page.addStyleTag({ content: '*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important} svg{visibility:hidden!important}' });
+    // the clock face is a color font whose outline ignores color:transparent, so the sampled element is hidden outright too
+    await page.addStyleTag({ content: `*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important} svg{visibility:hidden!important} ${sel}{visibility:hidden!important}` });
     const clip = { x: Math.max(0, info.x), y: Math.max(0, info.y), width: Math.max(1, info.w), height: Math.max(1, info.h) };
     // the style that hides the text comes off even when the screenshot times out, or every later sample reads black text
     // freeze the scene first: with software WebGL a moving frame can take a minute to capture
