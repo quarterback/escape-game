@@ -90,3 +90,16 @@ The rewrites fixed:
 ## Held for the owner
 - **The investigator's chapter two.** It was not built in this run, as decided.
 - **The stop screen.** It still opens when you reach a new strip. Walks along a strip skip it.
+
+## Follow-up, Nov. 16, 2026: the two contrast items
+
+The owner asked for both items left from the contrast check to be fixed.
+
+- **The title screen's "Continue" button.** This was a real button: the round's own button, faded to half strength while the scene animates. It now carries `aria-disabled` during the fade, so screen readers and contrast checks treat it as unavailable, which it is.
+- **The screenshot timeout.** Drawing an animated frame with software WebGL could take a minute. `Render.hold(on)` now freezes the scene for tools, and the contrast check holds it for each screenshot. One sample went from 14 seconds to a tenth of a second.
+
+Two faults in the checker turned up along the way, and both are fixed:
+- **A timeout left the text hidden.** Every later sample then read black text.
+- **It sampled text that sits under an open panel.** For example, it measured the investigator's clock behind the briefing. Such text is inactive, so the check now samples only what is on top.
+
+Final run: 3,782 text checks pass, 12 of 12 text-over-picture checks pass, and there are no failures and no errors. Ten text-over-picture samples are no longer taken because a panel covers them.

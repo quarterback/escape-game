@@ -29,6 +29,8 @@ async function overArt(page, selectors) {
     const info = await page.evaluate((sel) => {
       const el = document.querySelector(sel); if (!el) return null;
       const r = el.getBoundingClientRect(); if (!r.width || !r.height || getComputedStyle(el).visibility === 'hidden' || el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return null;
+      // text under an open panel or its backdrop is inactive, not something to read; sample only what is on top
+      const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); if (top && top !== el && !el.contains(top) && !top.contains(el)) return null;
       const cs = getComputedStyle(el), px = parseFloat(cs.fontSize), bold = parseInt(cs.fontWeight) >= 700;
       const m = cs.color.match(/[\d.]+/g).map(Number);
       return { x: r.x, y: r.y, w: r.width, h: r.height, color: m.slice(0, 3), large: px >= 24 || (bold && px >= 18.66), px };
