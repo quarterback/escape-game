@@ -7874,10 +7874,11 @@ const UI = (() => {
   // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
   const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
-    const m = { 5: [['jet', T('brief.jet')]] };
+    const jet = s.chapter === 2 ? Sim.route(s).findIndex(L => L.final) : 5; // the flight leaves from the last place: Portalba, or Bahía Clara airport
+    const m = { [jet]: [['jet', T('brief.jet')]] };
     m[s.belief] = [['sosa', T('brief.sosa')]];
     m[s.pos] = [['you', T('brief.you')]].concat(s.belief === s.pos ? [['sosa', T('brief.sosa')]] : []);
-    if (s.pos === 5) m[5] = m[5].concat([['jet', T('brief.jet')]]);
+    if (s.pos === jet) m[jet] = m[jet].concat([['jet', T('brief.jet')]]);
     return m;
   }
   let lastOrderLine = '';
@@ -7917,15 +7918,15 @@ const UI = (() => {
     return m;
   }
   // chapter two (docs/chapter-two-relay.md): the island as its strips, west to east, and the legs between them
-  const STRIPXY = { wide: { town: [30, 34, 270], coast: [30, 112, 150], ship: [320, 74, 0], bay: [420, 34, 200] }, tall: { town: [20, 26, 0], coast: [20, 178, 0], ship: [20, 238, 0], bay: [20, 270, 0] } };
+  const STRIPXY = { wide: { town: [20, 40, 440], ship: [490, 40, 0], coast: [20, 136, 220], bay: [270, 136, 360] }, tall: { town: [20, 26, 0], coast: [20, 186, 0], ship: [20, 272, 0], bay: [20, 324, 0] } };
   function islandXY(tall) {
-    const at = {}; for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id]; st.places.forEach((id, j) => { at[id] = tall ? [x0 + 14, y0 + 12 + j * 34] : [x0 + 20 + (st.places.length > 1 ? j * (w - 40) / (st.places.length - 1) : 0), y0 + 18]; }); }
+    const at = {}; for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id]; st.places.forEach((id, j) => { at[id] = tall ? [x0 + 14, y0 + 12 + j * 34] : [x0 + 50 + (st.places.length > 1 ? j * (w - 100) / (st.places.length - 1) : 10), y0 + 18]; }); }
     return at;
   }
   function islandMap(marks, tall) {
     const at = islandXY(tall), idx = (id) => Data.LEVELS.findIndex(L => L.id === id); let h = ''; const said = [];
     for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id], n = st.places.length;
-      h += tall ? `<rect class="land" x="${x0 - 12}" y="${y0 - 6}" width="300" height="${n * 34 + 8}" rx="14"/>` : `<rect class="land${st.id === 'bay' ? ' far' : ''}" x="${x0}" y="${y0}" width="${Math.max(w, 60)}" height="36" rx="14"/>`;
+      h += tall ? `<rect class="land" x="${x0 - 12}" y="${y0 - 6}" width="300" height="${n * 34 + 8}" rx="14"/>` : `<rect class="land${st.id === 'bay' ? ' far' : ''}" x="${x0}" y="${y0}" width="${Math.max(w, 120)}" height="36" rx="14"/>`;
       for (const [a, b] of st.walk) h += `<line class="leg went" x1="${at[a][0]}" y1="${at[a][1]}" x2="${at[b][0]}" y2="${at[b][1]}"/>`; }
     if (!tall) for (const L of Data.LEVELS) for (const a of L.approaches) if (a.to && !Data.STRIPS.some(st => st.places.includes(L.id) && st.places.includes(a.to))) h += `<line class="border" x1="${at[L.id][0]}" y1="${at[L.id][1]}" x2="${at[a.to][0]}" y2="${at[a.to][1]}"/>`;
     for (const L of Data.LEVELS) { const i = idx(L.id), [x, y] = at[L.id], m = marks[i] || [], here = m.some(k => k[0] === 'you');
@@ -7934,7 +7935,7 @@ const UI = (() => {
       let ox = tall ? 190 : x; m.forEach((k, j) => { const w = Math.round(k[1].length * 8.4 + 20), px = tall ? ox : x - w / 2, py = tall ? y - 11 : y - 32 - j * 24; ox += w + 4;
         h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`; said.push(`${L.short}: ${k[1]}`); }); }
     const label = Data.STRIPS.map(st => `${st.name}: ${st.places.map(id => Data.LEVELS[idx(id)].short).join(', ')}`).join('. ') + (said.length ? '. ' + said.join('. ') : '');
-    return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+    return `<svg viewBox="${tall ? '0 0 320 440' : '0 0 640 200'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function routeMap(marks, tall, upto) {
     if (s && s.chapter === 2 && Data.STRIPS) return islandMap(marks, tall);
