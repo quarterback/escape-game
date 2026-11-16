@@ -98,15 +98,15 @@ const UI = (() => {
     if (Sfx.ambience) Sfx.ambience(s.over ? null : Sim.route(s)[gov ? Math.max(0, gov.belief) : s.pos].scene, Sim.isNight(s));
     if (gov) { renderGovHere(); renderGovPhone(); renderGovRoute(); }
     else { renderHere(); renderPhone(); renderRoute(); }
-    renderOver(); document.body.classList.toggle('busy', Render.busy());
+    renderOver(); setBusy(Render.busy());
   }
 
   // ---- the scene header: clock, goal, the inquiry, the level -------------
   function renderScene() {
-    const hoursLeft = Sim.HOURS_TOTAL - s.hour, deadline = short(Sim.HOURS_TOTAL);
+    const hoursLeft = Sim.HOURS_TOTAL - nowH(), deadline = short(Sim.HOURS_TOTAL);
     const hoursText = T(hoursLeft === 1 ? 'scene.hours_one' : 'scene.hours', { n: Sim.num(hoursLeft) });
     // every clock says whose it is: this one is the escape deadline, Tuesday 2 p.m., for both sides
-    $('clock').textContent = short(s.hour); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
+    $('clock').textContent = short(nowH()); $('left').textContent = gov ? T('scene.deadline_gov', { time: hoursText }) : T('scene.deadline_escape', { time: hoursText }); $('deadline').textContent = T('scene.deadline_when', { when: deadline }); $('deadline2').textContent = deadline;
     const L = Sim.route(s)[s.pos];
     if (gov) {
       const v = Gov.view(gov);
@@ -168,7 +168,7 @@ const UI = (() => {
   }
   function expanded(a, commitLabel, onCommit) {
     const box = document.createElement('div'); box.className = 'actbox';
-    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div>${a.text ? `<p class="ctx">${esc(a.text)}</p>` : ''}<div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
+    box.innerHTML = `<div class="act"><span class="body"><span class="nm">${esc(a.name)}</span>${warnMark(a)}${hoursLine(a)}</span></div>${a.text ? `<p class="ctx">${esc(a.text)}</p>` : ''}${a.lead ? `<p class="ctx lead">${esc(a.lead)}</p>` : ''}<div class="row">${!s.over ? `<button class="primary commit">${commitLabel}</button>` : ''}<button class="cancel">${T('action.cancel')}</button></div>`;
     if (box.querySelector('.commit')) box.querySelector('.commit').onclick = onCommit;
     box.querySelector('.cancel').onclick = () => { sel = null; renderAll(); };
     requestAnimationFrame(() => { const r = box.querySelector('.row'); if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }); // the opened card's buttons stay on screen
@@ -186,10 +186,16 @@ const UI = (() => {
         if (job) out.push(T('next.waiting', { name: cap(sibNamed1(job.ally)), what: what[n.arr], time: short(job.due) }));
         else if (call && call.ok) out.push(T('next.call', { name: sibNamed1(call.ally), what: what[n.arr] }));
         else if (call && call.why) out.push(call.why); } // a call you cannot make says why, never 'call them'
-      else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name })); }
+      else if (n.night && !Sim.isNight(s) && !seen.night) { seen.night = 1; out.push(T('next.night', { move: a.name.replace(/^./, c => c.toLowerCase()) })); }
     }
     return out.slice(0, 2);
   }
+  const BUSY_SEL = ['#phasecard button', '#approaches .act', '#wait', '#waitdark', '#inbox .opt', '.call']; // what fades while the scene animates
+  function setBusy(b) {
+    document.body.classList.toggle('busy', b);
+    for (const el of document.querySelectorAll(BUSY_SEL.join())) { if (b) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled'); }
+  }
+  const nowH = () => gov ? gov.hour : s.hour; // the investigator's desk keeps its own clock
   function renderHere() {
     const A = Sim.actions(s); const box = $('approaches'); box.innerHTML = '';
     { const nx = nextLines(A); if (nx.length && phase === 'move' && !s.event) { const d = document.createElement('div'); d.className = 'nextbox'; d.innerHTML = nx.map(x => `<p>${esc(x)}</p>`).join(''); box.appendChild(d); } }
@@ -197,12 +203,25 @@ const UI = (() => {
     // waiting is a choice like any move: it says how long it takes and what can happen while you wait
     $('wait').hidden = true; $('waitdark').hidden = true;
     const can = !s.over && Tutorial.allowsWait() && phase === 'move' && !s.event;
+    // side places (docs/no-waiting.md): somewhere to go instead of waiting; each says its trip cost before you go
+    { const sides = (A.sides || []).filter(x => x.ok); if (sides.length && phase === 'move') { const h = document.createElement('h3'); h.className = 'sidehead'; h.textContent = T('side.heading'); box.appendChild(h);
+      for (const x of sides) { if (sel === 'side:' + x.id) box.appendChild(expanded({ id: x.id, name: x.name, hours: x.hours, text: x.text, lead: x.lead }, T('side.go'), () => doCommit('side:' + x.id))); else { const b = approachBtn({ id: 'side:' + x.id, name: x.name, hours: x.hours }, phase === 'move' && !Tutorial.active()); b.classList.add('sideact'); b.onclick = () => { Sfx.unlock(); sel = 'side:' + x.id; Sfx.select(); renderAll(); }; box.appendChild(b); } } } }
+    // no waiting (owner, Nov. 14, 2026): one skip that names what it skips to, and food and sleep; no hour-by-hour waits
     const waits = [];
-    if (A.waitDark.ok) { const nm = (Sim.route(s)[s.pos].approaches.find(a => a.needs.some(n => n.night)) || {}).name; waits.push({ id: 'wait_dark', name: T('action.wait_dark'), hours: A.waitDark.hours, lines: nm ? [T('wait.dark_for', { move: nm[0].toLowerCase() + nm.slice(1) })] : [] }); }
-    if (A.waitOn.ok) waits.unshift({ id: 'wait_on', name: T('action.wait_on'), hours: A.waitOn.hours, lines: [], upTo: true }); // one click to the next thing
-    waits.push({ id: 'wait', name: T('action.wait'), hours: 1, lines: [] });
+    if (A.waitOn.ok) waits.push({ id: 'wait_on', name: skipName(A.waitOn), hours: A.waitOn.hours, lines: [], upTo: A.waitOn.target === 'next' });
     if (A.lodge.ok) waits.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] }); // opens the food and sleep screen for this stop
     for (const w of waits) box.appendChild(sel === w.id ? waitBox(w) : waitBtn(w, can));
+    autoSkip(A);
+  }
+  const skipName = (w) => w.target === 'dark' ? T('action.skip_dark') : w.target === 'answer' && w.ally ? T('action.skip_answer', { name: sibNamed1(w.ally) }) : T('action.wait_on');
+  // nothing to do here but wait: the clock moves on by itself, to the next thing that needs you
+  let skipping = false;
+  function autoSkip(A) {
+    if (skipping || gov || !s || s.over || s.event || s.tutorial || Tutorial.active() || phase !== 'move' || !A.waitOn.ok || replaying) return;
+    const sides = (A.sides || []).some(x => x.ok);
+    if (A.approaches.some(a => a.ok) || A.calls.some(c => c.ok) || A.messages.length || sides) return;
+    skipping = true; const what = skipName(A.waitOn);
+    setTimeout(() => { skipping = false; if (phase !== 'move' || s.event || s.over) return; toast(T('skip.auto'), what); doCommit('wait_on'); }, 700);
   }
   const CLOCK = `<span class="die sure wait" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>`;
   const waitMeta = (w) => w.id === 'wait' || w.id === 'lodge' ? '' : `<span class="meta"><span class="hrs">${esc(T(w.upTo ? 'action.up_to' : 'action.takes', { hours: w.hours }))}</span></span>`; // "1 hr wait" already says it
@@ -331,10 +350,12 @@ const UI = (() => {
   }
   function renderRoute() {
     // phone: the rail
-    const rail = $('rail'); rail.innerHTML = '';
+    const rail = $('rail'); rail.innerHTML = ''; document.body.classList.toggle('island', !!(s.chapter === 2 && Data.STRIPS));
+    const stripStart = s.chapter === 2 && Data.STRIPS ? Object.fromEntries(Data.STRIPS.map(st => [st.places[0], st.name])) : {};
     Sim.route(s).forEach((L, i) => {
+      if (stripStart[L.id]) { const hd = document.createElement('li'); hd.className = 'striphead'; hd.innerHTML = `<span class="dot" aria-hidden="true" style="visibility:hidden"></span><h3>${esc(stripStart[L.id])}</h3>`; rail.appendChild(hd); }
       if (s.route === 'coast' && i === 2) return; // the coast route skips Nova Trentô, and nobody from Nova Trentô or Salta acts on it
-      const li = document.createElement('li'); li.className = (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
+      const li = document.createElement('li'); li.className = s.chapter === 2 ? (i === s.pos ? 'current' : s.visited.includes(i) ? 'passed' : '') : (i === s.pos ? 'current' : i < s.pos ? 'passed' : '') + (i === 4 ? ' border' : '') + (i === 5 ? ' esm' : '');
       const needs = needCells(L).map(n => `<span class="need ${n.state}"><span class="sr">${esc(stateWord(n.state))} </span><b>${esc(n.title)}</b><span>${esc(n.sub)}</span></span>`).join('');
       const w = whoActs(i);
       li.innerHTML = `<span class="line" aria-hidden="true"></span><span class="dot" aria-hidden="true"></span><div class="stop"><div class="nm"><b>${esc(L.short)}</b><span>${i === s.pos ? T('route.you_here') : i === 4 && !s.chapter ? T('route.border') : i === 5 && !s.chapter ? T('route.esmeralda') : ''}</span></div>${i === s.belief ? `<span class="inq">${T('route.inquiry_here')}</span>` : ''}${w.length ? `<span class="who">${T('route.who_acts', { list: w.map(whoHtml).join(', ') })}</span>` : ''}${needs}</div>`;
@@ -487,7 +508,9 @@ const UI = (() => {
     phoneCalls = 0; answered = false; movedThisRound = false; result = null; roundSum = { theirs: [], hours: 0 };
     enterPhase(pendingEvent() ? 'news' : 'phone');
     if (!replaying && !gov && !first && s.pos === briefPos) { renderAll(); return; } // same stop: straight back to the choices
-    if (replaying) interstitial(short(s.hour), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
+    // chapter two: a walk along the same strip keeps scrolling; the briefing opens only when you reach another strip
+    if (!replaying && !gov && !first && s.chapter === 2 && Data.STRIPS && briefPos >= 0 && Data.STRIPS.some(st => st.places.includes(Sim.route(s)[briefPos].id) && st.places.includes(Sim.route(s)[s.pos].id))) { briefPos = s.pos; renderAll(); return; }
+    if (replaying) interstitial(short(nowH()), T('round.label', { n: round }), gov ? T('round.searching', { place: Gov.view(gov).suspectName.replace(/^The /, 'the ') }) : s.hold ? T('round.held', { place: Sim.route(s)[s.pos].short, hold: s.hold }) : Sim.route(s)[s.pos].short);
     else showBrief();
   }
   const waitingMsgs = () => gov ? Gov.view(gov).messages.length : Sim.actions(s).messages.length;
@@ -529,7 +552,7 @@ const UI = (() => {
   const attnWord = (x) => ({ low: T('attn.low'), rising: T('attn.rising'), high: T('attn.high') })[attnLevel(x)];
   // the numbers alone; what they mean is in Help and opens from the top bar
   const shortStats = () => [
-    { big: `${Math.max(0, Sim.HOURS_TOTAL - s.hour)}h`, text: T('brief.time_left') },
+    { big: `${Math.max(0, Sim.HOURS_TOTAL - nowH())}h`, text: T('brief.time_left') },
     { big: attnWord(s.exposure), text: T('brief.attention_short'), cls: 'lvl-' + attnLevel(s.exposure) },
   ].concat(s.tutorial ? [] : [{ big: bodyWords().tire, text: T('body.brief_sleep'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).tire] }, { big: bodyWords().hunger, text: T('body.brief_food'), cls: 'lvl-' + ['low', 'rising', 'high'][Sim.body(s).hunger] }]);
   // a level as a bar of three steps with its word beside it, never a number (owner, Nov. 2, 2026: "Rest or food can be a level bar")
@@ -538,10 +561,11 @@ const UI = (() => {
   // food and sleep as words, never hours: Rested, Tired, Exhausted; Fed, Hungry, Starving
   const bodyWords = () => { const b = Sim.body(s); return { tire: T(['body.w_rested', 'body.w_tired', 'body.w_exhausted'][b.tire]), hunger: T(['body.w_fed', 'body.w_hungry', 'body.w_starving'][b.hunger]) }; };
   function routeMarks() {
-    const m = { 5: [['jet', T('brief.jet')]] };
+    const jet = s.chapter === 2 ? Sim.route(s).findIndex(L => L.final) : 5; // the flight leaves from the last place: Portalba, or Bahía Clara airport
+    const m = { [jet]: [['jet', T('brief.jet')]] };
     m[s.belief] = [['sosa', T('brief.sosa')]];
     m[s.pos] = [['you', T('brief.you')]].concat(s.belief === s.pos ? [['sosa', T('brief.sosa')]] : []);
-    if (s.pos === 5) m[5] = m[5].concat([['jet', T('brief.jet')]]);
+    if (s.pos === jet) m[jet] = m[jet].concat([['jet', T('brief.jet')]]);
     return m;
   }
   let lastOrderLine = '';
@@ -570,16 +594,38 @@ const UI = (() => {
   const skipped = (i) => !!(s && s.route === 'coast' && i === 2);
   const stopNo = (i) => i + 1 - (s && s.route === 'coast' && i >= 3 ? 1 : 0);
   const stopTotal = () => Sim.route(s).length - (s && s.route === 'coast' ? 1 : 0);
+  const stripName = (i) => { const id = Sim.route(s)[i].id, st = Data.STRIPS && Data.STRIPS.find(x => x.places.includes(id)); return st ? st.name : ''; };
   // issue #52: Sofia's board. Her search, her two patrols, and the newest report from each stop, fading as it ages
   function govMarks(v) {
     const m = {}, put = (i, k) => { if (i >= 0) (m[i] = m[i] || []).push(k); };
     put(gov.belief, ['you', T('brief.gov_search')]);
     const ps = v.patrols || []; [...new Set(ps)].forEach(i => put(i, ['sosa', ps.filter(x => x === i).length > 1 ? cap(T('brief.gov_patrols', { n: Sim.num(ps.filter(x => x === i).length) })) : T('brief.gov_patrol')]));
-    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.c.hour - (r.seenAt !== undefined ? r.seenAt : r.hour)); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
+    const seen = {}; for (const r of v.reports) { const h = Math.max(0, gov.hour - (r.seenAt !== undefined ? r.seenAt : r.hour)); if (seen[r.at] || h > 24) continue; seen[r.at] = true;
       put(r.at, ['seen age' + (h <= 3 ? 0 : h <= 8 ? 1 : h <= 16 ? 2 : 3), h ? T('brief.gov_pin_old', { hours: h }) : T('brief.gov_pin_new')]); }
     return m;
   }
+  // chapter two (docs/chapter-two-relay.md): the island as its strips, west to east, and the legs between them
+  const STRIPXY = { wide: { town: [20, 40, 440], ship: [490, 40, 0], coast: [20, 136, 220], bay: [270, 136, 360] }, tall: { town: [20, 26, 0], coast: [20, 186, 0], ship: [20, 272, 0], bay: [20, 324, 0] } };
+  function islandXY(tall) {
+    const at = {}; for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id]; st.places.forEach((id, j) => { at[id] = tall ? [x0 + 14, y0 + 12 + j * 34] : [x0 + 50 + (st.places.length > 1 ? j * (w - 100) / (st.places.length - 1) : 10), y0 + 18]; }); }
+    return at;
+  }
+  function islandMap(marks, tall) {
+    const at = islandXY(tall), idx = (id) => Data.LEVELS.findIndex(L => L.id === id); let h = ''; const said = [];
+    for (const st of Data.STRIPS) { const [x0, y0, w] = STRIPXY[tall ? 'tall' : 'wide'][st.id], n = st.places.length;
+      h += tall ? `<rect class="land" x="${x0 - 12}" y="${y0 - 6}" width="300" height="${n * 34 + 8}" rx="14"/>` : `<rect class="land${st.id === 'bay' ? ' far' : ''}" x="${x0}" y="${y0}" width="${Math.max(w, 120)}" height="36" rx="14"/>`;
+      for (const [a, b] of st.walk) h += `<line class="leg went" x1="${at[a][0]}" y1="${at[a][1]}" x2="${at[b][0]}" y2="${at[b][1]}"/>`; }
+    if (!tall) for (const L of Data.LEVELS) for (const a of L.approaches) if (a.to && !Data.STRIPS.some(st => st.places.includes(L.id) && st.places.includes(a.to))) h += `<line class="border" x1="${at[L.id][0]}" y1="${at[L.id][1]}" x2="${at[a.to][0]}" y2="${at[a.to][1]}"/>`;
+    for (const L of Data.LEVELS) { const i = idx(L.id), [x, y] = at[L.id], m = marks[i] || [], here = m.some(k => k[0] === 'you');
+      h += `<circle class="stopdot${here ? ' here' : ''}${L.final ? ' end' : ''}" cx="${x}" cy="${y}" r="${here ? 8 : 6}"/>`;
+      h += tall ? `<text class="nm${here ? ' here' : ''}" x="${x + 14}" y="${y + 5}">${esc(L.short)}</text>` : `<text class="nm small${here ? ' here' : ''}" x="${x}" y="${y + 24}" text-anchor="middle">${esc(L.short)}</text>`;
+      let ox = tall ? 190 : x; m.forEach((k, j) => { const w = Math.round(k[1].length * 8.4 + 20), px = tall ? ox : x - w / 2, py = tall ? y - 11 : y - 32 - j * 24; ox += w + 4;
+        h += `<rect class="pill ${k[0]}" x="${px}" y="${py}" width="${w}" height="22" rx="11"/><text class="pt ${k[0]}" x="${px + w / 2}" y="${py + 16}" text-anchor="middle">${esc(k[1])}</text>`; said.push(`${L.short}: ${k[1]}`); }); }
+    const label = Data.STRIPS.map(st => `${st.name}: ${st.places.map(id => Data.LEVELS[idx(id)].short).join(', ')}`).join('. ') + (said.length ? '. ' + said.join('. ') : '');
+    return `<svg viewBox="${tall ? '0 0 320 440' : '0 0 640 200'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
+  }
   function routeMap(marks, tall, upto) {
+    if (s && s.chapter === 2 && Data.STRIPS) return islandMap(marks, tall);
     const P = MAPXY[tall ? 'tall' : 'wide'], n = Sim.route(s).length;
     let h = tall
       ? '<rect class="land" x="4" y="4" width="312" height="244" rx="18"/><rect class="land far" x="4" y="252" width="312" height="84" rx="18"/><line class="border" x1="4" y1="250" x2="316" y2="250"/>'
@@ -606,7 +652,8 @@ const UI = (() => {
     return `<svg viewBox="${tall ? '0 0 320 340' : '0 0 640 160'}" role="img" aria-label="${esc(label)}">${h}</svg>`;
   }
   function briefRoute(marks) {
-    return Sim.route(s).map((L, i) => { if (skipped(i)) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
+    const strip = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[s.pos].id)) : null; // the island: this strip's places only
+    return Sim.route(s).map((L, i) => { if (skipped(i) || (strip && !strip.places.includes(L.id))) return ''; const m = marks[i] || [], above = m.filter(x => x[0] === 'you'), below = m.filter(x => x[0] !== 'you');
       const pill = (x) => `<span class="bpill ${x[0]}">${esc(x[1])}</span>`;
       return `<li class="${m.some(x => x[0] === 'you') ? 'here' : ''}${i === Sim.route(s).length - 1 ? ' end' : ''}"><span class="above">${above.map(pill).join('')}</span><i class="dot"></i><span class="stop">${esc(L.short)}</span><span class="below">${below.map(pill).join('')}</span></li>`; }).join('');
   }
@@ -616,7 +663,7 @@ const UI = (() => {
     const b = gov ? briefGov() : briefEscape();
     if (!gov) briefPos = s.pos;
     const milestone = !gov && s.pos > 0 && b.arrived;
-    $('b-clock').textContent = short(s.hour); $('b-round').textContent = gov ? T('round.label', { n: round }) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() });
+    $('b-clock').textContent = short(nowH()); $('b-round').textContent = gov ? T('round.label', { n: round }) : (s.chapter === 2 && Data.STRIPS ? stripName(s.pos) : T('brief.stop_of', { n: stopNo(s.pos), total: stopTotal() }));
     $('b-title').textContent = gov ? T('brief.gov_title') : milestone ? T('brief.made_it', { place: Sim.route(s)[s.pos].short.replace(/^The /, 'the ') }) : Sim.route(s)[s.pos].short;
     $('b-jobh').textContent = T(gov ? 'brief.h_round' : 'brief.h_next'); $('b-win').hidden = milestone; // a stop screen is a moment, not a checklist
     document.body.classList.toggle('stopscreen', milestone);
@@ -641,10 +688,10 @@ const UI = (() => {
   // reaching a stop is its own moment: which stop of how many, the route so far, and what this stop asks of you; it leaves on its own
   function stopScreen(pos) {
     const L = Sim.route(s)[pos], el = $('stopscreen');
-    $('s-clock').textContent = short(s.hour);
-    $('s-step').textContent = T('stop.step', { n: stopNo(pos), total: stopTotal() });
+    $('s-clock').textContent = short(nowH());
+    $('s-step').textContent = s.chapter === 2 && Data.STRIPS ? stripName(pos) : T('stop.step', { n: stopNo(pos), total: stopTotal() });
     $('s-title').textContent = L.name;
-    $('s-dots').innerHTML = Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
+    $('s-dots').innerHTML = s.chapter === 2 && Data.STRIPS ? Data.STRIPS.find(st => st.places.includes(Sim.route(s)[pos].id)).places.map(id => { const i = Sim.route(s).findIndex(L => L.id === id); return `<li class="${i === pos ? 'now' : s.visited.includes(i) ? 'past' : ''}"><i></i><span>${esc(Sim.route(s)[i].short)}</span></li>`; }).join('') : Sim.route(s).map((x, i) => skipped(i) ? '' : `<li class="${i < pos ? 'past' : i === pos ? 'now' : ''}"><i></i><span>${esc(x.short)}</span></li>`).join('');
     $('s-goal').textContent = L.objective || '';
     el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
     clearTimeout(stopScreen.t); stopScreen.t = setTimeout(() => { el.hidden = true; }, 3400);
@@ -691,13 +738,13 @@ const UI = (() => {
     el.hidden = !parts.length || !s || !!s.over;
     el.innerHTML = parts.length ? `<details open><summary>${T('recap.title')}</summary><div class="recapbody">${parts.join('')}</div></details>` : '';
   }
-  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick' };
+  const KIND = { event: 'card.kind_news', rumor: 'card.kind_rumor', hold: 'card.kind_hold', lodging: 'card.kind_lodging', sick: 'card.kind_sick', side: 'card.kind_side' };
   function newsCard(card) {
     if (result && result.from === 'news') { resultCard(card, result, T('action.continue'), () => { result = null; enterPhase(pendingEvent() ? 'news' : 'phone'); }); return; }
     const v = gov ? Gov.view(gov).event : Sim.eventView(s); if (!v) { card.className = ''; card.innerHTML = ''; return; }
     card.className = v.kind;
     card.innerHTML = `<span class="kind">${T(KIND[v.kind])}${v.kind === 'hold' ? ' · ' + T('card.rung', { rung: Sim.num(v.rung) }) : ''}</span><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p>`;
-    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
+    for (const c of v.choices) { if (!c.ok) continue; const b = document.createElement('button'); b.className = 'choice'; b.disabled = !c.ok || !!s.over || (Tutorial.active() && !Tutorial.allowsOption(c.id)); b.innerHTML = `<b>${esc(c.label)}</b>${c.lead ? `<span class="lead">${esc(c.lead)}</span>` : ''}`; b.onclick = () => gov ? doGov('evt:' + c.id) : doCommit('evt:' + c.id); card.appendChild(b); }
   }
   // owner, Nov. 1, 2026 ("Ask Theo to walk you through" then "Theo walks you through" is redundant): when the move
   // has its own line, that line is the result. The move's name, the outcome word and the gains it already
@@ -715,7 +762,7 @@ const UI = (() => {
     card.className = 'sosa';
     // what happened, in short lines: your move, then what changed while it took its hours. The full sentences are in the log.
     const r = result, out = !r || r.waited ? '' : r.roll && r.roll.auto ? `<span class="outcome ok">${T('result.no_roll')}</span>` : r.roll && r.roll.bought ? `<span class="outcome no">${T('result.bought')}</span>` : r.roll ? `<span class="outcome ${r.roll.won ? 'ok' : 'no'}">${T(r.roll.won ? 'result.success' : 'result.failed')}</span>` : '';
-    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(s.hour) })))}</h3>`;
+    const head = r && r.waited ? `<h3>${esc(r.title)}</h3>` : r ? `<div class="automove">${ownResult(r, out)}</div><span class="kind">${T(gov ? 'sosa.kind_gov' : 'sosa.kind')}</span>` : `<h3>${esc(cap(T(roundSum.hours === 1 ? 'sosa.title_one' : 'sosa.title', { hours: Sim.num(roundSum.hours), time: short(nowH()) })))}</h3>`;
     const quiet = T(gov ? 'sosa.quiet_gov' : 'sosa.quiet');
     let exp = 0; const list = roundSum.theirs.filter(t => { if (t.exp) { exp += t.exp; return false; } return true; });
     if (exp && gov) list.unshift({ k: 'news', t: T('sum.exposure_round', { n: Math.abs(exp) }) });
@@ -776,7 +823,7 @@ const UI = (() => {
   const apTime = (h) => T('daily.at', { when: Sim.clockText(h) });
   const DAILY = 'coalition.daily.';
   function dailyResult(key) { try { return JSON.parse(localStorage.getItem(DAILY + key) || 'null'); } catch (e) { return null; } }
-  function outcomeLine(o) { return o.win ? T('daily.out', { hours: s.hour, round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
+  function outcomeLine(o) { return o.win ? T('daily.out', { hours: nowH(), round }) : o.kind === 'clock' ? T('daily.clock', { round }) : o.kind === 'deal' ? T('daily.deal', { round }) : T('daily.arrest', { round }); }
   // the ending's one sentence, shared by the ending screen and the share card
   function endWhy() { const k = s.over.kind; return gov ? (k === 'fired' ? T('over.why_gov_fired') : s.over.win ? T('over.why_gov_escaped') : ({ clock: T('over.why_gov_time'), deal: T('over.why_gov_deal') })[k] || T('over.why_gov_arrest'))
       : s.over.win ? T(s.over.via === 'airline' ? 'over.why_out_airline' : 'over.why_out') : ({ clock: T('over.why_time'), deal: T('over.why_deal') })[k] || T('over.why_arrest'); }
@@ -794,7 +841,7 @@ const UI = (() => {
     return rows.join('\n');
   }
   function shareText() { if (gov) { const r = Gov.shareGrid(gov); return T('gov.share', { result: r.result, grid: r.grid, on: r.on, total: r.total, url: location.href.split('#')[0] }); } if (daily) return T('daily.share', { date: daily.label, line: outcomeLine(s.over), url: location.href.split('#')[0] });
-    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - s.hour), grid: shareGrid(), url: location.href.split('#')[0] }); }
+    return T('escape.share', { n: s.runNo || 1, level: stopNo(s.pos), hours: Math.max(0, Sim.HOURS_TOTAL - nowH()), grid: shareGrid(), url: location.href.split('#')[0] }); }
   function animate(events) {
     for (const e of events) {
       switch (e.type) {
@@ -818,7 +865,8 @@ const UI = (() => {
         case 'enemy': Render.enemy(); Render.enqueue({ dur: 10, start() { Sfx.patrol(); enemyLog.push(e.text); log('enemy', e.text, 'enemy'); } }); break;
         case 'report': Render.ring(); Render.enqueue({ dur: 10, start() { Sfx.ring(); log(e.from, e.text); } }); break;
         case 'order': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.order', { name: e.name })), 'sys'); } }); break;
-        case 'travel': Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
+        // a walk along a chapter-two strip pans the camera; a leg to another strip fades
+        case 'travel': if (e.walk && Render.pan) Render.pan(); else Render.travel(); Render.enqueue({ dur: 10, start() { Sfx.step(0); } }); break;
         case 'dispatch': Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting('event'); log('sys', esc(e.id === 'rumor' ? T('log.news_rumor', { name: e.title }) : T('log.news', { title: e.title })), 'sys'); } }); break;
         case 'hold': { const kind = e.rung === 1 ? 'questioned' : e.rung === 2 ? 'held' : 'arrest'; if (Render.detain) Render.detain(kind); else Render.enemy(); Render.enqueue({ dur: 10, start() { if (Sfx.sting) Sfx.sting(kind); log('enemy', `${e.title}. ${e.text}`, 'enemy'); } }); break; }
         case 'chose': Render.enqueue({ dur: 10, start() { log('sys', esc(T('log.chose', { label: e.label })), 'sys'); } }); break;
@@ -841,9 +889,12 @@ const UI = (() => {
     { const can = !s.over && phase === 'move' && Tutorial.allowsWait() && !v.event, ws = [];
       if (v.waitOn.ok) ws.push({ id: 'wait_on', name: T('action.wait_on'), hours: 12, lines: [], upTo: true });
       if (v.lodge.ok) ws.push({ id: 'lodge', name: T('action.lodge'), hours: 0, lines: [] });
-      const at = box.querySelector('.reports'); for (const w of ws) box.insertBefore(waitBtn(w, can), at); }
+      for (const w of ws) box.appendChild(waitBtn(w, can)); }
+    // the desk's side places (docs/no-waiting.md)
+    { const sides = (v.sides || []).filter(x => x.ok); if (sides.length && phase === 'move' && !Tutorial.active()) { const h = document.createElement('h3'); h.className = 'sidehead'; h.textContent = T('side.heading_gov'); box.appendChild(h);
+      for (const x of sides) { if (sel === 'side:' + x.id) box.appendChild(expanded({ id: x.id, name: x.name, hours: x.hours, text: x.text, lead: x.lead }, T('side.go'), () => doGov('side:' + x.id))); else { const b = approachBtn({ id: 'side:' + x.id, name: x.name, hours: x.hours }, true); b.classList.add('sideact'); b.onclick = () => { Sfx.unlock(); sel = 'side:' + x.id; Sfx.select(); renderAll(); }; box.appendChild(b); } } } }
     box.appendChild(rep);
-    $('wait').disabled = !!s.over || phase !== 'move' || !Tutorial.allowsWait(); $('waitdark').hidden = true;
+    $('wait').hidden = true; $('waitdark').hidden = true; // no hour-by-hour waits on either side
   }
   function renderGovPhone() {
     const v = Gov.view(gov); const inbox = $('inbox'); inbox.innerHTML = '';
@@ -1091,7 +1142,7 @@ const UI = (() => {
     $('mute').onclick = toggleMute; $('help').onclick = toggleHelp;
     document.querySelectorAll('#menu2 button').forEach(b => b.onclick = () => ({ demo: () => $('demo').onclick(), startscreen: () => $('startscreen').onclick(), help: toggleHelp, install: () => $('install').onclick(), mute: toggleMute, credits: () => $('credits-open').onclick() })[b.dataset.act]());
     // the result card ends each turn with Continue (owner, Nov. 1, 2026: "Six hours pass ... Then continue."), so this only tracks the busy state
-    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) document.body.classList.toggle('busy', b); }, 120);
+    setInterval(() => { if (!s) return; const b = Render.busy(); if (document.body.classList.contains('busy') !== b) setBusy(b); }, 120);
     window.addEventListener('resize', () => { if (s) renderAll(); });
     pwa();
     if (replayFromHash()) return;

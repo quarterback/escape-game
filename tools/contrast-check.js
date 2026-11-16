@@ -29,16 +29,22 @@ async function overArt(page, selectors) {
     const info = await page.evaluate((sel) => {
       const el = document.querySelector(sel); if (!el) return null;
       const r = el.getBoundingClientRect(); if (!r.width || !r.height || getComputedStyle(el).visibility === 'hidden' || el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return null;
+      // text under an open panel or its backdrop is inactive, not something to read; sample only what is on top
+      const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); if (top && top !== el && !el.contains(top) && !top.contains(el)) return null;
       const cs = getComputedStyle(el), px = parseFloat(cs.fontSize), bold = parseInt(cs.fontWeight) >= 700;
       const m = cs.color.match(/[\d.]+/g).map(Number);
       return { x: r.x, y: r.y, w: r.width, h: r.height, color: m.slice(0, 3), large: px >= 24 || (bold && px >= 18.66), px };
     }, sel);
     if (!info) continue;
     // hide every text glyph on the page, keep backgrounds and shading, then sample behind this element
-    await page.addStyleTag({ content: '*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important} svg{visibility:hidden!important}' });
+    // the clock face is a color font whose outline ignores color:transparent, so the sampled element is hidden outright too
+    await page.addStyleTag({ content: `*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important} svg{visibility:hidden!important} ${sel}{visibility:hidden!important}` });
     const clip = { x: Math.max(0, info.x), y: Math.max(0, info.y), width: Math.max(1, info.w), height: Math.max(1, info.h) };
-    const png = PNG.sync.read(await page.screenshot({ clip, timeout: 60000 }));
-    await page.evaluate(() => { const s = document.querySelectorAll('style'); s[s.length - 1].remove(); });
+    // the style that hides the text comes off even when the screenshot times out, or every later sample reads black text
+    // freeze the scene first: with software WebGL a moving frame can take a minute to capture
+    let shot; try { await page.evaluate(() => typeof Render !== 'undefined' && Render.hold && Render.hold(true)); shot = await page.screenshot({ clip, timeout: 60000 }); }
+    finally { await page.evaluate(() => { const s = document.querySelectorAll('style'); s[s.length - 1].remove(); if (typeof Render !== 'undefined' && Render.hold) Render.hold(false); }); }
+    const png = PNG.sync.read(shot);
     const ls = []; for (let i = 0; i < png.data.length; i += 4) ls.push([png.data[i], png.data[i + 1], png.data[i + 2]]);
     const sorted = ls.map(p => [lum(p), p]).sort((a, b) => a[0] - b[0]);
     const textLight = lum(info.color) > 0.18;

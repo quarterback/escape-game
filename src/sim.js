@@ -20,6 +20,8 @@ const Sim = (() => {
   const POST_IDS = ['rail', 'high', 'coast']; // null = every success exits
   const ENEMY_EVERY = 3; // hours between inquiry actions
   const ESMERALDA_FROM = 5; // level index where Valdórian influence stops counting
+  // where the hunters (chapter two) or the police (chapter one) have no power to stop you
+  const outOfReach = (s) => s.chapter === 2 ? level(s).id === 'eri_airport' : s.pos >= ESMERALDA_FROM;
   const SUSPECTS = ['aide', 'nando', 'host', 'holt', 'theo', 'pilot', 'official'];
   const EVENT_EVERY = 4; // hours at one stop between dispatches (owner, Nov. 2, 2026: more happens while you wait)
   const BOOTH_LAG = 6, OUTBOX = 12, SKIP_MAX = 12; // SKIP_MAX: the longest one skip ahead runs
@@ -211,7 +213,7 @@ const Sim = (() => {
   }
   function approachList(s) {
     const L = level(s), m = mods(s, L), out = [];
-    for (const a of L.approaches) {
+    for (const a of L.approaches.concat(walksFrom(s))) {
       if (a.gone && s.arr[a.gone.arr].stage >= a.gone.stage) continue;
       const whys = a.needs.map(n => needText(s, n)).filter(Boolean);
       if (a.once && (s.flags.onceDone || {})[a.id]) whys.push(T('sim.why.already_done'));
@@ -248,6 +250,7 @@ const Sim = (() => {
       out.push({ kind: 'approach', id: a.id, name: a.name, hours: a.hours, ok: whys.length === 0, why: whys.join(' '), text: a.text, with: a.with || null, night: a.needs.some(n => n.night),
         odds: '', real: free ? null : real, dc, noRoll: free, bonusFrom: escorted ? [] : used.map(u => u.tag), bonus: escorted ? [] : used, pay: !!a.pay,
         // owner, Nov. 1, 2026: no odds before a move, only what you rolled after it
+        lead: moveLead(s, a),
         preview: [a.text].concat(why, [T('sim.preview.takes_hour', { hours: a.hours, s: a.hours === 1 ? '' : 's' })]) });
     }
     return out;
@@ -314,7 +317,78 @@ const Sim = (() => {
   // waiting for the next answer from an ally: one move instead of an hour at a time; news, a call or a police stop ends it early
   function waitJob(s) { const j = s.jobs.filter(x => !x.stall && x.due > s.hour).sort((a, b) => a.due - b.due)[0]; return { kind: 'wait', id: 'wait_job', ally: j ? j.ally : null, arr: j ? j.arr : null, hours: j ? j.due - s.hour : 0, ok: !!j && !s.over && !s.event && j.due - s.hour > 1 }; }
   function waitDark(s) { const night = level(s).approaches.some(a => a.needs.some(n => n.night)); return { kind: 'wait', id: 'wait_dark', hours: hoursToDark(s), ok: !s.over && !s.event && night && !isNight(s) }; }
-  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 }, waitDark: waitDark(s), waitJob: waitJob(s), waitOn: { kind: 'wait', id: 'wait_on', hours: SKIP_MAX, ok: !s.over && !s.event }, lodge: { kind: 'wait', id: 'lodge', ok: !s.over && !s.event && !s.tutorial }, body: body(s) }; }
+  // no waiting (owner, Nov. 14, 2026): the one skip names what it skips to, the earliest of dark (when a night move waits
+  // here) and the next answer from an ally; with nothing scheduled it runs up to SKIP_MAX hours
+  // ---- side places (docs/no-waiting.md) ---------------------------------------------------
+  // each hangs off one stop, costs hours there and back and maybe police attention, and can be visited once per run
+  function sideList(s) {
+    if (s.tutorial || s.over) return [];
+    const done = s.flags.sides || [];
+    return (D.SIDES || []).filter(x => x.at === level(s).id && !done.includes(x.id)).map(x => ({ kind: 'side', id: x.id, name: x.name, hours: x.hours, exposure: x.exposure, text: x.text,
+      ok: !s.event, lead: leadText(s, { hours: x.hours, exposure: x.exposure }, true) }));
+  }
+  function goSide(s, id, events) {
+    const x = (D.SIDES || []).find(y => y.id === id);
+    if (!x || !sideList(s).some(y => y.id === id && y.ok)) return { ok: false, why: T('sim.why.not_something_you_can_do') };
+    (s.flags.sides = s.flags.sides || []).push(id);
+    events.push(ev('attempt', { id: 'side:' + id, name: x.name }));
+    pass(s, x.hours, events); if (x.exposure && !s.over) heat(s, x.exposure, events);
+    // news or a police stop on the way comes first; the place opens once it is answered
+    if (!s.over) { if (s.event) s.flags.sideNext = { id, pos: s.pos }; else openSide(s, x, events); }
+    return finish(s, events);
+  }
+  function openSide(s, x, events) { s.event = { kind: 'side', id: x.id }; events.push(ev('dispatch', { id: x.id, title: x.name, text: x.text })); }
+  // ---- what a choice costs and leads to, in one plain sentence; never odds (owner, Nov. 14, 2026) -----------
+  const lower1 = (t) => t.replace(/^(A|An|The|Your) /, m => m.toLowerCase()); // a card's article goes lower case mid-sentence, a name keeps its capital
+  function leadBits(s, fx, extraHours) {
+    const out = []; if (!fx) return out;
+    if (fx.win) out.push(T('lead.escape'));
+    if (fx.nextStop) out.push(T('lead.move_on', { place: fx.nextStop }));
+    const h = (fx.hours || 0); if (h) out.push(T(extraHours ? 'lead.more_hours' : 'lead.hours', { n: num(h), s: h === 1 ? '' : 's' }));
+    if (fx.exposure > 0) out.push(T('lead.attention_up', { n: num(fx.exposure) }));
+    if (fx.exposure < 0) out.push(T('lead.attention_down', { n: num(-fx.exposure) }));
+    if (fx.card && D.CARDS[fx.card]) out.push(T('lead.card', { card: lower1(D.CARDS[fx.card].name) }));
+    if (fx.meal) out.push(T('lead.meal'));
+    if (fx.sleep === 'full') out.push(T('lead.sleep'));
+    if (fx.sleep === 'car') out.push(T('lead.sleep_some'));
+    const trust = typeof fx.trust === 'string' ? { [fx.trust]: 1 } : fx.trust;
+    if (trust) for (const k in trust) if (s.people[k]) out.push(T(trust[k] > 0 ? 'lead.trust_up' : 'lead.trust_down', { name: shortName(s, k) }));
+    if (fx.mod < 0) out.push(T('lead.easier_here')); if (fx.mod > 0) out.push(T('lead.harder_here'));
+    if (fx.belief === 'away') out.push(T('lead.search_away')); if (fx.belief === 'here') out.push(T('lead.search_here'));
+    if (Array.isArray(fx.advance)) { const k = fx.advance.filter(x => canMove(s, x)); out.push(k.length ? T('lead.stage', { what: joinBits(k.map(x => T('arr.what_' + x))) }) : T('lead.calls_move')); }
+    if (fx.stage) for (const k in fx.stage) out.push(T('lead.stage', { what: T('arr.what_' + k) }));
+    if (fx.lose) out.push(T('lead.lose_card'));
+    if (fx.hold) out.push(T('lead.stopped'));
+    return out;
+  }
+  const joinBits = (b) => b.length < 2 ? (b[0] || '') : b.length === 2 ? T('lead.and2', { a: b[0], b: b[1] }) : T('lead.and_n', { list: b.slice(0, -1).join(', '), last: b[b.length - 1] });
+  const sentence = (t) => t ? t.replace(/^./, c => c.toUpperCase()) + '.' : '';
+  function leadText(s, fx, trip) {
+    if (!fx) return '';
+    if (fx.roll) { const w = joinBits(leadBits(s, fx.roll.win)), l = joinBits(leadBits(s, fx.roll.lose)); return T('lead.roll', { win: w || T('lead.nothing'), lose: l || T('lead.nothing') }); }
+    return sentence(joinBits(leadBits(s, fx).map((b, i) => i === 0 && trip ? T('lead.trip', { hours: num(fx.hours), s: fx.hours === 1 ? '' : 's' }) : b)));
+  }
+  function moveLead(s, a) {
+    if (a.success.win) return T('lead.roll', { win: T('lead.escape'), lose: joinBits(leadBits(s, a.fail, true)) || T('lead.nothing') });
+    if (s.chapter === 2) { const to = a.to && D.LEVELS[placeIndex(a.to)];
+      const win = joinBits(leadBits(s, Object.assign({}, a.success, { nextStop: to ? to.short.replace(/^The /, 'the ') : null }), true).concat(a.intro && a.with && s.people[a.intro] ? [T('lead.hand_on', { name: shortName(s, a.intro) })] : []));
+      if (a.walk) return T('lead.walk', { place: to.short.replace(/^The /, 'the ') });
+      return T('lead.roll', { win: win || T('lead.nothing'), lose: joinBits(leadBits(s, a.fail, true)) || T('lead.nothing') }); }
+    const exits = EXITS[level(s).id], leaves = !a.stay && (!exits || exits.includes(a.id)) && s.pos < D.LEVELS.length - 1;
+    const nextIdx = a.success.route === 'coast' || (s.route === 'coast' && s.pos === 1) ? (s.pos === 1 ? 3 : s.pos + 1) : s.pos + 1;
+    const nextName = leaves ? (a.success.route === 'coast' && nextIdx === 3 ? D.HARBOR : stopAt(s, nextIdx)).short.replace(/^The /, 'the ') : null;
+    const win = joinBits(leadBits(s, Object.assign({}, a.success, { nextStop: nextName, hours: a.success.hours }), true));
+    return T('lead.roll', { win: win || T('lead.nothing'), lose: joinBits(leadBits(s, a.fail, true)) || T('lead.nothing') });
+  }
+  function skipTarget(s) {
+    const t = [];
+    if (level(s).approaches.some(a => a.needs.some(n => n.night) && !(a.gone && s.arr[a.gone.arr].stage >= a.gone.stage)) && !isNight(s)) t.push({ kind: 'dark', hours: hoursToDark(s) });
+    const j = s.jobs.filter(x => !x.stall && x.due > s.hour).sort((a, b) => a.due - b.due)[0];
+    if (j) t.push({ kind: 'answer', hours: j.due - s.hour, ally: j.ally, arr: j.arr });
+    const near = t.filter(x => x.hours > 0 && x.hours <= SKIP_MAX).sort((a, b) => a.hours - b.hours)[0];
+    return near || { kind: 'next', hours: SKIP_MAX };
+  }
+  function actions(s) { return { event: eventView(s), approaches: approachList(s), calls: callList(s), messages: inboxList(s), wait: { kind: 'wait', id: 'wait', name: T('sim.label.lie_low_one_hour'), ok: !s.over && !s.event, hours: 1 }, waitDark: waitDark(s), waitJob: waitJob(s), waitOn: Object.assign({ kind: 'wait', id: 'wait_on', ok: !s.over && !s.event }, skipTarget(s), { target: skipTarget(s).kind }), lodge: { kind: 'wait', id: 'lodge', ok: !s.over && !s.event && !s.tutorial }, sides: sideList(s), body: body(s) }; }
   // ---- food and sleep ------------------------------------------------------------------
   const tire = (s) => (s.awake || 0) >= EXHAUSTED ? 2 : (s.awake || 0) >= TIRED ? 1 : 0;
   const hunger = (s) => heldTag(s, 'supplies') ? 0 : (s.fed || 0) >= STARVING ? 2 : (s.fed || 0) >= HUNGRY ? 1 : 0; // food for three days: you never go hungry
@@ -372,12 +446,13 @@ const Sim = (() => {
     if (s.tutorial || s.over) return;
     let r = s.hold + 1; if (s.flags.restriction && s.hold === 0) r = 2; // once the travel ban is out, the first hold is a station, not a roadside
     // Jurisdiction: across the line a Valdórian court holds nobody. Costamar questions you only once Sosā has asked it to, and never climbs past that.
-    if (s.pos >= ESMERALDA_FROM) { if (!s.flags.asked) return; r = 1; }
+    if (outOfReach(s)) { if (!s.flags.asked) return; r = 1; }
     s.hold = Math.min(3, r); s.holds += 1; s.belief = s.pos; s.lastHoldAt = s.hour;
     s.event = { kind: 'hold', rung: s.hold };
     events.push(ev('hold', { rung: s.hold, title: D.HOLDS[s.hold].title, text: fill(s, D.HOLDS[s.hold].text) }));
   }
-  function choiceWhy(s, c) { for (const n of c.needs || []) { const w = needText(s, n); if (w) return w; } if (c.id === 'embassy' && s.people.sibling.turned) return T('sim.why.is_not_answering', { name: ch(s).sibling.short }); return ''; }
+  function choiceWhy(s, c) { for (const n of c.needs || []) { const w = needText(s, n); if (w) return w; }
+    { const card = c.fx && (c.fx.card || (c.fx.roll && c.fx.roll.win && c.fx.roll.win.card)); if (card && (s.hand.includes(card) || (s.used.includes(card) && !D.CARDS[card].again))) return T('sim.why.already_hold', { card: lower1(D.CARDS[card].name) }); } if (c.id === 'embassy' && s.people.sibling.turned) return T('sim.why.is_not_answering', { name: ch(s).sibling.short }); return ''; }
   // Markers: what a choice costs or gives, as short tags the UI shows instead of sentences.
   function fxTags(s, fx, out) {
     out = out || []; if (!fx) return out;
@@ -417,11 +492,12 @@ const Sim = (() => {
       { id: 'test', label: T('sim.opt.test_them_quietly', { first }), fx: { hours: 2, test: e.who } },
       { id: 'cut', label: T('sim.opt.cut_them_off', { first }), fx: { cut: e.who } } ] }; }
     else if (kind === 'lodging') def = D.LODGING.find(x => x.id === e.id);
+    else if (kind === 'side') def = D.SIDES.find(x => x.id === e.id);
     else if (kind === 'sick') def = D.SICK;
     else def = D.EVENTS.find(x => x.id === e.id);
-    return { kind, rung: e.rung || 0, title: fill(s, def.title), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, rolls: !!(c.fx && c.fx.roll), tags: fxTags(s, c.fx) }; }) };
+    return { kind, rung: e.rung || 0, title: fill(s, def.title || def.name), text: fill(s, def.text), choices: def.choices.map(c => { const why = choiceWhy(s, c); return { id: c.id, label: fill(s, c.label), ok: !why, why, rolls: !!(c.fx && c.fx.roll), tags: fxTags(s, c.fx), lead: leadText(s, c.fx) }; }) };
   }
-  function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, label: c.label, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; if (v.kind === 'lodging') return D.LODGING.find(x => x.id === v.id); if (v.kind === 'sick') return D.SICK; return D.EVENTS.find(x => x.id === v.id); }
+  function eventDef(s) { const v = s.event; if (v.kind === 'hold') return D.HOLDS[v.rung]; if (v.kind === 'rumor') return { choices: eventView(s).choices.map((c, i) => ({ id: c.id, label: c.label, fx: [{ doubt: v.who }, { hours: 2, test: v.who }, { cut: v.who }][i] })) }; if (v.kind === 'lodging') return D.LODGING.find(x => x.id === v.id); if (v.kind === 'side') return D.SIDES.find(x => x.id === v.id); if (v.kind === 'sick') return D.SICK; return D.EVENTS.find(x => x.id === v.id); }
   function resolveEvent(s, choiceId, events) {
     if (!s.event) return { ok: false, why: T('sim.why.no_news_waiting') };
     const def = eventDef(s), c = def.choices.find(x => x.id === choiceId); if (!c) return { ok: false, why: T('sim.why.pick_one_of_the_choices') };
@@ -430,6 +506,7 @@ const Sim = (() => {
     events.push(ev('chose', { kind: was.kind, label: fill(s, c.label) }));
     if (was.kind === 'hold' && s.hold < 3) s.exposure = Math.max(s.exposure, 0);
     applyFx(s, c.fx, events);
+    { const nx = s.flags.sideNext; if (nx && !s.event && !s.over) { delete s.flags.sideNext; if (nx.pos === s.pos) openSide(s, D.SIDES.find(x => x.id === nx.id), events); } }
     return finish(s, events);
   }
   function applyFx(s, fx, events) {
@@ -443,6 +520,7 @@ const Sim = (() => {
     if (fx.exposure) heat(s, fx.exposure, events);
     if (fx.belief === 'away') { s.belief = s.pos === 0 ? 1 : s.pos - 1; events.push(ev('belief', { belief: s.belief })); }
     if (fx.belief === 'here') { s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); }
+    if (fx.to && s.chapter === 2 && !s.over) advanceLevel(s, events, fx.to);
     if (fx.card) gain(s, fx.card, events);
     if (fx.lose) { const pool = s.hand.filter(id => !D.CARDS[id].companion && (fx.lose === 'best' ? true : id !== 'passport')); let id = fx.lose; if (fx.lose === 'random') id = pool[Math.floor(s._rng() * pool.length)]; if (fx.lose === 'best') id = s.hand.includes('passport') ? 'passport' : pool[Math.floor(s._rng() * pool.length)]; if (id) { lose(s, id, events); s.used.push(id); } }
     if (fx.trust) for (const k in fx.trust) { s.people[k].trust = Math.max(-2, Math.min(3, s.people[k].trust + fx.trust[k])); events.push(ev('trust', { who: k, trust: s.people[k].trust, delta: fx.trust[k] })); }
@@ -502,15 +580,16 @@ const Sim = (() => {
     // owner, Nov. 2, 2026: one click to get to the next thing. Time runs hour by hour until something needs you: news or a
     // police stop, a call, an answer about the jet, the visa or the welcome, or a move that opens or closes. At most 12 hours.
     if (actionId === 'wait_on') { if (s.over || s.event) return { ok: false, why: T('sim.why.not_something_you_can_do') };
-      const sig = () => [s.inbox.length, s.jobs.length, Object.values(s.arr).map(a => a.stage).join(), approachList(s).filter(a => a.ok).map(a => a.id).join(), s.hold].join('|'), before = sig(), until = s.hour + SKIP_MAX;
+      const sig = () => [s.inbox.length, s.jobs.length, Object.values(s.arr).map(a => a.stage).join(), approachList(s).filter(a => a.ok).map(a => a.id).join(), s.hold].join('|'), before = sig(), until = s.hour + skipTarget(s).hours;
       careLine(s, events); quietly(s, true, () => { do pass(s, 1, events); while (s.hour < until && !s.event && !s.over && sig() === before); }); return finish(s, events); }
     if (actionId === 'wait_job') { const w = waitJob(s); if (!w.ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; const until = s.hour + w.hours, inbox = s.inbox.length; careLine(s, events); quietly(s, true, () => { while (s.hour < until && !s.event && !s.over && s.inbox.length === inbox) pass(s, 1, events); }); return finish(s, events); }
     if (actionId === 'wait_dark') { if (!waitDark(s).ok) return { ok: false, why: T('sim.why.not_something_you_can_do') }; careLine(s, events); quietly(s, true, () => { while (!isNight(s) && !s.event && !s.over) pass(s, 1, events); }); return finish(s, events); }
+    if (actionId.startsWith('side:')) return goSide(s, actionId.slice(5), events);
     if (actionId.startsWith('msg:')) return answer(s, +actionId.slice(4), optionId, events);
     if (actionId.startsWith('call:')) return call(s, actionId.slice(5), events);
     if (actionId.startsWith('hurry:')) return hurry(s, actionId.slice(6), events);
     if (actionId.startsWith('feed:')) return feed(s, actionId.slice(5), events);
-    const a = level(s).approaches.find(x => x.id === actionId);
+    const a = level(s).approaches.concat(walksFrom(s)).find(x => x.id === actionId);
     if (!a) return { ok: false, why: T('sim.why.not_something_you_can_do') };
     const view = approachList(s).find(x => x.id === actionId);
     if (!view.ok) return { ok: false, why: view.why };
@@ -544,7 +623,8 @@ const Sim = (() => {
     const rest = !!a.stay;
     if (rest) careLine(s, events);
     quietly(s, rest, () => pass(s, a.hours + ((won ? a.success : a.fail).hours || 0), events));
-    if (won && !s.over && !a.stay) { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); }
+    if (won && !s.over && a.intro && s.people[a.intro] && a.with && s.people[a.with] && !s.people[a.with].turned) handOn(s, a.with, a.intro, events);
+    if (won && !s.over && !a.stay) { if (s.chapter === 2) { if (a.to) advanceLevel(s, events, a.to); } else { const exits = EXITS[level(s).id]; if (!exits || exits.includes(a.id)) advanceLevel(s, events); } }
     return finish(s, events);
   }
   function apply(s, fx, events, a) {
@@ -590,7 +670,28 @@ const Sim = (() => {
     if (k === 'reception' && to >= 2) gain(s, 'intro_vel', events);
     if (k === 'permission' && to === 1) gain(s, 'sponsor_line', events);
   }
-  function advanceLevel(s, events) {
+  // the relay (docs/chapter-two-relay.md): a helper whose leg worked hands you on, and the next helper trusts you more
+  function handOn(s, from, to, events) {
+    const p = s.people[to]; if (!p || p.cut) return; p.trust = Math.min(3, (p.trust || 0) + 1);
+    say(events, 'narrator', T('sim.relay.hand_on', { from: personName(s, from), to: personName(s, to) }));
+  }
+  const placeIndex = (id) => D.LEVELS.findIndex(L => L.id === id);
+  const sameStrip = (a, b) => D.STRIPS && D.STRIPS.some(x => x.places.includes(a) && x.places.includes(b));
+  // chapter two's walks: neighbors on one strip, both ways, an hour each, no roll
+  function walksFrom(s) {
+    if (s.chapter !== 2 || !D.STRIPS) return [];
+    const here = level(s).id, out = [];
+    for (const st of D.STRIPS) for (const [a, b] of st.walk) { const to = a === here ? b : b === here ? a : null; if (!to) continue;
+      const L = D.LEVELS[placeIndex(to)]; out.push({ id: 'walk_' + to, name: T('sim.walk.name', { place: L.short.replace(/^The /, 'the ') }), hours: 1, dc: 2, noRoll: true, walk: true, needs: [], to, mods: {},
+        text: T('sim.walk.text', { place: L.short.replace(/^The /, 'the ') }), success: { say: T('sim.walk.say', { place: L.short.replace(/^The /, 'the ') }) }, fail: { say: '' } }); }
+    return out;
+  }
+  function advanceLevel(s, events, to) {
+    if (s.chapter === 2) { const i = placeIndex(to); if (i < 0) return; const left = level(s).id, first = !s.visited.includes(i), walked = sameStrip(left, to);
+      s.pos = i; s.visited.push(i); (s.arrivedAt = s.arrivedAt || {})[i] = s.hour; events.push(ev('travel', { to: i, walk: walked }));
+      for (const id of s.hand.slice()) { const c = D.CARDS[id]; if (c && c.tag === 'passage' && c.reach.includes(left)) { lose(s, id, events); s.used.push(id); } }
+      if (first) arrive(s, events, false); else { events.push(ev('arrive', { level: s.pos })); say(events, 'narrator', T('sim.walk.back', { place: level(s).short.replace(/^The /, 'the ') })); }
+      return; }
     if (s.pos >= D.LEVELS.length - 1) return;
     const left = level(s).id; // a way onto the freight is gone once you leave the stop where it counts, not before you get there
     // Marta: leaving a stop the police are searching, she swaps the plates and the police lose the car
@@ -715,7 +816,7 @@ const Sim = (() => {
     if (pick.once) s.flags.enemyDone[pick.id] = true;
     let text = '';
     switch (pick.id) {
-      case 'check_belief': { const where = placeOf(s, s.belief); text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { const noPower = s.pos >= ESMERALDA_FROM && !s.flags.asked; text += noPower ? V('sim.inquiry.found_no_power', 'gov.inquiry.found_no_power') : V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
+      case 'check_belief': { const where = placeOf(s, s.belief); text = say3(pick)(where); if (s.belief === s.pos && hidden(s)) text += T('mate.emilio.hidden'); else if (s.belief === s.pos) { if (s.exposure >= (s.flags.spotWorn && (tire(s) || hunger(s)) ? 4 : 7)) { const noPower = outOfReach(s) && !s.flags.asked; text += noPower ? V('sim.inquiry.found_no_power', 'gov.inquiry.found_no_power') : V('sim.inquiry.they_find_you', 'gov.inquiry.found'); events.push(ev('enemy', { id: pick.id, text, belief: s.belief })); climbHold(s, events); return text; } heat(s, s._manual ? 1 : 2, events); text += V('sim.inquiry.they_are_close', 'gov.inquiry.close');
           // Celina: once at each stop in Valdória, a sighting on her station sends the search one stop back
           if (!s._manual && hasTag(s, 'media') && !(s.flags.spun || {})[s.pos]) { (s.flags.spun = s.flags.spun || {})[s.pos] = true; s.belief = s.pos === 0 ? 1 : s.pos - 1; text += T('mate.celina.spin', { place: placeOf(s, s.belief) }); events.push(ev('belief', { belief: s.belief })); } } else text += V('sim.inquiry.nobody_there_has_seen_you', 'gov.inquiry.not_seen'); break; }
       case 'trace': { text = say3(pick)(); if (s.hour - s.calledAt <= 3 && hasTag(s, 'phone')) text += T('mate.nadia.untraced'); else if (s.hour - s.calledAt <= 3) { traced = true; s.belief = s.pos; events.push(ev('belief', { belief: s.belief })); text += V('sim.inquiry.the_last_call_came_from', 'gov.inquiry.last_call'); } else text += V('sim.inquiry.nothing_new', 'gov.inquiry.no_calls'); break; }

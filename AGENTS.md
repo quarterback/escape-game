@@ -293,7 +293,7 @@ favicon must stay embedded so the game works offline.
 
 `src/render.js` draws the scene with PixiJS 8 (`vendor/pixi.min.js`, pinned 8.21.0).
 `ui.js` only calls its public functions: `start`, `still`, `runwayStill`,
-`setState(s, gov)`, `enqueue`, `busy`, `float`, `dice`, `travel`, `enemy`, `ring`,
+`setState(s, gov)`, `enqueue`, `busy`, `float`, `dice`, `travel`, `pan` (a walk along one of chapter two's strips), `hold` (tools only: freeze the scene for a screenshot), `enemy`, `ring`,
 `pause`, `gameOver` and `portrait` (a character's sprite for the picker). Keep that interface when changing the art. Pass the
 government state as the second argument to `setState` in that mode; the scene then
 shows the suspected stop and the search team and must never show the candidate's

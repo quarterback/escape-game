@@ -30,7 +30,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   const h0 = shown().hours; a.hours = before + 3; const after = shown(); a.hours = before;
   ok(after.hours === h0 + 3 && after.preview.join(' ').includes(String(h0 + 3)), `C03 escape: changing ${a.id} from ${h0} to ${h0 + 3} hours changes the button and the preview without editing text`); }
 { let checked = 0, wrong = [];
-  for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13;
+  for (let i = 0; i < 20; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; g.hour = 13;
     for (const o of Gov.view(g).orders.filter(o => o.ok && o.real >= 2 && o.real <= 20)) { const h = Gov.restore(Gov.serialize(g)); h._dice = [o.real]; const r = Gov.commit(h, o.id); const roll = r.events.find(e => e.type === 'roll'); checked += 1; if (!roll || !roll.won) wrong.push(`${o.id}: hidden target ${o.real} did not win on a die of ${o.real}`); } }
   ok(!wrong.length && checked > 0, `C03 government: ${checked} orders roll against their hidden target${wrong.length ? ': ' + wrong.slice(0, 3).join('; ') : ''}`); }
 
@@ -67,7 +67,7 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
   for (let i = 0; i < 6; i++) { const s = Sim.newRun(900 + i, i % 2 ? 'man' : 'woman'); for (let p = 0; p < Data.LEVELS.length; p++) { s.pos = p;
     for (const a of Sim.actions(s).approaches) { if (a.noRoll) continue; shown += 1; if (leaks(a.odds + ' ' + a.preview.join(' ')) || /\d/.test(a.odds)) bad.push(`${a.id}: "${a.odds}"`);
       const die = a.real <= 20 ? a.real : 20, h = Sim.restore(Sim.serialize(s)); h.nextEventAt = 999; h._dice = [die]; const r = Sim.commit(h, a.id); const roll = r.ok && r.events.find(e => e.type === 'roll' && !e.who); if (r.ok && roll && roll.won !== Data.DICE.wins(die, a.real)) bad.push(`${a.id}: roll ignores the real target`); } } }
-  for (let i = 0; i < 4; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; for (const o of Gov.view(g).orders) { shown += 1; if (leaks(o.odds + ' ' + o.preview.join(' ')) || /\d/.test(o.odds)) bad.push(`order ${o.id}: "${o.odds}"`); } }
+  for (let i = 0; i < 4; i++) { const g = Gov.newRun(300 + i, 'woman'); g.belief = i % 5; g.c.hour = 13; g.hour = 13; for (const o of Gov.view(g).orders) { shown += 1; if (leaks(o.odds + ' ' + o.preview.join(' ')) || /\d/.test(o.odds)) bad.push(`order ${o.id}: "${o.odds}"`); } }
   ok(!bad.length && shown > 40, `C16 ${shown} move and order views carry no target or chance, and rolls use the hidden target${bad.length ? ': ' + bad.slice(0, 3).join('; ') : ''}`);
   // 3. news chips, result lines and logs carry no target either
   let news = 0; bad = [];
@@ -198,12 +198,63 @@ let fails = 0; const ok = (cond, msg) => { console.log(`${cond ? 'pass' : 'FAIL'
     // a card kind is out of reach if every move that hands it over goes through a traitor and nobody starts with it
     const held = new Set(s.hand.map(id => Data.CARDS[id] && Data.CARDS[id].tag));
     const open = (k) => held.has(k) || Object.values(Data.EVENTS || {}).length >= 0 && all.some(({ a }) => a.success && a.success.card && Data.CARDS[a.success.card] && Data.CARDS[a.success.card].tag === k && !(a.with && bad.has(a.with)));
+    // chapter two is a map (docs/chapter-two-relay.md): every place must still reach the airport by walks and legs no traitor runs
+    if (ch === 2) { const ok2 = (a) => !(a.with && bad.has(a.with)) && a.needs.every(n => !n.card || open(n.card));
+      const edges = {}; for (const L of Data.LEVELS) edges[L.id] = (L.approaches || []).filter(a => a.to && ok2(a)).map(a => a.to);
+      for (const st of Data.STRIPS) for (const [x, y] of st.walk) { edges[x].push(y); edges[y].push(x); }
+      const goal = Data.LEVELS.find(L => L.approaches.some(a => a.success && a.success.win && ok2(a)));
+      for (const L of Data.LEVELS) { const seen = new Set([L.id]), q = [L.id]; while (q.length) { const x = q.shift(); for (const y of edges[x]) if (!seen.has(y)) { seen.add(y); q.push(y); } }
+        if (!goal || !seen.has(goal.id)) trapped.push(`chapter 2 seed ${seed} ${L.id} (traitors ${[...bad].join(', ')})`); }
+      continue; }
     Data.LEVELS.forEach((L, i) => { if (i === Data.LEVELS.length - 1 && !(L.approaches || []).some(a => a.success && a.success.win)) return;
       const exits = Sim.EXITS[L.id] && Sim.EXITS[L.id].length ? (L.approaches || []).filter(a => Sim.EXITS[L.id].includes(a.id)) : (L.approaches || []).filter(a => a.success && !a.noExit);
       const way = exits.some(a => !(a.with && bad.has(a.with)) && a.needs.every(n => !n.card || open(n.card)));
       if (!way) trapped.push(`chapter ${ch} seed ${seed} ${L.id} (traitors ${[...bad].join(', ')})`); });
   }
   ok(!trapped.length, `C23 in 800 runs, every stop keeps a way on that no traitor controls${trapped.length ? ': ' + trapped.slice(0, 3).join('; ') : ''}`); }
+
+// ---- C24 (no waiting, docs/no-waiting.md): every side place opens, every choice there states its cost and works,
+// no cost line names odds, and the skip always names a target and moves the clock
+{ const bad = []; let places = 0, choices = 0; const ODDS = /%|chance|likel|odds|probab|guarantee|sure to|will work|can't fail|cannot fail/i;
+  for (const chapter of [1, 2]) { Data.useChapter(chapter);
+    for (const x of Data.SIDES) {
+      const base = Sim.newRun(31, 'woman', { chapter }); base.event = null; base.nextEventAt = 999; base.inbox = [];
+      if (x.at === 'harbor') { base.route = 'coast'; base.pos = 3; } else base.pos = Data.LEVELS.findIndex(L => L.id === x.at);
+      if (base.pos < 0) { bad.push(`${x.id}: no stop ${x.at}`); continue; }
+      const listed = Sim.actions(base).sides.find(y => y.id === x.id); places += 1;
+      if (!listed || !listed.ok || !listed.lead) { bad.push(`${x.id}: not listed with its trip cost`); continue; }
+      if (ODDS.test(listed.lead)) bad.push(`${x.id}: odds in "${listed.lead}"`);
+      for (const c of x.choices) {
+        const s = Sim.restore(Sim.serialize(base)); s.nextEventAt = 999; s._dice = [20];
+        const r = Sim.commit(s, 'side:' + x.id); const v = Sim.actions(s).event;
+        if (!r.ok || !v || v.kind !== 'side') { bad.push(`${x.id}: did not open (${r.why || (v && v.kind)})`); break; }
+        const cv = v.choices.find(y => y.id === c.id); choices += 1;
+        if (c.label.split(/\s+/).length > 6) bad.push(`${x.id}.${c.id}: label over six words`);
+        if (c.id !== 'back' && !cv.lead) bad.push(`${x.id}.${c.id}: no cost line`);
+        if (cv.lead && ODDS.test(cv.lead)) bad.push(`${x.id}.${c.id}: odds in "${cv.lead}"`);
+        const r2 = Sim.commit(s, 'evt:' + c.id); if (!r2.ok) bad.push(`${x.id}.${c.id}: ${r2.why}`);
+        if (Sim.actions(s).sides.some(y => y.id === x.id)) bad.push(`${x.id}: offered again after a visit`);
+      }
+    }
+    for (let pos = 0; pos < Data.LEVELS.length; pos++) { const s = Sim.newRun(5, 'man', { chapter }); s.pos = pos; s.event = null; s.inbox = []; s.nextEventAt = 999;
+      const w = Sim.actions(s).waitOn, h0 = s.hour; if (!w.ok || !(w.hours > 0) || !w.target) { bad.push(`skip at ${Data.LEVELS[pos].id}: no target`); continue; }
+      Sim.commit(s, 'wait_on'); if (!(s.hour > h0)) bad.push(`skip at ${Data.LEVELS[pos].id}: the clock did not move`); }
+  }
+  Data.useChapter(1);
+  for (const who of ['woman', 'man']) for (let pos = 0; pos < Data.LEVELS.length; pos++) { const s = Sim.newRun(9, who); s.pos = pos; s.event = null; s.hour = 10;
+    for (const a of Sim.actions(s).approaches) if (!a.lead || ODDS.test(a.lead)) bad.push(`${a.id}: cost line "${a.lead}"`); }
+  ok(!bad.length && places >= 16, `C24 ${places} side places and ${choices} choices state their costs and work, moves state theirs, and the skip always moves on${bad.length ? ': ' + bad.slice(0, 4).join('; ') : ''}`); }
+
+// ---- C25 (no waiting): on the investigator's side an order takes exactly the hours it lists, however long her move runs
+{ const off = []; let n = 0;
+  for (let seed = 1; seed <= 40; seed++) { const g = Gov.newRun(900 + seed, seed % 2 ? 'woman' : 'man');
+    for (let k = 0; k < 25 && !g.over; k++) { const v = Gov.view(g);
+      if (v.event) { Gov.commit(g, 'evt:' + v.event.choices.find(c => c.ok).id); continue; }
+      if (v.messages.length) { Gov.commit(g, v.messages[0].id, v.messages[0].options.find(o => o.ok).id); continue; }
+      const o = v.orders.filter(x => x.ok)[k % Math.max(1, v.orders.filter(x => x.ok).length)]; if (!o) { Gov.commit(g, 'wait'); continue; }
+      const h0 = g.hour; Gov.commit(g, o.id); if (g.over) break; n += 1;
+      if (g.hour - h0 !== o.hours) off.push(`seed ${900 + seed} ${o.id}: listed ${o.hours} hr, took ${g.hour - h0}`); } }
+  ok(!off.length && n > 100, `C25 ${n} investigator orders each took exactly their listed hours${off.length ? ': ' + off.slice(0, 3).join('; ') : ''}`); }
 
 console.log(fails ? `${fails} contract test(s) failed` : 'all contract tests pass');
 process.exit(fails ? 1 : 0);

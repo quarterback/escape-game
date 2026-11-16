@@ -107,6 +107,9 @@
   "PixiJS unavailable, drawing in 2D",
   "image/png",
   "'GCNorthSans-Regular', Arial, sans-serif",
-  "Escape"
+  "Escape",
+  "#phasecard button",
+  "#approaches .act",
+  "#inbox .opt"
  ]
 }

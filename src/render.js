@@ -36,6 +36,7 @@ const Render = (() => {
   }
   function float(x, y, text, color) { enqueue({ dur: 100, start(v) { v.floats.push({ x, y, text, color, t: 0, life: 1500, obj: null }); } }); }
   function dice(die, need, won) { enqueue({ dur: 900, start(v) { v.die = { die, need, won, t: 0 }; }, update(v, k) { v.die.t = k; }, end(v) { v.die = null; } }); }
+  function pan() { view.panNext = true; }
   function travel() { enqueue({ dur: 700, update(v, k) { v.fade = Math.sin(k * Math.PI); }, end(v) { v.fade = 0; v.walk = { t: 0, dur: 1300 }; } }); }
   function enemy() { enqueue({ dur: 600, update(v, k) { v.enemyPulse = Math.sin(k * Math.PI); v.shake = (1 - k) * 2; }, end(v) { v.enemyPulse = 0; v.shake = 0; } }); }
   // Police walk up to the player. kind: 'questioned' | 'held' | 'arrest'.
@@ -52,7 +53,7 @@ const Render = (() => {
   const mkCanvas = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
   function painter(target, collect, shown) {
     const ctxs = {};
-    if (collect) for (const k of LAYERS) { const c = target[k].getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, LW, H); c.translate(PAD, 0); ctxs[k] = c; }
+    if (collect) for (const k of LAYERS) { const c = target[k].getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, target[k].width, H); c.translate(PAD, 0); ctxs[k] = c; }
     else { const c = target.getContext('2d'); for (const k of LAYERS) ctxs[k] = c; }
     let c = ctxs.sky, cur = 'sky';
     const g = {
@@ -100,9 +101,14 @@ const Render = (() => {
     return [f.pos, f.night ? 1 : 0, f.gov ? 1 : 0, s.arr.aircraft.stage, s.arr.reception.stage, turned, s.who, f.mate || '', (s.picked || []).join(',')].join('|');
   }
   const sceneId = (f) => Sim.stopAt(f.s, f.pos).scene;
+  // chapter two's strips (docs/chapter-two-relay.md): one long side view per strip, the camera on the current place
+  const stripOf = (f) => Art.STRIPS && Art.STRIPS[sceneId(f)];
+  const stripX = (f) => { const st = stripOf(f); return st ? st.at[Sim.stopAt(f.s, f.pos).id] : null; };
+  const camFor = (f) => { const st = stripOf(f); return st ? Math.max(0, Math.min(st.w - W, stripX(f) - 110)) : 0; };
+  const PF = { sky: 0.15, far: 0.5, mid: 1, near: 1 }; // how fast each layer moves with the camera
   // The player: the candidate with a gold marker, or the government's search team with a coral one.
   function playerSpec(f) {
-    const x = Art.PLAYER_X[sceneId(f)] || 110;
+    const x = stripOf(f) ? stripX(f) : (Art.PLAYER_X[sceneId(f)] || 110);
     // the companion walks a step behind; the cards you added ride along as items at your feet
     const mate = f.mate && Data.COMPANIONS[f.mate] ? [{ dx: -14, role: Data.COMPANIONS[f.mate].sprite, mate: f.mate }] : [];
     const items = f.gov ? [] : (f.s.picked || []).filter(id => Art.ITEMS[id] && Data.CARDS[id]).map((id, i) => ({ id, dx: -30 - i * 14 - (mate.length ? 0 : -14) }));
@@ -124,7 +130,8 @@ const Render = (() => {
 
   // ---- stills for the title, start screen and debrief (2D, synchronous) ----
   function flatScene(c, f) {
-    const g = painter(c, false, f.s); Art.SCENES[sceneId(f)](g, f.s, 4000, f.night);
+    const st = stripOf(f); if (st) c.getContext('2d').translate(-camFor(f), 0);
+    const g = painter(c, false, f.s); (st ? st.draw : Art.SCENES[sceneId(f)])(g, f.s, 4000, f.night);
     const p = playerSpec(f); g.layer('near'); for (const m of p.list) Art.drawSprite(g, m.role, p.x + m.dx, GROUND, 'idle0');
     for (const it of p.items) g.px(p.x + it.dx - 6, GROUND - 8, Art.ITEMS[it.id], Art.itemPalette(Data.CARDS[it.id].tag));
     g.fill(p.marker); g.rect(p.x - 1, GROUND - 26, 3, 2); return g;
@@ -142,7 +149,7 @@ const Render = (() => {
   }
   function toCanvas(canvas, e) { const m = fit(canvas); if (!m) return null; return { x: (e.clientX - m.r.left - m.ox) / m.k, y: (e.clientY - m.r.top - m.oy) / m.k }; }
   function visibleBox(canvas) { const m = fit(canvas); if (!m) return { x0: 0, x1: CW, y0: 0, y1: CH }; return { x0: Math.max(0, -m.ox / m.k), x1: Math.min(CW, (m.r.width - m.ox) / m.k), y0: Math.max(0, -m.oy / m.k), y1: CH }; }
-  function hitTest(p) { if (!p) return null; let best = null; for (const h of hotspots) if (p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h) best = h; return best; }
+  function hitTest(p) { if (!p) return null; if (view.cam) p = { x: p.x + view.cam * SCALE, y: p.y }; let best = null; for (const h of hotspots) if (p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h) best = h; return best; }
   function wirePointer(canvas) {
     let tapTimer = 0;
     canvas.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') hover = hitTest(toCanvas(canvas, e)); });
@@ -222,8 +229,14 @@ const Render = (() => {
 
   // Rebuild the layers, the people and the weather when the state changes.
   function rebuild(f) {
+    const st = stripOf(f), need = st ? st.w + 2 * PAD : LW;
+    for (const k of LAYERS) if (X.layerCanvas[k].width !== need) { const c = mkCanvas(need, H); X.layerCanvas[k] = c; X.layerTex[k] = canvasTexture(c); X.layerSprite[k].texture = X.layerTex[k]; }
+    const lastStrip = X.strip, lastCam = view.cam || 0, lastX = X.player ? X.player.x : 0;
+    X.strip = st ? sceneId(f) : null; view.cam = camFor(f);
+    // a walk along the same strip pans the camera instead of cutting
+    view.pan = view.panNext && st && lastStrip === X.strip ? { from: lastCam, to: view.cam, ax: lastX, bx: stripX(f), t: 0, dur: 1600 } : null; view.panNext = false;
     const g = painter(X.layerCanvas, true, f.s);
-    Art.SCENES[sceneId(f)](g, f.s, 0, f.night);
+    (st ? st.draw : Art.SCENES[sceneId(f)])(g, f.s, 0, f.night);
     for (const k of LAYERS) X.layerTex[k].source.update();
     for (const layer of [X.sky, X.farFx, X.midFx, X.actors, X.weather, X.lights]) layer.removeChildren().forEach(c => c.destroy());
     X.part = []; X.people = []; X.lightList = []; X.starList = [];
@@ -280,23 +293,26 @@ const Render = (() => {
     const gr = grade(f);
     if (gr.a) { const k = gr.a; X.grade.alpha = 1; X.grade.tint = ((Math.round(255 - (255 - ((gr.col >> 16) & 255)) * k) << 16) | (Math.round(255 - (255 - ((gr.col >> 8) & 255)) * k) << 8) | Math.round(255 - (255 - (gr.col & 255)) * k)); } else X.grade.alpha = 0;
     // Parallax: the camera settles as the player walks in after travel.
-    let pk = 0, px0 = X.player.x, striding = false;
-    if (view.walk) { view.walk.t += dt; const k = Math.min(1, view.walk.t / view.walk.dur), e = 1 - (1 - k) * (1 - k); pk = 1 - e; px0 = Math.round(X.player.x - 80 * (1 - e)); striding = k < 1; if (k >= 1) view.walk = null; }
-    for (const k of LAYERS) X.layerSprite[k].x = -PAD + Math.round(PARALLAX[k] * pk);
-    X.farFx.x = Math.round(PARALLAX.far * pk); X.midFx.x = Math.round(PARALLAX.mid * pk); X.weather.x = 0; X.actors.x = Math.round(PARALLAX.near * pk);
-    for (const L of X.lightList) { L.sp.x = L.x0 + Math.round((PARALLAX[L.layer] || 0) * pk); L.sp.alpha = Math.max(0, gr.light * L.a * (1 - L.flicker * (0.5 + 0.5 * Math.sin(now / 90 + L.ph) * Math.sin(now / 230 + L.ph * 0.7)))); }
+    let pk = 0, cam = view.cam || 0, px = X.player.x, striding = false;
+    if (view.pan) { view.pan.t += dt; const k = Math.min(1, view.pan.t / view.pan.dur), e = k < 0.5 ? 2 * k * k : 1 - 2 * (1 - k) * (1 - k); cam = Math.round(view.pan.from + (view.pan.to - view.pan.from) * e); px = Math.round(view.pan.ax + (view.pan.bx - view.pan.ax) * e); striding = k < 1; if (k >= 1) view.pan = null; }
+    let px0 = px - cam;
+    if (view.walk && !view.pan) { view.walk.t += dt; const k = Math.min(1, view.walk.t / view.walk.dur), e = 1 - (1 - k) * (1 - k); pk = 1 - e; px0 = Math.round(px - cam - 80 * (1 - e)); striding = k < 1; if (k >= 1) view.walk = null; }
+    const walkT = view.pan ? view.pan.t : view.walk ? view.walk.t : 0;
+    for (const k of LAYERS) X.layerSprite[k].x = -PAD - Math.round(cam * PF[k]) + Math.round(PARALLAX[k] * pk);
+    X.sky.x = -Math.round(cam * PF.sky); X.farFx.x = -Math.round(cam * PF.far) + Math.round(PARALLAX.far * pk); X.midFx.x = -cam + Math.round(PARALLAX.mid * pk); X.weather.x = 0; X.actors.x = -cam + Math.round(PARALLAX.near * pk);
+    for (const L of X.lightList) { L.sp.x = L.x0 - Math.round(cam * (PF[L.layer] || 1)) + Math.round((PARALLAX[L.layer] || 0) * pk); L.sp.alpha = Math.max(0, gr.light * L.a * (1 - L.flicker * (0.5 + 0.5 * Math.sin(now / 90 + L.ph) * Math.sin(now / 230 + L.ph * 0.7)))); }
     for (const st of X.starList) st.sp.alpha = 0.35 + 0.65 * Math.max(0, Math.sin(now / 700 + st.ph));
     // People breathe out of step with each other.
     for (const p of X.people) setFrame(p, p.role, ((now + p.ph) % 3200) < 420 ? 'idle1' : 'idle0', p.turned);
     // The player walks in, then breathes; the marker bobs over the head.
-    for (const m of X.player.sprites) { setFrame(m, m.role, striding ? 'walk' + (Math.floor(view.walk.t / 120) % 4) : (((now + m.dx * 97) % 3600) > 1800 && ((now + m.dx * 97) % 3600) < 2240 ? 'idle1' : 'idle0')); m.sp.x = px0 + m.dx - 6 - X.actors.x; }
+    for (const m of X.player.sprites) { setFrame(m, m.role, striding ? 'walk' + (Math.floor(walkT / 120) % 4) : (((now + m.dx * 97) % 3600) > 1800 && ((now + m.dx * 97) % 3600) < 2240 ? 'idle1' : 'idle0')); m.sp.x = px0 + m.dx - 6 - X.actors.x; }
     X.player.marker.position.set(px0 - 1 - X.actors.x, GROUND - 27 + Math.round(Math.sin(now / 300)));
-    for (const it of X.player.items || []) { it.sp.x = px0 + it.dx - 6 - X.actors.x; it.sp.y = GROUND - 8 - (striding && (Math.floor(view.walk.t / 120) + it.dx) % 2 ? 1 : 0); } // the cards bounce along when you walk
+    for (const it of X.player.items || []) { it.sp.x = px0 + it.dx - 6 - X.actors.x; it.sp.y = GROUND - 8 - (striding && (Math.floor(walkT / 120) + it.dx) % 2 ? 1 : 0); } // the cards bounce along when you walk
     // A detention: two officers walk in from the right and stop beside the player.
     const d = view.detain;
     X.cops.forEach((c, i) => {
       c.sp.visible = !!d; if (!d) return;
-      const target = X.player.x + 16 + i * 14, k = Math.min(1, d.k / 0.55), e = 1 - (1 - k) * (1 - k), x = Math.round(W + 14 + i * 16 - (W + 14 + i * 16 - target) * e);
+      const target = X.player.x - cam + 16 + i * 14, k = Math.min(1, d.k / 0.55), e = 1 - (1 - k) * (1 - k), x = Math.round(W + 14 + i * 16 - (W + 14 + i * 16 - target) * e);
       setFrame(c, 'police', k < 1 ? 'walk' + (Math.floor(now / 120 + i * 2) % 4) : 'idle0'); c.sp.x = x - 6 - X.actors.x; c.sp.y = GROUND - 22;
     });
     updateParticles(now, dt);
@@ -356,7 +372,7 @@ const Render = (() => {
     const f = frame(), ctx = X.ctx; if (!f) return;
     const key = sceneKey(f);
     if (key !== X.key) {
-      X.key = key; const fc = X.flat.getContext('2d'); fc.clearRect(0, 0, W, H); const g = flatScene(X.flat, f), p = playerSpec(f);
+      X.key = key; const fc = X.flat.getContext('2d'); fc.setTransform(1, 0, 0, 1, 0, 0); fc.clearRect(0, 0, W, H); view.cam = camFor(f); const g = flatScene(X.flat, f), p = playerSpec(f);
       hotspots = g.spots.concat([{ id: 'self', x: (p.x - p.w / 2) * SCALE, y: (GROUND - 23) * SCALE, w: p.w * SCALE, h: 23 * SCALE, label: p.label }], partySpots(p));
     }
     view.walk = null; for (const fl of view.floats) fl.t += dt; view.floats = view.floats.filter(fl => fl.t < fl.life);
@@ -374,7 +390,10 @@ const Render = (() => {
   }
 
   // ---- the loop -----------------------------------------------------
+  // hold: tools freeze the scene so a screenshot does not wait on a software-drawn frame (tools/contrast-check.js)
+  let held = false; function hold(on) { held = !!on; }
   function loop(now) {
+    if (held) { last = now; requestAnimationFrame(loop); return; }
     const dt = Math.min(50, now - (last || now)); last = now;
     stepQueue(dt);
     try { if (mode === 'pixi') drawPixi(now, dt); else if (mode === '2d') draw2D(now, dt); else for (const fl of view.floats) fl.t += dt; }
@@ -387,5 +406,5 @@ const Render = (() => {
     requestAnimationFrame(loop);
     startPixi().catch((err) => { console.warn('PixiJS unavailable, drawing in 2D', err); start2D(); });
   }
-  return { start, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
+  return { start, hold, still, runwayStill, portrait, setState, enqueue, busy, float, dice, travel, pan, enemy, detain, ring, pause, gameOver, view, SCALE, W, H };
 })();

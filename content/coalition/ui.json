@@ -236,7 +236,25 @@
   {
    "id": "action.wait_on",
    "pattern": "P01",
-   "text": "Skip to what happens next"
+   "text": "Skip ahead"
+  },
+  {
+   "id": "skip.auto",
+   "pattern": "P10",
+   "text": "Nothing to do here yet, so the clock moves on."
+  },
+  {
+   "id": "action.skip_answer",
+   "pattern": "P01",
+   "text": "Skip to {name}'s answer",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "action.skip_dark",
+   "pattern": "P01",
+   "text": "Skip to 10 at night"
   },
   {
    "id": "action.up_to",
@@ -333,7 +351,7 @@
   {
    "id": "next.night",
    "pattern": "P05",
-   "text": "The move {move} opens at 10 at night.",
+   "text": "From 10 at night, you can {move}.",
    "args": [
     "move"
    ]
@@ -1393,9 +1411,29 @@
    "text": "Stop to eat and sleep"
   },
   {
+   "id": "side.go",
+   "pattern": "P01",
+   "text": "Go there"
+  },
+  {
+   "id": "side.heading",
+   "pattern": "P02",
+   "text": "Places nearby"
+  },
+  {
+   "id": "side.heading_gov",
+   "pattern": "P02",
+   "text": "Away from the desk"
+  },
+  {
    "id": "card.kind_lodging",
    "pattern": "P02",
    "text": "Food and sleep"
+  },
+  {
+   "id": "card.kind_side",
+   "pattern": "P02",
+   "text": "A place nearby"
   },
   {
    "id": "card.kind_sick",
@@ -2022,7 +2060,7 @@
   {
    "id": "help.approach",
    "pattern": "P09",
-   "text": "Pick a move, read what it does and how long it takes, then tap **Confirm**. Use the phone to line up help while you travel, but a call can fail and an answer takes hours."
+   "text": "Open a move to see how long it takes and what happens if it works or fails. **Confirm** makes the move. Use the phone to line up help while you travel, but a call can fail and an answer takes hours. **Places nearby** lists side trips from the stop, each with its own costs. When you have nothing to do, the clock skips ahead to the next thing that needs you."
   },
   {
    "id": "help.cards",
@@ -4922,7 +4960,7 @@
   {
    "id": "brief.reception_note.ch2",
    "pattern": "P08",
-   "text": "Dario meets you at the pier in Bahía Clara, and going ashore there needs him."
+   "text": "Going ashore at Bahía Clara needs Dario, who meets you at the pier."
   },
   {
    "id": "brief.gov_report_now",
@@ -5105,6 +5143,269 @@
    ]
   },
   {
+   "id": "lead.escape",
+   "pattern": "P03",
+   "text": "you get away"
+  },
+  {
+   "id": "lead.move_on",
+   "pattern": "P03",
+   "text": "you move on to {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "lead.hours",
+   "pattern": "P03",
+   "text": "it takes {n} hour{s}",
+   "args": [
+    "n",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.hours_gov",
+   "pattern": "P03",
+   "text": "it takes {hours}",
+   "args": [
+    "hours"
+   ]
+  },
+  {
+   "id": "lead.more_hours",
+   "pattern": "P03",
+   "text": "you lose {n} more hour{s}",
+   "args": [
+    "n",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.trip",
+   "pattern": "P03",
+   "text": "it takes {hours} hour{s} there and back",
+   "args": [
+    "hours",
+    "s"
+   ]
+  },
+  {
+   "id": "lead.attention_up",
+   "pattern": "P03",
+   "text": "police attention rises by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_up.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters' attention rises by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_down",
+   "pattern": "P03",
+   "text": "police attention falls by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.attention_down.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters' attention falls by {n}",
+   "args": [
+    "n"
+   ]
+  },
+  {
+   "id": "lead.card",
+   "pattern": "P03",
+   "text": "you get {card}",
+   "args": [
+    "card"
+   ]
+  },
+  {
+   "id": "lead.meal",
+   "pattern": "P03",
+   "text": "everyone eats"
+  },
+  {
+   "id": "lead.sleep",
+   "pattern": "P03",
+   "text": "everyone sleeps"
+  },
+  {
+   "id": "lead.sleep_some",
+   "pattern": "P03",
+   "text": "everyone gets some sleep"
+  },
+  {
+   "id": "lead.trust_up",
+   "pattern": "P03",
+   "text": "{name} trusts you more",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "lead.trust_down",
+   "pattern": "P03",
+   "text": "{name} trusts you less",
+   "args": [
+    "name"
+   ]
+  },
+  {
+   "id": "lead.easier_here",
+   "pattern": "P03",
+   "text": "your moves here get easier"
+  },
+  {
+   "id": "lead.harder_here",
+   "pattern": "P03",
+   "text": "your moves here get harder"
+  },
+  {
+   "id": "lead.search_away",
+   "pattern": "P03",
+   "text": "the police search somewhere else"
+  },
+  {
+   "id": "lead.search_away.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters search somewhere else"
+  },
+  {
+   "id": "lead.search_here",
+   "pattern": "P03",
+   "text": "the police learn where you are"
+  },
+  {
+   "id": "lead.search_here.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters learn where you are"
+  },
+  {
+   "id": "lead.calls_move",
+   "pattern": "P03",
+   "text": "your arrangements move up a step"
+  },
+  {
+   "id": "lead.stage",
+   "pattern": "P03",
+   "text": "it moves {what} up one step",
+   "args": [
+    "what"
+   ]
+  },
+  {
+   "id": "lead.lose_card",
+   "pattern": "P03",
+   "text": "you lose a card"
+  },
+  {
+   "id": "lead.stopped",
+   "pattern": "P03",
+   "text": "the police stop you"
+  },
+  {
+   "id": "lead.stopped.ch2",
+   "pattern": "P03",
+   "text": "the bounty hunters stop you"
+  },
+  {
+   "id": "lead.nothing",
+   "pattern": "P03",
+   "text": "nothing else changes"
+  },
+  {
+   "id": "lead.and2",
+   "pattern": "P03",
+   "text": "{a} and {b}",
+   "args": [
+    "a",
+    "b"
+   ]
+  },
+  {
+   "id": "lead.and_n",
+   "pattern": "P03",
+   "text": "{list}, and {last}",
+   "args": [
+    "list",
+    "last"
+   ]
+  },
+  {
+   "id": "lead.roll",
+   "pattern": "P03",
+   "text": "If it works, {win}. If not, {lose}.",
+   "args": [
+    "win",
+    "lose"
+   ]
+  },
+  {
+   "id": "sim.relay.hand_on",
+   "pattern": "P10",
+   "text": "{from} sends you on to {to}, who will trust you more.",
+   "args": [
+    "from",
+    "to"
+   ]
+  },
+  {
+   "id": "sim.walk.name",
+   "pattern": "P01",
+   "text": "Walk to {place}",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.text",
+   "pattern": "P05",
+   "text": "{place} is an hour's walk from here.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.say",
+   "pattern": "P10",
+   "text": "You walk to {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "sim.walk.back",
+   "pattern": "P10",
+   "text": "You are back at {place}.",
+   "args": [
+    "place"
+   ]
+  },
+  {
+   "id": "lead.walk",
+   "pattern": "P03",
+   "text": "It takes an hour, and the hunters' search goes on while you walk."
+  },
+  {
+   "id": "lead.hand_on",
+   "pattern": "P03",
+   "text": "{name} trusts you more",
+   "args": [
+    "name"
+   ]
+  },
+  {
    "id": "action.done_by",
    "pattern": "P03",
    "text": ", done {who}",
@@ -5170,7 +5471,7 @@
   {
    "id": "sim.why.already_hold",
    "pattern": "P04",
-   "text": "You already hold {card}, so there is nothing more to buy here.",
+   "text": "You already hold {card}.",
    "args": [
     "card"
    ]

@@ -21,7 +21,7 @@ function round(g) {
   // issue #53: rest when tired or hungry and no report is fresh: the cot for sleep alone, home for both, the canteen for food
   const freshNow = v.reports[0] && v.reports[0].age === 'just now';
   // only once a need is at its worst, and not with the minister's deadline inside the rest; the short cot or canteen first
-  const due = g.ministerBy !== undefined && g.ministerBy !== null && !g.flags.locationGiven ? g.ministerBy - g.c.hour : 99;
+  const due = g.ministerBy !== undefined && g.ministerBy !== null && !g.flags.locationGiven ? g.ministerBy - g.hour : 99;
   if ((v.body.tire >= 2 || v.body.hunger >= 2) && !freshNow && v.lodge.ok && !NOREST && due > 4) {
     Gov.commit(g, 'lodge'); const e = Gov.view(g).event;
     if (e) { const id = v.body.tire >= 2 ? 'cot' : 'canteen'; Gov.commit(g, 'evt:' + ((e.choices.find(c => c.id === id && c.ok) || e.choices.find(c => c.ok)).id)); }
@@ -31,13 +31,13 @@ function round(g) {
   const has = (id) => v.orders.find(o => o.id === id && o.ok);
   // a companion's records order when the newest report is stale, at most every third round
   const stale = !v.reports[0] || v.reports[0].age !== 'just now', info = ['exchange', 'clinics', 'registers', 'appeal'].map(has).find(Boolean);
-  const useInfo = stale && info && (g._lastInfo === undefined || g.c.hour - g._lastInfo >= 9);
-  if (useInfo) g._lastInfo = g.c.hour;
+  const useInfo = stale && info && (g._lastInfo === undefined || g.hour - g._lastInfo >= 9);
+  if (useInfo) g._lastInfo = g.hour;
   const stopOrder = NOSTOP ? null : v.orders.find(o => o.ok && STOP_ORDERS.includes(o.id) && (g._stopAt || {})[o.id] === undefined);
   // follow any report at another stop: a report behind your search is still where she really was (following only leads ahead cut arrests from 42 to 9 in 300 runs)
   const ahead = v.reports[0] && v.reports[0].at !== g.belief;
   const pick = (ahead && has('follow')) || (!g.c.flags.restriction && has('circulate')) || (useInfo && info) || stopOrder || (g.belief >= 4 && has('roadblock')) || has('search') || has('roadblock');
-  if (pick && pick === stopOrder) (g._stopAt = g._stopAt || {})[pick.id] = g.c.hour; // each stop order once per run
+  if (pick && pick === stopOrder) (g._stopAt = g._stopAt || {})[pick.id] = g.hour; // each stop order once per run
   Gov.commit(g, pick ? pick.id : 'wait');
 }
 

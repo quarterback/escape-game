@@ -1,5 +1,7 @@
 # Chapter two: Erinana Island
 
+**Superseded Nov. 16, 2026 by [the island relay](chapter-two-relay.md).** Chapter two is no longer six stops in a line: it is 10 places on four scrolling strips, with walks and legs run by helpers who hand you on. The story, the people and the calls below still hold; the stop table and the art notes do not.
+
 Owner, Nov. 8, 2026: "the game ending when you leave the country is fine." Winning chapter one shows "You win" and a button, "Go on to Erinana Island."
 
 **Story.** Your plane lands on Erinana Island, not in the country you chose. While you were flying, that country elected a new government, and it revoked your humanitarian parole. Your brother or sister has a real visa for Lusara this time, but flying out of Erinana would be seen. Bounty hunters and the international police want the reward on you.
@@ -23,4 +25,4 @@ Owner, Nov. 8, 2026: "the game ending when you leave the country is fine." Winni
 
 Calibration, 300 runs (`node tools/calibrate.js 300 --chapter=2`), Nov. 14, 2026: Teresa 75.3%, Mateu 59.0%; chapter one is 35.7% and 31.3%.
 
-The earlier figures (29.3% and 24.0%) were measured with two faults: the bots never ate or slept on the islands, and a traitor could close the only way on from Tamarind Cove or the ship. Fixing the traitor rule alone took chapter two to 39.3% and 31.0%; letting the bots rest took it to the figures above. Chapter two is now much easier than chapter one for a player who eats and sleeps, and needs tuning; that is held for the no-waiting design work, which changes its pacing anyway.
+The earlier figures (29.3% and 24.0%) were measured with two faults: the bots never ate or slept on the islands, and a traitor could close the only way on from Tamarind Cove or the ship. Fixing the traitor rule alone took chapter two to 39.3% and 31.0%; letting the bots rest took it to the figures above. Chapter two was then much easier than chapter one for a player who eats and sleeps. On Nov. 15, 2026 every chapter-two target went up by one: Teresa now wins 50.3% and Mateu 38.3% (300 runs each), against 36.0% and 31.3% in chapter one. Raising them by two instead gave 16.3% and 11.7%.

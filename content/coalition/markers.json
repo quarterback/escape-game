@@ -179,7 +179,7 @@
   {
    "code": "lead.false",
    "pattern": "P03",
-   "text": "A false report about where she is"
+   "text": "A false report about where she is reaches your desk"
   },
   {
    "code": "her.exposed",
@@ -189,7 +189,7 @@
   {
    "code": "her.warned",
    "pattern": "P03",
-   "text": "Her side hears about it, and she gets harder to find"
+   "text": "Her side is warned, so she is harder to find"
   },
   {
    "code": "her.slips",

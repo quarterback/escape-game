@@ -15,12 +15,12 @@ const actions = {
   minister: () => must(Gov.commit(g, v().messages[0].id, 'ask_time'), 'ask for time'),
   hold: () => must(Gov.commit(g, 'req:hold'), 'ask Costamar'),
   ban: () => must(Gov.commit(g, 'circulate'), 'circulate'),
-  news: () => { if (!v().event) throw new Error('no news waiting at ' + g.c.hour); return must(Gov.commit(g, 'evt:plates'), 'plates'); },
+  news: () => { if (!v().event) throw new Error('no news waiting at ' + g.hour); return must(Gov.commit(g, 'evt:plates'), 'plates'); },
   search: () => { const f = v().orders.find(x => x.id === 'follow' && x.ok); if (f) must(Gov.commit(g, 'follow'), 'follow'); return must(Gov.commit(g, 'search'), 'search'); }, // the step says: move the search, then search
 };
 Tutorial.start('gov');
 for (const st of T.steps) {
-  const at = `[hour ${g.c.hour}, looking at ${g.belief}, she is at ${g.c.pos}]`;
+  const at = `[hour ${g.hour}, looking at ${g.belief}, she is at ${g.c.pos}]`;
   if (st.kind === 'read') { console.log(`read  ${st.id} ${at}`); Tutorial.next(); continue; }
   if (!actions[st.id]) throw new Error('no action scripted for ' + st.id);
   const allowed = [...(st.allow.approaches || []), ...(st.allow.calls || []), ...(st.allow.options || [])];
@@ -31,4 +31,4 @@ for (const st of T.steps) {
   console.log(`act   ${st.id} ${at} allowed: ${allowed.join(',')} ${rolls}`);
 }
 if (g.over) throw new Error('the run ended during the tutorial');
-console.log(`end: hour ${g.c.hour}, reports ${g.reports.length}, ban ${g.req.ban}, hold ${g.req.hold}, dice left ${(g._dice || []).length}`);
+console.log(`end: hour ${g.hour}, reports ${g.reports.length}, ban ${g.req.ban}, hold ${g.req.hold}, dice left ${(g._dice || []).length}`);

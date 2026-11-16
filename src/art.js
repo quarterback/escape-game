@@ -134,16 +134,18 @@ const Art = (() => {
   }
 
   // ---- drawing helpers -------------------------------------------------
+  // the width being painted: one screen, or a whole chapter-two strip
+  const span = { x1: X1 };
   function sky(g, top, bottom, night, t) {
     g.layer('sky');
-    for (let y = 0; y < GROUND + 2; y++) { const k = y / GROUND; g.fill(mix(top, bottom, k * k * 0.4 + k * 0.6)); g.rect(X0, y, X1 - X0, 1); }
-    if (night) { for (let i = 0; i < 48; i++) { const x = (i * 97 + 13) % W, y = (i * 53 + 7) % 64; g.star(x, y, i * 1.7, i % 9 === 0); } }
+    for (let y = 0; y < GROUND + 2; y++) { const k = y / GROUND; g.fill(mix(top, bottom, k * k * 0.4 + k * 0.6)); g.rect(X0, y, span.x1 - X0, 1); }
+    if (night) { const n = Math.round(48 * (span.x1 - X0) / (X1 - X0)), sw = span.x1 - 10; for (let i = 0; i < n; i++) { const x = (i * 97 + 13) % sw, y = (i * 53 + 7) % 64; g.star(x, y, i * 1.7, i % 9 === 0); } }
     else g.fx('clouds');
   }
   // A ridge line: a silhouette from layered sines, filled down to `base`.
   function ridge(g, col, base, top, amp, seed, step) {
     g.fill(col); step = step || 1;
-    for (let x = X0; x < X1; x += step) { const h = top + amp * (0.5 + 0.28 * Math.sin((x + seed) / 23) + 0.16 * Math.sin((x * 1.7 + seed * 3) / 11) + 0.06 * Math.sin((x * 3.1 + seed) / 5)); g.rect(x, base - h, step, h); }
+    for (let x = X0; x < span.x1; x += step) { const h = top + amp * (0.5 + 0.28 * Math.sin((x + seed) / 23) + 0.16 * Math.sin((x * 1.7 + seed * 3) / 11) + 0.06 * Math.sin((x * 3.1 + seed) / 5)); g.rect(x, base - h, step, h); }
   }
   function box(g, x, y, w, h, col, light, dark) { g.fill(col); g.rect(x, y, w, h); g.fill(light || tint(col, 0.14)); g.rect(x, y, w, 1); g.rect(x, y, 1, h); g.fill(dark || shade(col, 0.25)); g.rect(x + w - 1, y, 1, h); g.rect(x, y + h - 1, w, 1); }
   function windowPane(g, x, y, w, h, lit, night, frame) {
@@ -411,6 +413,138 @@ const Art = (() => {
     },
   };
 
+  // ---- chapter two's strips (docs/chapter-two-relay.md) -------------------------------------
+  // Each strip is one long side view, several screens wide; every place sits at its own x, and the camera pans
+  // along the strip when you walk. The ship keeps its own one-screen scene.
+  const wide = (w, fn) => (g, s, t, night) => { const was = span.x1; span.x1 = w + 10; try { fn(g, s, t, night, w); } finally { span.x1 = was; } };
+  function seaBand(g, night, y, w, deep) {
+    g.fill(night ? '#16233e' : (deep || '#3f6f96')); g.rect(X0, y, w - X0 + 10, GROUND - y);
+    g.fill(night ? '#24365a' : '#6a9cc0'); for (let x = X0; x < w + 10; x += 10) g.rect(x, y + 4 + ((x * 7) % 9), 6, 1);
+    g.fx('glints', { x0: 0, x1: w, y0: y + 2, y1: GROUND - 2, col: night ? '#8fa8d8' : '#f2f8ff', rate: 14 });
+  }
+  function shop(g, x, w, h, wall, stripe, night, sign) {
+    box(g, x, GROUND - h, w, h, night ? shade(wall, 0.55) : wall);
+    for (let i = 0; i < w; i += 4) { g.fill((i / 4) % 2 ? stripe : '#f4f0e8'); g.rect(x - 2 + i, GROUND - 28, Math.min(4, w + 4 - i), 4); g.rect(x - 2 + i, GROUND - 24, Math.min(4, w + 4 - i), 1); }
+    windowPane(g, x + 4, GROUND - h + 6, 8, 8, night, night); if (w > 30) windowPane(g, x + w - 12, GROUND - h + 6, 8, 8, (x >> 3) % 2 === 0 && night, night);
+    g.fill('#3a2a24'); g.rect(x + (w >> 1) - 4, GROUND - 16, 8, 16);
+    if (sign) { g.fill(night ? '#e8d8a0' : '#f6efe0'); g.rect(x + 3, GROUND - h - 5, w - 6, 4); g.fill(stripe); g.rect(x + 5, GROUND - h - 4, w - 10, 1); }
+  }
+  function boat(g, bx, col, night, mast) {
+    g.fill(shade(col, 0.2)); g.rect(bx, GROUND - 12, 40, 6); g.fill(col); g.rect(bx + 2, GROUND - 14, 36, 3); g.rect(bx - 2, GROUND - 16, 6, 4); g.rect(bx + 36, GROUND - 16, 6, 4);
+    box(g, bx + 10, GROUND - 24, 14, 10, night ? '#4a4652' : '#e8e0d0'); windowPane(g, bx + 13, GROUND - 22, 4, 4, night, night);
+    if (mast) { g.fill('#3a2a20'); g.rect(bx + 28, GROUND - 44, 2, 30); g.rect(bx + 20, GROUND - 40, 18, 1); }
+  }
+  function poster(g, x, y) { g.fill('#f2ead8'); g.rect(x, y, 9, 12); g.fill('#c83a3a'); g.rect(x + 1, y + 1, 7, 2); g.fill('#5a4a40'); g.rect(x + 3, y + 4, 3, 4); g.fill('#2a2430'); g.rect(x + 2, y + 9, 5, 1); }
+  function bigShip(g, x, night) {
+    // the Long Horizon alongside: a white hull with rows of portholes and a red funnel
+    g.fill(night ? '#c8ccd8' : '#f4f4f6'); g.rect(x, GROUND - 40, 300, 30); g.fill(night ? '#a8acb8' : '#d8dce4'); g.rect(x, GROUND - 14, 300, 4);
+    g.fill('#2b3450'); g.rect(x, GROUND - 12, 300, 2);
+    box(g, x + 40, GROUND - 66, 200, 26, night ? '#d8dce6' : '#ffffff'); box(g, x + 70, GROUND - 84, 130, 18, night ? '#d0d4de' : '#f6f6f8');
+    for (let r = 0; r < 3; r++) for (let i = 0; i < 16; i++) { const px = x + 14 + i * 18 + (r === 2 ? 30 : 0), py = GROUND - 34 + (r === 0 ? 0 : r === 1 ? -26 : -44); if (r === 2 && i > 6) continue; g.fill('#2a2a3a'); g.rect(px, py, 4, 4); g.fill(night && (i + r) % 3 ? '#ffd27a' : '#9ab4cc'); g.rect(px + 1, py + 1, 2, 2); if (night && (i + r) % 3) g.glow(px + 2, py + 2, 6, '#ffd27a', 0.35, 0.02); }
+    box(g, x + 150, GROUND - 106, 24, 22, '#c83a3a'); g.fill('#2a2a32'); g.rect(x + 150, GROUND - 108, 24, 3);
+    g.fx('steam', { x: x + 162, y: GROUND - 110, col: '#cfd4dc', rate: 0.6 });
+    g.fill('#2b3450'); g.rect(x + 210, GROUND - 38, 50, 2); // the name board
+  }
+
+  const STRIPS = {
+    // Erinana town: the airstrip, Market Street, the fishing harbor and the cruise quay, west to east
+    strip_town: { w: 1280, at: { eri_airstrip: 150, eri_town: 470, eri_fishharbor: 800, eri_quay: 1110 }, draw: wide(1280, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#7fb2de', night ? '#2a1e44' : '#f6d8b0', night, t);
+      g.layer('far');
+      ridge(g, night ? '#18203a' : '#5f8a6a', GROUND - 18, 22, 26, 7, 2); // green hills behind the town
+      g.fill(night ? '#20283c' : '#7a9a7a'); for (let x = 20; x < 620; x += 22) { const h = 8 + ((x * 13) % 12); g.rect(x, GROUND - 18 - h, 2, h); g.rect(x - 4, GROUND - 18 - h, 10, 2); } // cane and palms on the slope
+      seaBand(g, night, GROUND - 26, w); g.fill(night ? '#18203a' : '#5f8a6a'); g.rect(X0, GROUND - 26, 640, 8); // the sea opens east of the market
+      g.layer('mid');
+      // the airstrip: control tower, a low terminal with your poster, a prop plane on the apron
+      box(g, 18, GROUND - 70, 14, 70, night ? '#3a3a44' : '#a8adb5'); box(g, 10, GROUND - 82, 30, 13, night ? '#4a4a56' : '#c0c6ce'); g.fill(night ? '#ffd27a' : '#c8e0f0'); g.rect(13, GROUND - 79, 24, 6); if (night) g.glow(25, GROUND - 76, 16, '#ffd27a', 0.8, 0.02);
+      g.fx('beacon', { x: 25, y: GROUND - 84, col: '#ff4d4d', period: 1400 });
+      box(g, 46, GROUND - 34, 110, 34, night ? '#4a4652' : '#e8e0d0'); g.fill(night ? '#3a3640' : '#c8b890'); g.rect(42, GROUND - 38, 118, 4);
+      for (let i = 0; i < 5; i++) windowPane(g, 54 + i * 20, GROUND - 26, 10, 8, night && i % 2 === 0, night);
+      poster(g, 140, GROUND - 30);
+      g.fill('#e8e8ee'); g.rect(196, GROUND - 16, 70, 8); g.rect(206, GROUND - 26, 8, 10); g.rect(228, GROUND - 12, 30, 2); g.fill('#3b6db0'); g.rect(196, GROUND - 12, 70, 1); g.fill('#2a2a32'); g.rect(262, GROUND - 14, 4, 4); g.rect(270, GROUND - 22, 1, 14); // the island hopper
+      palm(g, 296, 40); palm(g, 330, 34);
+      // Market Street: a row of painted shops and a bus stop
+      const walls = ['#e8a07a', '#7ac8b8', '#f0d070', '#c890c8', '#8ab4e0', '#e88a8a'];
+      for (let i = 0; i < 6; i++) shop(g, 350 + i * 44, 40, 40 + (i % 3) * 6, walls[i], ['#c83a3a', '#2f5a7a', '#3f7a42', '#7a4ea8', '#e88a2a', '#2f5a7a'][i], night, true);
+      g.fill('#3a3a42'); g.rect(608, GROUND - 30, 1, 30); g.fill('#2f7a5a'); g.rect(603, GROUND - 34, 11, 6); g.fill('#f4f0e8'); g.rect(605, GROUND - 32, 7, 2); // the bus stop
+      poster(g, 588, GROUND - 26);
+      // the fishing harbor: a jetty, boats three deep, net racks
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(660, GROUND - 6, 260, 6);
+      boat(g, 676, '#2f5a7a', night, true); boat(g, 724, '#8a3a2a', night, true); boat(g, 772, '#3f7a42', night, false); boat(g, 838, '#c8a040', night, true);
+      g.fill(night ? '#4a4a52' : '#9a8a70'); for (let i = 0; i < 4; i++) { g.rect(892 + i * 8, GROUND - 30, 1, 24); } g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 24; i++) g.rect(892 + (i % 4) * 8, GROUND - 28 + (i >> 2) * 4, 8, 1); // net racks
+      // the cruise quay: the Long Horizon alongside and its terminal shed
+      bigShip(g, 960, night);
+      box(g, 944, GROUND - 30, 40, 30, night ? '#3a3040' : '#c8a878'); g.fill(night ? '#2a2030' : '#6a8a9a'); g.rect(940, GROUND - 33, 48, 3);
+      g.fill(night ? '#5a5a62' : '#9a9aa2'); for (let i = 0; i < 10; i++) g.rect(1030 + i * 4, GROUND - 6 - i * 2, 4, 1); // the gangway
+      g.layer('near');
+      // the ground changes under your feet: tarmac, the street, planks, the quay
+      g.fill(night ? '#26262e' : '#4a4a54'); g.rect(X0, GROUND, 350, H - GROUND); g.fill(night ? '#8a7a40' : '#e8d070'); for (let x = 0; x < 330; x += 24) g.rect(x, GROUND + 22, 12, 2);
+      g.fill(night ? '#4a4248' : '#b8a898'); g.rect(340, GROUND, 320, 6); g.fill(night ? '#2a2830' : '#5a5660'); g.rect(340, GROUND + 6, 320, H - GROUND - 6); g.fill(night ? '#6a6050' : '#e8e0c0'); for (let x = 350; x < 660; x += 22) g.rect(x, GROUND + 26, 12, 2);
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(660, GROUND, 300, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = 660; x < 960; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#3a3a44' : '#9aa0a8'); g.rect(960, GROUND, w - 950, H - GROUND); g.fill(night ? '#4a4a54' : '#b8bec6'); for (let x = 960; x < w + 10; x += 16) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#1a1410' : '#5a3e28'); for (const px of [700, 780, 860, 1000, 1080, 1160, 1240]) g.rect(px, GROUND - 6, 4, 6); // bollards
+      lamp(g, 420, night, 34); lamp(g, 560, night, 34); lamp(g, 900, night, 30); lamp(g, 1200, night, 34);
+      g.ally('nando', 112, 'nando'); g.figure('clerk', 200, {}); g.figure('local', 512, {}); g.figure('watch', 600, {}); g.figure('local', 740, {}); g.ally('theo', 1150, 'theo'); g.figure('watch', 1230, {});
+    }) },
+    // the south coast: Tamarind Cove's guesthouse and village shop, then the point with its lighthouse
+    strip_coast: { w: 640, at: { eri_hideout: 150, eri_point: 470 }, draw: wide(640, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#78b8e0', night ? '#2a1e44' : '#f8e0b8', night, t);
+      g.layer('far');
+      seaBand(g, night, GROUND - 40, w, '#2f7aa0');
+      g.fill(night ? '#1a2230' : '#6a7a5a'); for (let x = 260; x < 420; x += 2) { const h = 30 + Math.round(18 * Math.sin((x - 260) / 52)); g.rect(x, GROUND - h, 2, h); } // the headland between
+      g.fill(night ? '#3a3a40' : '#c8b898'); for (let i = 0; i < 9; i++) g.rect(300 + i * 12, GROUND - 40 + ((i * 5) % 14) - i * 2, 8, 1); // the cliff path zigzags up
+      g.layer('mid');
+      // the guesthouse with its veranda, and the village shop where Silas works
+      box(g, 20, GROUND - 46, 96, 46, night ? '#5a4a3a' : '#f0d8a8'); g.fill(night ? '#4a2a2a' : '#c86a4a'); g.triangle(14, GROUND - 46, 122, GROUND - 46, 68, GROUND - 66);
+      g.fill(night ? '#3a2a20' : '#8a6a48'); g.rect(20, GROUND - 22, 96, 2); for (let x = 22; x < 116; x += 12) g.rect(x, GROUND - 22, 2, 22); // the veranda
+      windowPane(g, 32, GROUND - 40, 10, 10, night, night); windowPane(g, 92, GROUND - 40, 10, 10, night, night);
+      shop(g, 140, 46, 36, '#7ac8b8', '#2f5a7a', night, true);
+      palm(g, 128, 44); palm(g, 204, 38); palm(g, 236, 46);
+      for (const [bx, col] of [[214, '#e8a040'], [246, '#2f7a5a']]) { g.fill(col); g.rect(bx, GROUND - 6, 24, 4); g.fill(shade(col, 0.25)); g.rect(bx + 2, GROUND - 3, 20, 2); } // boats drawn up on the sand
+      // Lighthouse Point: the tower, the net shed and the slipway
+      box(g, 500, GROUND - 72, 14, 72, night ? '#d8d8e0' : '#f4f4f8'); g.fill('#c83a3a'); for (let y = 60; y > 10; y -= 16) g.rect(500, GROUND - y, 14, 5);
+      g.fill('#2a2a32'); g.rect(497, GROUND - 80, 20, 8); g.fill(night ? '#ffe4a0' : '#e8e0b0'); g.rect(501, GROUND - 79, 12, 6);
+      if (night) { g.fx('beacon', { x: 507, y: GROUND - 76, col: '#ffe4a0', period: 3200 }); g.glow(507, GROUND - 76, 40, '#ffe4a0', 0.5, 0.05); }
+      box(g, 414, GROUND - 26, 50, 26, night ? '#3a3040' : '#a88a68'); g.fill(night ? '#2a2030' : '#5a4a3a'); g.rect(410, GROUND - 29, 58, 3);
+      g.fill(night ? '#5a5a66' : '#c8c0a8'); for (let i = 0; i < 16; i++) g.rect(420 + (i % 4) * 10, GROUND - 22 + (i >> 2) * 4, 9, 1); // nets drying
+      boat(g, 560, '#2f5a7a', night, true);
+      g.layer('near');
+      g.fill(night ? '#5a5040' : '#f0dca8'); g.rect(X0, GROUND, 280 - X0, H - GROUND); g.fill(night ? '#4a4234' : '#e0c890'); for (let x = 0; x < 280; x += 5) g.rect(x + ((x * 7) % 3), GROUND + 3 + ((x * 11) % 20), 2, 1); // sand
+      g.fill(night ? '#3a3a40' : '#8a8478'); g.rect(280, GROUND, w - 270, H - GROUND); g.fill(night ? '#4a4a50' : '#a8a298'); for (let x = 280; x < w + 10; x += 9) g.rect(x, GROUND + ((x * 13) % 14), 5, 2); // rock
+      g.fill(night ? '#3a2a20' : '#7a5a3a'); g.rect(540, GROUND - 2, 100, 3); // the slipway
+      g.ally('host', 70, 'host'); g.ally('holt', 162, 'holt'); g.figure('local', 440, {}); g.figure('local', 590, {});
+    }) },
+    // Bahía Clara: the pier, the old town climbing to the cathedral, and the airport
+    strip_bay: { w: 960, at: { bc_pier: 150, bc_oldtown: 470, eri_airport: 800 }, draw: wide(960, (g, s, t, night, w) => {
+      sky(g, night ? '#0a0c22' : '#86a8d8', night ? '#2a1e44' : '#f0c8b0', night, t);
+      g.layer('far');
+      seaBand(g, night, GROUND - 30, 330);
+      g.fill(night ? '#1c2236' : '#8a98b0'); for (let x = 320, i = 0; x < 960; i++) { const ww = 10 + (i * 7) % 12, h = 18 + (i * 13) % 26; g.rect(x, GROUND - 20 - h, ww, h + 20); x += ww + 2; } // the city behind
+      if (night) { g.fill('#e8c87a'); for (let i = 0; i < 60; i++) g.rect(324 + (i * 41) % 630, GROUND - 26 - (i * 7) % 30, 1, 1); }
+      g.layer('mid');
+      // the pier: tenders tied up, a taxi rank
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND - 6, 300, 6); boat(g, 30, '#f0f0f4', night, false); boat(g, 96, '#2f5a7a', night, true);
+      car(g, 200, '#e8c040', night, -1); car(g, 244, '#e8c040', night, -1);
+      // the old town: stacked houses, the fish market, the cathedral and its square
+      const cols = ['#e8b07a', '#f0d890', '#a8d0c0', '#e89a9a', '#c8b0e0', '#f0c0a0', '#a0c0e0'];
+      for (let i = 0; i < 7; i++) { const hx = 330 + i * 30, hh = 30 + ((i * 17) % 30); box(g, hx, GROUND - hh, 28, hh, night ? shade(cols[i], 0.55) : cols[i]); windowPane(g, hx + 5, GROUND - hh + 5, 6, 6, night && i % 2 === 0, night); windowPane(g, hx + 17, GROUND - hh + 5, 6, 6, night && i % 3 === 0, night); g.fill(night ? '#3a2424' : '#b85a3a'); g.rect(hx - 1, GROUND - hh - 3, 30, 3); }
+      box(g, 548, GROUND - 60, 46, 60, night ? '#5a5260' : '#f0e8d8'); box(g, 562, GROUND - 92, 18, 34, night ? '#5a5260' : '#f0e8d8'); g.fill(night ? '#3a3040' : '#c8b898'); g.triangle(560, GROUND - 92, 582, GROUND - 92, 571, GROUND - 108);
+      g.fill('#2a2430'); g.rect(567, GROUND - 84, 8, 10); g.fill(night ? '#ffd27a' : '#9ab4cc'); g.rect(566, GROUND - 46, 10, 14); if (night) g.glow(571, GROUND - 40, 14, '#ffd27a', 0.5, 0.05); // the cathedral
+      g.fill('#2f7a5a'); g.rect(608, GROUND - 16, 38, 10); g.fill('#f4f0e8'); g.rect(612, GROUND - 14, 30, 4); g.fill('#101014'); g.rect(612, GROUND - 6, 6, 4); g.rect(636, GROUND - 6, 6, 4); // the airport bus
+      // the airport: a glass terminal, the tower, a jet at the gate
+      box(g, 690, GROUND - 40, 170, 40, night ? '#3a4a5a' : '#c8d8e4'); g.fill(night ? '#ffd27a' : '#9ab8d0'); for (let i = 0; i < 16; i++) g.rect(694 + i * 10, GROUND - 34, 7, 18); if (night) g.glow(775, GROUND - 26, 60, '#ffd27a', 0.3, 0.02);
+      g.fill(night ? '#2a3440' : '#7a8a9a'); g.rect(686, GROUND - 44, 178, 4);
+      box(g, 880, GROUND - 74, 12, 74, night ? '#3a3a44' : '#a8adb5'); box(g, 874, GROUND - 84, 24, 11, night ? '#4a4a56' : '#c0c6ce'); g.fx('beacon', { x: 886, y: GROUND - 86, col: '#ff4d4d', period: 1500 });
+      g.fill('#ecebf4'); g.rect(900, GROUND - 22, 60, 10); g.rect(904, GROUND - 38, 8, 16); g.fill('#3b6db0'); g.rect(905, GROUND - 34, 6, 3); // a tail at the gate
+      g.layer('near');
+      g.fill(night ? '#2a2420' : '#7a5a3a'); g.rect(X0, GROUND, 310 - X0, H - GROUND); g.fill(night ? '#3a3028' : '#9a7650'); for (let x = 0; x < 310; x += 6) g.rect(x, GROUND, 1, H - GROUND);
+      g.fill(night ? '#4a4040' : '#c8a888'); g.rect(310, GROUND, 360, H - GROUND); g.fill(night ? '#3a3232' : '#a88a6a'); for (let x = 310; x < 670; x += 8) for (let y = GROUND + 2; y < H; y += 6) g.rect(x + ((y >> 1) % 8), y, 6, 1); // cobbles
+      g.fill(night ? '#26262e' : '#4a4a54'); g.rect(670, GROUND, w - 660, H - GROUND); g.fill(night ? '#8a7a40' : '#e8d070'); for (let x = 680; x < w; x += 24) g.rect(x, GROUND + 22, 12, 2);
+      lamp(g, 120, night, 30); lamp(g, 420, night, 34); lamp(g, 520, night, 34); lamp(g, 680, night, 34);
+      if (s && s.arr && s.arr.reception.stage >= 1) g.ally('official', 172, 'official'); g.figure('watch', 286, {}); g.figure('local', 450, {}); g.figure('watch', 640, {}); g.ally('pilot', 760, 'pilot'); g.figure('watch', 830, {});
+    }) },
+  };
+
   // ---- the runway family photo ---------------------------------------------
   function runway(g) {
     const G = GROUND; sky(g, '#2c1e58', '#ffa868', false, 0);
@@ -447,6 +581,6 @@ const Art = (() => {
   };
   const ITEM_COLOR = { vehicle: '#2EE6B5', supplies: '#FF9F43', delay: '#C9A4F5', passage: '#2EE6B5', introduction: '#7FB2E5', permission: '#FF9DAE', information: '#FFC93C' };
   const itemPalette = (tag) => ({ 1: ITEM_COLOR[tag] || '#FFC93C', 2: '#F6F1FF', 3: '#150F2E' });
-  return { ITEMS, ITEM_COLOR, itemPalette, W, H, GROUND, X0, X1, ROLES, KIDS, SCENES, PLAYER_X, rows, size, palette, drawSprite, runway, shade, tint, gray };
+  return { STRIPS, ITEMS, ITEM_COLOR, itemPalette, W, H, GROUND, X0, X1, ROLES, KIDS, SCENES, PLAYER_X, rows, size, palette, drawSprite, runway, shade, tint, gray };
 })();
 if (typeof module !== 'undefined') module.exports = Art;
