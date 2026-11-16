@@ -1,5 +1,7 @@
 # Chapter two: Erinana Island
 
+**Superseded Nov. 16, 2026 by [the island relay](chapter-two-relay.md).** Chapter two is no longer six stops in a line: it is 10 places on four scrolling strips, with walks and legs run by helpers who hand you on. The story, the people and the calls below still hold; the stop table and the art notes do not.
+
 Owner, Nov. 8, 2026: "the game ending when you leave the country is fine." Winning chapter one shows "You win" and a button, "Go on to Erinana Island."
 
 **Story.** Your plane lands on Erinana Island, not in the country you chose. While you were flying, that country elected a new government, and it revoked your humanitarian parole. Your brother or sister has a real visa for Lusara this time, but flying out of Erinana would be seen. Bounty hunters and the international police want the reward on you.

@@ -5371,7 +5371,7 @@
   {
    "id": "sim.walk.text",
    "pattern": "P05",
-   "text": "You walk along the street to {place}.",
+   "text": "{place} is an hour's walk from here.",
    "args": [
     "place"
    ]

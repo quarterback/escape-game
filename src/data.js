@@ -841,7 +841,7 @@ const Data = (() => {
   // chapter two's first values: the bot then wins 38.0% and 29.3%, beside chapter one's 36.0% and 31.3% (Nov. 16, 2026).
   const LEVELS2 = [
     { id: 'eri_airstrip', strip: 'town', name: 'The airstrip, Erinana Island', short: 'The airstrip', place: 'the airstrip', scene: 'strip_town',
-      objective: 'Get away from the airstrip before the hunters reach it.',
+      objective: 'Get off the airstrip, into town or along the coast to Tamarind Cove.',
       arrive: 'The airstrip has one terminal, two taxis and a reward poster with your face on it.',
       approaches: [
         { id: 'crew_van', name: 'Ride out with the flight crew', hours: 1, dc: 4, needs: [], with: 'self', to: 'eri_town',
@@ -858,7 +858,7 @@ const Data = (() => {
           fail: { exposure: 1, say: 'A security light drives you back to the terminal, but you can try again while it is dark.' } },
       ] },
     { id: 'eri_town', strip: 'town', name: 'Market Street, Erinana town', short: 'Market Street', place: 'Market Street', scene: 'strip_town',
-      objective: 'Find a way out of town: the bus or a scooter along the coast, or the harbors at the end of the street.',
+      objective: 'Take the bus or a scooter along the coast, or walk down to the harbors.',
       arrive: 'Market Street runs from the cane fields down to the harbor. Two strangers in new sun hats are showing your photo at the bus stop.',
       approaches: [
         { id: 'bus', name: 'Take the bus to the cove', hours: 2, dc: 3, needs: [], to: 'eri_hideout',
@@ -876,7 +876,7 @@ const Data = (() => {
       ] },
     { id: 'eri_fishharbor', strip: 'town', name: 'The fishing harbor, Erinana town', short: 'The fishing harbor', place: 'the fishing harbor', scene: 'strip_town',
       objective: 'Pay a skipper to take you across to Bahía Clara, or walk on to the cruise quay.',
-      arrive: 'Fishing boats tie up three deep at the bottom of Market Street. Some of the skippers carry more than fish.',
+      arrive: 'Fishing boats tie up three deep at the bottom of Market Street, and a few skippers take passengers across to Bahía Clara for cash.',
       approaches: [
         { id: 'boat_across', name: 'Pay a skipper to cross', hours: 5, dc: 5, needs: [{ night: true }], pay: true, to: 'bc_pier',
           mods: { boat: 2, information: 1 }, text: 'A skipper will run you across to the pier at Bahía Clara overnight, for cash and no questions.',
@@ -947,7 +947,7 @@ const Data = (() => {
       ] },
     { id: 'bc_pier', strip: 'bay', name: 'The pier, Bahía Clara', short: 'The pier', place: 'the pier', scene: 'strip_bay',
       objective: "Ride to the airport in Dario's car, or walk into the old town.",
-      arrive: 'The pier at Bahía Clara takes the cruise tenders and the fishing boats. Taxi drivers here work for whoever pays the bounty.',
+      arrive: 'The pier at Bahía Clara takes the cruise tenders and the fishing boats. Bounty hunters wait among the taxi drivers.',
       approaches: [
         { id: 'dario_car', with: 'official', name: 'Ride with Dario to the airport', hours: 1, dc: 3, needs: [{ arr: 'reception', stage: 1 }], to: 'eri_airport', intro: 'pilot',
           mods: { introduction: 1, vehicle: 1 }, text: 'Dario drives the back road to the airport and parks at the staff entrance.',
@@ -956,10 +956,10 @@ const Data = (() => {
       ] },
     { id: 'bc_oldtown', strip: 'bay', name: 'The old town, Bahía Clara', short: 'The old town', place: 'the old town', scene: 'strip_bay',
       objective: 'Take the airport bus, or walk to the pier to find Dario.',
-      arrive: 'The old town climbs from the fish market to the cathedral. The airport bus leaves from the square every hour.',
+      arrive: 'The old town climbs from the fish market to the cathedral.',
       approaches: [
         { id: 'airport_bus', name: 'Take the airport bus', hours: 1, dc: 4, needs: [], to: 'eri_airport',
-          mods: { information: 1, union: 1 }, text: 'The airport bus leaves the cathedral square every hour, and a hunter rides it most days.',
+          mods: { information: 1, union: 1 }, text: 'The airport bus leaves the cathedral square every hour, and the hunters watch it.',
           success: { say: 'The bus is full of cruise passengers, and you get off at departures with them.' },
           fail: { exposure: 1, hours: 1, say: 'A hunter boards at the square, so you step off and wait for the next bus.' } },
         { id: 'cover_old', name: 'Cover your tracks', hours: 2, dc: 4, stay: true, needs: [],
@@ -1085,7 +1085,7 @@ const Data = (() => {
       { id: 'cafe', label: 'Eat at the pier café', fx: { hours: 1, meal: true, exposure: 1, say: 'You eat with the tender crews, who watch the hunters more than you.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_bc_oldtown', at: ['bc_oldtown'], title: 'A place to stop in the old town', text: 'A pension above the bakery rents rooms by the night and asks for cash.', choices: [
-      { id: 'pension', label: 'Take a room above the bakery', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The landlady takes cash and feeds everyone, and you sleep six hours.' } },
+      { id: 'pension', label: 'Take a room above the bakery', fx: { hours: 6, sleep: 'full', meal: true, stay: 'room', rest: true, exposure: 1, say: 'The landlady takes cash up front, and everyone eats and sleeps six hours.' } },
       { id: 'keep_going', label: 'Keep going', fx: {} } ] },
     { id: 'lodge_eri_ship', at: ['eri_ship'], title: 'Your cabin aboard', text: 'Meals come to the cabin, and the bunk is yours.', choices: [
       { id: 'cabin_rest', label: 'Eat and sleep in the cabin', fx: { hours: 6, sleep: 'full', meal: true, rest: true, say: 'Everyone eats and sleeps six hours while the ship sails.' } },

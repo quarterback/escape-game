@@ -57,3 +57,40 @@ Inside a strip you walk freely in both directions, and the backdrop scrolls side
 - **The ship** keeps its own scene.
 - **Inside a strip,** the camera pans as you walk, with the far layers moving slower.
 - **Between strips,** the scene fades.
+
+## What was built (Nov. 16, 2026)
+
+### Data and sim
+- **The data:** `LEVELS2` holds the 10 places, and `STRIPS2` holds the four strips and their walks.
+- **Legs:** a move with `to:` is a leg.
+- **Handing on:** a leg with `intro:` makes the next helper trust you more when its helper's leg works. The cost line says so.
+- **Walks:** the sim builds them from `STRIPS2`. A walk takes one hour, with no roll.
+  - The first visit to a place opens its arrival text.
+  - A return visit says only that you are back.
+  - A walk along the same strip skips the briefing, so the scene keeps scrolling.
+- **The airport:** it is the one place where the hunters cannot stop you (`outOfReach`).
+
+### People and news
+- Silas and the gate agent are never traitors.
+- Marisa and Dario are the ship's two ways off, and at most one of them talks.
+- Every place keeps a way to the airport that no traitor runs. Contract test C23 checks this as a path on the map.
+- The storm's drive now takes you to Tamarind Cove.
+
+### Art
+- **Three strips in `Art.STRIPS`:** the town (1,280 pixels), the coast (640) and the bay (960). Each place sits at its own x.
+- **The camera** stands on the current place.
+  - A walk pans the camera with the player walking. Far layers move at half speed, and the sky at 0.15.
+  - A leg to another strip fades, as before.
+
+### Screens
+- **The map:** the route tab and the briefing draw the island as its four strips, with legs as dashed lines.
+- **The rail:** it groups places by strip, and the island uses the rail at every width.
+- **Labels:** the stop screen and the briefing name the strip instead of "Stop N of 6".
+
+### Calibration, 300 runs
+- **The bot:** it follows the shortest map path to the airport and gets the passport first. It takes legs that are open now, and waits where a night leg starts.
+- **Targets:** with walks and longer legs, the targets went back to chapter two's first values.
+
+| Measure | Chapter two (Teresa) | Chapter two (Mateu) | Chapter one (Teresa) | Chapter one (Mateu) |
+| --- | --- | --- | --- | --- |
+| Win rate | 38.0% | 29.3% | 36.0% | 31.3% |

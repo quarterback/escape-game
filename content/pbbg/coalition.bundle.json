@@ -13052,7 +13052,7 @@
    "id": "sim.walk.text",
    "domain": "interface",
    "pattern": "arrangement-status",
-   "text": "You walk along the street to {place}.",
+   "text": "{place} is an hour's walk from here.",
    "audience": [
     "player"
    ],
@@ -25771,7 +25771,7 @@
    "id": "ch2.level.eri_airstrip.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Get away from the airstrip before the hunters reach it.",
+   "text": "Get off the airstrip, into town or along the coast to Tamarind Cove.",
    "audience": [
     "player"
    ],
@@ -25951,7 +25951,7 @@
    "id": "ch2.level.eri_town.objective",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Find a way out of town: the bus or a scooter along the coast, or the harbors at the end of the street.",
+   "text": "Take the bus or a scooter along the coast, or walk down to the harbors.",
    "audience": [
     "player"
    ],
@@ -26143,7 +26143,7 @@
    "id": "ch2.level.eri_fishharbor.arrive",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "Fishing boats tie up three deep at the bottom of Market Street. Some of the skippers carry more than fish.",
+   "text": "Fishing boats tie up three deep at the bottom of Market Street, and a few skippers take passengers across to Bahía Clara for cash.",
    "audience": [
     "player"
    ],
@@ -26875,7 +26875,7 @@
    "id": "ch2.level.bc_pier.arrive",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The pier at Bahía Clara takes the cruise tenders and the fishing boats. Taxi drivers here work for whoever pays the bounty.",
+   "text": "The pier at Bahía Clara takes the cruise tenders and the fishing boats. Bounty hunters wait among the taxi drivers.",
    "audience": [
     "player"
    ],
@@ -26959,7 +26959,7 @@
    "id": "ch2.level.bc_oldtown.arrive",
    "domain": "narrative",
    "pattern": "scene",
-   "text": "The old town climbs from the fish market to the cathedral. The airport bus leaves from the square every hour.",
+   "text": "The old town climbs from the fish market to the cathedral.",
    "audience": [
     "player"
    ],
@@ -26983,7 +26983,7 @@
    "id": "ch2.level.bc_oldtown.airport_bus.text",
    "domain": "interface",
    "pattern": "action-preview",
-   "text": "The airport bus leaves the cathedral square every hour, and a hunter rides it most days.",
+   "text": "The airport bus leaves the cathedral square every hour, and the hunters watch it.",
    "audience": [
     "player"
    ],
@@ -28588,7 +28588,7 @@
    "id": "ch2.lodging.lodge_bc_oldtown.pension.say",
    "domain": "interface",
    "pattern": "action-result",
-   "text": "The landlady takes cash and feeds everyone, and you sleep six hours.",
+   "text": "The landlady takes cash up front, and everyone eats and sleeps six hours.",
    "audience": [
     "player"
    ],
